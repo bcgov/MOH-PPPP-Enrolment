@@ -15,7 +15,7 @@ oc get nsp
 ```
 And obtain name (such as builder-to-internet), and delete it, ie:
 ```console
-oc delete nsp oop-to-address-service oop-to-captcha-service oop-to-msp-service oop-to-spa-env-server oop-to-splunk-forwarder address-service-to-address-doctor msp-service-to-cloudflare msp-service-to-maximus-servers msp-service-to-splunk-forwarder aop-to-address-service aop-to-captcha-service aop-to-msp-service  aop-to-spa-env-server aop-to-splunk-forwarder splunk-forwarder-to-cloudflare splunk-forwarder-to-maximus-servers
+oc delete nsp ppns-to-address-service ppns-to-captcha-service ppns-to-msp-service ppns-to-spa-env-server ppns-to-splunk-forwarder address-service-to-address-doctor msp-service-to-cloudflare msp-service-to-maximus-servers msp-service-to-splunk-forwarder aop-to-address-service aop-to-captcha-service aop-to-msp-service  aop-to-spa-env-server aop-to-splunk-forwarder splunk-forwarder-to-cloudflare splunk-forwarder-to-maximus-servers
 ```
 
 Same with endpoints:

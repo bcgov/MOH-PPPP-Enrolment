@@ -20,14 +20,14 @@ metadata:
     description: |
       This configmap is used internally by NGINX
       to store config.
-  name: oop-web-config
+  name: ppns-web-config
 objects:
   - apiVersion: v1
     kind: ConfigMap
     metadata:
-      name: oop-web-config
+      name: ppns-web-config
       labels:
-        app: oop-web
+        app: ppns-web
     data:
       nginx.conf: |
         worker_processes auto;
@@ -100,7 +100,7 @@ objects:
 
             # serve our angular app here
             location / {
-              rewrite ^/oop(/.*)$ $1;
+              rewrite ^/ppns(/.*)$ $1;
 
               root /opt/app-root/src;
 

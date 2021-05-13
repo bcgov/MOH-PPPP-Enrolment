@@ -1,4 +1,4 @@
-name: oop-web deploy to test
+name: ppns-web deploy to test
 on: 
   workflow_dispatch:
     inputs:
@@ -25,4 +25,4 @@ jobs:
           parameters: '{"apitoken": "${{ secrets.OpenShiftToken }}", "acceptUntrustedCerts": "true"}'
           cmd: |
             'version'
-            'tag -n ${NAMESPACE} ${NAMESPACE}/oop-web:${{github.event.inputs.source_tag}} ${NAMESPACE}/oop-web:${TARGET_IMAGE_TAG}'
+            'tag -n ${NAMESPACE} ${NAMESPACE}/ppns-web:${{github.event.inputs.source_tag}} ${NAMESPACE}/ppns-web:${TARGET_IMAGE_TAG}'

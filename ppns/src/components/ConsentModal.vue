@@ -60,7 +60,7 @@ export default {
     return {
       focusableEls: [],
       focusedEl: null,
-      captchaAPIBasePath: '/oop/api/captcha',
+      captchaAPIBasePath: '/ppns/api/captcha',
       applicationUuid: null,
       isCaptchaValid: false,
       isTermsAccepted: false,

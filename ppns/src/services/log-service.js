@@ -1,8 +1,8 @@
 import axios from 'axios';
 import { getBCTimestamp } from '../helpers/date';
 
-const LOG_SERVICE_URL = '/oop/api/logging';
-const PROGRAM = 'oop';
+const LOG_SERVICE_URL = '/ppns/api/logging';
+const PROGRAM = 'ppns';
 
 class LogService {
   logSubmission(uuid, message, refNumber) {

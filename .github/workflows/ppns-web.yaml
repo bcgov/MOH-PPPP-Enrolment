@@ -1,16 +1,16 @@
-name: oop-web build
+name: ppns-web build
 on:
   push:
     paths:
-      - "oop/src/**/*.html"
-      - "oop/src/**/*.ts"
-      - "oop/src/**/*.js"
-      - "oop/src/**/*.scss"
-      - "oop/package*.json"
+      - "ppns/src/**/*.html"
+      - "ppns/src/**/*.ts"
+      - "ppns/src/**/*.js"
+      - "ppns/src/**/*.scss"
+      - "ppns/package*.json"
   workflow_dispatch:
 defaults:
   run:
-    working-directory: ./oop
+    working-directory: ./ppns
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -61,8 +61,8 @@ jobs:
       - name: Artifact Build
         env:
           NAMESPACE: a3c641-tools
-          BUILD_NAME: oop-web-artifact-build
-          IMAGE_NAME: oop-web-artifacts
+          BUILD_NAME: ppns-web-artifact-build
+          IMAGE_NAME: ppns-web-artifacts
         uses: redhat-developer/openshift-actions@v1.1
         with:
           version: "latest"
@@ -75,8 +75,8 @@ jobs:
       - name: Image Build
         env:
           NAMESPACE: a3c641-tools
-          BUILD_NAME: oop-web-image-build
-          IMAGE_NAME: oop-web
+          BUILD_NAME: ppns-web-image-build
+          IMAGE_NAME: ppns-web
         uses: redhat-developer/openshift-actions@v1.1
         with:
           version: "latest"

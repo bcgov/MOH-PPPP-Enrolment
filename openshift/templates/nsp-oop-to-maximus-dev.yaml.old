@@ -48,7 +48,7 @@ objects:
       # `oc get externalnetwork` or `kubctl get externalnetwork`.
       name: addressdoctor
       labels:
-        app: oop-web
+        app: ppns-web
     spec:
       # This name will be used internally by Aporeto; it should match
       # the `name` field in metadata above.

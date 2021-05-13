@@ -146,7 +146,7 @@ app.use('/', function (req, res, next) {
           console.log('A');
         }
         if (nounIndex < 0) {
-          nounIndex = pathnameParts.indexOf("oopIntegration");
+          nounIndex = pathnameParts.indexOf("ppnsIntegration");
         }
         if (nounIndex < 0) {
           nounIndex = pathnameParts.indexOf("bcp");
@@ -168,8 +168,8 @@ app.use('/', function (req, res, next) {
                 return;                                                                                                                            
             } 
         }
-        // Bypassing nonce match check for OOP, because it isn't contained in URL path.
-        else if (pathnameParts.indexOf("oopIntegration") > -1) {
+        // Bypassing nonce match check for PPNS, because it isn't contained in URL path.
+        else if (pathnameParts.indexOf("ppnsIntegration") > -1) {
             next();
             return;
         }

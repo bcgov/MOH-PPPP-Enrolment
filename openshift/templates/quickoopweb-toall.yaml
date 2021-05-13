@@ -16,19 +16,19 @@
 apiVersion: template.openshift.io/v1
 kind: Template
 labels:
-  template: oop-web
+  template: ppns-web
 metadata:
-  # The Network Security Policies (NSP) for the oop-web to other pods
-  name: oop-web
+  # The Network Security Policies (NSP) for the ppns-web to other pods
+  name: ppns-web
 objects:
   - apiVersion: networking.k8s.io/v1
     kind: NetworkPolicy
     metadata:
-      name: oop-to-spa-env-server
+      name: ppns-to-spa-env-server
       labels:
-        app: oop-web
+        app: ppns-web
     spec:
-      #  allow oop frontend to talk to spa-env-server
+      #  allow ppns frontend to talk to spa-env-server
       podSelector:
         matchLabels:
           role: spaenv
@@ -36,18 +36,18 @@ objects:
         - from:
             - podSelector:
                 matchLabels:
-                  role: oopfrontend
+                  role: ppnsfrontend
           ports:
             - protocol: TCP
               port: 8080
   - apiVersion: networking.k8s.io/v1
     kind: NetworkPolicy
     metadata:
-      name: oop-to-address-service
+      name: ppns-to-address-service
       labels:
-        app: oop-web
+        app: ppns-web
     spec:
-      #  allow oop frontend to talk to address-service
+      #  allow ppns frontend to talk to address-service
       podSelector:
         matchLabels:
           role: addressservice
@@ -55,18 +55,18 @@ objects:
         - from:
             - podSelector:
                 matchLabels:
-                  role: oopfrontend
+                  role: ppnsfrontend
           ports:
             - protocol: TCP
               port: 8080
   - apiVersion: networking.k8s.io/v1
     kind: NetworkPolicy
     metadata:
-      name: oop-to-msp-service
+      name: ppns-to-msp-service
       labels:
-        app: oop-web
+        app: ppns-web
     spec:
-      #  allow oop frontend to talk to msp-service
+      #  allow ppns frontend to talk to msp-service
       podSelector:
         matchLabels:
           role: mspservice
@@ -74,18 +74,18 @@ objects:
         - from:
             - podSelector:
                 matchLabels:
-                  role: oopfrontend
+                  role: ppnsfrontend
           ports:
             - protocol: TCP
               port: 8080
   - apiVersion: networking.k8s.io/v1
     kind: NetworkPolicy
     metadata:
-      name: oop-to-splunk-forwarder
+      name: ppns-to-splunk-forwarder
       labels:
-        app: oop-web
+        app: ppns-web
     spec:
-      #  allow oop frontend to talk to msp-service
+      #  allow ppns frontend to talk to msp-service
       podSelector:
         matchLabels:
           role: splunkforwarder
@@ -93,18 +93,18 @@ objects:
         - from:
             - podSelector:
                 matchLabels:
-                  role: oopfrontend
+                  role: ppnsfrontend
           ports:
             - protocol: TCP
               port: 8080
   - apiVersion: networking.k8s.io/v1
     kind: NetworkPolicy
     metadata:
-      name: oop-to-captcha-service
+      name: ppns-to-captcha-service
       labels:
-        app: oop-web
+        app: ppns-web
     spec:
-      #  allow oop frontend to talk to captcha-service
+      #  allow ppns frontend to talk to captcha-service
       podSelector:
         matchLabels:
           role: captchaservice
@@ -112,7 +112,7 @@ objects:
         - from:
             - podSelector:
                 matchLabels:
-                  role: oopfrontend
+                  role: ppnsfrontend
           ports:
             - protocol: TCP
               port: 8080

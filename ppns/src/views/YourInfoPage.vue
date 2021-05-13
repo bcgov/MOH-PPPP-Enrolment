@@ -60,12 +60,12 @@
               <p>The 10 digit number that can be found on the back of your <a href="https://www2.gov.bc.ca/gov/content/health/health-drug-coverage/msp/bc-residents/personal-health-identification/your-bc-services-card" target="_blank">BC Services Card</a> (or front of the CareCard if you still have one).</p>
               <div class="bcid-container">
                 <div class="bcid-image-container">
-                  <img src="/oop/images/bcid-sample-front.png"
+                  <img src="/ppns/images/bcid-sample-front.png"
                       alt="BC Services Card sample front"
                       class="bcid"/>
                 </div>
                 <div class="bcid-image-container">
-                  <img src="/oop/images/bcid-sample-back.png"
+                  <img src="/ppns/images/bcid-sample-back.png"
                       alt="BC Services Card sample back"
                       class="bcid"/>
                 </div>
