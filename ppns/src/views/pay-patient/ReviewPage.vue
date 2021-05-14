@@ -19,27 +19,27 @@
 </template>
 
 <script>
-import PageContent from '../components/PageContent.vue';
-import ContinueBar from '../components/ContinueBar.vue';
-import ReviewTableList from '../components/ReviewTableList.vue';
-import pageStateService from '../services/page-state-service';
+import PageContent from '../../components/PageContent.vue';
+import ContinueBar from '../../components/ContinueBar.vue';
+import ReviewTableList from '../../components/ReviewTableList.vue';
+import pageStateService from '../../services/page-state-service';
 import {
-  routes,
+  payPatientRoutes,
   isPastPath
-} from '../router/routes';
+} from '../../router/routes';
 import {
   scrollTo,
   scrollToError,
   getTopScrollPosition
-} from '../helpers/scroll';
+} from '../../helpers/scroll';
 import {
   MODULE_NAME as formModule,
   RESET_FORM,
   SET_REFERENCE_NUMBER,
 SET_SUBMISSION_DATE
-} from '../store/modules/form';
-import apiService from '../services/api-service';
-import logService from '../services/log-service';
+} from '../../store/modules/form';
+import apiService from '../../services/api-service';
+import logService from '../../services/log-service';
 
 export default {
   name: 'ReviewPage',
@@ -57,8 +57,8 @@ export default {
   created() {
     logService.logNavigation(
       this.$store.state.form.applicationUuid,
-      routes.REVIEW_PAGE.path,
-      routes.REVIEW_PAGE.title
+      payPatientRoutes.REVIEW_PAGE.path,
+      payPatientRoutes.REVIEW_PAGE.title
     );
   },
   methods: {
@@ -123,14 +123,14 @@ export default {
       // this.navigateToSubmissionPage();
     },
     navigateToSubmissionPage() {
-      const path = routes.SUBMISSION_PAGE.path;
+      const path = payPatientRoutes.SUBMISSION_PAGE.path;
       pageStateService.setPageComplete(path);
       pageStateService.visitPage(path);
       this.$router.push(path);
       scrollTo();
     },
     navigateToSubmissionErrorPage() {
-      const path = routes.SUBMISSION_ERROR_PAGE.path;
+      const path = payPatientRoutes.SUBMISSION_ERROR_PAGE.path;
       pageStateService.setPageComplete(path);
       pageStateService.visitPage(path);
       this.$router.push(path);
@@ -140,7 +140,7 @@ export default {
   // Required in order to block back navigation.
   beforeRouteLeave(to, from, next) {
     pageStateService.setPageIncomplete(from.path);
-    if (to.path === routes.HOME_PAGE.path) {
+    if (to.path === payPatientRoutes.HOME_PAGE.path) {
       this.$store.dispatch(formModule + '/' + RESET_FORM);
       next();
     } else if ((pageStateService.isPageComplete(to.path)) || isPastPath(to.path, from.path)) {
@@ -149,7 +149,7 @@ export default {
       // Navigate to self.
       const topScrollPosition = getTopScrollPosition();
       next({
-        path: routes.REVIEW_PAGE.path,
+        path: payPatientRoutes.REVIEW_PAGE.path,
         replace: true
       });
       setTimeout(() => {

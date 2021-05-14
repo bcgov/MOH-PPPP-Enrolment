@@ -51,7 +51,7 @@
 
 <script>
 import ReviewTable from './ReviewTable.vue';
-import routes from '../router/routes';
+import { payPatientRoutes } from '../router/routes';
 import { scrollTo } from '../helpers/scroll';
 import { formatDate } from '../helpers/date';
 import pageStateService from '../services/page-state-service';
@@ -199,19 +199,19 @@ export default {
   },
   methods: {
     navigateToYourInfoPage() {
-      const toPath = routes.YOUR_INFO_PAGE.path;
+      const toPath = payPatientRoutes.YOUR_INFO_PAGE.path;
       pageStateService.setPageComplete(toPath);
       this.$router.push(toPath);
       scrollTo();
     },
     navigateToAccountTypePage() {
-      const toPath = routes.ACCOUNT_TYPE_PAGE.path;
+      const toPath = payPatientRoutes.ACCOUNT_TYPE_PAGE.path;
       pageStateService.setPageComplete(toPath);
       this.$router.push(toPath);
       scrollTo();
     },
     navigateToMoveInfoPage() {
-      const toPath = routes.MOVE_INFO_PAGE.path;
+      const toPath = payPatientRoutes.MOVE_INFO_PAGE.path;
       pageStateService.setPageComplete(toPath);
       this.$router.push(toPath);
       scrollTo();
@@ -224,5 +224,4 @@ export default {
 a {
   text-decoration: none;
 }
-
 </style>

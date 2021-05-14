@@ -23,15 +23,15 @@
 </template>
 
 <script>
-import PageContent from '../components/PageContent.vue';
-import pageStateService from '../services/page-state-service';
-import { routes } from '../router/routes';
+import PageContent from '../../components/PageContent.vue';
+import pageStateService from '../../services/page-state-service';
+import { payPatientRoutes } from '../../router/routes';
 import {
   MODULE_NAME as formModule,
   RESET_FORM
-} from '../store/modules/form';
-import { scrollTo } from '../helpers/scroll';
-import logService from '../services/log-service';
+} from '../../store/modules/form';
+import { scrollTo } from '../../helpers/scroll';
+import logService from '../../services/log-service';
 
 export default {
   name: 'SubmissionErrorPage',
@@ -41,18 +41,18 @@ export default {
   created() {
     logService.logNavigation(
       this.$store.state.form.applicationUuid,
-      routes.SUBMISSION_ERROR_PAGE.path,
-      routes.SUBMISSION_ERROR_PAGE.title
+      payPatientRoutes.SUBMISSION_ERROR_PAGE.path,
+      payPatientRoutes.SUBMISSION_ERROR_PAGE.title
     );
   },
   // Required in order to block back navigation.
   beforeRouteLeave(to, from, next) {
     pageStateService.setPageIncomplete(from.path);
     this.$store.dispatch(formModule + '/' + RESET_FORM);
-    if (to.path === routes.HOME_PAGE.path) {
+    if (to.path === payPatientRoutes.HOME_PAGE.path) {
       next();
     } else {
-      next({ name: routes.HOME_PAGE.name });
+      next({ name: payPatientRoutes.HOME_PAGE.name });
     }
     setTimeout(() => {
       scrollTo(0);

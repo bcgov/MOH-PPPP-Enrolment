@@ -24,7 +24,7 @@ import {
   Footer
 } from 'common-lib-vue';
 import ProgressBar from '@/components/ProgressBar.vue';
-import stepRoutes from '@/router/step-routes';
+import { payPatientStepRoutes } from '@/router/step-routes';
 
 export default {
   name: 'App',
@@ -37,7 +37,7 @@ export default {
     return {
       pageTitle: 'MSP Permanent Move Outside of B.C.',
       version: project.version,
-      stepRoutes: stepRoutes,
+      stepRoutes: payPatientStepRoutes,
     };
   },
   created() {

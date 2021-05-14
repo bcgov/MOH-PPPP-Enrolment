@@ -1,64 +1,54 @@
-export const routes = {
-  ACCOUNT_TYPE_PAGE: {
-    path: '/account-type',
-    title: 'Who is moving',
-    name: 'AccountTypePage',
-  },
+export const PAY_PATIENT_BASE_URL = '/pay-patient';
+
+export const payPatientRoutes = {
   HOME_PAGE: {
-    path: '/',
+    path: PAY_PATIENT_BASE_URL,
     title: 'Home',
     name: 'HomePage',
   },
-  MOVE_INFO_PAGE: {
-    path: '/move-info',
-    title: 'Move information',
-    name: 'MoveInfoPage',
-  },
   REVIEW_PAGE: {
-    path: '/review',
+    path: PAY_PATIENT_BASE_URL + '/review',
     title: 'Review',
     name: 'ReviewPage',
   },
-  YOUR_INFO_PAGE: {
-    path: '/your-info',
-    title: 'Your information',
-    name: 'YourInfoPage',
-  },
   SUBMISSION_PAGE: {
-    path: '/submission',
+    path: PAY_PATIENT_BASE_URL + '/submission',
     title: 'Submission',
     name: 'SubmissionPage',
   },
   SUBMISSION_ERROR_PAGE: {
-    path: '/submission-error',
+    path: PAY_PATIENT_BASE_URL + '/submission-error',
     title: 'Submission error',
     name: 'SubmissionErrorPage',
   },
-  MAINTENANCE_PAGE: {
-    path: '/maintenance',
-    title: 'Maintenance mode',
-    name: 'MaintenancePage',
-  },
+  
 };
+export const commonRoutes = {
+  LANDING_PAGE: {
+    path: '/',
+    title: 'Landing page',
+    name: 'LandingPage'
+  },
+  MAINTENANCE_PAGE: {
+    path: 'maintenance',
+    title: 'Maintenance',
+    name: 'MaintenancePage'
+  }
+}
 
-export const routeStepOrder = [
-  routes.HOME_PAGE,
-  routes.YOUR_INFO_PAGE,
-  routes.ACCOUNT_TYPE_PAGE,
-  routes.MOVE_INFO_PAGE,
-  routes.REVIEW_PAGE,
-  routes.SUBMISSION_PAGE
+export const payPatientRouteStepOrder = [
+  payPatientRoutes.HOME_PAGE,
+  payPatientRoutes.REVIEW_PAGE,
+  payPatientRoutes.SUBMISSION_PAGE
 ]
 
 export const isPastPath = (toPath, fromPath) => {
-  for (let i=0; i<routeStepOrder.length; i++) {
-    if (routeStepOrder[i].path === fromPath) {
+  for (let i=0; i<payPatientRouteStepOrder.length; i++) {
+    if (payPatientRouteStepOrder[i].path === fromPath) {
       return false;
-    } else if (routeStepOrder[i].path === toPath) {
+    } else if (payPatientRouteStepOrder[i].path === toPath) {
       return true;
     }
   }
   return false;
 }
-
-export default routes;

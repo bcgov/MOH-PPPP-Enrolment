@@ -2,9 +2,10 @@
   <div>
     <PageContent>
       <div class="container pt-3 pt-sm-5 mb-5">
-        <h1>Maintenance mode</h1>
-        <hr/>
-        <p>This application is temporarily unavailable. We apologize for any inconvenience. Please try again later.</p>
+        <h1>Available forms</h1>
+        <p><a href="/ppns/pay-patient">Pay Patient Claim</a></p>
+        <br/>
+        <p><a href="/ppns/pay-practitioner">Pay Practitioner Claim</a></p>
       </div>
     </PageContent>
   </div>
