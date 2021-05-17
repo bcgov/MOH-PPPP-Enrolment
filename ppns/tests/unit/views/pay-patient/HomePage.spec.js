@@ -2,28 +2,29 @@ import { shallowMount, createLocalVue } from '@vue/test-utils';
 import Vuex from 'vuex';
 import Vue from 'vue';
 import Vuelidate from 'vuelidate';
-import YourInfoPage from '@/views/YourInfoPage.vue';
+import YourInfoPage from '@/views/pay-patient/HomePage.vue';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);
 Vue.use(Vuelidate);
 
-describe('YourInfoPage.vue', () => {
+describe('Pay Patient - HomePage.vue', () => {
   let state;
   let store;
 
   beforeEach(() => {
     state ={
-      lastName: null,
-      phn: null,
-      phone: null,
+      applicationUuid: null,
     };    
 
     store = new Vuex.Store({
       modules: {
-        form: {
+        payPatientForm: {
           state,
           namespaced: true,
+          actions: {
+            setApplicationUuid() {}
+          }
         }
       }
     });
