@@ -2,20 +2,31 @@ import Vue from 'vue';
 import VueRouter from 'vue-router';
 import {
   PAY_PATIENT_BASE_URL,
+  PAY_PRACTITIONER_BASE_URL,
   payPatientRoutes,
+  payPractitionerRoutes,
   commonRoutes,
 } from './routes';
-import pageStateService from '../services/page-state-service';
-import LandingPage from '../views/LandingPage.vue';
-import HomePage from '../views/pay-patient/HomePage.vue';
-import ReviewPage from '../views/pay-patient/ReviewPage.vue';
-import SubmissionPage from '../views/pay-patient/SubmissionPage.vue';
-import SubmissionErrorPage from '../views/pay-patient/SubmissionErrorPage.vue';
-import MaintenancePage from '../views/MaintenancePage.vue';
+import pageStateService from '@/services/page-state-service';
+import LandingPage from '@/views/LandingPage.vue';
+import PatientHomePage from '@/views/pay-patient/HomePage.vue';
+import PatientClaimCountPage from '@/views/pay-patient/ClaimCountPage.vue';
+import PatientMainFormPage from '@/views/pay-patient/MainFormPage.vue';
+import PatientReviewPage from '@/views/pay-patient/ReviewPage.vue';
+import PatientSubmissionPage from '@/views/pay-patient/SubmissionPage.vue';
+import PatientSubmissionErrorPage from '@/views/pay-patient/SubmissionErrorPage.vue';
+import PractitionerHomePage from '@/views/pay-practitioner/HomePage.vue';
+import PractitionerClaimCountPage from '@/views/pay-practitioner/ClaimCountPage.vue';
+import PractitionerMainFormPage from '@/views/pay-practitioner/MainFormPage.vue';
+import PractitionerReviewPage from '@/views/pay-practitioner/ReviewPage.vue';
+import PractitionerSubmissionPage from '@/views/pay-practitioner/SubmissionPage.vue';
+import PractitionerSubmissionErrorPage from '@/views/pay-practitioner/SubmissionErrorPage.vue';
+import MaintenancePage from '@/views/MaintenancePage.vue';
 
 Vue.use(VueRouter);
 pageStateService.importPageRoutes(commonRoutes);
 pageStateService.importPageRoutes(payPatientRoutes);
+pageStateService.importPageRoutes(payPractitionerRoutes);
 
 const routeCollection = [
   {
@@ -33,22 +44,64 @@ const routeCollection = [
   {
     path: payPatientRoutes.HOME_PAGE.path,
     name: payPatientRoutes.HOME_PAGE.name,
-    component: HomePage
+    component: PatientHomePage
+  },
+  {
+    path: payPatientRoutes.CLAIM_COUNT_PAGE.path,
+    name: payPatientRoutes.CLAIM_COUNT_PAGE.name,
+    component: PatientClaimCountPage
+  },
+  {
+    path: payPatientRoutes.MAIN_FORM_PAGE.path,
+    name: payPatientRoutes.MAIN_FORM_PAGE.name,
+    component: PatientMainFormPage
   },
   {
     path: payPatientRoutes.REVIEW_PAGE.path,
     name: payPatientRoutes.REVIEW_PAGE.name,
-    component: ReviewPage
+    component: PatientReviewPage
   },
   {
     path: payPatientRoutes.SUBMISSION_PAGE.path,
     name: payPatientRoutes.SUBMISSION_PAGE.name,
-    component: SubmissionPage
+    component: PatientSubmissionPage
   },
   {
     path: payPatientRoutes.SUBMISSION_ERROR_PAGE.path,
     name: payPatientRoutes.SUBMISSION_ERROR_PAGE.name,
-    component: SubmissionErrorPage
+    component: PatientSubmissionErrorPage
+  },
+
+  // Pay Practitioner routes.
+  {
+    path: payPractitionerRoutes.HOME_PAGE.path,
+    name: payPractitionerRoutes.HOME_PAGE.name,
+    component: PractitionerHomePage
+  },
+  {
+    path: payPractitionerRoutes.CLAIM_COUNT_PAGE.path,
+    name: payPractitionerRoutes.CLAIM_COUNT_PAGE.name,
+    component: PractitionerClaimCountPage
+  },
+  {
+    path: payPractitionerRoutes.MAIN_FORM_PAGE.path,
+    name: payPractitionerRoutes.MAIN_FORM_PAGE.name,
+    component: PractitionerMainFormPage
+  },
+  {
+    path: payPractitionerRoutes.REVIEW_PAGE.path,
+    name: payPractitionerRoutes.REVIEW_PAGE.name,
+    component: PractitionerReviewPage
+  },
+  {
+    path: payPractitionerRoutes.SUBMISSION_PAGE.path,
+    name: payPractitionerRoutes.SUBMISSION_PAGE.name,
+    component: PractitionerSubmissionPage
+  },
+  {
+    path: payPractitionerRoutes.SUBMISSION_ERROR_PAGE.path,
+    name: payPractitionerRoutes.SUBMISSION_ERROR_PAGE.name,
+    component: PractitionerSubmissionErrorPage
   },
 ];
 
@@ -64,6 +117,11 @@ router.beforeEach((to, from, next) => {
     && to.path !== payPatientRoutes.HOME_PAGE.path
     && !pageStateService.isPageVisited(to.path)) {
     next({ name: payPatientRoutes.HOME_PAGE.name });
+  }
+  else if (to.path.includes(PAY_PRACTITIONER_BASE_URL)
+    && to.path !== payPractitionerRoutes.HOME_PAGE.path
+    && !pageStateService.isPageVisited(to.path)) {
+    next({ name: payPractitionerRoutes.HOME_PAGE.name });
   }
   
   // Catch-all (navigation).

@@ -1,28 +1,72 @@
 export const PAY_PATIENT_BASE_URL = '/pay-patient';
+export const PAY_PRACTITIONER_BASE_URL = '/pay-practitioner';
 
 export const payPatientRoutes = {
   HOME_PAGE: {
     path: PAY_PATIENT_BASE_URL,
     title: 'Home',
-    name: 'HomePage',
+    name: 'PayPatientHomePage',
+  },
+  CLAIM_COUNT_PAGE: {
+    path: PAY_PATIENT_BASE_URL + '/claim-count',
+    title: 'Number of claims',
+    name: 'PayPatientClaimCountPage',
+  },
+  MAIN_FORM_PAGE: {
+    path: PAY_PATIENT_BASE_URL + '/main-form',
+    title: 'Form',
+    name: 'PayPatientMainFormPage',
   },
   REVIEW_PAGE: {
     path: PAY_PATIENT_BASE_URL + '/review',
     title: 'Review',
-    name: 'ReviewPage',
+    name: 'PayPatientReviewPage',
   },
   SUBMISSION_PAGE: {
     path: PAY_PATIENT_BASE_URL + '/submission',
     title: 'Submission',
-    name: 'SubmissionPage',
+    name: 'PayPatientSubmissionPage',
   },
   SUBMISSION_ERROR_PAGE: {
     path: PAY_PATIENT_BASE_URL + '/submission-error',
     title: 'Submission error',
-    name: 'SubmissionErrorPage',
+    name: 'PayPatientSubmissionErrorPage',
   },
-  
 };
+
+export const payPractitionerRoutes = {
+  HOME_PAGE: {
+    path: PAY_PRACTITIONER_BASE_URL,
+    title: 'Home',
+    name: 'PayPractitionerHomePage',
+  },
+  CLAIM_COUNT_PAGE: {
+    path: PAY_PRACTITIONER_BASE_URL + '/claim-count',
+    title: 'Number of claims',
+    name: 'PayPractitionerClaimCountPage',
+  },
+  MAIN_FORM_PAGE: {
+    path: PAY_PRACTITIONER_BASE_URL + '/main-form',
+    title: 'Form',
+    name: 'PayPractitionerMainFormPage',
+  },
+  REVIEW_PAGE: {
+    path: PAY_PRACTITIONER_BASE_URL + '/review',
+    title: 'Review',
+    name: 'PayPractitionerReviewPage',
+  },
+  SUBMISSION_PAGE: {
+    path: PAY_PRACTITIONER_BASE_URL + '/submission',
+    title: 'Submission',
+    name: 'PayPractitionerSubmissionPage',
+  },
+  SUBMISSION_ERROR_PAGE: {
+    path: PAY_PRACTITIONER_BASE_URL + '/submission-error',
+    title: 'Submission error',
+    name: 'PayPractitionerSubmissionErrorPage',
+  },
+};
+
 export const commonRoutes = {
   LANDING_PAGE: {
     path: '/',
@@ -30,23 +74,41 @@ export const commonRoutes = {
     name: 'LandingPage'
   },
   MAINTENANCE_PAGE: {
-    path: 'maintenance',
+    path: '/maintenance',
     title: 'Maintenance',
     name: 'MaintenancePage'
   }
-}
+};
 
 export const payPatientRouteStepOrder = [
   payPatientRoutes.HOME_PAGE,
+  payPatientRoutes.CLAIM_COUNT_PAGE,
+  payPatientRoutes.MAIN_FORM_PAGE,
   payPatientRoutes.REVIEW_PAGE,
   payPatientRoutes.SUBMISSION_PAGE
-]
+];
+
+export const payPractitionerRouteStepOrder = [
+  payPractitionerRoutes.HOME_PAGE,
+  payPractitionerRoutes.CLAIM_COUNT_PAGE,
+  payPractitionerRoutes.MAIN_FORM_PAGE,
+  payPractitionerRoutes.REVIEW_PAGE,
+  payPractitionerRoutes.SUBMISSION_PAGE
+];
 
 export const isPastPath = (toPath, fromPath) => {
-  for (let i=0; i<payPatientRouteStepOrder.length; i++) {
-    if (payPatientRouteStepOrder[i].path === fromPath) {
+  let stepRoutes = [];
+
+  if (toPath.includes(PAY_PATIENT_BASE_URL)) {
+    stepRoutes = payPatientRouteStepOrder;
+  } else if (toPath.includes(PAY_PRACTITIONER_BASE_URL)) {
+    stepRoutes = payPractitionerRouteStepOrder;
+  }
+
+  for (let i=0; i<stepRoutes.length; i++) {
+    if (stepRoutes[i].path === fromPath) {
       return false;
-    } else if (payPatientRouteStepOrder[i].path === toPath) {
+    } else if (stepRoutes[i].path === toPath) {
       return true;
     }
   }

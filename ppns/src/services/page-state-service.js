@@ -8,7 +8,6 @@ class PageStateService {
   }
 
   importPageRoutes(routes) {
-    this.pages = [];
     for (let key in routes) {
       this.pages.push(routes[key]);
       this.pages[this.pages.length-1].isVisited = false;
