@@ -77,6 +77,11 @@ export const commonRoutes = {
     path: '/maintenance',
     title: 'Maintenance',
     name: 'MaintenancePage'
+  },
+  PAGE_NOT_FOUND_PAGE: {
+    path: '*',
+    title: 'Page not found',
+    name: 'PageNotFoundPage'
   }
 };
 

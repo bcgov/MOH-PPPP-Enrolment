@@ -19,10 +19,10 @@
 </template>
 
 <script>
-import PageContent from '../../components/PageContent.vue';
-import ContinueBar from '../../components/ContinueBar.vue';
-import ReviewTableList from '../../components/ReviewTableList.vue';
-import pageStateService from '../../services/page-state-service';
+import PageContent from '@/components/PageContent.vue';
+import ContinueBar from '@/components/ContinueBar.vue';
+import ReviewTableList from '@/components/pay-patient/ReviewTableList.vue';
+import pageStateService from '@/services/page-state-service';
 import {
   payPatientRoutes,
   isPastPath

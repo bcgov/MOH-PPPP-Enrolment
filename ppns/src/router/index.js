@@ -22,8 +22,10 @@ import PractitionerReviewPage from '@/views/pay-practitioner/ReviewPage.vue';
 import PractitionerSubmissionPage from '@/views/pay-practitioner/SubmissionPage.vue';
 import PractitionerSubmissionErrorPage from '@/views/pay-practitioner/SubmissionErrorPage.vue';
 import MaintenancePage from '@/views/MaintenancePage.vue';
+import PageNotFoundPage from '@/views/PageNotFoundPage.vue';
 
 Vue.use(VueRouter);
+
 pageStateService.importPageRoutes(commonRoutes);
 pageStateService.importPageRoutes(payPatientRoutes);
 pageStateService.importPageRoutes(payPractitionerRoutes);
@@ -38,6 +40,11 @@ const routeCollection = [
     path: commonRoutes.MAINTENANCE_PAGE.path,
     name: commonRoutes.MAINTENANCE_PAGE.name,
     component: MaintenancePage
+  },
+  {
+    path: commonRoutes.PAGE_NOT_FOUND_PAGE.path,
+    name: commonRoutes.PAGE_NOT_FOUND_PAGE.name,
+    component: PageNotFoundPage
   },
   
   // Pay Patient Routes.

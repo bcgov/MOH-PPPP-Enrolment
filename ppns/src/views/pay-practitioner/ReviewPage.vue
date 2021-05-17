@@ -19,27 +19,27 @@
 </template>
 
 <script>
-import PageContent from '../../components/PageContent.vue';
-import ContinueBar from '../../components/ContinueBar.vue';
-import ReviewTableList from '../../components/ReviewTableList.vue';
-import pageStateService from '../../services/page-state-service';
+import PageContent from '@/components/PageContent.vue';
+import ContinueBar from '@/components/ContinueBar.vue';
+import ReviewTableList from '@/components/pay-practitioner/ReviewTableList.vue';
+import pageStateService from '@/services/page-state-service';
 import {
   payPractitionerRoutes,
   isPastPath
-} from '../../router/routes';
+} from '@/router/routes';
 import {
   scrollTo,
   scrollToError,
   getTopScrollPosition
-} from '../../helpers/scroll';
+} from '@/helpers/scroll';
 import {
   MODULE_NAME as formModule,
   RESET_FORM,
   SET_REFERENCE_NUMBER,
 SET_SUBMISSION_DATE
-} from '../../store/modules/form';
-import apiService from '../../services/api-service';
-import logService from '../../services/log-service';
+} from '@/store/modules/form';
+import apiService from '@/services/api-service';
+import logService from '@/services/log-service';
 
 export default {
   name: 'ReviewPage',

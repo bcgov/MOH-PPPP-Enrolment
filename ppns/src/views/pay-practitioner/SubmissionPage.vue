@@ -54,17 +54,17 @@
 </template>
 
 <script>
-import PageContent from '../../components/PageContent.vue';
-import ReviewTableList from '../../components/ReviewTableList.vue';
-import { formatDate } from '../../helpers/date';
-import pageStateService from '../../services/page-state-service';
-import { payPractitionerRoutes } from '../../router/routes';
+import PageContent from '@/components/PageContent.vue';
+import ReviewTableList from '@/components/pay-practitioner/ReviewTableList.vue';
+import { formatDate } from '@/helpers/date';
+import pageStateService from '@/services/page-state-service';
+import { payPractitionerRoutes } from '@/router/routes';
 import {
   MODULE_NAME as formModule,
   RESET_FORM
-} from '../../store/modules/form';
-import { scrollTo } from '../../helpers/scroll';
-import logService from '../../services/log-service';
+} from '@/store/modules/form';
+import { scrollTo } from '@/helpers/scroll';
+import logService from '@/services/log-service';
 
 export default {
   name: 'SubmissionPage',
