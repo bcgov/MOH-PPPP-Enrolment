@@ -48,7 +48,7 @@ import Captcha from '../components/Captcha';
 import {
   MODULE_NAME as formModule,
   SET_CAPTCHA_TOKEN
-} from '../store/modules/form';
+} from '../store/modules/pay-patient-form';
 
 export default {
   name: "ConsentModal",
@@ -56,19 +56,23 @@ export default {
     Button,
     Captcha,
   },
+  props: {
+    applicationUuid: {
+      type: String,
+      default: '',
+      required: true,
+    },
+  },
   data: () => {
     return {
       focusableEls: [],
       focusedEl: null,
       captchaAPIBasePath: '/ppns/api/captcha',
-      applicationUuid: null,
       isCaptchaValid: false,
       isTermsAccepted: false,
     };
   },
   created() {
-    this.applicationUuid = this.$store.state.form.applicationUuid;
-
     window.addEventListener('keydown', this.handleKeyDown);
     document.body.classList.add('no-scroll');
   },

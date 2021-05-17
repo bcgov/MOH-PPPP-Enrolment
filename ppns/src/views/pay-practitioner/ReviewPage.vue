@@ -37,7 +37,7 @@ import {
   RESET_FORM,
   SET_REFERENCE_NUMBER,
 SET_SUBMISSION_DATE
-} from '@/store/modules/form';
+} from '@/store/modules/pay-patient-form';
 import apiService from '@/services/api-service';
 import logService from '@/services/log-service';
 
@@ -56,7 +56,7 @@ export default {
   },
   created() {
     logService.logNavigation(
-      this.$store.state.form.applicationUuid,
+      this.$store.state.payPractitionerForm.applicationUuid,
       payPractitionerRoutes.REVIEW_PAGE.path,
       payPractitionerRoutes.REVIEW_PAGE.title
     );
@@ -68,9 +68,9 @@ export default {
 
       this.$store.dispatch(formModule + '/' + SET_SUBMISSION_DATE, new Date());
 
-      const token = this.$store.state.form.captchaToken;
-      const applicationUuid = this.$store.state.form.applicationUuid;
-      const formState = this.$store.state.form;
+      const token = this.$store.state.payPractitionerForm.captchaToken;
+      const applicationUuid = this.$store.state.payPractitionerForm.applicationUuid;
+      const formState = this.$store.state.payPractitionerForm;
 
       apiService.submitApplication(token, formState)
         .then((response) => {

@@ -29,7 +29,7 @@ import { payPractitionerRoutes } from '../../router/routes';
 import {
   MODULE_NAME as formModule,
   RESET_FORM
-} from '../../store/modules/form';
+} from '../../store/modules/pay-patient-form';
 import { scrollTo } from '../../helpers/scroll';
 import logService from '../../services/log-service';
 
@@ -40,7 +40,7 @@ export default {
   },
   created() {
     logService.logNavigation(
-      this.$store.state.form.applicationUuid,
+      this.$store.state.payPractitionerForm.applicationUuid,
       payPractitionerRoutes.SUBMISSION_ERROR_PAGE.path,
       payPractitionerRoutes.SUBMISSION_ERROR_PAGE.title
     );

@@ -1,10 +1,11 @@
 <template>
   <div>
     <ConsentModal v-if="showConsentModal"
+                  :applicationUuid="applicationUuid"
                   @close="handleCloseConsentModal" />
     <PageContent>
       <div class="container pt-3 pt-sm-5 mb-5">
-        <h1>Pay Patient Claim</h1>
+        <h1>Pay Practitioner Claim</h1>
         <hr/>
       </div>
     </PageContent>
@@ -33,7 +34,7 @@ import { v4 as uuidv4 } from 'uuid';
 import {
   MODULE_NAME as formModule,
   SET_APPLICATION_UUID
-} from '../../store/modules/form';
+} from '@/store/modules/pay-practitioner-form';
 import logService from '../../services/log-service';
 
 export default {
@@ -45,12 +46,13 @@ export default {
   },
   data: () => {
     return {
-      showConsentModal: false,
+      showConsentModal: true,
+      applicationUuid: null,
     }
   },
   created() {
-    const applicationUuid = uuidv4();
-    this.$store.dispatch(formModule + '/' + SET_APPLICATION_UUID, applicationUuid);
+    this.applicationUuid = uuidv4();
+    this.$store.dispatch(formModule + '/' + SET_APPLICATION_UUID, this.applicationUuid);
 
     // Load environment variables, and route to maintenance page.
     spaEnvService.loadEnvs()
@@ -63,13 +65,13 @@ export default {
         }
       })
       .catch((error) => {
-        logService.logError(applicationUuid, {
+        logService.logError(this.applicationUuid, {
           event: 'HTTP error getting values from spa-env-server',
           status: error.response.status,
         });
       });
     logService.logNavigation(
-      applicationUuid,
+      this.applicationUuid,
       payPractitionerRoutes.HOME_PAGE.path,
       payPractitionerRoutes.HOME_PAGE.title
     );

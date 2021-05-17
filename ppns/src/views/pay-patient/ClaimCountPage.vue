@@ -26,7 +26,7 @@ import PageContent from '../../components/PageContent.vue';
 import {
   MODULE_NAME as formModule,
   RESET_FORM,
-} from '../../store/modules/form';
+} from '../../store/modules/pay-patient-form';
 import logService from '../../services/log-service';
 
 export default {
@@ -46,7 +46,7 @@ export default {
     }, 0);
 
     logService.logNavigation(
-      this.$store.state.form.applicationUuid,
+      this.$store.state.payPatientForm.applicationUuid,
       payPatientRoutes.CLAIM_COUNT_PAGE.path,
       payPatientRoutes.CLAIM_COUNT_PAGE.title
     );

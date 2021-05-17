@@ -62,7 +62,7 @@ import { payPractitionerRoutes } from '@/router/routes';
 import {
   MODULE_NAME as formModule,
   RESET_FORM
-} from '@/store/modules/form';
+} from '@/store/modules/pay-patient-form';
 import { scrollTo } from '@/helpers/scroll';
 import logService from '@/services/log-service';
 
@@ -79,11 +79,11 @@ export default {
     };
   },
   created() {
-    this.submissionDate = formatDate(this.$store.state.form.submissionDate);
-    this.referenceNumber = this.$store.state.form.referenceNumber || 'Unknown';
+    this.submissionDate = formatDate(this.$store.state.payPractitionerForm.submissionDate);
+    this.referenceNumber = this.$store.state.payPractitionerForm.referenceNumber || 'Unknown';
 
     logService.logNavigation(
-      this.$store.state.form.applicationUuid,
+      this.$store.state.payPractitionerForm.applicationUuid,
       payPractitionerRoutes.SUBMISSION_PAGE.path,
       payPractitionerRoutes.SUBMISSION_PAGE.title
     );
