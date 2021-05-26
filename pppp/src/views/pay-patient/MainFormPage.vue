@@ -88,7 +88,7 @@
             v-if="$v.postalCode.$dirty && $v.postalCode.required && !$v.postalCode.bcPostalCodeValidator"
             aria-live="assertive">Must be a valid BC postal code.</div>
 
-        <hr/>
+        <hr class='mt-5'/>
 
         <h2 class="mt-5">Medical Service Claim (1 of 1)</h2>
 
@@ -131,6 +131,12 @@ import {
   SET_STREET_NAME,
   SET_CITY,
   SET_POSTAL_CODE,
+  SET_IS_VEHICLE_ACCIDENT,
+  SET_VEHICLE_ACCIDENT_CLAIM_NUMBER,
+  SET_CORRESPONDENCE_ATTACHED,
+  SET_SUBMISSION_CODE,
+  SET_PLAN_REFERENCE_NUMBER_OF_ORIGINAL_CLAIM,
+  SET_DIAGNOSIS_OR_AREA_OF_TREATMENT,
 } from '@/store/modules/pay-patient-form';
 import logService from '@/services/log-service';
 import { required } from 'vuelidate/lib/validators';
@@ -177,6 +183,18 @@ export default {
           value: 'PATIENT',
         }
       ],
+      isVehicleAccidentOptions: [
+        {
+          id: 'is-vehicle-accident-y',
+          label: 'Yes',
+          value: 'Y',
+        },
+        {
+          id: 'is-vehicle-accident-n',
+          label: 'No',
+          value: 'N',
+        }
+      ],
 
       phn: null,
       dependentNumber: null,
@@ -192,6 +210,12 @@ export default {
       city: null,
       postalCode: null,
 
+      isVehicleAccident: null,
+      vehicleAccidentClaimNumber: null,
+      correspondenceAttached: null,
+      submissionCode: null,
+      planReferenceNumberOfOriginalClaim: null,
+      diagnosisOrAreaOfTreatment: null,
     };
   },
   created() {
@@ -208,6 +232,13 @@ export default {
     this.streetName = this.$store.state.payPatientForm.streetName;
     this.city = this.$store.state.payPatientForm.city;
     this.postalCode = this.$store.state.payPatientForm.postalCode;
+
+    this.isVehicleAccident = this.$store.state.payPatientForm.isVehicleAccident;
+    this.vehicleAccidentClaimNumber = this.$store.state.payPatientForm.vehicleAccidentClaimNumber;
+    this.correspondenceAttached = this.$store.state.payPatientForm.correspondenceAttached;
+    this.submissionCode = this.$store.state.payPatientForm.submissionCode;
+    this.planReferenceNumberOfOriginalClaim = this.$store.state.payPatientForm.planReferenceNumberOfOriginalClaim;
+    this.diagnosisOrAreaOfTreatment = this.$store.state.payPatientForm.diagnosisOrAreaOfTreatment;
 
     setTimeout(() => {
       this.isPageLoaded = true;
@@ -271,7 +302,14 @@ export default {
       this.$store.dispatch(formModule + '/' + SET_STREET_NAME, this.streetName);
       this.$store.dispatch(formModule + '/' + SET_CITY, this.city);
       this.$store.dispatch(formModule + '/' + SET_POSTAL_CODE, this.postalCode);
-      
+
+      this.$store.dispatch(formModule + '/' + SET_IS_VEHICLE_ACCIDENT, this.isVehicleAccident);
+      this.$store.dispatch(formModule + '/' + SET_VEHICLE_ACCIDENT_CLAIM_NUMBER, this.vehicleAccidentClaimNumber);
+      this.$store.dispatch(formModule + '/' + SET_CORRESPONDENCE_ATTACHED, this.correspondenceAttached);
+      this.$store.dispatch(formModule + '/' + SET_SUBMISSION_CODE, this.submissionCode);
+      this.$store.dispatch(formModule + '/' + SET_PLAN_REFERENCE_NUMBER_OF_ORIGINAL_CLAIM, this.planReferenceNumberOfOriginalClaim);
+      this.$store.dispatch(formModule + '/' + SET_DIAGNOSIS_OR_AREA_OF_TREATMENT, this.diagnosisOrAreaOfTreatment);
+
       // Navigate to next path.
       const toPath = payPatientRoutes.REVIEW_PAGE.path;
       pageStateService.setPageComplete(toPath);

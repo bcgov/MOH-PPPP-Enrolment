@@ -26,6 +26,13 @@ export const SET_STREET_NAME = 'setStreetName';
 export const SET_CITY = 'setCity';
 export const SET_POSTAL_CODE = 'setPostalCode';
 
+export const SET_IS_VEHICLE_ACCIDENT = 'setIsVehicleAccident';
+export const SET_VEHICLE_ACCIDENT_CLAIM_NUMBER = 'setVehicleAccidentClaimNumber';
+export const SET_CORRESPONDENCE_ATTACHED = 'setCorrespondenceAttached';
+export const SET_SUBMISSION_CODE = 'setSubmissionCode';
+export const SET_PLAN_REFERENCE_NUMBER_OF_ORIGINAL_CLAIM = 'setPlanReferenceNumberOfOriginalClaim';
+export const SET_DIAGNOSIS_OR_AREA_OF_TREATMENT = 'setDiagnosisOrAreaOfTreatment';
+
 export default {
   namespaced: true,
   state: () => {
@@ -50,6 +57,13 @@ export default {
       streetName: null,
       city: null,
       postalCode: null,
+
+      isVehicleAccident: null,
+      vehicleAccidentClaimNumber: null,
+      correspondenceAttached: null,
+      submissionCode: null,
+      planReferenceNumberOfOriginalClaim: null,
+      diagnosisOrAreaOfTreatment: null,
     };
     if (settings.useDummyData) {
       Object.assign(state, dummyData);
@@ -108,6 +122,24 @@ export default {
     setPostalCode(state, payload) {
       state.postalCode = payload;
     },
+    setIsVehicleAccident(state, payload) {
+      state.isVehicleAccident = payload;
+    },
+    setVehicleAccidentClaimNumber(state, payload) {
+      state.vehicleAccidentClaimNumber = payload;
+    },
+    setCorrespondenceAttached(state, payload) {
+      state.correspondenceAttached = payload;
+    },
+    setSubmissionCode(state, payload) {
+      state.submissionCode = payload;
+    },
+    setPlanReferenceNumberOfOriginalClaim(state, payload) {
+      state.planReferenceNumberOfOriginalClaim = payload;
+    },
+    setDiagnosisOrAreaOfTreatment(state, payload) {
+      state.diagnosisOrAreaOfTreatment = payload;
+    },
   },
   actions: {
     resetForm({ commit }) {
@@ -131,6 +163,13 @@ export default {
       commit(SET_STREET_NAME, null);
       commit(SET_CITY, null);
       commit(SET_POSTAL_CODE, null);
+
+      commit(SET_IS_VEHICLE_ACCIDENT, null);
+      commit(SET_VEHICLE_ACCIDENT_CLAIM_NUMBER, null);
+      commit(SET_CORRESPONDENCE_ATTACHED, null);
+      commit(SET_SUBMISSION_CODE, null);
+      commit(SET_PLAN_REFERENCE_NUMBER_OF_ORIGINAL_CLAIM, null);
+      commit(SET_DIAGNOSIS_OR_AREA_OF_TREATMENT, null);
     },
     setApplicationUuid({ commit }, payload) {
       commit(SET_APPLICATION_UUID, payload);
@@ -182,6 +221,24 @@ export default {
     },
     setPostalCode({ commit }, payload) {
       commit(SET_POSTAL_CODE, payload);
+    },
+    setIsVehicleAccident({ commit }, payload) {
+      commit(SET_IS_VEHICLE_ACCIDENT, payload);
+    },
+    setVehicleAccidentClaimNumber({ commit }, payload) {
+      commit(SET_VEHICLE_ACCIDENT_CLAIM_NUMBER, payload);
+    },
+    setCorrespondenceAttached({ commit }, payload) {
+      commit(SET_CORRESPONDENCE_ATTACHED, payload);
+    },
+    setSubmissionCode({ commit }, payload) {
+      commit(SET_SUBMISSION_CODE, payload);
+    },
+    setPlanReferenceNumberOfOriginalClaim({ commit }, payload) {
+      commit(SET_PLAN_REFERENCE_NUMBER_OF_ORIGINAL_CLAIM, payload);
+    },
+    setDiagnosisOrAreaOfTreatment({ commit }, payload) {
+      commit(SET_DIAGNOSIS_OR_AREA_OF_TREATMENT, payload);
     },
   },
   getters: {}
