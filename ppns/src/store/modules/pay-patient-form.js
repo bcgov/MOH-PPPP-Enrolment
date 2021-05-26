@@ -10,6 +10,8 @@ export const SET_CAPTCHA_TOKEN = 'setCaptchaToken';
 export const SET_SUBMISSION_DATE = 'setSubmissionDate';
 export const SET_REFERENCE_NUMBER = 'setReferenceNumber';
 
+export const SET_CLAIM_COUNT = 'setClaimCount';
+
 
 export default {
   namespaced: true,
@@ -19,6 +21,7 @@ export default {
       captchaToken: null,
       submissionDate: null,
       referenceNumber: null,
+      claimCount: null,
     };
     if (settings.useDummyData) {
       Object.assign(state, dummyData);
@@ -38,6 +41,9 @@ export default {
     setReferenceNumber(state, payload) {
       state.referenceNumber = payload;
     },
+    setClaimCount(state, payload) {
+      state.claimCount = payload;
+    }
   },
   actions: {
     resetForm({ commit }) {
@@ -45,6 +51,7 @@ export default {
       commit(SET_CAPTCHA_TOKEN, null);
       commit(SET_SUBMISSION_DATE, null);
       commit(SET_REFERENCE_NUMBER, null);
+      commit(SET_CLAIM_COUNT, null);
     },
     setApplicationUuid({ commit }, payload) {
       commit(SET_APPLICATION_UUID, payload);
@@ -57,6 +64,9 @@ export default {
     },
     setReferenceNumber({ commit }, payload) {
       commit(SET_REFERENCE_NUMBER, payload);
+    },
+    setClaimCount({ commit }, payload) {
+      commit(SET_CLAIM_COUNT, payload);
     },
   },
   getters: {}
