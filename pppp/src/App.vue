@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <Header :title='pageTitle'
-            imagePath='/ppns/images/' />
+            imagePath='/pppp/images/' />
     <main>
       <div class="container stepper">
         <ProgressBar :currentPath='$router.currentRoute.path'

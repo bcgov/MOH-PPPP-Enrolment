@@ -168,7 +168,7 @@ app.use('/', function (req, res, next) {
                 return;                                                                                                                            
             } 
         }
-        // Bypassing nonce match check for PPNS, because it isn't contained in URL path.
+        // Bypassing nonce match check for PPPP, because it isn't contained in URL path.
         else if (pathnameParts.indexOf("ppnsIntegration") > -1) {
             next();
             return;

@@ -1,5 +1,5 @@
 module.exports = {
-  publicPath: '/ppns/',
+  publicPath: '/pppp/',
   devServer: {
     proxy: {
       '/api': {

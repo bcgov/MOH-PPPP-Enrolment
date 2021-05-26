@@ -2,7 +2,7 @@ import axios from 'axios';
 import { formatISODate } from '../helpers/date';
 import { replaceSpecialCharacters } from '../helpers/string';
 
-const BASE_API_PATH = '/ppns/api/';
+const BASE_API_PATH = '/pppp/api/';
 const VALIDATE_LAST_NAME_PHN_URL = BASE_API_PATH + 'ppnsIntegration/validatePhnName';
 const VALIDATE_DEP_URL = BASE_API_PATH + 'ppnsIntegration/validateDep';
 const SUBMIT_APPLICATION_URL = BASE_API_PATH + 'ppnsIntegration/submission';

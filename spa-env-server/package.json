@@ -5,7 +5,7 @@
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/bcgov/MOH-PPNS-Enrolment.git"
+    "url": "git+https://github.com/bcgov/MOH-PPPP-Enrolment.git"
   },
   "homepage": "",
   "main": "index.js",
