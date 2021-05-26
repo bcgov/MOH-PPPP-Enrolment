@@ -19,6 +19,12 @@ export const SET_MIDDLE_INITIAL = 'setMiddleInitial';
 export const SET_LAST_NAME = 'setLastName';
 export const SET_BIRTH_DATE = 'setBirthDate';
 
+export const SET_ADDRESS_OWNER = 'setAddressOwner';
+export const SET_UNIT_NUMBER = 'setUnitNumber';
+export const SET_STREET_NUMBER = 'setStreetNumber';
+export const SET_STREET_NAME = 'setStreetName';
+export const SET_CITY = 'setCity';
+export const SET_POSTAL_CODE = 'setPostalCode';
 
 export default {
   namespaced: true,
@@ -28,13 +34,22 @@ export default {
       captchaToken: null,
       submissionDate: null,
       referenceNumber: null,
+
       claimCount: null,
+
       phn: null,
       dependentNumber: null,
       firstName: null,
       middleInitial: null,
       lastName: null,
       birthDate: null,
+
+      addressOwner: null,
+      unitNumber: null,
+      streetNumber: null,
+      streetName: null,
+      city: null,
+      postalCode: null,
     };
     if (settings.useDummyData) {
       Object.assign(state, dummyData);
@@ -75,7 +90,24 @@ export default {
     setBirthDate(state, payload) {
       state.birthDate = payload;
     },
-
+    setAddressOwner(state, payload) {
+      state.addressOwner = payload;
+    },
+    setUnitNumber(state, payload) {
+      state.unitNumber = payload;
+    },
+    setStreetNumber(state, payload) {
+      state.streetNumber = payload;
+    },
+    setStreetName(state, payload) {
+      state.streetName = payload;
+    },
+    setCity(state, payload) {
+      state.city = payload;
+    },
+    setPostalCode(state, payload) {
+      state.postalCode = payload;
+    },
   },
   actions: {
     resetForm({ commit }) {
@@ -83,13 +115,22 @@ export default {
       commit(SET_CAPTCHA_TOKEN, null);
       commit(SET_SUBMISSION_DATE, null);
       commit(SET_REFERENCE_NUMBER, null);
+
       commit(SET_CLAIM_COUNT, null);
+
       commit(SET_PHN, null);
       commit(SET_DEPENDENT_NUMBER, null);
       commit(SET_FIRST_NAME, null);
       commit(SET_MIDDLE_INITIAL, null);
       commit(SET_LAST_NAME, null);
       commit(SET_BIRTH_DATE, null);
+
+      commit(SET_ADDRESS_OWNER, null);
+      commit(SET_UNIT_NUMBER, null);
+      commit(SET_STREET_NUMBER, null);
+      commit(SET_STREET_NAME, null);
+      commit(SET_CITY, null);
+      commit(SET_POSTAL_CODE, null);
     },
     setApplicationUuid({ commit }, payload) {
       commit(SET_APPLICATION_UUID, payload);
@@ -123,6 +164,24 @@ export default {
     },
     setBirthDate({ commit }, payload) {
       commit(SET_BIRTH_DATE, payload);
+    },
+    setAddressOwner({ commit }, payload) {
+      commit(SET_ADDRESS_OWNER, payload);
+    },
+    setUnitNumber({ commit }, payload) {
+      commit(SET_UNIT_NUMBER, payload);
+    },
+    setStreetNumber({ commit }, payload) {
+      commit(SET_STREET_NUMBER, payload);
+    },
+    setStreetName({ commit }, payload) {
+      commit(SET_STREET_NAME, payload);
+    },
+    setCity({ commit }, payload) {
+      commit(SET_CITY, payload);
+    },
+    setPostalCode({ commit }, payload) {
+      commit(SET_POSTAL_CODE, payload);
     },
   },
   getters: {}

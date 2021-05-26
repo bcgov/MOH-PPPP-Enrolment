@@ -45,6 +45,58 @@
             v-if="$v.birthDate.$dirty && !$v.birthDate.required"
             aria-live="assertive">Birth Date is required.</div>
         
+        <h2 class="mt-5">Payment Mailing Address</h2>
+        <Radio label='Whose address is this?'
+              class='mt-3'
+              v-model='addressOwner'
+              :items='addressOwnerOptions' />
+        <div class="text-danger"
+            v-if="$v.addressOwner.$dirty && !$v.addressOwner.required"
+            aria-live="assertive">This field is required.</div>
+        <Input label='Apartment / Unit:'
+              id='unit-number'
+              className='mt-3'
+              v-model='unitNumber' />
+        <Input label='Street Number:'
+              id='street-number'
+              className='mt-3'
+              v-model='streetNumber' />
+        <Input label='Street Name:'
+              id='street-name'
+              className='mt-3'
+              v-model='streetName' />
+        <div class="text-danger"
+            v-if="$v.streetName.$dirty && !$v.streetName.required"
+            aria-live="assertive">Street Name is required.</div>
+        <Input label='City:'
+              id='city'
+              className='mt-3'
+              v-model='city' />
+        <div class="text-danger"
+            v-if="$v.city.$dirty && !$v.city.required"
+            aria-live="assertive">City is required.</div>
+        <div class='my-3'>Province:</div>
+        <p><strong>British Columbia</strong></p>
+        <PostalCodeInput label='Postal Code:'
+              id='postal-code'
+              className='mt-3'
+              v-model='postalCode' />
+        <div class="text-danger"
+            v-if="$v.postalCode.$dirty && !$v.postalCode.required"
+            aria-live="assertive">Postal Code is required.</div>
+        <div class="text-danger"
+            v-if="$v.postalCode.$dirty && $v.postalCode.required && !$v.postalCode.bcPostalCodeValidator"
+            aria-live="assertive">Must be a valid BC postal code.</div>
+
+        <hr/>
+
+        <h2 class="mt-5">Medical Service Claim (1 of 1)</h2>
+
+        <h2 class="mt-5">Practitioner</h2>
+
+        <h2 class="mt-5">Referred By</h2>
+
+        <h2 class="mt-5">Referred To</h2>
       </div>
     </PageContent>
     <ContinueBar @continue="validateFields()" />
@@ -73,6 +125,12 @@ import {
   SET_MIDDLE_INITIAL,
   SET_LAST_NAME,
   SET_BIRTH_DATE,
+  SET_ADDRESS_OWNER,
+  SET_UNIT_NUMBER,
+  SET_STREET_NUMBER,
+  SET_STREET_NAME,
+  SET_CITY,
+  SET_POSTAL_CODE,
 } from '@/store/modules/pay-patient-form';
 import logService from '@/services/log-service';
 import { required } from 'vuelidate/lib/validators';
@@ -80,8 +138,18 @@ import {
   DateInput,
   Input,
   PhnInput,
+  PostalCodeInput,
+  Radio,
   phnValidator,
 } from 'common-lib-vue';
+
+const bcPostalCodeValidator = (value) => {
+  if (value && value !== '') {
+    const criteria = RegExp('^[Vv]\\d[A-Za-z][ ]?\\d[A-Za-z]\\d$');
+    return criteria.test(value);
+  }
+  return true;
+};
 
 export default {
   name: 'EmptyPage',
@@ -91,16 +159,39 @@ export default {
     Input,
     PageContent,
     PhnInput,
+    PostalCodeInput,
+    Radio,
   },
   data: () => {
     return {
       isPageLoaded: false,
+      addressOwnerOptions: [
+        {
+          id: 'address-owner-practitioner',
+          label: 'Practitioner',
+          value: 'PRACTITIONER',
+        },
+        {
+          id: 'address-owner-patient',
+          label: 'Patient',
+          value: 'PATIENT',
+        }
+      ],
+
       phn: null,
       dependentNumber: null,
       firstName: null,
       middleInitial: null,
       lastName: null,
       birthDate: null,
+
+      addressOwner: null,
+      unitNumber: null,
+      streetNumber: null,
+      streetName: null,
+      city: null,
+      postalCode: null,
+
     };
   },
   created() {
@@ -110,6 +201,13 @@ export default {
     this.middleInitial = this.$store.state.payPatientForm.middleInitial;
     this.lastName = this.$store.state.payPatientForm.lastName;
     this.birthDate = this.$store.state.payPatientForm.birthDate;
+
+    this.addressOwner = this.$store.state.payPatientForm.addressOwner;
+    this.unitNumber = this.$store.state.payPatientForm.unitNumber;
+    this.streetNumber = this.$store.state.payPatientForm.streetNumber;
+    this.streetName = this.$store.state.payPatientForm.streetName;
+    this.city = this.$store.state.payPatientForm.city;
+    this.postalCode = this.$store.state.payPatientForm.postalCode;
 
     setTimeout(() => {
       this.isPageLoaded = true;
@@ -135,6 +233,19 @@ export default {
       },
       birthDate: {
         required,
+      },
+      addressOwner: {
+        required,
+      },
+      streetName: {
+        required,
+      },
+      city: {
+        required,
+      },
+      postalCode: {
+        required,
+        bcPostalCodeValidator,
       }
     };
     return validations;
@@ -153,6 +264,13 @@ export default {
       this.$store.dispatch(formModule + '/' + SET_MIDDLE_INITIAL, this.middleInitial);
       this.$store.dispatch(formModule + '/' + SET_LAST_NAME, this.lastName);
       this.$store.dispatch(formModule + '/' + SET_BIRTH_DATE, this.birthDate);
+
+      this.$store.dispatch(formModule + '/' + SET_ADDRESS_OWNER, this.addressOwner);
+      this.$store.dispatch(formModule + '/' + SET_UNIT_NUMBER, this.unitNumber);
+      this.$store.dispatch(formModule + '/' + SET_STREET_NUMBER, this.streetNumber);
+      this.$store.dispatch(formModule + '/' + SET_STREET_NAME, this.streetName);
+      this.$store.dispatch(formModule + '/' + SET_CITY, this.city);
+      this.$store.dispatch(formModule + '/' + SET_POSTAL_CODE, this.postalCode);
       
       // Navigate to next path.
       const toPath = payPatientRoutes.REVIEW_PAGE.path;
