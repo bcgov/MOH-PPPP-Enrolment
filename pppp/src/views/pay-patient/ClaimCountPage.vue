@@ -2,9 +2,10 @@
   <div>
     <PageContent>
       <div class="container pt-3 pt-sm-5 mb-3">
-        <h1>Medical Services Claims</h1>
+        <h1>Pay Patient Claim</h1>
         <hr/>
 
+        <h2>Medical Services Claims</h2>
         <NumberSelect label="How many medical service claims for the patient are you including in this submission?"
                 id='claim-count'
                 v-model='claimCount'
@@ -13,7 +14,8 @@
                 :inputStyle='inputStyle'/>
         <div class="text-danger"
             v-if="$v.claimCount.$dirty && !$v.claimCount.required"
-            aria-live="assertive">Claim count is required.</div>      </div>
+            aria-live="assertive">Claim count is required.</div>
+      </div>
     </PageContent>
     <ContinueBar @continue="validateFields()" />
   </div>

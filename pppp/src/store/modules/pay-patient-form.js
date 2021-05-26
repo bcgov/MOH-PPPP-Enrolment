@@ -12,6 +12,13 @@ export const SET_REFERENCE_NUMBER = 'setReferenceNumber';
 
 export const SET_CLAIM_COUNT = 'setClaimCount';
 
+export const SET_PHN = 'setPhn';
+export const SET_DEPENDENT_NUMBER = 'setDependentNumber';
+export const SET_FIRST_NAME = 'setFirstName';
+export const SET_MIDDLE_INITIAL = 'setMiddleInitial';
+export const SET_LAST_NAME = 'setLastName';
+export const SET_BIRTH_DATE = 'setBirthDate';
+
 
 export default {
   namespaced: true,
@@ -22,6 +29,12 @@ export default {
       submissionDate: null,
       referenceNumber: null,
       claimCount: null,
+      phn: null,
+      dependentNumber: null,
+      firstName: null,
+      middleInitial: null,
+      lastName: null,
+      birthDate: null,
     };
     if (settings.useDummyData) {
       Object.assign(state, dummyData);
@@ -43,7 +56,26 @@ export default {
     },
     setClaimCount(state, payload) {
       state.claimCount = payload;
-    }
+    },
+    setPhn(state, payload) {
+      state.phn = payload;
+    },
+    setDependentNumber(state, payload) {
+      state.dependentNumber = payload;
+    },
+    setFirstName(state, payload) {
+      state.firstName = payload;
+    },
+    setMiddleInitial(state, payload) {
+      state.middleInitial = payload;
+    },
+    setLastName(state, payload) {
+      state.lastName = payload;
+    },
+    setBirthDate(state, payload) {
+      state.birthDate = payload;
+    },
+
   },
   actions: {
     resetForm({ commit }) {
@@ -52,6 +84,12 @@ export default {
       commit(SET_SUBMISSION_DATE, null);
       commit(SET_REFERENCE_NUMBER, null);
       commit(SET_CLAIM_COUNT, null);
+      commit(SET_PHN, null);
+      commit(SET_DEPENDENT_NUMBER, null);
+      commit(SET_FIRST_NAME, null);
+      commit(SET_MIDDLE_INITIAL, null);
+      commit(SET_LAST_NAME, null);
+      commit(SET_BIRTH_DATE, null);
     },
     setApplicationUuid({ commit }, payload) {
       commit(SET_APPLICATION_UUID, payload);
@@ -67,6 +105,24 @@ export default {
     },
     setClaimCount({ commit }, payload) {
       commit(SET_CLAIM_COUNT, payload);
+    },
+    setPhn({ commit }, payload) {
+      commit(SET_PHN, payload);
+    },
+    setDependentNumber({ commit }, payload) {
+      commit(SET_DEPENDENT_NUMBER, payload);
+    },
+    setFirstName({ commit }, payload) {
+      commit(SET_FIRST_NAME, payload);
+    },
+    setMiddleInitial({ commit }, payload) {
+      commit(SET_MIDDLE_INITIAL, payload);
+    },
+    setLastName({ commit }, payload) {
+      commit(SET_LAST_NAME, payload);
+    },
+    setBirthDate({ commit }, payload) {
+      commit(SET_BIRTH_DATE, payload);
     },
   },
   getters: {}
