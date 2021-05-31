@@ -33,6 +33,22 @@ export const SET_SUBMISSION_CODE = 'setSubmissionCode';
 export const SET_PLAN_REFERENCE_NUMBER_OF_ORIGINAL_CLAIM = 'setPlanReferenceNumberOfOriginalClaim';
 export const SET_DIAGNOSIS_OR_AREA_OF_TREATMENT = 'setDiagnosisOrAreaOfTreatment';
 
+export const SET_MEDICAL_SERVICE_CLAIMS = 'setMedicalServiceClaims';
+
+export const SET_PRACTITIONER_LAST_NAME_OR_CLINIC_NAME = 'setPractitionerLastNameOrClinicName';
+export const SET_PRACTITIONER_FIRST_NAME_INITIAL = 'setPractitionerFirstNameInitial';
+export const SET_PRACTITIONER_PAYMENT_NUMBER = 'setPractitionerPaymentNumber';
+export const SET_PRACTITIONER_PRACTITIONER_NUMBER = 'setPractitionerPractitionerNumber';
+export const SET_PRACTITIONER_SPECIALTY_CODE = 'setPractitionerSpecialtyCode';
+
+export const SET_REFERRED_BY_LAST_NAME = 'setReferredByLastName';
+export const SET_REFERRED_BY_FIRST_NAME_INITIAL = 'setReferredByFirstNameInitial';
+export const SET_REFERRED_BY_PRACTITIONER_NUMBER = 'setReferredByPractitionerNumber';
+
+export const SET_REFERRED_TO_LAST_NAME = 'setReferredToLastName';
+export const SET_REFERRED_TO_FIRST_NAME_INITIAL = 'setReferredToFirstNameInitial';
+export const SET_REFERRED_TO_PRACTITIONER_NUMBER = 'setReferredToPractitionerNumber';
+
 export default {
   namespaced: true,
   state: () => {
@@ -64,6 +80,22 @@ export default {
       submissionCode: null,
       planReferenceNumberOfOriginalClaim: null,
       diagnosisOrAreaOfTreatment: null,
+
+      medicalServiceClaims: [],
+
+      practitionerLastNameOrClinicName: null,
+      practitionerFirstNameInitial: null,
+      practitionerPaymentNumber: null,
+      practitionerPractitionerNumber: null,
+      practitionerSpecialtyCode: null,
+
+      referredByLastName: null,
+      referredByFirstNameInitial: null,
+      referredByPractitionerNumber: null,
+
+      referredToLastName: null,
+      referredToFirstNameInitial: null,
+      referredToPractitionerNumber: null,
     };
     if (settings.useDummyData) {
       Object.assign(state, dummyData);
@@ -140,6 +172,42 @@ export default {
     setDiagnosisOrAreaOfTreatment(state, payload) {
       state.diagnosisOrAreaOfTreatment = payload;
     },
+    setMedicalServiceClaims(state, payload) {
+      state.medicalServiceClaims = payload;
+    },
+    setPractitionerLastNameOrClinicName(state, payload) {
+      state.practitionerLastNameOrClinicName = payload;
+    },
+    setPractitionerFirstNameInitial(state, payload) {
+      state.practitionerFirstNameInitial = payload;
+    },
+    setPractitionerPaymentNumber(state, payload) {
+      state.practitionerPaymentNumber = payload;
+    },
+    setPractitionerPractitionerNumber(state, payload) {
+      state.practitionerPractitionerNumber = payload;
+    },
+    setPractitionerSpecialtyCode(state, payload) {
+      state.practitionerSpecialtyCode = payload;
+    },
+    setReferredByLastName(state, payload) {
+      state.referredByLastName = payload;
+    },
+    setReferredByFirstNameInitial(state, payload) {
+      state.referredByFirstNameInitial = payload;
+    },
+    setReferredByPractitionerNumber(state, payload) {
+      state.referredByPractitionerNumber = payload;
+    },
+    setReferredToLastName(state, payload) {
+      state.referredToLastName = payload;
+    },
+    setReferredToFirstNameInitial(state, payload) {
+      state.referredToFirstNameInitial = payload;
+    },
+    setReferredToPractitionerNumber(state, payload) {
+      state.referredToPractitionerNumber = payload;
+    },
   },
   actions: {
     resetForm({ commit }) {
@@ -170,6 +238,22 @@ export default {
       commit(SET_SUBMISSION_CODE, null);
       commit(SET_PLAN_REFERENCE_NUMBER_OF_ORIGINAL_CLAIM, null);
       commit(SET_DIAGNOSIS_OR_AREA_OF_TREATMENT, null);
+
+      commit(SET_MEDICAL_SERVICE_CLAIMS, []);
+      
+      commit(SET_PRACTITIONER_LAST_NAME_OR_CLINIC_NAME, null);
+      commit(SET_PRACTITIONER_FIRST_NAME_INITIAL, null);
+      commit(SET_PRACTITIONER_PAYMENT_NUMBER, null);
+      commit(SET_PRACTITIONER_PRACTITIONER_NUMBER, null);
+      commit(SET_PRACTITIONER_SPECIALTY_CODE, null);
+      
+      commit(SET_REFERRED_BY_LAST_NAME, null);
+      commit(SET_REFERRED_BY_FIRST_NAME_INITIAL, null);
+      commit(SET_REFERRED_BY_PRACTITIONER_NUMBER, null);
+      
+      commit(SET_REFERRED_TO_LAST_NAME, null);
+      commit(SET_REFERRED_TO_FIRST_NAME_INITIAL, null);
+      commit(SET_REFERRED_TO_PRACTITIONER_NUMBER, null);
     },
     setApplicationUuid({ commit }, payload) {
       commit(SET_APPLICATION_UUID, payload);
@@ -239,6 +323,42 @@ export default {
     },
     setDiagnosisOrAreaOfTreatment({ commit }, payload) {
       commit(SET_DIAGNOSIS_OR_AREA_OF_TREATMENT, payload);
+    },
+    setMedicalServiceClaims({ commit }, payload) {
+      commit(SET_MEDICAL_SERVICE_CLAIMS, payload);
+    },
+    setPractitionerLastNameOrClinicName({ commit }, payload) {
+      commit(SET_PRACTITIONER_LAST_NAME_OR_CLINIC_NAME, payload);
+    },
+    setPractitionerFirstNameInitial({ commit }, payload) {
+      commit(SET_PRACTITIONER_FIRST_NAME_INITIAL, payload);
+    },
+    setPractitionerPaymentNumber({ commit }, payload) {
+      commit(SET_PRACTITIONER_PAYMENT_NUMBER, payload);
+    },
+    setPractitionerPractitionerNumber({ commit }, payload) {
+      commit(SET_PRACTITIONER_PRACTITIONER_NUMBER, payload);
+    },
+    setPractitionerSpecialtyCode({ commit }, payload) {
+      commit(SET_PRACTITIONER_SPECIALTY_CODE, payload);
+    },
+    setReferredByLastName({ commit }, payload) {
+      commit(SET_REFERRED_BY_LAST_NAME, payload);
+    },
+    setReferredByFirstNameInitial({ commit }, payload) {
+      commit(SET_REFERRED_BY_FIRST_NAME_INITIAL, payload);
+    },
+    setReferredByPractitionerNumber({ commit }, payload) {
+      commit(SET_REFERRED_BY_PRACTITIONER_NUMBER, payload);
+    },
+    setReferredToLastName({ commit }, payload) {
+      commit(SET_REFERRED_TO_LAST_NAME, payload);
+    },
+    setReferredToFirstNameInitial({ commit }, payload) {
+      commit(SET_REFERRED_TO_FIRST_NAME_INITIAL, payload);
+    },
+    setReferredToPractitionerNumber({ commit }, payload) {
+      commit(SET_REFERRED_TO_PRACTITIONER_NUMBER, payload);
     },
   },
   getters: {}
