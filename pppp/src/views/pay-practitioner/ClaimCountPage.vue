@@ -2,8 +2,19 @@
   <div>
     <PageContent>
       <div class="container pt-3 pt-sm-5 mb-3">
-        <h1>Medical Services Claims</h1>
+        <h1>Pay Practitioner Claim</h1>
         <hr/>
+
+        <h2>Medical Services Claims</h2>
+        <NumberSelect label="How many medical service claims for the practitioner are you including in this submission?"
+                id='claim-count'
+                v-model='claimCount'
+                :min='1'
+                :max='4'
+                :inputStyle='inputStyle'/>
+        <div class="text-danger"
+            v-if="$v.claimCount.$dirty && !$v.claimCount.required"
+            aria-live="assertive">Claim count is required.</div>
       </div>
     </PageContent>
     <ContinueBar @continue="validateFields()" />
@@ -23,24 +34,35 @@ import {
 } from '../../helpers/scroll';
 import ContinueBar from '../../components/ContinueBar.vue';
 import PageContent from '../../components/PageContent.vue';
+import NumberSelect from '@/components/NumberSelect.vue';
 import {
   MODULE_NAME as formModule,
   RESET_FORM,
-} from '../../store/modules/pay-patient-form';
+} from '../../store/modules/pay-practitioner-form';
 import logService from '../../services/log-service';
+import { required } from 'vuelidate/lib/validators';
+import { SET_CLAIM_COUNT } from '../../store/modules/pay-practitioner-form';
 
 export default {
   name: 'EmptyPage',
   components: {
     ContinueBar,
     PageContent,
+    NumberSelect
   },
   data: () => {
     return {
       isPageLoaded: false,
+      claimCount: null,
+      inputStyle: {
+        width: '160px',
+        maxWidth: '100%',
+      },
     };
   },
   created() {
+    this.claimCount = this.$store.state.payPractitionerForm.claimCount;
+
     setTimeout(() => {
       this.isPageLoaded = true;
     }, 0);
@@ -52,7 +74,11 @@ export default {
     );
   },
   validations() {
-    const validations = {};
+    const validations = {
+      claimCount: {
+        required,
+      }
+    };
     return validations;
   },
   methods: {
@@ -63,7 +89,7 @@ export default {
         return;
       }
 
-      // Save values here.
+      this.$store.dispatch(formModule + '/' + SET_CLAIM_COUNT, this.claimCount);
       
       // Navigate to next path.
       const toPath = payPractitionerRoutes.MAIN_FORM_PAGE.path;
