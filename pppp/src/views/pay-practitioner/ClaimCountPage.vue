@@ -2,8 +2,30 @@
   <div>
     <PageContent>
       <div class="container pt-3 pt-sm-5 mb-3">
-        <h1>Medical Services Claims</h1>
+        <h1>Pay Practitioner Claim</h1>
         <hr/>
+
+        <h2>Medical Services Claims</h2>
+        <NumberSelect label="How many medical service claims for the patient are you including in this submission?"
+                id='services-claim-count'
+                v-model='medicalServiceClaimsCount'
+                :min='0'
+                :max='4'
+                :inputStyle='inputStyle'/>
+        <div class="text-danger"
+            v-if="$v.medicalServiceClaimsCount.$dirty && !$v.medicalServiceClaimsCount.required"
+            aria-live="assertive">Medical service claim count is required.</div>
+        
+        <h2 class="mt-3">Hospital Visit Claims</h2>
+        <NumberSelect label="How many hospital visit claims for the patient are you including in this submission?"
+                id='hospital-claim-count'
+                v-model='hospitalVisitClaimsCount'
+                :min='0'
+                :max='2'
+                :inputStyle='inputStyle'/>
+        <div class="text-danger"
+            v-if="$v.hospitalVisitClaimsCount.$dirty && !$v.hospitalVisitClaimsCount.required"
+            aria-live="assertive">Hospital visit claim count is required.</div>
       </div>
     </PageContent>
     <ContinueBar @continue="validateFields()" />
@@ -23,24 +45,40 @@ import {
 } from '../../helpers/scroll';
 import ContinueBar from '../../components/ContinueBar.vue';
 import PageContent from '../../components/PageContent.vue';
+import NumberSelect from '@/components/NumberSelect.vue';
 import {
   MODULE_NAME as formModule,
   RESET_FORM,
-} from '../../store/modules/pay-patient-form';
+} from '../../store/modules/pay-practitioner-form';
 import logService from '../../services/log-service';
+import { required } from 'vuelidate/lib/validators';
+import { 
+  SET_MEDICAL_SERVICE_CLAIMS_COUNT, 
+  SET_HOSPITAL_VISIT_CLAIMS_COUNT 
+} from '../../store/modules/pay-practitioner-form';
 
 export default {
   name: 'EmptyPage',
   components: {
     ContinueBar,
     PageContent,
+    NumberSelect
   },
   data: () => {
     return {
       isPageLoaded: false,
+      medicalServiceClaimsCount: null,
+      hospitalVisitClaimsCount: null,
+      inputStyle: {
+        width: '160px',
+        maxWidth: '100%',
+      },
     };
   },
   created() {
+    this.medicalServiceClaimsCount = this.$store.state.payPractitionerForm.medicalServiceClaimsCount;
+    this.hospitalVisitClaimsCount = this.$store.state.payPractitionerForm.hospitalVisitClaimsCount;
+
     setTimeout(() => {
       this.isPageLoaded = true;
     }, 0);
@@ -52,7 +90,14 @@ export default {
     );
   },
   validations() {
-    const validations = {};
+    const validations = {
+      medicalServiceClaimsCount: {
+        required,
+      },
+      hospitalVisitClaimsCount: {
+        required,
+      }
+    };
     return validations;
   },
   methods: {
@@ -63,7 +108,8 @@ export default {
         return;
       }
 
-      // Save values here.
+      this.$store.dispatch(formModule + '/' + SET_MEDICAL_SERVICE_CLAIMS_COUNT, this.medicalServiceClaimsCount);
+      this.$store.dispatch(formModule + '/' + SET_HOSPITAL_VISIT_CLAIMS_COUNT, this.hospitalVisitClaimsCount);
       
       // Navigate to next path.
       const toPath = payPractitionerRoutes.MAIN_FORM_PAGE.path;
