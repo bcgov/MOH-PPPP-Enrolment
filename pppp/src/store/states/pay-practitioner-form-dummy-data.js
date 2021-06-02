@@ -1,3 +1,4 @@
 export default {
-  claimCount: '1',
+  medicalServiceClaimsCount: '1',
+  hospitalVisitClaimsCount: '1',
 };

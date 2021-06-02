@@ -10,7 +10,6 @@ export const SET_CAPTCHA_TOKEN = 'setCaptchaToken';
 export const SET_SUBMISSION_DATE = 'setSubmissionDate';
 export const SET_REFERENCE_NUMBER = 'setReferenceNumber';
 
-export const SET_CLAIM_COUNT = 'setClaimCount';
 export const SET_MEDICAL_SERVICE_CLAIMS_COUNT = 'setMedicalServiceClaimsCount';
 export const SET_HOSPITAL_VISIT_CLAIMS_COUNT = 'setHospitalVisitClaimsCount';
 
@@ -55,7 +54,6 @@ export default {
       submissionDate: null,
       referenceNumber: null,
 
-      claimCount: null,
       medicalServiceClaimsCount: null,
       hospitalVisitClaimsCount: null,
 
@@ -108,9 +106,6 @@ export default {
     },
     setReferenceNumber(state, payload) {
       state.referenceNumber = payload;
-    },
-    setClaimCount(state, payload) {
-      state.claimCount = payload;
     },
     setMedicalServiceClaimsCount(state, payload) {
       state.medicalServiceClaimsCount = payload;
@@ -204,7 +199,6 @@ export default {
       commit(SET_SUBMISSION_DATE, null);
       commit(SET_REFERENCE_NUMBER, null);
 
-      commit(SET_CLAIM_COUNT, null);
       commit(SET_MEDICAL_SERVICE_CLAIMS_COUNT, null);
       commit(SET_HOSPITAL_VISIT_CLAIMS_COUNT, null);
 
@@ -251,9 +245,6 @@ export default {
     },
     setReferenceNumber({ commit }, payload) {
       commit(SET_REFERENCE_NUMBER, payload);
-    },
-    setClaimCount({ commit }, payload) {
-      commit(SET_CLAIM_COUNT, payload);
     },
     setMedicalServiceClaimsCount({ commit }, payload) {
       commit(SET_MEDICAL_SERVICE_CLAIMS_COUNT, payload);

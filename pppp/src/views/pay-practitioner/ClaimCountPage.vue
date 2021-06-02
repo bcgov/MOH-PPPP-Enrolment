@@ -6,15 +6,26 @@
         <hr/>
 
         <h2>Medical Services Claims</h2>
-        <NumberSelect label="How many medical service claims for the practitioner are you including in this submission?"
-                id='claim-count'
-                v-model='claimCount'
-                :min='1'
+        <NumberSelect label="How many medical service claims for the patient are you including in this submission?"
+                id='services-claim-count'
+                v-model='medicalServiceClaimsCount'
+                :min='0'
                 :max='4'
                 :inputStyle='inputStyle'/>
         <div class="text-danger"
-            v-if="$v.claimCount.$dirty && !$v.claimCount.required"
-            aria-live="assertive">Claim count is required.</div>
+            v-if="$v.medicalServiceClaimsCount.$dirty && !$v.medicalServiceClaimsCount.required"
+            aria-live="assertive">Medical service claim count is required.</div>
+        
+        <h2 class="mt-3">Hospital Visit Claims</h2>
+        <NumberSelect label="How many hospital visit claims for the patient are you including in this submission?"
+                id='hospital-claim-count'
+                v-model='hospitalVisitClaimsCount'
+                :min='0'
+                :max='2'
+                :inputStyle='inputStyle'/>
+        <div class="text-danger"
+            v-if="$v.hospitalVisitClaimsCount.$dirty && !$v.hospitalVisitClaimsCount.required"
+            aria-live="assertive">Hospital visit claim count is required.</div>
       </div>
     </PageContent>
     <ContinueBar @continue="validateFields()" />
@@ -41,7 +52,10 @@ import {
 } from '../../store/modules/pay-practitioner-form';
 import logService from '../../services/log-service';
 import { required } from 'vuelidate/lib/validators';
-import { SET_CLAIM_COUNT } from '../../store/modules/pay-practitioner-form';
+import { 
+  SET_MEDICAL_SERVICE_CLAIMS_COUNT, 
+  SET_HOSPITAL_VISIT_CLAIMS_COUNT 
+} from '../../store/modules/pay-practitioner-form';
 
 export default {
   name: 'EmptyPage',
@@ -53,7 +67,8 @@ export default {
   data: () => {
     return {
       isPageLoaded: false,
-      claimCount: null,
+      medicalServiceClaimsCount: null,
+      hospitalVisitClaimsCount: null,
       inputStyle: {
         width: '160px',
         maxWidth: '100%',
@@ -61,7 +76,8 @@ export default {
     };
   },
   created() {
-    this.claimCount = this.$store.state.payPractitionerForm.claimCount;
+    this.medicalServiceClaimsCount = this.$store.state.payPractitionerForm.medicalServiceClaimsCount;
+    this.hospitalVisitClaimsCount = this.$store.state.payPractitionerForm.hospitalVisitClaimsCount;
 
     setTimeout(() => {
       this.isPageLoaded = true;
@@ -75,7 +91,10 @@ export default {
   },
   validations() {
     const validations = {
-      claimCount: {
+      medicalServiceClaimsCount: {
+        required,
+      },
+      hospitalVisitClaimsCount: {
         required,
       }
     };
@@ -89,7 +108,8 @@ export default {
         return;
       }
 
-      this.$store.dispatch(formModule + '/' + SET_CLAIM_COUNT, this.claimCount);
+      this.$store.dispatch(formModule + '/' + SET_MEDICAL_SERVICE_CLAIMS_COUNT, this.medicalServiceClaimsCount);
+      this.$store.dispatch(formModule + '/' + SET_HOSPITAL_VISIT_CLAIMS_COUNT, this.hospitalVisitClaimsCount);
       
       // Navigate to next path.
       const toPath = payPractitionerRoutes.MAIN_FORM_PAGE.path;
