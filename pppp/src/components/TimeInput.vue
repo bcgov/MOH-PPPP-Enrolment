@@ -3,7 +3,7 @@
     <fieldset>
       <legend class="time-legend">{{label}}</legend>
       <div class="time-row">
-        <label v-bind:for="'hour-select' + label">Month:</label>
+        <label v-bind:for="'hour-select' + label">Hour:</label>
         <select :id="id + 'hour-select'"
                 class="form-control hour-select"
                 v-model="hour"
@@ -18,7 +18,7 @@
 
         <div class="time-colon d-flex align-items-center">:</div>
 
-        <label v-bind:for="'minute-select' + label">Month:</label>
+        <label v-bind:for="'minute-select' + label">Minute:</label>
         <select :id="id + 'minute-select'"
                 class="form-control minute-select"
                 v-model="minute"
