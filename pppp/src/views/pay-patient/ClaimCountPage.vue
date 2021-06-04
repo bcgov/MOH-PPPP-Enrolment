@@ -39,6 +39,7 @@ import {
   MODULE_NAME as formModule,
   RESET_FORM,
   SET_CLAIM_COUNT,
+  SET_MEDICAL_SERVICE_CLAIMS,
 } from '@/store/modules/pay-patient-form';
 import logService from '@/services/log-service';
 import { required } from 'vuelidate/lib/validators';
@@ -89,7 +90,32 @@ export default {
         return;
       }
 
+      const claims = [];
+      const claimCount = parseInt(this.claimCount);
+      const existingClaims = this.$store.state.payPatientForm.medicalServiceClaims;
+
+      for (let i=0; i<claimCount; i++) {
+        claims.push({
+          serviceDate: null,
+          numberOfServices: null,
+          serviceClarificationCode: null,
+          feeItem: null,
+          amountBilled: null,
+          calledStartTime: null,
+          renderedFinishTime: null,
+          diagnosticCode: null,
+          locationOfService: null,
+        });
+      }
+      if (existingClaims && existingClaims.length > 0) {
+        const maxClaims = Math.min(claims.length, existingClaims.length);
+        for (let i=0; i<maxClaims; i++) {
+          Object.assign(claims[i], existingClaims[i]);
+        }
+      }
+
       this.$store.dispatch(formModule + '/' + SET_CLAIM_COUNT, this.claimCount);
+      this.$store.dispatch(formModule + '/' + SET_MEDICAL_SERVICE_CLAIMS, claims);
 
       // Navigate to next path.
       const toPath = payPatientRoutes.MAIN_FORM_PAGE.path;

@@ -117,7 +117,61 @@
               class='mt-3'
               v-model='diagnosisOrAreaOfTreatment'/>
 
-        <h2 class="mt-5">Medical Service Claim (1 of 1)</h2>
+        <div v-for="(claim, index) in medicalServiceClaims"
+            :key="index"
+            :set="v = $v.medicalServiceClaims.$each[index]">
+          <h2 class="mt-5">{{getMedicalServiceClaimTitle(index)}}</h2>
+          <DateInput label='Service Date:'
+                    className='mt-3'
+                    v-model='claim.serviceDate' />
+          <div class="text-danger"
+              v-if="v.serviceDate.$dirty && !v.serviceDate.required"
+              aria-live="assertive">Service date is required.</div>
+          <Input label='Number of Services:'
+                :id='"number-of-services-" + index'
+                class='mt-3'
+                v-model='claim.numberOfServices' />
+          <div class="text-danger"
+              v-if="v.numberOfServices.$dirty && !v.numberOfServices.required"
+              aria-live="assertive">Number of services is required.</div>
+          <Input label='Service Clarification Code:'
+                :id='"service-clarification-code-" + index'
+                class='mt-3'
+                v-model='claim.serviceClarificationCode' />
+          <Input label='Fee Item:'
+                :id='"fee-item-" + index'
+                class='mt-3'
+                v-model='claim.feeItem' />
+          <div class="text-danger"
+              v-if="v.feeItem.$dirty && !v.feeItem.required"
+              aria-live="assertive">Fee item is required.</div>
+          <Input label='Amount Billed:'
+                :id='"amount-billed-" + index'
+                class='mt-3'
+                v-model='claim.amountBilled' />
+          <div class="text-danger"
+              v-if="v.amountBilled.$dirty && !v.amountBilled.required"
+              aria-live="assertive">Amount billed is required.</div>
+          <TimeInput label='Called Start Time:'
+                    :id='"called-start-time-" + index'
+                    className='mt-3'
+                    v-model='claim.calledStartTime' />
+          <TimeInput label='Rendered Finish Time:'
+                    :id='"rendered-finish-time-" + index'
+                    className='mt-3'
+                    v-model='claim.renderedFinishTime' />
+          <Input label='Diagnostic Code:'
+                :id='"diagnostic-code-" + index'
+                class='mt-3'
+                v-model='claim.diagnosticCode' />
+          <div class="text-danger"
+              v-if="v.diagnosticCode.$dirty && !v.diagnosticCode.required"
+              aria-live="assertive">Diagnostic code is required.</div>
+          <Input label='Location of Service:'
+                :id='"location-of-service-" + index'
+                class='mt-3'
+                v-model='claim.locationOfService' />
+        </div>
 
         <h2 class="mt-5">Practitioner</h2>
         <Input label='Last Name or Clinic Name:'
@@ -193,6 +247,7 @@ import {
 } from '@/helpers/scroll';
 import ContinueBar from '@/components/ContinueBar.vue';
 import PageContent from '@/components/PageContent.vue';
+import TimeInput from '@/components/TimeInput.vue';
 import {
   MODULE_NAME as formModule,
   RESET_FORM,
@@ -256,6 +311,7 @@ export default {
     PhnInput,
     PostalCodeInput,
     Radio,
+    TimeInput,
   },
   data: () => {
     return {
@@ -345,7 +401,7 @@ export default {
     this.planReferenceNumberOfOriginalClaim = this.$store.state.payPatientForm.planReferenceNumberOfOriginalClaim;
     this.diagnosisOrAreaOfTreatment = this.$store.state.payPatientForm.diagnosisOrAreaOfTreatment;
 
-    this.medicalServicesClaims = this.$store.state.payPatientForm.medicalServicesClaims;
+    this.medicalServiceClaims = this.$store.state.payPatientForm.medicalServiceClaims;
 
     this.practitionerLastNameOrClinicName = this.$store.state.payPatientForm.practitionerLastNameOrClinicName;
     this.practitionerFirstNameInitial = this.$store.state.payPatientForm.practitionerFirstNameInitial;
@@ -401,6 +457,25 @@ export default {
       },
       isVehicleAccident: {
         required,
+      },
+      medicalServiceClaims: {
+        $each: {
+          serviceDate: {
+            required,
+          },
+          numberOfServices: {
+            required,
+          },
+          feeItem: {
+            required,
+          },
+          amountBilled: {
+            required,
+          },
+          diagnosticCode: {
+            required,
+          }
+        }
       },
       practitionerPaymentNumber: {
         required,
@@ -463,6 +538,12 @@ export default {
       this.$router.push(toPath);
       scrollTo(0);
     },
+    getMedicalServiceClaimTitle(index) {
+      if (this.medicalServiceClaims && this.medicalServiceClaims.length > 1) {
+        return `Medical Service Claim (${index + 1} of ${this.medicalServiceClaims.length})`;
+      }
+      return 'Medical Service Claim';
+    }
   },
   // Required in order to block back navigation.
   beforeRouteLeave(to, from, next) {
