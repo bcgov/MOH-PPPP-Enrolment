@@ -89,14 +89,91 @@
             aria-live="assertive">Must be a valid BC postal code.</div>
 
         <hr class='mt-5'/>
+        <Radio label='Is this claim related to a motor vehicle accident?'
+              class='mt-3'
+              v-model='isVehicleAccident'
+              :items='isVehicleAccidentOptions' />
+        <div class="text-danger"
+            v-if="$v.isVehicleAccident.$dirty && !$v.isVehicleAccident.required"
+            aria-live="assertive">This field is required.</div>
+        <Input label='Motor Vehicle Accident Claim Number:'
+              id='vehicle-accident-claim-number'
+              class='mt-3'
+              v-model='vehicleAccidentClaimNumber'/>
+        <Input label='Correspondence Attached:'
+              id='correspondence-attached'
+              class='mt-3'
+              v-model='correspondenceAttached'/>
+        <Input label='Submission Code:'
+              id='submission-code'
+              class='mt-3'
+              v-model='submissionCode'/>
+        <Input label='Plan Reference Number of Original Claim:'
+              id='plan-reference-number-of-original-claim'
+              class='mt-3'
+              v-model='planReferenceNumberOfOriginalClaim'/>
+        <Input label='Diagnosis or Area of Treatment:'
+              id='diagnosis-or-area-of-treatment'
+              class='mt-3'
+              v-model='diagnosisOrAreaOfTreatment'/>
 
         <h2 class="mt-5">Medical Service Claim (1 of 1)</h2>
 
         <h2 class="mt-5">Practitioner</h2>
+        <Input label='Last Name or Clinic Name:'
+              id='last-name-or-clinic-name'
+              class='mt-3'
+              v-model='practitionerLastNameOrClinicName'/>
+        <Input label='First Name Initial:'
+              id='first-name-initial'
+              class='mt-3'
+              v-model='practitionerFirstNameInitial'/>
+        <Input label='Payment Number:'
+              id='payment-number'
+              class='mt-3'
+              v-model='practitionerPaymentNumber'/>
+        <div class="text-danger"
+            v-if="$v.practitionerPaymentNumber.$dirty && !$v.practitionerPaymentNumber.required"
+            aria-live="assertive">Payment number is required.</div>
+        <Input label='Practitioner Number:'
+              id='practitioner-number'
+              class='mt-3'
+              v-model='practitionerPractitionerNumber'/>
+        <div class="text-danger"
+            v-if="$v.practitionerPractitionerNumber.$dirty && !$v.practitionerPractitionerNumber.required"
+            aria-live="assertive">Practitioner number is required.</div>
+        <Input label='Specialty Code:'
+              id='specialty-code'
+              class='mt-3'
+              v-model='practitionerSpecialtyCode'/>
 
         <h2 class="mt-5">Referred By</h2>
+        <Input label='Last Name:'
+              id='referred-by-last-name'
+              class='mt-3'
+              v-model='referredByLastName'/>
+        <Input label='First Name Initial:'
+              id='referred-by-first-name-initial'
+              class='mt-3'
+              v-model='referredByFirstNameInitial'/>
+        <Input label='Practitioner Number:'
+              id='referred-by-practitioner-number'
+              class='mt-3'
+              v-model='referredByPractitionerNumber'/>
 
         <h2 class="mt-5">Referred To</h2>
+        <Input label='Last Name:'
+              id='referred-to-last-name'
+              class='mt-3'
+              v-model='referredToLastName'/>
+        <Input label='First Name Initial:'
+              id='referred-to-first-name-initial'
+              class='mt-3'
+              v-model='referredToFirstNameInitial'/>
+        <Input label='Practitioner Number:'
+              id='referred-to-practitioner-number'
+              class='mt-3'
+              v-model='referredToPractitionerNumber'/>
       </div>
     </PageContent>
     <ContinueBar @continue="validateFields()" />
@@ -137,6 +214,18 @@ import {
   SET_SUBMISSION_CODE,
   SET_PLAN_REFERENCE_NUMBER_OF_ORIGINAL_CLAIM,
   SET_DIAGNOSIS_OR_AREA_OF_TREATMENT,
+  SET_MEDICAL_SERVICE_CLAIMS,
+  SET_PRACTITIONER_LAST_NAME_OR_CLINIC_NAME,
+  SET_PRACTITIONER_FIRST_NAME_INITIAL,
+  SET_PRACTITIONER_PAYMENT_NUMBER,
+  SET_PRACTITIONER_PRACTITIONER_NUMBER,
+  SET_PRACTITIONER_SPECIALTY_CODE,
+  SET_REFERRED_BY_LAST_NAME,
+  SET_REFERRED_BY_FIRST_NAME_INITIAL,
+  SET_REFERRED_BY_PRACTITIONER_NUMBER,
+  SET_REFERRED_TO_LAST_NAME,
+  SET_REFERRED_TO_FIRST_NAME_INITIAL,
+  SET_REFERRED_TO_PRACTITIONER_NUMBER,
 } from '@/store/modules/pay-patient-form';
 import logService from '@/services/log-service';
 import { required } from 'vuelidate/lib/validators';
@@ -216,6 +305,22 @@ export default {
       submissionCode: null,
       planReferenceNumberOfOriginalClaim: null,
       diagnosisOrAreaOfTreatment: null,
+
+      medicalServiceClaims: [],
+
+      practitionerLastNameOrClinicName: null,
+      practitionerFirstNameInitial: null,
+      practitionerPaymentNumber: null,
+      practitionerPractitionerNumber: null,
+      practitionerSpecialtyCode: null,
+
+      referredByLastName: null,
+      referredByFirstNameInitial: null,
+      referredByPractitionerNumber: null,
+
+      referredToLastName: null,
+      referredToFirstNameInitial: null,
+      referredToPractitionerNumber: null,
     };
   },
   created() {
@@ -239,6 +344,22 @@ export default {
     this.submissionCode = this.$store.state.payPatientForm.submissionCode;
     this.planReferenceNumberOfOriginalClaim = this.$store.state.payPatientForm.planReferenceNumberOfOriginalClaim;
     this.diagnosisOrAreaOfTreatment = this.$store.state.payPatientForm.diagnosisOrAreaOfTreatment;
+
+    this.medicalServicesClaims = this.$store.state.payPatientForm.medicalServicesClaims;
+
+    this.practitionerLastNameOrClinicName = this.$store.state.payPatientForm.practitionerLastNameOrClinicName;
+    this.practitionerFirstNameInitial = this.$store.state.payPatientForm.practitionerFirstNameInitial;
+    this.practitionerPaymentNumber = this.$store.state.payPatientForm.practitionerPaymentNumber;
+    this.practitionerPractitionerNumber = this.$store.state.payPatientForm.practitionerPractitionerNumber;
+    this.practitionerSpecialtyCode = this.$store.state.payPatientForm.practitionerSpecialtyCode;
+
+    this.referredByLastName = this.$store.state.payPatientForm.referredByLastName;
+    this.referredByFirstNameInitial = this.$store.state.payPatientForm.referredByFirstNameInitial;
+    this.referredByPractitionerNumber = this.$store.state.payPatientForm.referredByPractitionerNumber;
+
+    this.referredToLastName = this.$store.state.payPatientForm.referredToLastName;
+    this.referredToFirstNameInitial = this.$store.state.payPatientForm.referredToFirstNameInitial;
+    this.referredToPractitionerNumber = this.$store.state.payPatientForm.referredToPractitionerNumber;
 
     setTimeout(() => {
       this.isPageLoaded = true;
@@ -277,6 +398,15 @@ export default {
       postalCode: {
         required,
         bcPostalCodeValidator,
+      },
+      isVehicleAccident: {
+        required,
+      },
+      practitionerPaymentNumber: {
+        required,
+      },
+      practitionerPractitionerNumber: {
+        required,
       }
     };
     return validations;
@@ -309,6 +439,22 @@ export default {
       this.$store.dispatch(formModule + '/' + SET_SUBMISSION_CODE, this.submissionCode);
       this.$store.dispatch(formModule + '/' + SET_PLAN_REFERENCE_NUMBER_OF_ORIGINAL_CLAIM, this.planReferenceNumberOfOriginalClaim);
       this.$store.dispatch(formModule + '/' + SET_DIAGNOSIS_OR_AREA_OF_TREATMENT, this.diagnosisOrAreaOfTreatment);
+
+      this.$store.dispatch(formModule + '/' + SET_MEDICAL_SERVICE_CLAIMS, this.medicalServiceClaims);
+
+      this.$store.dispatch(formModule + '/' + SET_PRACTITIONER_LAST_NAME_OR_CLINIC_NAME, this.practitionerLastNameOrClinicName);
+      this.$store.dispatch(formModule + '/' + SET_PRACTITIONER_FIRST_NAME_INITIAL, this.practitionerFirstNameInitial);
+      this.$store.dispatch(formModule + '/' + SET_PRACTITIONER_PAYMENT_NUMBER, this.practitionerPaymentNumber);
+      this.$store.dispatch(formModule + '/' + SET_PRACTITIONER_PRACTITIONER_NUMBER, this.practitionerPractitionerNumber);
+      this.$store.dispatch(formModule + '/' + SET_PRACTITIONER_SPECIALTY_CODE, this.practitionerSpecialtyCode);
+
+      this.$store.dispatch(formModule + '/' + SET_REFERRED_BY_LAST_NAME, this.referredByLastName);
+      this.$store.dispatch(formModule + '/' + SET_REFERRED_BY_FIRST_NAME_INITIAL, this.referredByFirstNameInitial);
+      this.$store.dispatch(formModule + '/' + SET_REFERRED_BY_PRACTITIONER_NUMBER, this.referredByPractitionerNumber);
+
+      this.$store.dispatch(formModule + '/' + SET_REFERRED_TO_LAST_NAME, this.referredToLastName);
+      this.$store.dispatch(formModule + '/' + SET_REFERRED_TO_FIRST_NAME_INITIAL, this.referredToFirstNameInitial);
+      this.$store.dispatch(formModule + '/' + SET_REFERRED_TO_PRACTITIONER_NUMBER, this.referredToPractitionerNumber);
 
       // Navigate to next path.
       const toPath = payPatientRoutes.REVIEW_PAGE.path;
