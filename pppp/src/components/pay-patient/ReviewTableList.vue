@@ -45,6 +45,24 @@
     </div>
     <ReviewTable :elements='vehicleAccidentData'
                 :backgroundColor='tableBackgroundColor'/>
+
+    <div v-for="(claimData, index) in medicalServiceClaims"
+        :key="index">
+      <div class="row align-items-end mt-3">
+        <div class="col-9">
+          <h2 class="mb-2">{{getMedicalServiceClaimTitle(index)}}</h2>
+        </div>
+        <div v-if='showEditButtons'
+            class="col-3 text-right">
+          <a href="javascript:void(0)"
+            @click="navigateToMainFormPage()">Edit 
+            <font-awesome-icon icon="pencil-alt" />
+          </a>
+        </div>
+      </div>
+      <ReviewTable :elements='claimData'
+                  :backgroundColor='tableBackgroundColor'/>
+    </div>
     
     <div class="row align-items-end mt-3">
       <div class="col-9">
@@ -211,6 +229,48 @@ export default {
     },
     medicalServiceClaims() {
       const claims = [];
+      const numClaims = this.$store.state.payPatientForm.medicalServiceClaims.length;
+
+      for (let i=0; i<numClaims; i++) {
+        const itemData = [];
+        itemData.push({
+          label: 'Service Date:',
+          value: formatDate(this.$store.state.payPatientForm.medicalServiceClaims[i].serviceDate),
+        });
+        itemData.push({
+          label: 'Number of Services:',
+          value: this.$store.state.payPatientForm.medicalServiceClaims[i].numberOfServices,
+        });
+        itemData.push({
+          label: 'Service Clarification Code:',
+          value: this.$store.state.payPatientForm.medicalServiceClaims[i].serviceClarificationCode,
+        });
+        itemData.push({
+          label: 'Fee Item:',
+          value: this.$store.state.payPatientForm.medicalServiceClaims[i].feeItem,
+        });
+        itemData.push({
+          label: 'Amount Billed:',
+          value: this.$store.state.payPatientForm.medicalServiceClaims[i].amountBilled,
+        });
+        itemData.push({
+          label: 'Called Start Time:',
+          value: this.$store.state.payPatientForm.medicalServiceClaims[i].calledStartTime,
+        });
+        itemData.push({
+          label: 'Rendered Finish Time:',
+          value: this.$store.state.payPatientForm.medicalServiceClaims[i].renderedFinishTime,
+        });
+        itemData.push({
+          label: 'Diagnostic Code:',
+          value: this.$store.state.payPatientForm.medicalServiceClaims[i].diagnosticCode,
+        });
+        itemData.push({
+          label: 'Location of Service:',
+          value: this.$store.state.payPatientForm.medicalServiceClaims[i].locationOfService,
+        });
+        claims.push(itemData);
+      }
       return claims;
     },
     practitionerData() {
@@ -283,6 +343,13 @@ export default {
       this.$router.push(toPath);
       scrollTo();
     },
+    getMedicalServiceClaimTitle(index) {
+      const claims = this.$store.state.payPatientForm.medicalServiceClaims;
+      if (claims && claims.length > 1) {
+        return `Medical Service Claim (${index + 1} of ${this.medicalServiceClaims.length})`;
+      }
+      return 'Medical Service Claim';
+    }
   }
 }
 </script>
