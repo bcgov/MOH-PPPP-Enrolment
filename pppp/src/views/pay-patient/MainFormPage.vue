@@ -302,7 +302,7 @@ const bcPostalCodeValidator = (value) => {
 };
 
 export default {
-  name: 'EmptyPage',
+  name: 'MainFormPage',
   components: {
     ContinueBar,
     DateInput,
