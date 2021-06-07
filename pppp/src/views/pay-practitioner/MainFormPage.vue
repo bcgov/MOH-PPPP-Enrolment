@@ -329,6 +329,7 @@ export default {
   },
   data: () => {
     return {
+      isPageLoaded: false,
       addressOwnerOptions: [
         {
           id: 'address-owner-practitioner',
