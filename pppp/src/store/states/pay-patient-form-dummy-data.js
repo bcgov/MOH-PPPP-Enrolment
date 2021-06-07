@@ -14,4 +14,39 @@ export default {
   streetName: 'Fake St.',
   city: 'Victoria',
   postalCode: 'V8V 8V8',
+
+  isVehicleAccident: 'Y',
+  vehicleAccidentClaimNumber: '1',
+  correspondenceAttached: 'Yes',
+  submissionCode: '123',
+  planReferenceNumberOfOriginalClaim: '321',
+  diagnosisOrAreaOfTreatment: 'Chicken Pox',
+
+  medicalServiceClaims: [
+    {
+      serviceDate: new Date(),
+      numberOfServices: '1',
+      serviceClarificationCode: '1C',
+      feeItem: 'item',
+      amountBilled: '1.00',
+      calledStartTime: '08:00',
+      renderedFinishTime: '16:00',
+      diagnosticCode: 'DC',
+      locationOfService: 'Hospital',
+    }
+  ],
+
+  practitionerLastNameOrClinicName: 'Doe',
+  practitionerFirstNameInitial: 'J',
+  practitionerPaymentNumber: '123',
+  practitionerPractitionerNumber: '22274',
+  practitionerSpecialtyCode: '321',
+
+  referredByLastName: 'McDonald',
+  referredByFirstNameInitial: 'R',
+  referredByPractitionerNumber: '22271',
+
+  referredToLastName: 'Lee',
+  referredToFirstNameInitial: 'C',
+  referredToPractitionerNumber: '22272',
 };
