@@ -49,6 +49,7 @@ import NumberSelect from '@/components/NumberSelect.vue';
 import {
   MODULE_NAME as formModule,
   RESET_FORM,
+  SET_HOSPITAL_VISIT_CLAIMS,
 } from '../../store/modules/pay-practitioner-form';
 import logService from '../../services/log-service';
 import { required } from 'vuelidate/lib/validators';
@@ -56,9 +57,10 @@ import {
   SET_MEDICAL_SERVICE_CLAIMS_COUNT, 
   SET_HOSPITAL_VISIT_CLAIMS_COUNT 
 } from '../../store/modules/pay-practitioner-form';
+import { SET_MEDICAL_SERVICE_CLAIMS } from '../../store/modules/pay-patient-form';
 
 export default {
-  name: 'EmptyPage',
+  name: 'ClaimCountPage',
   components: {
     ContinueBar,
     PageContent,
@@ -108,9 +110,61 @@ export default {
         return;
       }
 
+      const medicalServiceClaims = [];
+      const medicalServiceClaimsCount = parseInt(this.medicalServiceClaimsCount);
+      const existingMedicalServiceClaims = this.$store.state.payPractitionerForm.medicalServiceClaims;
+
+      for (let i = 0; i < medicalServiceClaimsCount; i++) {
+        medicalServiceClaims.push({
+          serviceDate: null,
+          numberOfServices: null,
+          serviceClarificationCode: null,
+          feeItem: null,
+          amountBilled: null,
+          calledStartTime: null,
+          renderedFinishTime: null,
+          diagnosticCode: null,
+          locationOfService: null,
+        });
+      }
+      
+      if (existingMedicalServiceClaims && existingMedicalServiceClaims.length > 0) {
+        const maxClaims = Math.min(medicalServiceClaims.length, existingMedicalServiceClaims.length);
+        for (let i = 0; i < maxClaims; i++) {
+          Object.assign(medicalServiceClaims[i], existingMedicalServiceClaims[i]);
+        }
+      }
+      
+      const hospitalVisitClaims = [];
+      const hospitalVisitClaimsCount = parseInt(this.hospitalVisitClaimsCount);
+      const existingHospitalVisitClaims = this.$store.state.payPractitionerForm.hospitalVisitClaims;
+
+      for (let i = 0; i < hospitalVisitClaimsCount; i++) {
+        hospitalVisitClaims.push({
+          month: null,
+          dayFrom: null,
+          dayTo: null,
+          year: null,
+          numberOfServices: null,
+          serviceClarificationCode: null,
+          feeItem: null,
+          amountBilled: null,
+          diagnosticCode: null,
+          locationOfService: null,
+        });
+      }
+
+      if (existingHospitalVisitClaims && existingHospitalVisitClaims.length > 0) {
+        const maxClaims = Math.min(hospitalVisitClaims.length, existingHospitalVisitClaims.length);
+        for (let i = 0; i < maxClaims; i++) {
+          Object.assign(hospitalVisitClaims[i], existingHospitalVisitClaims[i]);
+        }
+      }
+
       this.$store.dispatch(formModule + '/' + SET_MEDICAL_SERVICE_CLAIMS_COUNT, this.medicalServiceClaimsCount);
       this.$store.dispatch(formModule + '/' + SET_HOSPITAL_VISIT_CLAIMS_COUNT, this.hospitalVisitClaimsCount);
-      
+      this.$store.dispatch(formModule + '/' + SET_MEDICAL_SERVICE_CLAIMS, medicalServiceClaims);
+      this.$store.dispatch(formModule + '/' + SET_HOSPITAL_VISIT_CLAIMS, hospitalVisitClaims);
       // Navigate to next path.
       const toPath = payPractitionerRoutes.MAIN_FORM_PAGE.path;
       pageStateService.setPageComplete(toPath);
