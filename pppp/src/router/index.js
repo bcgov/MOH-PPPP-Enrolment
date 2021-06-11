@@ -118,22 +118,48 @@ const router = new VueRouter({
   routes: routeCollection
 });
 
+const hasQueryParams = (route) => {
+  if (!route || !route.query) {
+    return false;
+  }
+  return Object.keys(route.query).length > 0;
+};
+
+const navigate = (to, from, next, nextDestination) => {
+  debugger;
+  let destination = null;
+  if (nextDestination) {
+    if (hasQueryParams(to)) {
+      destination = Object.assign(nextDestination, { query: to.query });
+    } else {
+      destination = nextDestination;
+    }
+  } else if (!hasQueryParams(to) && hasQueryParams(from)) {
+    destination = Object.assign({}, to, { query: from.query });
+  }
+  if (destination) {
+    next(destination);
+  } else {
+    next();
+  }
+}
+
 router.beforeEach((to, from, next) => {
   // Home redirect.
   if (to.path.includes(PAY_PATIENT_BASE_URL)
     && to.path !== payPatientRoutes.HOME_PAGE.path
     && !pageStateService.isPageVisited(to.path)) {
-    next({ name: payPatientRoutes.HOME_PAGE.name });
+    navigate(to, from, next, { name: payPatientRoutes.HOME_PAGE.name });
   }
   else if (to.path.includes(PAY_PRACTITIONER_BASE_URL)
     && to.path !== payPractitionerRoutes.HOME_PAGE.path
     && !pageStateService.isPageVisited(to.path)) {
-    next({ name: payPractitionerRoutes.HOME_PAGE.name });
+    navigate(to, from, next, { name: payPractitionerRoutes.HOME_PAGE.name });
   }
   
   // Catch-all (navigation).
   else {
-    next();
+    navigate(to, from, next);
   }
 });
 
