@@ -105,6 +105,7 @@ export default {
           renderedFinishTime: null,
           diagnosticCode: null,
           locationOfService: null,
+          notes: null,
         });
       }
       if (existingClaims && existingClaims.length > 0) {
