@@ -223,6 +223,13 @@
                 class='mt-3'
                 v-model='claim.locationOfService'
                 maxlength='2' />
+          <Textarea label='Notes:'
+                :id='"notes-" + index'
+                class='mt-3'
+                v-model='claim.notes'
+                :remainingCharsMaxlength='256'
+                :isRemainingCharsShown='true'
+                :inputStyle='textareaStyle' />
         </div>
 
         <h2 class="mt-5">Practitioner</h2>
@@ -252,6 +259,11 @@
         <div class="text-danger"
             v-if="$v.practitionerPractitionerNumber.$dirty && !$v.practitionerPractitionerNumber.required"
             aria-live="assertive">Practitioner number is required.</div>
+        <Input label='Facility Number:'
+              id='facility-number'
+              class='mt-3'
+              v-model='practitionerFacilityNumber'
+              maxlength='5'/>
         <Input label='Specialty Code:'
               id='specialty-code'
               class='mt-3'
@@ -337,6 +349,7 @@ import {
   SET_PRACTITIONER_FIRST_NAME_INITIAL,
   SET_PRACTITIONER_PAYMENT_NUMBER,
   SET_PRACTITIONER_PRACTITIONER_NUMBER,
+  SET_PRACTITIONER_FACILITY_NUMBER,
   SET_PRACTITIONER_SPECIALTY_CODE,
   SET_REFERRED_BY_LAST_NAME,
   SET_REFERRED_BY_FIRST_NAME_INITIAL,
@@ -346,7 +359,7 @@ import {
   SET_REFERRED_TO_PRACTITIONER_NUMBER,
 } from '@/store/modules/pay-patient-form';
 import logService from '@/services/log-service';
-import { required } from 'vuelidate/lib/validators';
+import { required, maxLength } from 'vuelidate/lib/validators';
 import {
   DateInput,
   Input,
@@ -354,6 +367,7 @@ import {
   PhnInput,
   PostalCodeInput,
   Radio,
+  Textarea,
   floatValidator,
   intValidator,
   optionalValidator,
@@ -393,6 +407,7 @@ export default {
     PhnInput,
     PostalCodeInput,
     Radio,
+    Textarea,
     TimeInput,
   },
   data: () => {
@@ -422,6 +437,9 @@ export default {
           value: 'N',
         }
       ],
+      textareaStyle: {
+        height: '150px'
+      },
 
       phn: null,
       dependentNumber: null,
@@ -450,6 +468,7 @@ export default {
       practitionerFirstNameInitial: null,
       practitionerPaymentNumber: null,
       practitionerPractitionerNumber: null,
+      practitionerFacilityNumber: null,
       practitionerSpecialtyCode: null,
 
       referredByLastName: null,
@@ -489,6 +508,7 @@ export default {
     this.practitionerFirstNameInitial = this.$store.state.payPatientForm.practitionerFirstNameInitial;
     this.practitionerPaymentNumber = this.$store.state.payPatientForm.practitionerPaymentNumber;
     this.practitionerPractitionerNumber = this.$store.state.payPatientForm.practitionerPractitionerNumber;
+    this.practitionerFacilityNumber = this.$store.state.payPatientForm.practitionerFacilityNumber;
     this.practitionerSpecialtyCode = this.$store.state.payPatientForm.practitionerSpecialtyCode;
 
     this.referredByLastName = this.$store.state.payPatientForm.referredByLastName;
@@ -573,7 +593,10 @@ export default {
           },
           diagnosticCode: {
             required,
-          }
+          },
+          notes: {
+            maxLength: maxLength(256),
+          },
         }
       },
       practitionerPaymentNumber: {
@@ -620,6 +643,7 @@ export default {
       this.$store.dispatch(formModule + '/' + SET_PRACTITIONER_FIRST_NAME_INITIAL, this.practitionerFirstNameInitial);
       this.$store.dispatch(formModule + '/' + SET_PRACTITIONER_PAYMENT_NUMBER, this.practitionerPaymentNumber);
       this.$store.dispatch(formModule + '/' + SET_PRACTITIONER_PRACTITIONER_NUMBER, this.practitionerPractitionerNumber);
+      this.$store.dispatch(formModule + '/' + SET_PRACTITIONER_FACILITY_NUMBER, this.practitionerFacilityNumber);
       this.$store.dispatch(formModule + '/' + SET_PRACTITIONER_SPECIALTY_CODE, this.practitionerSpecialtyCode);
 
       this.$store.dispatch(formModule + '/' + SET_REFERRED_BY_LAST_NAME, this.referredByLastName);
