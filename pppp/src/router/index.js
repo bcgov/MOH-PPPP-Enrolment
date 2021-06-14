@@ -126,7 +126,6 @@ const hasQueryParams = (route) => {
 };
 
 const navigate = (to, from, next, nextDestination) => {
-  debugger;
   let destination = null;
   if (nextDestination) {
     if (hasQueryParams(to)) {
