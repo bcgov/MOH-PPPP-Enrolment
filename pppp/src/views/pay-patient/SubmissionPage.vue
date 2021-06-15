@@ -57,6 +57,7 @@
 import PageContent from '@/components/PageContent.vue';
 import ReviewTableList from '@/components/pay-patient/ReviewTableList.vue';
 import { formatDate } from '@/helpers/date';
+import { getConvertedPath } from '@/helpers/url';
 import pageStateService from '@/services/page-state-service';
 import { payPatientRoutes } from '@/router/routes';
 import {
@@ -100,7 +101,11 @@ export default {
     if (to.path === payPatientRoutes.HOME_PAGE.path) {
       next();
     } else {
-      next({ name: payPatientRoutes.HOME_PAGE.name });
+      const toPath = getConvertedPath(
+        this.$router.currentRoute.path,
+        payPatientRoutes.HOME_PAGE.path
+      )
+      next({ path: toPath });
     }
     setTimeout(() => {
       scrollTo(0);

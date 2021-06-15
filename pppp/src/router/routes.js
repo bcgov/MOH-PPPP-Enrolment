@@ -1,5 +1,7 @@
 export const PAY_PATIENT_BASE_URL = '/pay-patient';
+export const PAY_PATIENT_CSR_BASE_URL = '/pay-patient-csr';
 export const PAY_PRACTITIONER_BASE_URL = '/pay-practitioner';
+export const PAY_PRACTITIONER_CSR_BASE_URL = '/pay-practitioner-csr';
 
 export const payPatientRoutes = {
   HOME_PAGE: {
@@ -34,6 +36,39 @@ export const payPatientRoutes = {
   },
 };
 
+export const payPatientCSRRoutes = {
+  HOME_PAGE: {
+    path: PAY_PATIENT_CSR_BASE_URL,
+    title: 'Home',
+    name: 'PayPatientCSRHomePage',
+  },
+  CLAIM_COUNT_PAGE: {
+    path: PAY_PATIENT_CSR_BASE_URL + '/claim-count',
+    title: 'Number of claims',
+    name: 'PayPatientCSRClaimCountPage',
+  },
+  MAIN_FORM_PAGE: {
+    path: PAY_PATIENT_CSR_BASE_URL + '/main-form',
+    title: 'Form',
+    name: 'PayPatientCSRMainFormPage',
+  },
+  REVIEW_PAGE: {
+    path: PAY_PATIENT_CSR_BASE_URL + '/review',
+    title: 'Review',
+    name: 'PayPatientCSRReviewPage',
+  },
+  SUBMISSION_PAGE: {
+    path: PAY_PATIENT_CSR_BASE_URL + '/submission',
+    title: 'Submission',
+    name: 'PayPatientCSRSubmissionPage',
+  },
+  SUBMISSION_ERROR_PAGE: {
+    path: PAY_PATIENT_CSR_BASE_URL + '/submission-error',
+    title: 'Submission error',
+    name: 'PayPatientCSRSubmissionErrorPage',
+  },
+};
+
 export const payPractitionerRoutes = {
   HOME_PAGE: {
     path: PAY_PRACTITIONER_BASE_URL,
@@ -64,6 +99,39 @@ export const payPractitionerRoutes = {
     path: PAY_PRACTITIONER_BASE_URL + '/submission-error',
     title: 'Submission error',
     name: 'PayPractitionerSubmissionErrorPage',
+  },
+};
+
+export const payPractitionerCSRRoutes = {
+  HOME_PAGE: {
+    path: PAY_PRACTITIONER_CSR_BASE_URL,
+    title: 'Home',
+    name: 'PayPractitionerCSRHomePage',
+  },
+  CLAIM_COUNT_PAGE: {
+    path: PAY_PRACTITIONER_CSR_BASE_URL + '/claim-count',
+    title: 'Number of claims',
+    name: 'PayPractitionerCSRClaimCountPage',
+  },
+  MAIN_FORM_PAGE: {
+    path: PAY_PRACTITIONER_CSR_BASE_URL + '/main-form',
+    title: 'Form',
+    name: 'PayPractitionerCSRMainFormPage',
+  },
+  REVIEW_PAGE: {
+    path: PAY_PRACTITIONER_CSR_BASE_URL + '/review',
+    title: 'Review',
+    name: 'PayPractitionerCSRReviewPage',
+  },
+  SUBMISSION_PAGE: {
+    path: PAY_PRACTITIONER_CSR_BASE_URL + '/submission',
+    title: 'Submission',
+    name: 'PayPractitionerCSRSubmissionPage',
+  },
+  SUBMISSION_ERROR_PAGE: {
+    path: PAY_PRACTITIONER_CSR_BASE_URL + '/submission-error',
+    title: 'Submission error',
+    name: 'PayPractitionerCSRSubmissionErrorPage',
   },
 };
 
@@ -101,13 +169,33 @@ export const payPractitionerRouteStepOrder = [
   payPractitionerRoutes.SUBMISSION_PAGE
 ];
 
+export const payPatientCSRRouteStepOrder = [
+  payPatientCSRRoutes.HOME_PAGE,
+  payPatientCSRRoutes.CLAIM_COUNT_PAGE,
+  payPatientCSRRoutes.MAIN_FORM_PAGE,
+  payPatientCSRRoutes.REVIEW_PAGE,
+  payPatientCSRRoutes.SUBMISSION_PAGE
+];
+
+export const payPractitionerCSRRouteStepOrder = [
+  payPractitionerCSRRoutes.HOME_PAGE,
+  payPractitionerCSRRoutes.CLAIM_COUNT_PAGE,
+  payPractitionerCSRRoutes.MAIN_FORM_PAGE,
+  payPractitionerCSRRoutes.REVIEW_PAGE,
+  payPractitionerCSRRoutes.SUBMISSION_PAGE
+];
+
 export const isPastPath = (toPath, fromPath) => {
   let stepRoutes = [];
 
-  if (toPath.includes(PAY_PATIENT_BASE_URL)) {
+  if (toPath.includes(PAY_PATIENT_BASE_URL + '/')) {
     stepRoutes = payPatientRouteStepOrder;
-  } else if (toPath.includes(PAY_PRACTITIONER_BASE_URL)) {
+  } else if (toPath.includes(PAY_PRACTITIONER_BASE_URL + '/')) {
     stepRoutes = payPractitionerRouteStepOrder;
+  } else if (toPath.includes(PAY_PATIENT_CSR_BASE_URL)) {
+    stepRoutes = payPatientCSRRouteStepOrder;
+  } else if (toPath.includes(PAY_PRACTITIONER_CSR_BASE_URL)) {
+    stepRoutes = payPractitionerCSRRouteStepOrder;
   }
 
   for (let i=0; i<stepRoutes.length; i++) {

@@ -32,11 +32,12 @@ import {
   scrollToError,
   getTopScrollPosition
 } from '../../helpers/scroll';
+import { getConvertedPath } from '@/helpers/url';
 import {
   MODULE_NAME as formModule,
   RESET_FORM,
   SET_REFERENCE_NUMBER,
-SET_SUBMISSION_DATE
+  SET_SUBMISSION_DATE,
 } from '../../store/modules/pay-patient-form';
 import apiService from '../../services/api-service';
 import logService from '../../services/log-service';
@@ -72,7 +73,7 @@ export default {
       const applicationUuid = this.$store.state.payPatientForm.applicationUuid;
       const formState = this.$store.state.payPatientForm;
 
-      apiService.submitApplication(token, formState)
+      apiService.submitPayPatientApplication(token, formState)
         .then((response) => {
           // Handle HTTP success.
           const returnCode = response.data.returnCode;
@@ -119,21 +120,27 @@ export default {
           scrollToError();
         });
       
-      // Manually navigate to submission success page when middleware/RAPID is down.
-      // this.navigateToSubmissionPage();
+      // Manually navigate to submission success page when middleware is down.
+      this.navigateToSubmissionPage();
     },
     navigateToSubmissionPage() {
-      const path = payPatientRoutes.SUBMISSION_PAGE.path;
-      pageStateService.setPageComplete(path);
-      pageStateService.visitPage(path);
-      this.$router.push(path);
+      const toPath = getConvertedPath(
+        this.$router.currentRoute.path,
+        payPatientRoutes.SUBMISSION_PAGE.path
+      );
+      pageStateService.setPageComplete(toPath);
+      pageStateService.visitPage(toPath);
+      this.$router.push(toPath);
       scrollTo();
     },
     navigateToSubmissionErrorPage() {
-      const path = payPatientRoutes.SUBMISSION_ERROR_PAGE.path;
-      pageStateService.setPageComplete(path);
-      pageStateService.visitPage(path);
-      this.$router.push(path);
+      const toPath = getConvertedPath(
+        this.$router.currentRoute.path,
+        payPatientRoutes.SUBMISSION_ERROR_PAGE.path
+      );
+      pageStateService.setPageComplete(toPath);
+      pageStateService.visitPage(toPath);
+      this.$router.push(toPath);
       scrollTo();
     }
   },
@@ -143,13 +150,17 @@ export default {
     if (to.path === payPatientRoutes.HOME_PAGE.path) {
       this.$store.dispatch(formModule + '/' + RESET_FORM);
       next();
-    } else if ((pageStateService.isPageComplete(to.path)) || isPastPath(to.path, from.path)) {
+    } else if (pageStateService.isPageComplete(to.path) || isPastPath(to.path, from.path)) {
       next();
     } else {
       // Navigate to self.
       const topScrollPosition = getTopScrollPosition();
+      const toPath = getConvertedPath(
+        this.$router.currentRoute.path,
+        payPatientRoutes.REVIEW_PAGE.path
+      );
       next({
-        path: payPatientRoutes.REVIEW_PAGE.path,
+        path: toPath,
         replace: true
       });
       setTimeout(() => {

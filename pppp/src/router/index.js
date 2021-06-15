@@ -2,9 +2,13 @@ import Vue from 'vue';
 import VueRouter from 'vue-router';
 import {
   PAY_PATIENT_BASE_URL,
+  PAY_PATIENT_CSR_BASE_URL,
   PAY_PRACTITIONER_BASE_URL,
+  PAY_PRACTITIONER_CSR_BASE_URL,
   payPatientRoutes,
+  payPatientCSRRoutes,
   payPractitionerRoutes,
+  payPractitionerCSRRoutes,
   commonRoutes,
 } from './routes';
 import pageStateService from '@/services/page-state-service';
@@ -28,7 +32,9 @@ Vue.use(VueRouter);
 
 pageStateService.importPageRoutes(commonRoutes);
 pageStateService.importPageRoutes(payPatientRoutes);
+pageStateService.importPageRoutes(payPatientCSRRoutes);
 pageStateService.importPageRoutes(payPractitionerRoutes);
+pageStateService.importPageRoutes(payPractitionerCSRRoutes);
 
 const routeCollection = [
   {
@@ -79,6 +85,38 @@ const routeCollection = [
     component: PatientSubmissionErrorPage
   },
 
+  // Pay Patient CSR routes.
+  {
+    path: payPatientCSRRoutes.HOME_PAGE.path,
+    name: payPatientCSRRoutes.HOME_PAGE.name,
+    component: PatientHomePage
+  },
+  {
+    path: payPatientCSRRoutes.CLAIM_COUNT_PAGE.path,
+    name: payPatientCSRRoutes.CLAIM_COUNT_PAGE.name,
+    component: PatientClaimCountPage
+  },
+  {
+    path: payPatientCSRRoutes.MAIN_FORM_PAGE.path,
+    name: payPatientCSRRoutes.MAIN_FORM_PAGE.name,
+    component: PatientMainFormPage
+  },
+  {
+    path: payPatientCSRRoutes.REVIEW_PAGE.path,
+    name: payPatientCSRRoutes.REVIEW_PAGE.name,
+    component: PatientReviewPage
+  },
+  {
+    path: payPatientCSRRoutes.SUBMISSION_PAGE.path,
+    name: payPatientCSRRoutes.SUBMISSION_PAGE.name,
+    component: PatientSubmissionPage
+  },
+  {
+    path: payPatientCSRRoutes.SUBMISSION_ERROR_PAGE.path,
+    name: payPatientCSRRoutes.SUBMISSION_ERROR_PAGE.name,
+    component: PatientSubmissionErrorPage
+  },
+
   // Pay Practitioner routes.
   {
     path: payPractitionerRoutes.HOME_PAGE.path,
@@ -110,6 +148,38 @@ const routeCollection = [
     name: payPractitionerRoutes.SUBMISSION_ERROR_PAGE.name,
     component: PractitionerSubmissionErrorPage
   },
+
+  // Pay Practitioner CSR routes.
+  {
+    path: payPractitionerCSRRoutes.HOME_PAGE.path,
+    name: payPractitionerCSRRoutes.HOME_PAGE.name,
+    component: PractitionerHomePage
+  },
+  {
+    path: payPractitionerCSRRoutes.CLAIM_COUNT_PAGE.path,
+    name: payPractitionerCSRRoutes.CLAIM_COUNT_PAGE.name,
+    component: PractitionerClaimCountPage
+  },
+  {
+    path: payPractitionerCSRRoutes.MAIN_FORM_PAGE.path,
+    name: payPractitionerCSRRoutes.MAIN_FORM_PAGE.name,
+    component: PractitionerMainFormPage
+  },
+  {
+    path: payPractitionerCSRRoutes.REVIEW_PAGE.path,
+    name: payPractitionerCSRRoutes.REVIEW_PAGE.name,
+    component: PractitionerReviewPage
+  },
+  {
+    path: payPractitionerCSRRoutes.SUBMISSION_PAGE.path,
+    name: payPractitionerCSRRoutes.SUBMISSION_PAGE.name,
+    component: PractitionerSubmissionPage
+  },
+  {
+    path: payPractitionerCSRRoutes.SUBMISSION_ERROR_PAGE.path,
+    name: payPractitionerCSRRoutes.SUBMISSION_ERROR_PAGE.name,
+    component: PractitionerSubmissionErrorPage
+  },
 ];
 
 const router = new VueRouter({
@@ -119,16 +189,26 @@ const router = new VueRouter({
 });
 
 router.beforeEach((to, from, next) => {
-  // Home redirect.
-  if (to.path.includes(PAY_PATIENT_BASE_URL)
+  // Home redirects.
+  if (to.path.includes(PAY_PATIENT_BASE_URL + '/')
     && to.path !== payPatientRoutes.HOME_PAGE.path
     && !pageStateService.isPageVisited(to.path)) {
     next({ name: payPatientRoutes.HOME_PAGE.name });
   }
-  else if (to.path.includes(PAY_PRACTITIONER_BASE_URL)
+  else if (to.path.includes(PAY_PRACTITIONER_BASE_URL + '/')
     && to.path !== payPractitionerRoutes.HOME_PAGE.path
     && !pageStateService.isPageVisited(to.path)) {
     next({ name: payPractitionerRoutes.HOME_PAGE.name });
+  }
+  else if (to.path.includes(PAY_PATIENT_CSR_BASE_URL)
+    && to.path !== payPatientCSRRoutes.HOME_PAGE.path
+    && !pageStateService.isPageVisited(to.path)) {
+    next({ name: payPatientCSRRoutes.HOME_PAGE.name });
+  }
+  else if (to.path.includes(PAY_PRACTITIONER_CSR_BASE_URL)
+    && to.path !== payPractitionerCSRRoutes.HOME_PAGE.path
+    && !pageStateService.isPageVisited(to.path)) {
+    next({ name: payPractitionerCSRRoutes.HOME_PAGE.name });
   }
   
   // Catch-all (navigation).

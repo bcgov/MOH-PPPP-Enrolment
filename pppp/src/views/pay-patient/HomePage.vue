@@ -61,6 +61,7 @@
 import pageStateService from '../../services/page-state-service';
 import spaEnvService from '../../services/spa-env-service';
 import { payPatientRoutes } from '../../router/routes';
+import { getConvertedPath } from '@/helpers/url';
 import {
   scrollTo,
   getTopScrollPosition
@@ -119,10 +120,13 @@ export default {
       this.showConsentModal = false;
     },
     nextPage() {
-      const path = payPatientRoutes.CLAIM_COUNT_PAGE.path;
-      pageStateService.setPageComplete(path);
-      pageStateService.visitPage(path);
-      this.$router.push(path);
+      const toPath = getConvertedPath(
+        this.$router.currentRoute.path,
+        payPatientRoutes.CLAIM_COUNT_PAGE.path
+      );
+      pageStateService.setPageComplete(toPath);
+      pageStateService.visitPage(toPath);
+      this.$router.push(toPath);
       scrollTo(0);
     }
   },
@@ -134,8 +138,12 @@ export default {
     } else {
       // Navigate to self.
       const topScrollPosition = getTopScrollPosition();
+      const toPath = getConvertedPath(
+        this.$router.currentRoute.path,
+        payPatientRoutes.HOME_PAGE.path
+      );
       next({
-        path: payPatientRoutes.HOME_PAGE.path,
+        path: toPath,
         replace: true
       });
       setTimeout(() => {
