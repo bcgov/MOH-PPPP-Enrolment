@@ -59,7 +59,10 @@ import ReviewTableList from '@/components/pay-patient/ReviewTableList.vue';
 import { formatDate } from '@/helpers/date';
 import { getConvertedPath } from '@/helpers/url';
 import pageStateService from '@/services/page-state-service';
-import { payPatientRoutes } from '@/router/routes';
+import {
+  payPatientRoutes,
+  payPatientCSRRoutes
+} from '@/router/routes';
 import {
   MODULE_NAME as formModule,
   RESET_FORM
@@ -98,7 +101,8 @@ export default {
   beforeRouteLeave(to, from, next) {
     pageStateService.setPageIncomplete(from.path);
     this.$store.dispatch(formModule + '/' + RESET_FORM);
-    if (to.path === payPatientRoutes.HOME_PAGE.path) {
+    if (to.path === payPatientRoutes.HOME_PAGE.path
+      || to.path === payPatientCSRRoutes.HOME_PAGE.path) {
       next();
     } else {
       const toPath = getConvertedPath(
