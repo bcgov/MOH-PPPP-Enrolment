@@ -15,7 +15,7 @@ oc get nsp
 ```
 And obtain name (such as builder-to-internet), and delete it, ie:
 ```console
-oc delete nsp pppp-to-address-service pppp-to-captcha-service pppp-to-msp-service pppp-to-spa-env-server pppp-to-splunk-forwarder address-service-to-address-doctor msp-service-to-cloudflare msp-service-to-maximus-servers msp-service-to-splunk-forwarder aop-to-address-service aop-to-captcha-service aop-to-msp-service  aop-to-spa-env-server aop-to-splunk-forwarder splunk-forwarder-to-cloudflare splunk-forwarder-to-maximus-servers
+oc delete nsp pppp-to-address-service pppp-to-captcha-service pppp-to-msp-service pppp-to-spa-env-server pppp-to-splunk-forwarder address-service-to-address-doctor msp-service-to-cloudflare msp-service-to-maximus-servers msp-service-to-splunk-forwarder pppp-to-address-service pppp-to-captcha-service pppp-to-msp-service  pppp-to-spa-env-server pppp-to-splunk-forwarder splunk-forwarder-to-cloudflare splunk-forwarder-to-maximus-servers
 ```
 
 Same with endpoints:
@@ -27,10 +27,10 @@ And obtain names, then delete, ie:
 oc delete en addressdoctor cloudflare maximus-servers
 ```
 
-3. apply the quickstart aop web (for test, make sure your default oc project is test):
+3. apply the quickstart pppp web (for test, make sure your default oc project is test):
 cd /openshift/templates
 ```console
-oc process -f quickaopweb-toall.yaml NAMESPACE=a3c641-test | oc apply -f -
+oc process -f quickppppweb-toall.yaml NAMESPACE=0752cb-test | oc apply -f -
 ```
 
 To check things out:
@@ -41,11 +41,11 @@ allow-all-internal                <none>                 47h
 allow-from-openshift-ingress      <none>                 23h
 deny-by-default                   <none>                 23h
 msp-service-to-splunk-forwarder   role=splunkforwarder   23h
-aop-to-address-service            role=addressservice    23h
-aop-to-captcha-service            role=captchaservice    23h
-aop-to-msp-service                role=mspservice        23h
-aop-to-spa-env-server             role=spaenv            23h
-aop-to-splunk-forwarder           role=splunkforwarder   23h
+pppp-to-address-service            role=addressservice    23h
+pppp-to-captcha-service            role=captchaservice    23h
+pppp-to-msp-service                role=mspservice        23h
+pppp-to-spa-env-server             role=spaenv            23h
+pppp-to-splunk-forwarder           role=splunkforwarder   23h
 oc get nsp
 NAME              AGE
 any-to-any        8m23s
@@ -53,9 +53,9 @@ any-to-external   47h
 
 
 4. allow the test project to pull from tools:
-   Go to the test project (oc project a3c641-test).
+   Go to the test project (oc project 0752cb-test).
 ```console
-oc policy add-role-to-user system:image-puller system:serviceaccount:$(oc project --short):default -n a3c641-tools
+oc policy add-role-to-user system:image-puller system:serviceaccount:$(oc project --short):default -n 0752cb-tools
 ```
 
 ## For each of the nodeJS apps, ie. splunk-forwarder, msp-service, captcha-service, spa-env-server
@@ -81,9 +81,9 @@ oc process -f deploy.yaml --param-file=params-test.txt | oc apply -f -
 4. go to github, then actions, then try it.
 
 
-## For the AOP application
+## For the PPPP application
 
-1. go to the aop directory
+1. go to the pppp directory
 
 2. go to openshift/templates
 

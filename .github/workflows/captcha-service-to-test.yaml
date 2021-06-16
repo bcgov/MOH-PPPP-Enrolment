@@ -16,7 +16,7 @@ jobs:
     steps:
       - name: Deploy to Test
         env:
-          NAMESPACE: a3c641-tools
+          NAMESPACE: 0752cb-tools
           TARGET_IMAGE_TAG: test
         uses: redhat-developer/openshift-actions@v1.1
         with:

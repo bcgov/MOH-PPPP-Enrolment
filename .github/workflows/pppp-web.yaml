@@ -60,7 +60,7 @@ jobs:
     steps:
       - name: Artifact Build
         env:
-          NAMESPACE: a3c641-tools
+          NAMESPACE: 0752cb-tools
           BUILD_NAME: pppp-web-artifact-build
           IMAGE_NAME: pppp-web-artifacts
         uses: redhat-developer/openshift-actions@v1.1
@@ -74,7 +74,7 @@ jobs:
             'tag -n ${NAMESPACE} ${NAMESPACE}/${IMAGE_NAME}:latest ${NAMESPACE}/${IMAGE_NAME}:dev'
       - name: Image Build
         env:
-          NAMESPACE: a3c641-tools
+          NAMESPACE: 0752cb-tools
           BUILD_NAME: pppp-web-image-build
           IMAGE_NAME: pppp-web
         uses: redhat-developer/openshift-actions@v1.1
