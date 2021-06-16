@@ -25,12 +25,16 @@
 <script>
 import PageContent from '../../components/PageContent.vue';
 import pageStateService from '../../services/page-state-service';
-import { payPatientRoutes } from '../../router/routes';
+import {
+  payPatientRoutes,
+  payPatientCSRRoutes
+} from '../../router/routes';
 import {
   MODULE_NAME as formModule,
   RESET_FORM
 } from '../../store/modules/pay-patient-form';
 import { scrollTo } from '../../helpers/scroll';
+import { getConvertedPath } from '@/helpers/url';
 import logService from '../../services/log-service';
 
 export default {
@@ -49,10 +53,15 @@ export default {
   beforeRouteLeave(to, from, next) {
     pageStateService.setPageIncomplete(from.path);
     this.$store.dispatch(formModule + '/' + RESET_FORM);
-    if (to.path === payPatientRoutes.HOME_PAGE.path) {
+    if (to.path === payPatientRoutes.HOME_PAGE.path
+      || to.path === payPatientCSRRoutes.HOME_PAGE.path) {
       next();
     } else {
-      next({ name: payPatientRoutes.HOME_PAGE.name });
+      const toPath = getConvertedPath(
+        this.$router.currentRoute.path,
+        payPatientRoutes.HOME_PAGE.path
+      )
+      next({ path: toPath });
     }
     setTimeout(() => {
       scrollTo(0);

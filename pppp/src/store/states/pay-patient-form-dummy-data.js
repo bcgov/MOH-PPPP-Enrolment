@@ -33,6 +33,7 @@ export default {
       renderedFinishTime: '16:00',
       diagnosticCode: 'DC',
       locationOfService: 'Hospital',
+      notes: 'Notes here.',
     }
   ],
 
@@ -40,6 +41,7 @@ export default {
   practitionerFirstNameInitial: 'J',
   practitionerPaymentNumber: '123',
   practitionerPractitionerNumber: '22274',
+  practitionerFacilityNumber: '12345',
   practitionerSpecialtyCode: '321',
 
   referredByLastName: 'McDonald',

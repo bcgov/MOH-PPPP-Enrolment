@@ -834,5 +834,8 @@ export const replaceSpecialCharacters = (str) => {
 };
 
 export const capitalCaseWord = (word) => {
-  return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+  if (word) {
+    return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+  }
+  return word;
 }

@@ -119,6 +119,7 @@ import { scrollTo } from '@/helpers/scroll';
 import pageStateService from '@/services/page-state-service';
 import { formatDate } from '@/helpers/date';
 import { capitalCaseWord } from '@/helpers/string';
+import { getConvertedPath } from '@/helpers/url';
 
 export default {
   name: 'PayPatientReviewTableList',
@@ -269,6 +270,10 @@ export default {
           label: 'Location of Service:',
           value: this.$store.state.payPatientForm.medicalServiceClaims[i].locationOfService,
         });
+        itemData.push({
+          label: 'Notes:',
+          value: this.$store.state.payPatientForm.medicalServiceClaims[i].notes,
+        });
         claims.push(itemData);
       }
       return claims;
@@ -290,6 +295,10 @@ export default {
       items.push({
         label: 'Practitioner Number:',
         value: this.$store.state.payPatientForm.practitionerPractitionerNumber,
+      });
+      items.push({
+        label: 'Facility Number:',
+        value: this.$store.state.payPatientForm.practitionerFacilityNumber,
       });
       items.push({
         label: 'Specialty Code:',
@@ -332,13 +341,19 @@ export default {
   },
   methods: {
     navigateToClaimCountPage() {
-      const toPath = payPatientRoutes.CLAIM_COUNT_PAGE.path;
+      const toPath = getConvertedPath(
+        this.$router.currentRoute.path,
+        payPatientRoutes.CLAIM_COUNT_PAGE.path
+      );
       pageStateService.setPageComplete(toPath);
       this.$router.push(toPath);
       scrollTo();
     },
     navigateToMainFormPage() {
-      const toPath = payPatientRoutes.MAIN_FORM_PAGE.path;
+      const toPath = getConvertedPath(
+        this.$router.currentRoute.path,
+        payPatientRoutes.MAIN_FORM_PAGE.path
+      );
       pageStateService.setPageComplete(toPath);
       this.$router.push(toPath);
       scrollTo();
