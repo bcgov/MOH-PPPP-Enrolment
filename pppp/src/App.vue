@@ -42,7 +42,7 @@ export default {
   },
   data: () => {
     return {
-      pageTitle: 'MSP Permanent Move Outside of B.C.',
+      pageTitle: 'Pay Claim',
       version: project.version,
     };
   },

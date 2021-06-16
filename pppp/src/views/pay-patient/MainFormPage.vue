@@ -320,6 +320,7 @@ import {
   scrollToError,
   getTopScrollPosition
 } from '@/helpers/scroll';
+import { getConvertedPath } from '@/helpers/url';
 import ContinueBar from '@/components/ContinueBar.vue';
 import PageContent from '@/components/PageContent.vue';
 import TimeInput from '@/components/TimeInput.vue';
@@ -655,7 +656,10 @@ export default {
       this.$store.dispatch(formModule + '/' + SET_REFERRED_TO_PRACTITIONER_NUMBER, this.referredToPractitionerNumber);
 
       // Navigate to next path.
-      const toPath = payPatientRoutes.REVIEW_PAGE.path;
+      const toPath = getConvertedPath(
+        this.$router.currentRoute.path,
+        payPatientRoutes.REVIEW_PAGE.path
+      );
       pageStateService.setPageComplete(toPath);
       pageStateService.visitPage(toPath);
       this.$router.push(toPath);
@@ -674,13 +678,17 @@ export default {
     if (to.path === payPatientRoutes.HOME_PAGE.path) {
       this.$store.dispatch(formModule + '/' + RESET_FORM);
       next();
-    } else if ((pageStateService.isPageComplete(to.path)) || isPastPath(to.path, from.path)) {
+    } else if (pageStateService.isPageComplete(to.path) || isPastPath(to.path, from.path)) {
       next();
     } else {
       // Navigate to self.
       const topScrollPosition = getTopScrollPosition();
+      const toPath = getConvertedPath(
+        this.$router.currentRoute.path,
+        payPatientRoutes.MAIN_FORM_PAGE.path
+      );
       next({
-        path: payPatientRoutes.MAIN_FORM_PAGE.path,
+        path: toPath,
         replace: true
       });
       setTimeout(() => {

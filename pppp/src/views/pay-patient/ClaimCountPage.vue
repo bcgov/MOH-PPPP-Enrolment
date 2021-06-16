@@ -32,6 +32,7 @@ import {
   scrollToError,
   getTopScrollPosition
 } from '@/helpers/scroll';
+import { getConvertedPath } from '@/helpers/url';
 import ContinueBar from '@/components/ContinueBar.vue';
 import PageContent from '@/components/PageContent.vue';
 import NumberSelect from '@/components/NumberSelect.vue';
@@ -119,7 +120,10 @@ export default {
       this.$store.dispatch(formModule + '/' + SET_MEDICAL_SERVICE_CLAIMS, claims);
 
       // Navigate to next path.
-      const toPath = payPatientRoutes.MAIN_FORM_PAGE.path;
+      const toPath = getConvertedPath(
+        this.$router.currentRoute.path,
+        payPatientRoutes.MAIN_FORM_PAGE.path
+      );
       pageStateService.setPageComplete(toPath);
       pageStateService.visitPage(toPath);
       this.$router.push(toPath);
@@ -132,13 +136,17 @@ export default {
     if (to.path === payPatientRoutes.HOME_PAGE.path) {
       this.$store.dispatch(formModule + '/' + RESET_FORM);
       next();
-    } else if ((pageStateService.isPageComplete(to.path)) || isPastPath(to.path, from.path)) {
+    } else if (pageStateService.isPageComplete(to.path) || isPastPath(to.path, from.path)) {
       next();
     } else {
       // Navigate to self.
       const topScrollPosition = getTopScrollPosition();
+      const toPath = getConvertedPath(
+        this.$router.currentRoute.path,
+        payPatientRoutes.CLAIM_COUNT_PAGE.path
+      );
       next({
-        path: payPatientRoutes.CLAIM_COUNT_PAGE.path,
+        path: toPath,
         replace: true
       });
       setTimeout(() => {
