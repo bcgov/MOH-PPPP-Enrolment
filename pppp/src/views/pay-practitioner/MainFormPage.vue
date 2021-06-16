@@ -16,13 +16,15 @@
         <div class="text-danger"
             v-if="$v.phn.$dirty && $v.phn.required && !$v.phn.phnValidator"
             aria-live="assertive">Personal Health Number must be valid.</div>
-        <Input label='Dependant Number:'
+        <NumberInput label='Dependant Number:'
               id='dependent-number'
               className='mt-3'
+              maxlength="2"
               v-model='dependentNumber' />
         <Input label='Legal First Name:'
               id='first-name'
               className='mt-3'
+              maxlength="12"
               v-model='firstName' />
         <div class="text-danger"
             v-if="$v.firstName.$dirty && !$v.firstName.required"
@@ -30,10 +32,12 @@
         <Input label='Second Name Initial:'
               id='middle-initial'
               className='mt-3'
+              maxlength="1"
               v-model='middleInitial' />
         <Input label='Legal Last Name:'
               id='last-name'
               className='mt-3'
+              maxlength="18"
               v-model='lastName' />
         <div class="text-danger"
             v-if="$v.lastName.$dirty && !$v.lastName.required"
@@ -53,29 +57,35 @@
         <div class="text-danger"
             v-if="$v.isVehicleAccident.$dirty && !$v.isVehicleAccident.required"
             aria-live="assertive">This field is required.</div>
-        <Input label='Motor Vehicle Accident Claim Number:'
+        <NumberInput label='Motor Vehicle Accident Claim Number:'
               id='vehicle-accident-claim-number'
               class='mt-3'
+              maxlenght="8"
               v-model='vehicleAccidentClaimNumber'/>
         <Input label='Correspondence Attached:'
               id='correspondence-attached'
               class='mt-3'
+              maxlength="1"
               v-model='correspondenceAttached'/>
         <Input label='Submission Code:'
               id='submission-code'
               class='mt-3'
+              maxlength="1"
               v-model='submissionCode'/>
         <Input label='Plan Reference Number of Original Claim:'
               id='plan-reference-number-of-original-claim'
               class='mt-3'
+              maxlength="10"
               v-model='planReferenceNumberOfOriginalClaim'/>
         <Input label='Coverage Pre-Authorization Number:'
               id='coverage-pre-authorization-number'
               class='mt-3'
+              maxlength="4"
               v-model='coveragePreAuthNumber'/>
         <Input label='Procedure or Operation:'
               id='procedure-or-operation'
               class='mt-3'
+              maxlength="256"
               v-model='procedureOrOperation'/>
 
         <div v-for="(claim, index) in medicalServiceClaims"
@@ -88,9 +98,10 @@
           <div class="text-danger"
               v-if="v.serviceDate.$dirty && !v.serviceDate.required"
               aria-live="assertive">Service date is required.</div>
-          <Input label='Number of Services:'
+          <NumberInput label='Number of Services:'
                 :id='"number-of-services-" + index'
                 class='mt-3'
+                maxlength="2"
                 v-model='claim.numberOfServices' />
           <div class="text-danger"
               v-if="v.numberOfServices.$dirty && !v.numberOfServices.required"
@@ -98,21 +109,27 @@
           <Input label='Service Clarification Code:'
                 :id='"service-clarification-code-" + index'
                 class='mt-3'
+                maxlength="1"
                 v-model='claim.serviceClarificationCode' />
           <Input label='Fee Item:'
                 :id='"fee-item-" + index'
                 class='mt-3'
+                maxlength="5"
                 v-model='claim.feeItem' />
           <div class="text-danger"
               v-if="v.feeItem.$dirty && !v.feeItem.required"
               aria-live="assertive">Fee item is required.</div>
-          <Input label='Amount Billed:'
+          <NumberInput label='Amount Billed:'
                 :id='"amount-billed-" + index'
                 class='mt-3'
+                maxlength="7"
                 v-model='claim.amountBilled' />
           <div class="text-danger"
               v-if="v.amountBilled.$dirty && !v.amountBilled.required"
               aria-live="assertive">Amount billed is required.</div>
+          <div class="text-danger"
+              v-if="v.amountBilled.$dirty && v.amountBilled.required && !v.amountBilled.floatValidator"
+              aria-live="assertive">Amount billed must be valid.</div>
           <TimeInput label='Called Start Time:'
                     :id='"called-start-time-" + index'
                     className='mt-3'
@@ -124,6 +141,7 @@
           <Input label='Diagnostic Code:'
                 :id='"diagnostic-code-" + index'
                 class='mt-3'
+                maxlength="5"
                 v-model='claim.diagnosticCode' />
           <div class="text-danger"
               v-if="v.diagnosticCode.$dirty && !v.diagnosticCode.required"
@@ -131,41 +149,52 @@
           <Input label='Location of Service:'
                 :id='"location-of-service-" + index'
                 class='mt-3'
+                maxlength="2"
                 v-model='claim.locationOfService' />
+          <div class="mt-3">
+            <label :for="'medical-claim-notes-' + index">Notes:</label>
+            <textarea :id="'medical-claim-notes-' + index"
+              class="form-control"
+              maxlength="256"
+              v-model="claim.notes">
+            </textarea>
+          </div>
+
         </div>
         
         <div v-for="(claim, index) in hospitalVisitClaims"
             :key="'hospital-visit-claim' + index"
             :set="v = $v.hospitalVisitClaims.$each[index]">
           <h2 class="mt-5">{{getHospitalVisitClaimTitle(index)}}</h2>
-          <Input label='Month:'
+          <NumberInput label='Month:'
                     className='mt-3'
                     maxlength="2"
                     v-model='claim.month' />
           <div class="text-danger"
               v-if="v.month.$dirty && !v.month.required"
               aria-live="assertive">Month is required.</div>
-          <Input label='Day From:'
+          <NumberInput label='Day From:'
                     className='mt-3'
                     maxlength="2"
                     v-model='claim.dayFrom' />
           <div class="text-danger"
               v-if="v.dayFrom.$dirty && !v.dayFrom.required"
               aria-live="assertive">Day From is required.</div>
-          <Input label='Day To:'
+          <NumberInput label='Day To:'
                     className='mt-3'
                     maxlength="2"
                     v-model='claim.dayTo' />
-          <Input label='Year:'
+          <NumberInput label='Year:'
                     className='mt-3'
                     maxlength="4"
                     v-model='claim.year' />
           <div class="text-danger"
               v-if="v.year.$dirty && !v.year.required"
               aria-live="assertive">Year is required.</div>
-          <Input label='Number of Services:'
+          <NumberInput label='Number of Services:'
                 :id='"number-of-services-" + index'
                 class='mt-3'
+                maxlength="2"
                 v-model='claim.numberOfServices' />
           <div class="text-danger"
               v-if="v.numberOfServices.$dirty && !v.numberOfServices.required"
@@ -173,24 +202,31 @@
           <Input label='Service Clarification Code:'
                 :id='"service-clarification-code-" + index'
                 class='mt-3'
+                maxlength="2"
                 v-model='claim.serviceClarificationCode' />
           <Input label='Fee Item:'
                 :id='"fee-item-" + index'
                 class='mt-3'
+                maxlength="5"
                 v-model='claim.feeItem' />
           <div class="text-danger"
               v-if="v.feeItem.$dirty && !v.feeItem.required"
               aria-live="assertive">Fee item is required.</div>
-          <Input label='Amount Billed:'
+          <NumberInput label='Amount Billed:'
                 :id='"amount-billed-" + index'
                 class='mt-3'
+                maxlength="7"
                 v-model='claim.amountBilled' />
           <div class="text-danger"
               v-if="v.amountBilled.$dirty && !v.amountBilled.required"
               aria-live="assertive">Amount billed is required.</div>
+          <div class="text-danger"
+              v-if="v.amountBilled.$dirty && v.amountBilled.required && !v.amountBilled.floatValidator"
+              aria-live="assertive">Amount billed must be valid.</div>
           <Input label='Diagnostic Code:'
                 :id='"diagnostic-code-" + index'
                 class='mt-3'
+                maxlength="5"
                 v-model='claim.diagnosticCode' />
           <div class="text-danger"
               v-if="v.diagnosticCode.$dirty && !v.diagnosticCode.required"
@@ -198,21 +234,33 @@
           <Input label='Location of Service:'
                 :id='"location-of-service-" + index'
                 class='mt-3'
+                maxlength="2"
                 v-model='claim.locationOfService' />
+          <div class="mt-3">
+            <label :for="'hospital-claim-notes-' + index">Notes:</label>
+            <textarea :id="'hospital-claim-notes-' + index"
+              class="form-control"
+              maxlength="250"
+              v-model="claim.notes">
+            </textarea>
+          </div>
         </div>
 
         <h2 class="mt-5">Practitioner</h2>
         <Input label='Last Name or Clinic Name:'
               id='last-name-or-clinic-name'
               class='mt-3'
+              maxlength="22"
               v-model='practitionerLastNameOrClinicName'/>
         <Input label='First Name Initial:'
               id='first-name-initial'
               class='mt-3'
+              maxlength="1"
               v-model='practitionerFirstNameInitial'/>
         <Input label='Payment Number:'
               id='payment-number'
               class='mt-3'
+              maxlength="5"
               v-model='practitionerPaymentNumber'/>
         <div class="text-danger"
             v-if="$v.practitionerPaymentNumber.$dirty && !$v.practitionerPaymentNumber.required"
@@ -220,41 +268,54 @@
         <Input label='Practitioner Number:'
               id='practitioner-number'
               class='mt-3'
+              maxlength="5"
               v-model='practitionerPractitionerNumber'/>
         <div class="text-danger"
             v-if="$v.practitionerPractitionerNumber.$dirty && !$v.practitionerPractitionerNumber.required"
             aria-live="assertive">Practitioner number is required.</div>
+        <Input label='Facility Number:'
+              id='practitioner-number'
+              class='mt-3'
+              maxlength="5"
+              v-model='practitionerFacilityNumber'/>
         <Input label='Specialty Code:'
               id='specialty-code'
               class='mt-3'
+              maxlength="2"
               v-model='practitionerSpecialtyCode'/>
 
         <h2 class="mt-5">Referred By</h2>
         <Input label='Last Name:'
               id='referred-by-last-name'
               class='mt-3'
+              maxlength="18"
               v-model='referredByLastName'/>
         <Input label='First Name Initial:'
               id='referred-by-first-name-initial'
               class='mt-3'
+              maxlength="1"
               v-model='referredByFirstNameInitial'/>
         <Input label='Practitioner Number:'
               id='referred-by-practitioner-number'
               class='mt-3'
+              maxlength="5"
               v-model='referredByPractitionerNumber'/>
 
         <h2 class="mt-5">Referred To</h2>
         <Input label='Last Name:'
               id='referred-to-last-name'
               class='mt-3'
+              maxlength="18"
               v-model='referredToLastName'/>
         <Input label='First Name Initial:'
               id='referred-to-first-name-initial'
               class='mt-3'
+              maxlength="1"
               v-model='referredToFirstNameInitial'/>
         <Input label='Practitioner Number:'
               id='referred-to-practitioner-number'
               class='mt-3'
+              maxlength="5"
               v-model='referredToPractitionerNumber'/>
       </div>
     </PageContent>
@@ -311,10 +372,13 @@ import { required } from 'vuelidate/lib/validators';
 import {
   DateInput,
   Input,
+  NumberInput,
   PhnInput,
   Radio,
+  floatValidator,
   phnValidator,
 } from 'common-lib-vue';
+import { SET_PRACTITIONER_FACILITY_NUMBER } from '../../store/modules/pay-practitioner-form';
 
 export default {
   name: 'MainFormPage',
@@ -322,6 +386,7 @@ export default {
     ContinueBar,
     DateInput,
     Input,
+    NumberInput,
     PageContent,
     PhnInput,
     Radio,
@@ -377,6 +442,7 @@ export default {
       practitionerFirstNameInitial: null,
       practitionerPaymentNumber: null,
       practitionerPractitionerNumber: null,
+      practitionerFacilityNumber: null,
       practitionerSpecialtyCode: null,
 
       referredByLastName: null,
@@ -411,6 +477,7 @@ export default {
     this.practitionerFirstNameInitial = this.$store.state.payPractitionerForm.practitionerFirstNameInitial;
     this.practitionerPaymentNumber = this.$store.state.payPractitionerForm.practitionerPaymentNumber;
     this.practitionerPractitionerNumber = this.$store.state.payPractitionerForm.practitionerPractitionerNumber;
+    this.practitionerFacilityNumber = this.$store.state.payPractitionerForm.practitionerFacilityNumber;
     this.practitionerSpecialtyCode = this.$store.state.payPractitionerForm.practitionerSpecialtyCode;
 
     this.referredByLastName = this.$store.state.payPractitionerForm.referredByLastName;
@@ -462,10 +529,11 @@ export default {
           },
           amountBilled: {
             required,
+            floatValidator
           },
           diagnosticCode: {
             required,
-          }
+          },
         }
       },
       hospitalVisitClaims: {
@@ -487,6 +555,7 @@ export default {
           },
           amountBilled: {
             required,
+            floatValidator
           },
           diagnosticCode: {
             required,
@@ -532,6 +601,7 @@ export default {
       this.$store.dispatch(formModule + '/' + SET_PRACTITIONER_FIRST_NAME_INITIAL, this.practitionerFirstNameInitial);
       this.$store.dispatch(formModule + '/' + SET_PRACTITIONER_PAYMENT_NUMBER, this.practitionerPaymentNumber);
       this.$store.dispatch(formModule + '/' + SET_PRACTITIONER_PRACTITIONER_NUMBER, this.practitionerPractitionerNumber);
+      this.$store.dispatch(formModule + '/' + SET_PRACTITIONER_FACILITY_NUMBER, this.practitionerFacilityNumber);
       this.$store.dispatch(formModule + '/' + SET_PRACTITIONER_SPECIALTY_CODE, this.practitionerSpecialtyCode);
 
       this.$store.dispatch(formModule + '/' + SET_REFERRED_BY_LAST_NAME, this.referredByLastName);
