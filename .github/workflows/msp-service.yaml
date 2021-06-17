@@ -57,7 +57,7 @@ jobs:
     steps:
       - name: S2I Build
         env:
-          NAMESPACE: a3c641-tools
+          NAMESPACE: 0752cb-tools
           BUILD_NAME: msp-service-main-build
           IMAGE_NAME: msp-service
         uses: redhat-developer/openshift-actions@v1.1
