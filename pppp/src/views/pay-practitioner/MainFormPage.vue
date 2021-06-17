@@ -428,7 +428,7 @@ import {
   SET_REFERRED_TO_PRACTITIONER_NUMBER,
 } from '@/store/modules/pay-practitioner-form';
 import logService from '@/services/log-service';
-import { required } from 'vuelidate/lib/validators';
+import { required, maxLength } from 'vuelidate/lib/validators';
 import {
   DateInput,
   Input,
@@ -631,6 +631,9 @@ export default {
           diagnosticCode: {
             required,
           },
+          notes: {
+            maxLength: maxLength(256),
+          },
         }
       },
       hospitalVisitClaims: {
@@ -669,7 +672,10 @@ export default {
           },
           diagnosticCode: {
             required,
-          }
+          },
+          notes: {
+            maxLength: maxLength(250),
+          },
         }
       },
       practitionerPaymentNumber: {
