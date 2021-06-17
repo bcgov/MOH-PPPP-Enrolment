@@ -30,7 +30,7 @@ objects:
       app: pppp-enrolment-web
     name: ${NAME}-to-api
   spec:
-    host: "${NAME}-${OOP_ENV}.${CLUSTER_DOMAIN}"
+    host: "${NAME}-${PPPP_ENV}.${CLUSTER_DOMAIN}"
     path: "/api"
     port:
       targetPort: 8080-tcp
@@ -136,13 +136,19 @@ objects:
               - name: HTTP_BASIC_PASSWORD
                 value: ${HTTP_BASIC_PASSWORD}
               - name: SPLUNK_AUTH_TOKEN
-                value: ${SPLUNK_AUTH_TOKEN}
+                valueFrom:
+                  secretKeyRef:
+                    name: pppp-web-splunk-auth-token
+                    key: token
               - name: SPA_ENV_AUTH_TOKEN
-                value: ${USE_SPLUNK_FORWARDER}
-              - name: OOP_ENV
-                value: ${OOP_ENV}
-              - name: OOP_VERSION
-                value: ${OOP_VERSION}
+                valueFrom:
+                  secretKeyRef:
+                    name: pppp-web-spa-env-auth-token
+                    key: token
+              - name: PPPP_ENV
+                value: ${PPPP_ENV}
+              - name: PPPP_VERSION
+                value: ${PPPP_VERSION}
               - name: ROUTER_DEFAULT_SERVER_TIMEOUT
                 value: ${ROUTER_DEFAULT_SERVER_TIMEOUT}
               - name: ROUTER_DEFAULT_CLIENT_TIMEOUT
@@ -213,12 +219,12 @@ parameters:
 - description: SPA_ENV_AUTH_TOKEN
   name: SPA_ENV_AUTH_TOKEN
   required: true
-- description: OOP_ENV
-  name: OOP_ENV
+- description: PPPP_ENV
+  name: PPPP_ENV
   required: true
-- description: OOP_VERSION
-  name: OOP_VERSION
-  required: true
+- description: PPPP_VERSION
+  name: PPPP_VERSION
+  required: false
 - description: ROUTER_DEFAULT_SERVER_TIMEOUT
   name: ROUTER_DEFAULT_SERVER_TIMEOUT
   value: "60s"
