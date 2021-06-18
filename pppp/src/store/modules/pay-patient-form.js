@@ -105,117 +105,117 @@ export default {
     return state;
   },
   mutations: {
-    setApplicationUuid(state, payload) {
+    [SET_APPLICATION_UUID](state, payload) {
       state.applicationUuid = payload;
     },
-    setCaptchaToken(state, payload) {
+    [SET_CAPTCHA_TOKEN](state, payload) {
       state.captchaToken = payload;
     },
-    setSubmissionDate(state, payload) {
+    [SET_SUBMISSION_DATE](state, payload) {
       state.submissionDate = payload;
     },
-    setReferenceNumber(state, payload) {
+    [SET_REFERENCE_NUMBER](state, payload) {
       state.referenceNumber = payload;
     },
-    setClaimCount(state, payload) {
+    [SET_CLAIM_COUNT](state, payload) {
       state.claimCount = payload;
     },
-    setPhn(state, payload) {
+    [SET_PHN](state, payload) {
       state.phn = payload;
     },
-    setDependentNumber(state, payload) {
+    [SET_DEPENDENT_NUMBER](state, payload) {
       state.dependentNumber = payload;
     },
-    setFirstName(state, payload) {
+    [SET_FIRST_NAME](state, payload) {
       state.firstName = payload;
     },
-    setMiddleInitial(state, payload) {
+    [SET_MIDDLE_INITIAL](state, payload) {
       state.middleInitial = payload;
     },
-    setLastName(state, payload) {
+    [SET_LAST_NAME](state, payload) {
       state.lastName = payload;
     },
-    setBirthDate(state, payload) {
+    [SET_BIRTH_DATE](state, payload) {
       state.birthDate = payload;
     },
-    setAddressOwner(state, payload) {
+    [SET_ADDRESS_OWNER](state, payload) {
       state.addressOwner = payload;
     },
-    setUnitNumber(state, payload) {
+    [SET_UNIT_NUMBER](state, payload) {
       state.unitNumber = payload;
     },
-    setStreetNumber(state, payload) {
+    [SET_STREET_NUMBER](state, payload) {
       state.streetNumber = payload;
     },
-    setStreetName(state, payload) {
+    [SET_STREET_NAME](state, payload) {
       state.streetName = payload;
     },
-    setCity(state, payload) {
+    [SET_CITY](state, payload) {
       state.city = payload;
     },
-    setPostalCode(state, payload) {
+    [SET_POSTAL_CODE](state, payload) {
       state.postalCode = payload;
     },
-    setIsVehicleAccident(state, payload) {
+    [SET_IS_VEHICLE_ACCIDENT](state, payload) {
       state.isVehicleAccident = payload;
     },
-    setVehicleAccidentClaimNumber(state, payload) {
+    [SET_VEHICLE_ACCIDENT_CLAIM_NUMBER](state, payload) {
       state.vehicleAccidentClaimNumber = payload;
     },
-    setCorrespondenceAttached(state, payload) {
+    [SET_CORRESPONDENCE_ATTACHED](state, payload) {
       state.correspondenceAttached = payload;
     },
-    setSubmissionCode(state, payload) {
+    [SET_SUBMISSION_CODE](state, payload) {
       state.submissionCode = payload;
     },
-    setPlanReferenceNumberOfOriginalClaim(state, payload) {
+    [SET_PLAN_REFERENCE_NUMBER_OF_ORIGINAL_CLAIM](state, payload) {
       state.planReferenceNumberOfOriginalClaim = payload;
     },
-    setDiagnosisOrAreaOfTreatment(state, payload) {
+    [SET_DIAGNOSIS_OR_AREA_OF_TREATMENT](state, payload) {
       state.diagnosisOrAreaOfTreatment = payload;
     },
-    setMedicalServiceClaims(state, payload) {
+    [SET_MEDICAL_SERVICE_CLAIMS](state, payload) {
       state.medicalServiceClaims = payload;
     },
-    setPractitionerLastNameOrClinicName(state, payload) {
+    [SET_PRACTITIONER_LAST_NAME_OR_CLINIC_NAME](state, payload) {
       state.practitionerLastNameOrClinicName = payload;
     },
-    setPractitionerFirstNameInitial(state, payload) {
+    [SET_PRACTITIONER_FIRST_NAME_INITIAL](state, payload) {
       state.practitionerFirstNameInitial = payload;
     },
-    setPractitionerPaymentNumber(state, payload) {
+    [SET_PRACTITIONER_PAYMENT_NUMBER](state, payload) {
       state.practitionerPaymentNumber = payload;
     },
-    setPractitionerPractitionerNumber(state, payload) {
+    [SET_PRACTITIONER_PRACTITIONER_NUMBER](state, payload) {
       state.practitionerPractitionerNumber = payload;
     },
-    setPractitionerFacilityNumber(state, payload) {
+    [SET_PRACTITIONER_FACILITY_NUMBER](state, payload) {
       state.practitionerFacilityNumber = payload;
     },
-    setPractitionerSpecialtyCode(state, payload) {
+    [SET_PRACTITIONER_SPECIALTY_CODE](state, payload) {
       state.practitionerSpecialtyCode = payload;
     },
-    setReferredByLastName(state, payload) {
+    [SET_REFERRED_BY_LAST_NAME](state, payload) {
       state.referredByLastName = payload;
     },
-    setReferredByFirstNameInitial(state, payload) {
+    [SET_REFERRED_BY_FIRST_NAME_INITIAL](state, payload) {
       state.referredByFirstNameInitial = payload;
     },
-    setReferredByPractitionerNumber(state, payload) {
+    [SET_REFERRED_BY_PRACTITIONER_NUMBER](state, payload) {
       state.referredByPractitionerNumber = payload;
     },
-    setReferredToLastName(state, payload) {
+    [SET_REFERRED_TO_LAST_NAME](state, payload) {
       state.referredToLastName = payload;
     },
-    setReferredToFirstNameInitial(state, payload) {
+    [SET_REFERRED_TO_FIRST_NAME_INITIAL](state, payload) {
       state.referredToFirstNameInitial = payload;
     },
-    setReferredToPractitionerNumber(state, payload) {
+    [SET_REFERRED_TO_PRACTITIONER_NUMBER](state, payload) {
       state.referredToPractitionerNumber = payload;
     },
   },
   actions: {
-    resetForm({ commit }) {
+    [RESET_FORM]({ commit }) {
       commit(SET_APPLICATION_UUID, null);
       commit(SET_CAPTCHA_TOKEN, null);
       commit(SET_SUBMISSION_DATE, null);
@@ -261,112 +261,112 @@ export default {
       commit(SET_REFERRED_TO_FIRST_NAME_INITIAL, null);
       commit(SET_REFERRED_TO_PRACTITIONER_NUMBER, null);
     },
-    setApplicationUuid({ commit }, payload) {
+    [SET_APPLICATION_UUID]({ commit }, payload) {
       commit(SET_APPLICATION_UUID, payload);
     },
-    setCaptchaToken({ commit }, payload) {
+    [SET_CAPTCHA_TOKEN]({ commit }, payload) {
       commit(SET_CAPTCHA_TOKEN, payload);
     },
-    setSubmissionDate({ commit }, payload) {
+    [SET_SUBMISSION_DATE]({ commit }, payload) {
       commit(SET_SUBMISSION_DATE, payload);
     },
-    setReferenceNumber({ commit }, payload) {
+    [SET_REFERENCE_NUMBER]({ commit }, payload) {
       commit(SET_REFERENCE_NUMBER, payload);
     },
-    setClaimCount({ commit }, payload) {
+    [SET_CLAIM_COUNT]({ commit }, payload) {
       commit(SET_CLAIM_COUNT, payload);
     },
-    setPhn({ commit }, payload) {
+    [SET_PHN]({ commit }, payload) {
       commit(SET_PHN, payload);
     },
-    setDependentNumber({ commit }, payload) {
+    [SET_DEPENDENT_NUMBER]({ commit }, payload) {
       commit(SET_DEPENDENT_NUMBER, payload);
     },
-    setFirstName({ commit }, payload) {
+    [SET_FIRST_NAME]({ commit }, payload) {
       commit(SET_FIRST_NAME, payload);
     },
-    setMiddleInitial({ commit }, payload) {
+    [SET_MIDDLE_INITIAL]({ commit }, payload) {
       commit(SET_MIDDLE_INITIAL, payload);
     },
-    setLastName({ commit }, payload) {
+    [SET_LAST_NAME]({ commit }, payload) {
       commit(SET_LAST_NAME, payload);
     },
-    setBirthDate({ commit }, payload) {
+    [SET_BIRTH_DATE]({ commit }, payload) {
       commit(SET_BIRTH_DATE, payload);
     },
-    setAddressOwner({ commit }, payload) {
+    [SET_ADDRESS_OWNER]({ commit }, payload) {
       commit(SET_ADDRESS_OWNER, payload);
     },
-    setUnitNumber({ commit }, payload) {
+    [SET_UNIT_NUMBER]({ commit }, payload) {
       commit(SET_UNIT_NUMBER, payload);
     },
-    setStreetNumber({ commit }, payload) {
+    [SET_STREET_NUMBER]({ commit }, payload) {
       commit(SET_STREET_NUMBER, payload);
     },
-    setStreetName({ commit }, payload) {
+    [SET_STREET_NAME]({ commit }, payload) {
       commit(SET_STREET_NAME, payload);
     },
-    setCity({ commit }, payload) {
+    [SET_CITY]({ commit }, payload) {
       commit(SET_CITY, payload);
     },
-    setPostalCode({ commit }, payload) {
+    [SET_POSTAL_CODE]({ commit }, payload) {
       commit(SET_POSTAL_CODE, payload);
     },
-    setIsVehicleAccident({ commit }, payload) {
+    [SET_IS_VEHICLE_ACCIDENT]({ commit }, payload) {
       commit(SET_IS_VEHICLE_ACCIDENT, payload);
     },
-    setVehicleAccidentClaimNumber({ commit }, payload) {
+    [SET_VEHICLE_ACCIDENT_CLAIM_NUMBER]({ commit }, payload) {
       commit(SET_VEHICLE_ACCIDENT_CLAIM_NUMBER, payload);
     },
-    setCorrespondenceAttached({ commit }, payload) {
+    [SET_CORRESPONDENCE_ATTACHED]({ commit }, payload) {
       commit(SET_CORRESPONDENCE_ATTACHED, payload);
     },
-    setSubmissionCode({ commit }, payload) {
+    [SET_SUBMISSION_CODE]({ commit }, payload) {
       commit(SET_SUBMISSION_CODE, payload);
     },
-    setPlanReferenceNumberOfOriginalClaim({ commit }, payload) {
+    [SET_PLAN_REFERENCE_NUMBER_OF_ORIGINAL_CLAIM]({ commit }, payload) {
       commit(SET_PLAN_REFERENCE_NUMBER_OF_ORIGINAL_CLAIM, payload);
     },
-    setDiagnosisOrAreaOfTreatment({ commit }, payload) {
+    [SET_DIAGNOSIS_OR_AREA_OF_TREATMENT]({ commit }, payload) {
       commit(SET_DIAGNOSIS_OR_AREA_OF_TREATMENT, payload);
     },
-    setMedicalServiceClaims({ commit }, payload) {
+    [SET_MEDICAL_SERVICE_CLAIMS]({ commit }, payload) {
       commit(SET_MEDICAL_SERVICE_CLAIMS, payload);
     },
-    setPractitionerLastNameOrClinicName({ commit }, payload) {
+    [SET_PRACTITIONER_LAST_NAME_OR_CLINIC_NAME]({ commit }, payload) {
       commit(SET_PRACTITIONER_LAST_NAME_OR_CLINIC_NAME, payload);
     },
-    setPractitionerFirstNameInitial({ commit }, payload) {
+    [SET_PRACTITIONER_FIRST_NAME_INITIAL]({ commit }, payload) {
       commit(SET_PRACTITIONER_FIRST_NAME_INITIAL, payload);
     },
-    setPractitionerPaymentNumber({ commit }, payload) {
+    [SET_PRACTITIONER_PAYMENT_NUMBER]({ commit }, payload) {
       commit(SET_PRACTITIONER_PAYMENT_NUMBER, payload);
     },
-    setPractitionerPractitionerNumber({ commit }, payload) {
+    [SET_PRACTITIONER_PRACTITIONER_NUMBER]({ commit }, payload) {
       commit(SET_PRACTITIONER_PRACTITIONER_NUMBER, payload);
     },
-    setPractitionerFacilityNumber({ commit }, payload) {
+    [SET_PRACTITIONER_FACILITY_NUMBER]({ commit }, payload) {
       commit(SET_PRACTITIONER_FACILITY_NUMBER, payload);
     },
-    setPractitionerSpecialtyCode({ commit }, payload) {
+    [SET_PRACTITIONER_SPECIALTY_CODE]({ commit }, payload) {
       commit(SET_PRACTITIONER_SPECIALTY_CODE, payload);
     },
-    setReferredByLastName({ commit }, payload) {
+    [SET_REFERRED_BY_LAST_NAME]({ commit }, payload) {
       commit(SET_REFERRED_BY_LAST_NAME, payload);
     },
-    setReferredByFirstNameInitial({ commit }, payload) {
+    [SET_REFERRED_BY_FIRST_NAME_INITIAL]({ commit }, payload) {
       commit(SET_REFERRED_BY_FIRST_NAME_INITIAL, payload);
     },
-    setReferredByPractitionerNumber({ commit }, payload) {
+    [SET_REFERRED_BY_PRACTITIONER_NUMBER]({ commit }, payload) {
       commit(SET_REFERRED_BY_PRACTITIONER_NUMBER, payload);
     },
-    setReferredToLastName({ commit }, payload) {
+    [SET_REFERRED_TO_LAST_NAME]({ commit }, payload) {
       commit(SET_REFERRED_TO_LAST_NAME, payload);
     },
-    setReferredToFirstNameInitial({ commit }, payload) {
+    [SET_REFERRED_TO_FIRST_NAME_INITIAL]({ commit }, payload) {
       commit(SET_REFERRED_TO_FIRST_NAME_INITIAL, payload);
     },
-    setReferredToPractitionerNumber({ commit }, payload) {
+    [SET_REFERRED_TO_PRACTITIONER_NUMBER]({ commit }, payload) {
       commit(SET_REFERRED_TO_PRACTITIONER_NUMBER, payload);
     },
   },
