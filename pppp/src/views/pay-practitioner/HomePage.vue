@@ -57,25 +57,26 @@
 </style>
 
 <script>
-import pageStateService from '../../services/page-state-service';
-import spaEnvService from '../../services/spa-env-service';
+import pageStateService from '@/services/page-state-service';
+import spaEnvService from '@/services/spa-env-service';
 import {
   payPractitionerRoutes,
   commonRoutes,
-} from '../../router/routes';
+} from '@/router/routes';
 import {
   scrollTo,
   getTopScrollPosition
-} from '../../helpers/scroll';
-import ContinueBar from '../../components/ContinueBar.vue';
-import PageContent from '../../components/PageContent.vue';
-import ConsentModal from '../../components/ConsentModal.vue';
+} from '@/helpers/scroll';
+import ContinueBar from '@/components/ContinueBar.vue';
+import PageContent from '@/components/PageContent.vue';
+import ConsentModal from '@/components/ConsentModal.vue';
 import { v4 as uuidv4 } from 'uuid';
 import {
   MODULE_NAME as formModule,
   SET_APPLICATION_UUID
 } from '@/store/modules/pay-practitioner-form';
-import logService from '../../services/log-service';
+import logService from '@/services/log-service';
+import { getConvertedPath } from '@/helpers/url';
 
 export default {
   name: 'HomePage',
@@ -121,10 +122,13 @@ export default {
       this.showConsentModal = false;
     },
     nextPage() {
-      const path = payPractitionerRoutes.CLAIM_COUNT_PAGE.path;
-      pageStateService.setPageComplete(path);
-      pageStateService.visitPage(path);
-      this.$router.push(path);
+      const toPath = getConvertedPath(
+        this.$router.currentRoute.path,
+        payPractitionerRoutes.CLAIM_COUNT_PAGE.path
+      );
+      pageStateService.setPageComplete(toPath);
+      pageStateService.visitPage(toPath);
+      this.$router.push(toPath);
       scrollTo(0);
     }
   },
@@ -136,8 +140,12 @@ export default {
     } else {
       // Navigate to self.
       const topScrollPosition = getTopScrollPosition();
+      const toPath = getConvertedPath(
+        this.$router.currentRoute.path,
+        payPractitionerRoutes.HOME_PAGE.path
+      );
       next({
-        path: payPractitionerRoutes.HOME_PAGE.path,
+        path: toPath,
         replace: true
       });
       setTimeout(() => {

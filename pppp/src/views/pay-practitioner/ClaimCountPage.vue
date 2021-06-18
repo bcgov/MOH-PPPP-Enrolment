@@ -33,31 +33,32 @@
 </template>
 
 <script>
-import pageStateService from '../../services/page-state-service';
+import pageStateService from '@/services/page-state-service';
 import {
   payPractitionerRoutes,
   isPastPath,
-} from '../../router/routes';
+} from '@/router/routes';
 import {
   scrollTo,
   scrollToError,
   getTopScrollPosition
-} from '../../helpers/scroll';
-import ContinueBar from '../../components/ContinueBar.vue';
-import PageContent from '../../components/PageContent.vue';
+} from '@/helpers/scroll';
+import ContinueBar from '@/components/ContinueBar.vue';
+import PageContent from '@/components/PageContent.vue';
 import NumberSelect from '@/components/NumberSelect.vue';
 import {
   MODULE_NAME as formModule,
   RESET_FORM,
   SET_HOSPITAL_VISIT_CLAIMS,
-} from '../../store/modules/pay-practitioner-form';
-import logService from '../../services/log-service';
+} from '@/store/modules/pay-practitioner-form';
+import logService from '@/services/log-service';
 import { required } from 'vuelidate/lib/validators';
 import { 
   SET_MEDICAL_SERVICE_CLAIMS_COUNT, 
   SET_HOSPITAL_VISIT_CLAIMS_COUNT 
-} from '../../store/modules/pay-practitioner-form';
-import { SET_MEDICAL_SERVICE_CLAIMS } from '../../store/modules/pay-patient-form';
+} from '@/store/modules/pay-practitioner-form';
+import { SET_MEDICAL_SERVICE_CLAIMS } from '@/store/modules/pay-patient-form';
+import { getConvertedPath } from '@/helpers/url';
 
 export default {
   name: 'ClaimCountPage',
@@ -165,8 +166,12 @@ export default {
       this.$store.dispatch(formModule + '/' + SET_HOSPITAL_VISIT_CLAIMS_COUNT, this.hospitalVisitClaimsCount);
       this.$store.dispatch(formModule + '/' + SET_MEDICAL_SERVICE_CLAIMS, medicalServiceClaims);
       this.$store.dispatch(formModule + '/' + SET_HOSPITAL_VISIT_CLAIMS, hospitalVisitClaims);
-      // Navigate to next path.
-      const toPath = payPractitionerRoutes.MAIN_FORM_PAGE.path;
+      
+      // Navigate to next path
+      const toPath = getConvertedPath(
+        this.$router.currentRoute.path,
+        payPractitionerRoutes.MAIN_FORM_PAGE.path
+      );
       pageStateService.setPageComplete(toPath);
       pageStateService.visitPage(toPath);
       this.$router.push(toPath);
@@ -184,8 +189,12 @@ export default {
     } else {
       // Navigate to self.
       const topScrollPosition = getTopScrollPosition();
+      const toPath = getConvertedPath(
+        this.$router.currentRoute.path,
+        payPractitionerRoutes.CLAIM_COUNT_PAGE.path
+      );
       next({
-        path: payPractitionerRoutes.CLAIM_COUNT_PAGE.path,
+        path: toPath,
         replace: true
       });
       setTimeout(() => {

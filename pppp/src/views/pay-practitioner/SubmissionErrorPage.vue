@@ -23,15 +23,16 @@
 </template>
 
 <script>
-import PageContent from '../../components/PageContent.vue';
-import pageStateService from '../../services/page-state-service';
-import { payPractitionerRoutes } from '../../router/routes';
+import PageContent from '@/components/PageContent.vue';
+import pageStateService from '@/services/page-state-service';
+import { payPractitionerRoutes } from '@/router/routes';
 import {
   MODULE_NAME as formModule,
   RESET_FORM
-} from '../../store/modules/pay-patient-form';
-import { scrollTo } from '../../helpers/scroll';
-import logService from '../../services/log-service';
+} from '@/store/modules/pay-patient-form';
+import { scrollTo } from '@/helpers/scroll';
+import { getConvertedPath } from '@/helpers/url';
+import logService from '@/services/log-service';
 
 export default {
   name: 'SubmissionErrorPage',
@@ -52,7 +53,11 @@ export default {
     if (to.path === payPractitionerRoutes.HOME_PAGE.path) {
       next();
     } else {
-      next({ name: payPractitionerRoutes.HOME_PAGE.name });
+      const toPath = getConvertedPath(
+        this.$router.currentRoute.path,
+        payPractitionerRoutes.HOME_PAGE.path
+      )
+      next({ path: toPath });
     }
     setTimeout(() => {
       scrollTo(0);

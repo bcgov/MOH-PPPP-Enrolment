@@ -324,18 +324,19 @@
 </template>
 
 <script>
-import pageStateService from '../../services/page-state-service';
+import pageStateService from '@/services/page-state-service';
 import {
   payPractitionerRoutes,
   isPastPath,
-} from '../../router/routes';
+} from '@/router/routes';
 import {
   scrollTo,
   scrollToError,
   getTopScrollPosition
-} from '../../helpers/scroll';
-import ContinueBar from '../../components/ContinueBar.vue';
-import PageContent from '../../components/PageContent.vue';
+} from '@/helpers/scroll';
+import { getConvertedPath } from '@/helpers/url';
+import ContinueBar from '@/components/ContinueBar.vue';
+import PageContent from '@/components/PageContent.vue';
 import TimeInput from '@/components/TimeInput.vue';
 import {
   MODULE_NAME as formModule,
@@ -366,6 +367,7 @@ import {
   SET_REFERRED_TO_LAST_NAME,
   SET_REFERRED_TO_FIRST_NAME_INITIAL,
   SET_REFERRED_TO_PRACTITIONER_NUMBER,
+  SET_PRACTITIONER_FACILITY_NUMBER
 } from '@/store/modules/pay-practitioner-form';
 import logService from '@/services/log-service';
 import { required } from 'vuelidate/lib/validators';
@@ -378,7 +380,6 @@ import {
   floatValidator,
   phnValidator,
 } from 'common-lib-vue';
-import { SET_PRACTITIONER_FACILITY_NUMBER } from '../../store/modules/pay-practitioner-form';
 
 export default {
   name: 'MainFormPage',
@@ -613,7 +614,10 @@ export default {
       this.$store.dispatch(formModule + '/' + SET_REFERRED_TO_PRACTITIONER_NUMBER, this.referredToPractitionerNumber);
       
       // Navigate to next path.
-      const toPath = payPractitionerRoutes.REVIEW_PAGE.path;
+      const toPath = getConvertedPath(
+        this.$router.currentRoute.path,
+        payPractitionerRoutes.REVIEW_PAGE.path
+      );
       pageStateService.setPageComplete(toPath);
       pageStateService.visitPage(toPath);
       this.$router.push(toPath);
@@ -643,8 +647,12 @@ export default {
     } else {
       // Navigate to self.
       const topScrollPosition = getTopScrollPosition();
+      const toPath = getConvertedPath(
+        this.$router.currentRoute.path,
+        payPractitionerRoutes.MAIN_FORM_PAGE.path
+      );
       next({
-        path: payPractitionerRoutes.MAIN_FORM_PAGE.path,
+        path: toPath,
         replace: true
       });
       setTimeout(() => {

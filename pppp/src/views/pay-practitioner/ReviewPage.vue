@@ -32,6 +32,7 @@ import {
   scrollToError,
   getTopScrollPosition
 } from '@/helpers/scroll';
+import { getConvertedPath } from '@/helpers/url';
 import {
   MODULE_NAME as formModule,
   RESET_FORM,
@@ -123,17 +124,23 @@ export default {
       // this.navigateToSubmissionPage();
     },
     navigateToSubmissionPage() {
-      const path = payPractitionerRoutes.SUBMISSION_PAGE.path;
-      pageStateService.setPageComplete(path);
-      pageStateService.visitPage(path);
-      this.$router.push(path);
+      const toPath = getConvertedPath(
+        this.$router.currentRoute.path,
+        payPractitionerRoutes.SUBMISSION_PAGE.path
+      );
+      pageStateService.setPageComplete(toPath);
+      pageStateService.visitPage(toPath);
+      this.$router.push(toPath);
       scrollTo();
     },
     navigateToSubmissionErrorPage() {
-      const path = payPractitionerRoutes.SUBMISSION_ERROR_PAGE.path;
-      pageStateService.setPageComplete(path);
-      pageStateService.visitPage(path);
-      this.$router.push(path);
+      const toPath = getConvertedPath(
+        this.$router.currentRoute.path,
+        payPractitionerRoutes.SUBMISSION_ERROR_PAGE.path
+      );
+      pageStateService.setPageComplete(toPath);
+      pageStateService.visitPage(toPath);
+      this.$router.push(toPath);
       scrollTo();
     }
   },
@@ -148,8 +155,12 @@ export default {
     } else {
       // Navigate to self.
       const topScrollPosition = getTopScrollPosition();
+      const toPath = getConvertedPath(
+        this.$router.currentRoute.path,
+        payPractitionerRoutes.REVIEW_PAGE.path
+      );
       next({
-        path: payPractitionerRoutes.REVIEW_PAGE.path,
+        path: toPath,
         replace: true
       });
       setTimeout(() => {
