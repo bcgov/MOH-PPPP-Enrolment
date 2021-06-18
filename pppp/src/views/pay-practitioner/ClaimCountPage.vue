@@ -126,6 +126,7 @@ export default {
           renderedFinishTime: null,
           diagnosticCode: null,
           locationOfService: null,
+          notes: null,
         });
       }
       
@@ -152,6 +153,7 @@ export default {
           amountBilled: null,
           diagnosticCode: null,
           locationOfService: null,
+          notes: null,
         });
       }
 
