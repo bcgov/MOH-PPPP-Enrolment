@@ -32,6 +32,7 @@ import {
   PAY_PATIENT_BASE_URL,
   PAY_PRACTITIONER_BASE_URL,
 } from '@/router/routes';
+import { isCSR } from '@/helpers/url';
 
 export default {
   name: 'App',
@@ -42,7 +43,6 @@ export default {
   },
   data: () => {
     return {
-      pageTitle: 'Pay Claim',
       version: project.version,
     };
   },
@@ -57,6 +57,15 @@ export default {
         return payPractitionerStepRoutes;
       }
       return [];
+    },
+    pageTitle() {
+      const currentPath = this.$router.currentRoute.path;
+      if (currentPath.includes(PAY_PATIENT_BASE_URL)) {
+        return isCSR(currentPath) ? 'Pay Patient Claim - CSR' : 'Pay Patient Claim';
+      } else if (currentPath.includes(PAY_PRACTITIONER_BASE_URL)) {
+        return isCSR(currentPath) ? 'Pay Practitioner Claim - CSR' : 'Pay Practitioner Claim';
+      }
+      return '';
     }
   }
 }
