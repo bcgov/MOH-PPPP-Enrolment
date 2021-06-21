@@ -35,7 +35,6 @@ import {
 import { getConvertedPath } from '@/helpers/url';
 import ContinueBar from '@/components/ContinueBar.vue';
 import PageContent from '@/components/PageContent.vue';
-import NumberSelect from '@/components/NumberSelect.vue';
 import {
   MODULE_NAME as formModule,
   RESET_FORM,
@@ -44,6 +43,7 @@ import {
 } from '@/store/modules/pay-patient-form';
 import logService from '@/services/log-service';
 import { required } from 'vuelidate/lib/validators';
+import { NumberSelect } from 'common-lib-vue';
 
 export default {
   name: 'EmptyPage',
