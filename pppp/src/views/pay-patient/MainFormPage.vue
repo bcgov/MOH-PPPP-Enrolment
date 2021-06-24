@@ -157,7 +157,7 @@
             :set="v = $v.medicalServiceClaims.$each[index]">
           <h2 class="mt-5">{{getMedicalServiceClaimTitle(index)}}</h2>
           <DateInput label='Service Date:'
-                    id='service-date'
+                    :id="'service-date' + index"
                     className='mt-3'
                     v-model='claim.serviceDate' />
           <div class="text-danger"
