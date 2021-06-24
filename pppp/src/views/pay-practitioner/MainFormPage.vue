@@ -58,6 +58,7 @@
             v-if="$v.lastName.$dirty && $v.lastName.required && !$v.lastName.nameValidator"
             aria-live="assertive">Last name must begin with a letter and cannot include special characters except hyphens, periods, apostrophes and blank characters.</div>
         <DateInput label='Birth Date:'
+              id='birth-date'
               className='mt-3'
               v-model='birthDate' />
         <div class="text-danger"
@@ -114,13 +115,14 @@
             :set="v = $v.medicalServiceClaims.$each[index]">
           <h2 class="mt-5">{{getMedicalServiceClaimTitle(index)}}</h2>
           <DateInput label='Service Date:'
+                    :id="'msc-service-date-' + index"
                     className='mt-3'
                     v-model='claim.serviceDate' />
           <div class="text-danger"
               v-if="v.serviceDate.$dirty && !v.serviceDate.required"
               aria-live="assertive">Service date is required.</div>
           <NumberInput label='Number of Services:'
-                :id='"number-of-services-" + index'
+                :id='"msc-number-of-services-" + index'
                 class='mt-3'
                 maxlength="2"
                 v-model='claim.numberOfServices' />
@@ -134,12 +136,12 @@
               v-if="v.numberOfServices.$dirty && v.numberOfServices.required && !v.numberOfServices.positiveNumberValidator"
               aria-live="assertive">Number of Services must be a positive number.</div>
           <Input label='Service Clarification Code:'
-                :id='"service-clarification-code-" + index'
+                :id='"msc-service-clarification-code-" + index'
                 class='mt-3'
                 maxlength="1"
                 v-model='claim.serviceClarificationCode' />
           <Input label='Fee Item:'
-                :id='"fee-item-" + index'
+                :id='"msc-fee-item-" + index'
                 class='mt-3'
                 maxlength="5"
                 v-model='claim.feeItem' />
@@ -147,7 +149,7 @@
               v-if="v.feeItem.$dirty && !v.feeItem.required"
               aria-live="assertive">Fee item is required.</div>
           <NumberInput label='Amount Billed:'
-                :id='"amount-billed-" + index'
+                :id='"msc-amount-billed-" + index'
                 class='mt-3'
                 maxlength="7"
                 v-model='claim.amountBilled' />
@@ -161,15 +163,15 @@
               v-if="v.amountBilled.$dirty && v.amountBilled.required && !v.amountBilled.positiveNumberValidator"
               aria-live="assertive">Amount billed must be a positive number.</div>  
           <TimeInput label='Called Start Time:'
-                    :id='"called-start-time-" + index'
+                    :id='"msc-called-start-time-" + index'
                     className='mt-3'
                     v-model='claim.calledStartTime' />
           <TimeInput label='Rendered Finish Time:'
-                    :id='"rendered-finish-time-" + index'
+                    :id='"msc-rendered-finish-time-" + index'
                     className='mt-3'
                     v-model='claim.renderedFinishTime' />
           <Input label='Diagnostic Code:'
-                :id='"diagnostic-code-" + index'
+                :id='"msc-diagnostic-code-" + index'
                 class='mt-3'
                 maxlength="5"
                 v-model='claim.diagnosticCode' />
@@ -177,12 +179,12 @@
               v-if="v.diagnosticCode.$dirty && !v.diagnosticCode.required"
               aria-live="assertive">Diagnostic code is required.</div>
           <Input label='Location of Service:'
-                :id='"location-of-service-" + index'
+                :id='"msc-location-of-service-" + index'
                 class='mt-3'
                 maxlength="2"
                 v-model='claim.locationOfService' />
           <Textarea label="Notes:"
-            :id="'medical-notes-' + index"
+            :id="'msc-medical-notes-' + index"
             class="mt-3"
             v-model='claim.notes'
             :remainingCharsMaxlength='256'
@@ -195,6 +197,7 @@
             :set="v = $v.hospitalVisitClaims.$each[index]">
           <h2 class="mt-5">{{getHospitalVisitClaimTitle(index)}}</h2>
           <NumberInput label='Month:'
+                    :id="'hvc-month-' + index"
                     className='mt-3'
                     maxlength="2"
                     v-model='claim.month' />
@@ -208,6 +211,7 @@
             v-if="v.month.$dirty && v.month.required && !v.month.positiveNumberValidator"
             aria-live="assertive">Month must be a positive number.</div>
           <NumberInput label='Day From:'
+                    :id="'hsv-day-from-' + index"
                     className='mt-3'
                     maxlength="2"
                     v-model='claim.dayFrom' />
@@ -221,6 +225,7 @@
             v-if="v.dayFrom.$dirty && v.dayFrom.required && !v.dayFrom.positiveNumberValidator"
             aria-live="assertive">Day from must be a positive number.</div>
           <NumberInput label='Day To:'
+                    :id="'hvc-day-to-' + index"
                     className='mt-3'
                     maxlength="2"
                     v-model='claim.dayTo' />
@@ -231,6 +236,7 @@
             v-if="v.dayTo.$dirty && !v.dayTo.positiveNumberValidator"
             aria-live="assertive">Day to must be a positive number.</div>
           <NumberInput label='Year:'
+                    :id="'hvc-year-' + index"
                     className='mt-3'
                     maxlength="4"
                     v-model='claim.year' />
@@ -244,7 +250,7 @@
             v-if="v.year.$dirty && v.year.required && !v.year.positiveNumberValidator"
             aria-live="assertive">Year must be a positive number.</div>
           <NumberInput label='Number of Services:'
-                :id='"number-of-services-" + index'
+                :id='"hvc-number-of-services-" + index'
                 class='mt-3'
                 maxlength="2"
                 v-model='claim.numberOfServices' />
@@ -258,7 +264,7 @@
               v-if="v.numberOfServices.$dirty && v.numberOfServices.required && !v.numberOfServices.positiveNumberValidator"
               aria-live="assertive">Number of Services must be a positive number.</div> 
           <Input label='Service Clarification Code:'
-                :id='"service-clarification-code-" + index'
+                :id='"hvc-service-clarification-code-" + index'
                 class='mt-3'
                 maxlength="2"
                 v-model='claim.serviceClarificationCode' />
@@ -271,7 +277,7 @@
               v-if="v.feeItem.$dirty && !v.feeItem.required"
               aria-live="assertive">Fee item is required.</div>
           <NumberInput label='Amount Billed:'
-                :id='"amount-billed-" + index'
+                :id='"hvc-amount-billed-" + index'
                 class='mt-3'
                 maxlength="7"
                 v-model='claim.amountBilled' />
@@ -285,7 +291,7 @@
               v-if="v.amountBilled.$dirty && v.amountBilled.required && !v.amountBilled.positiveNumberValidator"
               aria-live="assertive">Amount billed must be a positive number.</div> 
           <Input label='Diagnostic Code:'
-                :id='"diagnostic-code-" + index'
+                :id='"hvc-diagnostic-code-" + index'
                 class='mt-3'
                 maxlength="5"
                 v-model='claim.diagnosticCode' />
@@ -293,12 +299,12 @@
               v-if="v.diagnosticCode.$dirty && !v.diagnosticCode.required"
               aria-live="assertive">Diagnostic code is required.</div>
           <Input label='Location of Service:'
-                :id='"location-of-service-" + index'
+                :id='"hvc-location-of-service-" + index'
                 class='mt-3'
                 maxlength="2"
                 v-model='claim.locationOfService' />
           <Textarea label="Notes:"
-                :id="'hospital-notes-' + index"
+                :id="'hvc-hospital-notes-' + index"
                 class="mt-3"
                 v-model="claim.notes"
                 :remainingCharsMaxlength="250"
@@ -334,7 +340,7 @@
             v-if="$v.practitionerPractitionerNumber.$dirty && !$v.practitionerPractitionerNumber.required"
             aria-live="assertive">Practitioner number is required.</div>
         <Input label='Facility Number:'
-              id='practitioner-number'
+              id='facility-number'
               class='mt-3'
               maxlength="5"
               v-model='practitionerFacilityNumber'/>
