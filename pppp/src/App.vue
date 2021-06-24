@@ -27,6 +27,8 @@ import ProgressBar from '@/components/ProgressBar.vue';
 import {
   payPatientStepRoutes,
   payPractitionerStepRoutes,
+  payPatientCSRStepRoutes,
+  payPractitionerCSRStepRoutes,
 } from '@/router/step-routes';
 import {
   PAY_PATIENT_BASE_URL,
@@ -51,10 +53,11 @@ export default {
   },
   computed: {
     stepRoutes() {
-      if (this.$router.currentRoute.path.includes(PAY_PATIENT_BASE_URL)) {
-        return payPatientStepRoutes;
-      } else if (this.$router.currentRoute.path.includes(PAY_PRACTITIONER_BASE_URL)) {
-        return payPractitionerStepRoutes;
+      const currentPath = this.$router.currentRoute.path;
+      if (currentPath.includes(PAY_PATIENT_BASE_URL)) {
+        return isCSR(currentPath) ? payPatientCSRStepRoutes : payPatientStepRoutes;
+      } else if (currentPath.includes(PAY_PRACTITIONER_BASE_URL)) {
+        return isCSR(currentPath) ? payPractitionerCSRStepRoutes : payPractitionerStepRoutes;
       }
       return [];
     },
