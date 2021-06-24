@@ -32,7 +32,7 @@
                 :backgroundColor='tableBackgroundColor'/>
 
     <div v-for="(claimData, index) in medicalServiceClaims"
-        :key="index">
+        :key="'medical-service-claim-' + index">
       <div class="row align-items-end mt-3">
         <div class="col-9">
           <h2 class="mb-2">{{getMedicalServiceClaimTitle(index)}}</h2>
@@ -50,7 +50,7 @@
     </div>
 
     <div v-for="(claimData, index) in hospitalVisitClaims"
-        :key="index">
+        :key="'hospital-visit-claim-' + index">
       <div class="row align-items-end mt-3">
         <div class="col-9">
           <h2 class="mb-2">{{getHospitalVisitClaimTitle(index)}}</h2>

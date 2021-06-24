@@ -45,7 +45,7 @@ import {
 } from '@/helpers/scroll';
 import ContinueBar from '@/components/ContinueBar.vue';
 import PageContent from '@/components/PageContent.vue';
-import NumberSelect from '@/components/NumberSelect.vue';
+import { NumberSelect } from 'common-lib-vue';
 import {
   MODULE_NAME as formModule,
   RESET_FORM,

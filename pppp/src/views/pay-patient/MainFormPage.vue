@@ -58,6 +58,7 @@
             v-if="$v.lastName.$dirty && $v.lastName.required && !$v.lastName.nameValidator"
             aria-live="assertive">Last name must begin with a letter and cannot include special characters except hyphens, periods, apostrophes and blank characters.</div>
         <DateInput label='Birth Date:'
+              id='birth-date'
               className='mt-3'
               v-model='birthDate' />
         <div class="text-danger"
@@ -156,6 +157,7 @@
             :set="v = $v.medicalServiceClaims.$each[index]">
           <h2 class="mt-5">{{getMedicalServiceClaimTitle(index)}}</h2>
           <DateInput label='Service Date:'
+                    :id="'service-date' + index"
                     className='mt-3'
                     v-model='claim.serviceDate' />
           <div class="text-danger"
