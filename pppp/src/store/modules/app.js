@@ -11,12 +11,12 @@ export default {
     return state;
   },
   mutations: {
-    setShowMobileStepperDetails(state, payload) {
+    [SET_SHOW_MOBILE_STEPPER_DETAILS](state, payload) {
       state.showMobileStepperDetails = payload;
     },
   },
   actions: {
-    setShowMobileStepperDetails({ commit }, payload) {
+    [SET_SHOW_MOBILE_STEPPER_DETAILS]({ commit }, payload) {
       commit(SET_SHOW_MOBILE_STEPPER_DETAILS, payload);
     },
   },
