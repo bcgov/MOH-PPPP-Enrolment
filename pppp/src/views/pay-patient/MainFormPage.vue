@@ -27,6 +27,9 @@
         <div class="text-danger"
             v-if="$v.dependentNumber.$dirty && !$v.dependentNumber.positiveNumberValidator"
             aria-live="assertive">Dependant number must be a positive number.</div>
+        <div class="text-danger"
+            v-if="$v.dependentNumber.$dirty && $v.dependentNumber.intValidator && $v.dependentNumber.positiveNumberValidator && !$v.dependentNumber.dependentNumberValidator"
+            aria-live="assertive">Dependant Number must be 00 or 66 for this PHN.</div>
         <Input label='Legal First Name:'
               id='first-name'
               className='mt-3'
@@ -263,11 +266,13 @@
         <div class="text-danger"
             v-if="$v.practitionerPractitionerNumber.$dirty && $v.practitionerPractitionerNumber.required && !$v.practitionerPractitionerNumber.minLength"
             aria-live="assertive">Practitioner number must not be less than 5 characters.</div>
-        <Input label='Facility Number:'
+        <FacilityNumberInput label='Facility Number:'
               id='facility-number'
               class='mt-3'
-              v-model='practitionerFacilityNumber'
-              maxlength='5'/>
+              v-model='practitionerFacilityNumber'/>
+        <div class="text-danger"
+            v-if="$v.practitionerFacilityNumber.$dirty && $v.practitionerFacilityNumber.minLength"
+            aria-live="assertive">Practitioner number must not be less than 5 characters.</div>
         <Input label='Specialty Code:'
               id='specialty-code'
               class='mt-3'
@@ -371,6 +376,7 @@ import logService from '@/services/log-service';
 import { required, maxLength, minLength } from 'vuelidate/lib/validators';
 import {
   DateInput,
+  FacilityNumberInput,
   Input,
   NumberInput,
   PhnInput,
@@ -406,11 +412,22 @@ const nameInitialValidator = (value) => {
   return criteria.test(value);
 };
 
+const dependentNumberValidator = () => {
+  return (value, vm) => {
+    const phn = vm.phn;
+    if (phn && phn[0] === '9' && !(value === '00' || value === '66')) {
+      return false;
+    }
+    return true;
+  };
+};
+
 export default {
   name: 'MainFormPage',
   components: {
     ContinueBar,
     DateInput,
+    FacilityNumberInput,
     Input,
     NumberInput,
     PageContent,
@@ -549,6 +566,7 @@ export default {
       dependentNumber: {
         intValidator: optionalValidator(intValidator),
         positiveNumberValidator: optionalValidator(positiveNumberValidator),
+        dependentNumberValidator: optionalValidator(dependentNumberValidator())
       },
       firstName: {
         required,
@@ -616,6 +634,9 @@ export default {
       practitionerPractitionerNumber: {
         required,
         minLength: minLength(5),
+      },
+      practitionerFacilityNumber: {
+        minLength: optionalValidator(minLength(5)),
       },
       referredByPractitionerNumber: {
         minLength: optionalValidator(minLength(5)),
