@@ -17,8 +17,8 @@
             <Captcha v-if="!isCaptchaValid"
                     :apiBasePath="captchaAPIBasePath"
                     :nonce="applicationUuid"
-                    @captcha-loaded="handleCaptchaLoaded()"
-                    @captcha-verified="handleCaptchaVerified($event)" />
+                    @captchaLoaded="handleCaptchaLoaded()"
+                    @captchaVerified="handleCaptchaVerified($event)" />
             <div v-if="isCaptchaValid"
                 class="text-success">Captcha successfully verified.</div>
             <div class="mt-3">
@@ -45,10 +45,6 @@
 <script>
 import { Button } from "common-lib-vue";
 import Captcha from '../components/Captcha';
-import {
-  MODULE_NAME as formModule,
-  SET_CAPTCHA_TOKEN
-} from '../store/modules/pay-patient-form';
 
 export default {
   name: "ConsentModal",
@@ -92,7 +88,7 @@ export default {
       this.focusableEls = this.getFocusableEls();
     },
     handleCaptchaVerified(captchaToken) {
-      this.$store.dispatch(formModule + '/' + SET_CAPTCHA_TOKEN, captchaToken);
+      this.$emit('captchaVerified', captchaToken);
       this.isCaptchaValid = true;
       setTimeout(() => {
         this.focusableEls = this.getFocusableEls();
