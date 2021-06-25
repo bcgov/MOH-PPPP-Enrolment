@@ -2,7 +2,8 @@
   <div>
     <ConsentModal v-if="showConsentModal"
                   :applicationUuid="applicationUuid"
-                  @close="handleCloseConsentModal" />
+                  @close="handleCloseConsentModal"
+                  @captchaVerified="handleCaptchaVerified" />
     <PageContent>
       <div class="container pt-3 pt-sm-5 mb-5">
         <h1>Pay Patient Claim</h1>
@@ -72,7 +73,8 @@ import ConsentModal from '../../components/ConsentModal.vue';
 import { v4 as uuidv4 } from 'uuid';
 import {
   MODULE_NAME as formModule,
-  SET_APPLICATION_UUID
+  SET_APPLICATION_UUID,
+  SET_CAPTCHA_TOKEN,
 } from '../../store/modules/pay-patient-form';
 import logService from '../../services/log-service';
 
@@ -85,7 +87,7 @@ export default {
   },
   data: () => {
     return {
-      showConsentModal: false,
+      showConsentModal: true,
       applicationUuid: null,
     }
   },
@@ -116,6 +118,9 @@ export default {
     );
   },
   methods: {
+    handleCaptchaVerified(captchaToken) {
+      this.$store.dispatch(formModule + '/' + SET_CAPTCHA_TOKEN, captchaToken);
+    },
     handleCloseConsentModal() {
       this.showConsentModal = false;
     },
