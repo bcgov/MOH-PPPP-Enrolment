@@ -253,14 +253,16 @@
         <div class="text-danger"
             v-if="$v.practitionerPaymentNumber.$dirty && !$v.practitionerPaymentNumber.required"
             aria-live="assertive">Payment number is required.</div>
-        <Input label='Practitioner Number:'
+        <PractitionerNumberInput label='Practitioner Number:'
               id='practitioner-number'
               class='mt-3'
-              v-model='practitionerPractitionerNumber'
-              maxlength='5'/>
+              v-model='practitionerPractitionerNumber'/>
         <div class="text-danger"
             v-if="$v.practitionerPractitionerNumber.$dirty && !$v.practitionerPractitionerNumber.required"
             aria-live="assertive">Practitioner number is required.</div>
+        <div class="text-danger"
+            v-if="$v.practitionerPractitionerNumber.$dirty && $v.practitionerPractitionerNumber.required && !$v.practitionerPractitionerNumber.minLength"
+            aria-live="assertive">Practitioner number must not be less than 5 characters.</div>
         <Input label='Facility Number:'
               id='facility-number'
               class='mt-3'
@@ -283,11 +285,13 @@
               class='mt-3'
               v-model='referredByFirstNameInitial'
               maxlength='1'/>
-        <Input label='Practitioner Number:'
+        <PractitionerNumberInput label='Practitioner Number:'
               id='referred-by-practitioner-number'
               class='mt-3'
-              v-model='referredByPractitionerNumber'
-              maxlength='5'/>
+              v-model='referredByPractitionerNumber'/>
+        <div class="text-danger"
+            v-if="$v.referredByPractitionerNumber.$dirty && !$v.referredByPractitionerNumber.minLength"
+            aria-live="assertive">Practitioner number must not be less than 5 characters.</div>
 
         <h2 class="mt-5">Referred To</h2>
         <Input label='Last Name:'
@@ -300,11 +304,13 @@
               class='mt-3'
               v-model='referredToFirstNameInitial'
               maxlength='1'/>
-        <Input label='Practitioner Number:'
+        <PractitionerNumberInput label='Practitioner Number:'
               id='referred-to-practitioner-number'
               class='mt-3'
-              v-model='referredToPractitionerNumber'
-              maxlength='5'/>
+              v-model='referredToPractitionerNumber'/>
+        <div class="text-danger"
+            v-if="$v.referredToPractitionerNumber.$dirty && !$v.referredToPractitionerNumber.minLength"
+            aria-live="assertive">Practitioner number must not be less than 5 characters.</div>
       </div>
     </PageContent>
     <ContinueBar @continue="validateFields()" />
@@ -362,13 +368,14 @@ import {
   SET_REFERRED_TO_PRACTITIONER_NUMBER,
 } from '@/store/modules/pay-patient-form';
 import logService from '@/services/log-service';
-import { required, maxLength } from 'vuelidate/lib/validators';
+import { required, maxLength, minLength } from 'vuelidate/lib/validators';
 import {
   DateInput,
   Input,
   NumberInput,
   PhnInput,
   PostalCodeInput,
+  PractitionerNumberInput,
   Radio,
   Textarea,
   floatValidator,
@@ -409,6 +416,7 @@ export default {
     PageContent,
     PhnInput,
     PostalCodeInput,
+    PractitionerNumberInput,
     Radio,
     Textarea,
     TimeInput,
@@ -607,7 +615,14 @@ export default {
       },
       practitionerPractitionerNumber: {
         required,
-      }
+        minLength: minLength(5),
+      },
+      referredByPractitionerNumber: {
+        minLength: optionalValidator(minLength(5)),
+      },
+      referredToPractitionerNumber: {
+        minLength: optionalValidator(minLength(5)),
+      },
     };
     return validations;
   },
