@@ -27,6 +27,9 @@
         <div class="text-danger"
             v-if="$v.dependentNumber.$dirty && !$v.dependentNumber.positiveNumberValidator"
             aria-live="assertive">Dependant number must be a positive number.</div>
+        <div class="text-danger"
+            v-if="$v.dependentNumber.$dirty && $v.dependentNumber.intValidator && $v.dependentNumber.positiveNumberValidator && !$v.dependentNumber.dependentNumberValidator"
+            aria-live="assertive">Dependant Number must be 00 or 66 for this PHN.</div>
         <Input label='Legal First Name:'
               id='first-name'
               className='mt-3'
@@ -62,8 +65,11 @@
               className='mt-3'
               v-model='birthDate' />
         <div class="text-danger"
-            v-if="$v.birthDate.$dirty && !$v.birthDate.required"
+            v-if="$v.birthDate.$dirty && dependentNumber !== '66' && !$v.birthDate.required"
             aria-live="assertive">Birth Date is required.</div>
+        <div class="text-danger"
+            v-if="$v.birthDate.$dirty && !$v.birthDate.pastDateValidator"
+            aria-live="assertive">Birth Date cannot be in the future.</div>
         
         <h2 class="mt-5">Payment Mailing Address</h2>
         <Radio label='Whose address is this?'
@@ -131,6 +137,9 @@
         <div class="text-danger"
             v-if="$v.vehicleAccidentClaimNumber.$dirty && !$v.vehicleAccidentClaimNumber.positiveNumberValidator"
             aria-live="assertive">Motor Vehicle Accident Claim Number must be a positive number.</div>
+        <div class="text-danger"
+            v-if="$v.vehicleAccidentClaimNumber.$dirty && !$v.vehicleAccidentClaimNumber.nonZeroNumberValidator"
+            aria-live="assertive">Motor Vehicle Accident Claim Number cannot be zero.</div>
         <Input label='Correspondence Attached:'
               id='correspondence-attached'
               class='mt-3'
@@ -199,11 +208,14 @@
               v-if="v.amountBilled.$dirty && !v.amountBilled.required"
               aria-live="assertive">Amount billed is required.</div>
           <div class="text-danger"
-              v-if="v.amountBilled.$dirty && v.amountBilled.required && !v.amountBilled.floatValidator"
-              aria-live="assertive">Amount billed must be an decimal number.</div>
+              v-if="v.amountBilled.$dirty && v.amountBilled.required && !v.amountBilled.dollarNumberValidator"
+              aria-live="assertive">Amount billed must be a dollar amount. Example: 10.00</div>
           <div class="text-danger"
               v-if="v.amountBilled.$dirty && v.amountBilled.required && !v.amountBilled.positiveNumberValidator"
-              aria-live="assertive">Amount billed must be a positive number.</div>  
+              aria-live="assertive">Amount billed must be a positive number.</div> 
+          <div class="text-danger"
+              v-if="v.amountBilled.$dirty && v.amountBilled.required && !v.amountBilled.amountBilledZeroValidator"
+              aria-live="assertive">Amount billed must be zero if Fee item is '03333'.</div> 
           <TimeInput label='Called Start Time:'
                     :id='"called-start-time-" + index'
                     className='mt-3'
@@ -253,19 +265,23 @@
         <div class="text-danger"
             v-if="$v.practitionerPaymentNumber.$dirty && !$v.practitionerPaymentNumber.required"
             aria-live="assertive">Payment number is required.</div>
-        <Input label='Practitioner Number:'
+        <PractitionerNumberInput label='Practitioner Number:'
               id='practitioner-number'
               class='mt-3'
-              v-model='practitionerPractitionerNumber'
-              maxlength='5'/>
+              v-model='practitionerPractitionerNumber'/>
         <div class="text-danger"
             v-if="$v.practitionerPractitionerNumber.$dirty && !$v.practitionerPractitionerNumber.required"
             aria-live="assertive">Practitioner number is required.</div>
-        <Input label='Facility Number:'
+        <div class="text-danger"
+            v-if="$v.practitionerPractitionerNumber.$dirty && $v.practitionerPractitionerNumber.required && !$v.practitionerPractitionerNumber.minLength"
+            aria-live="assertive">Practitioner number must not be less than 5 characters.</div>
+        <FacilityNumberInput label='Facility Number:'
               id='facility-number'
               class='mt-3'
-              v-model='practitionerFacilityNumber'
-              maxlength='5'/>
+              v-model='practitionerFacilityNumber'/>
+        <div class="text-danger"
+            v-if="$v.practitionerFacilityNumber.$dirty && $v.practitionerFacilityNumber.minLength"
+            aria-live="assertive">Practitioner number must not be less than 5 characters.</div>
         <Input label='Specialty Code:'
               id='specialty-code'
               class='mt-3'
@@ -283,11 +299,13 @@
               class='mt-3'
               v-model='referredByFirstNameInitial'
               maxlength='1'/>
-        <Input label='Practitioner Number:'
+        <PractitionerNumberInput label='Practitioner Number:'
               id='referred-by-practitioner-number'
               class='mt-3'
-              v-model='referredByPractitionerNumber'
-              maxlength='5'/>
+              v-model='referredByPractitionerNumber'/>
+        <div class="text-danger"
+            v-if="$v.referredByPractitionerNumber.$dirty && !$v.referredByPractitionerNumber.minLength"
+            aria-live="assertive">Practitioner number must not be less than 5 characters.</div>
 
         <h2 class="mt-5">Referred To</h2>
         <Input label='Last Name:'
@@ -300,11 +318,13 @@
               class='mt-3'
               v-model='referredToFirstNameInitial'
               maxlength='1'/>
-        <Input label='Practitioner Number:'
+        <PractitionerNumberInput label='Practitioner Number:'
               id='referred-to-practitioner-number'
               class='mt-3'
-              v-model='referredToPractitionerNumber'
-              maxlength='5'/>
+              v-model='referredToPractitionerNumber'/>
+        <div class="text-danger"
+            v-if="$v.referredToPractitionerNumber.$dirty && !$v.referredToPractitionerNumber.minLength"
+            aria-live="assertive">Practitioner number must not be less than 5 characters.</div>
       </div>
     </PageContent>
     <ContinueBar @continue="validateFields()" />
@@ -362,18 +382,22 @@ import {
   SET_REFERRED_TO_PRACTITIONER_NUMBER,
 } from '@/store/modules/pay-patient-form';
 import logService from '@/services/log-service';
-import { required, maxLength } from 'vuelidate/lib/validators';
+import { required, maxLength, minLength } from 'vuelidate/lib/validators';
 import {
   DateInput,
+  FacilityNumberInput,
   Input,
   NumberInput,
   PhnInput,
   PostalCodeInput,
+  PractitionerNumberInput,
   Radio,
   Textarea,
-  floatValidator,
+  dollarNumberValidator,
   intValidator,
+  nonZeroNumberValidator,
   optionalValidator,
+  pastDateValidator,
   phnValidator,
   positiveNumberValidator,
 } from 'common-lib-vue';
@@ -399,16 +423,35 @@ const nameInitialValidator = (value) => {
   return criteria.test(value);
 };
 
+const dependentNumberValidator = (value, vm) => {
+  const phn = vm.phn;
+  if (phn && phn[0] === '9' && !(value === '00' || value === '66')) {
+    return false;
+  }
+  return true;
+};
+
+const amountBilledZeroValidator = (value, vm) => {
+  const feeItem = vm.feeItem;
+  const parsedValue = parseFloat(value);
+  if (feeItem && feeItem === '03333' && parsedValue !== 0) {
+    return false;
+  }
+  return true;
+};
+
 export default {
   name: 'MainFormPage',
   components: {
     ContinueBar,
     DateInput,
+    FacilityNumberInput,
     Input,
     NumberInput,
     PageContent,
     PhnInput,
     PostalCodeInput,
+    PractitionerNumberInput,
     Radio,
     Textarea,
     TimeInput,
@@ -541,6 +584,7 @@ export default {
       dependentNumber: {
         intValidator: optionalValidator(intValidator),
         positiveNumberValidator: optionalValidator(positiveNumberValidator),
+        dependentNumberValidator: optionalValidator(dependentNumberValidator),
       },
       firstName: {
         required,
@@ -554,7 +598,7 @@ export default {
         nameValidator,
       },
       birthDate: {
-        required,
+        pastDateValidator: optionalValidator(pastDateValidator),
       },
       addressOwner: {
         required,
@@ -575,6 +619,7 @@ export default {
       vehicleAccidentClaimNumber: {
         intValidator: optionalValidator(intValidator),
         positiveNumberValidator: optionalValidator(positiveNumberValidator),
+        nonZeroNumberValidator: optionalValidator(nonZeroNumberValidator),
       },
       medicalServiceClaims: {
         $each: {
@@ -591,8 +636,9 @@ export default {
           },
           amountBilled: {
             required,
-            floatValidator,
+            dollarNumberValidator,
             positiveNumberValidator,
+            amountBilledZeroValidator,
           },
           diagnosticCode: {
             required,
@@ -607,8 +653,21 @@ export default {
       },
       practitionerPractitionerNumber: {
         required,
-      }
+        minLength: minLength(5),
+      },
+      practitionerFacilityNumber: {
+        minLength: optionalValidator(minLength(5)),
+      },
+      referredByPractitionerNumber: {
+        minLength: optionalValidator(minLength(5)),
+      },
+      referredToPractitionerNumber: {
+        minLength: optionalValidator(minLength(5)),
+      },
     };
+    if (this.dependentNumber === '66') {
+      validations.required = required;
+    }
     return validations;
   },
   methods: {
