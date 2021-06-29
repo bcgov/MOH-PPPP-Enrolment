@@ -65,8 +65,11 @@
               className='mt-3'
               v-model='birthDate' />
         <div class="text-danger"
-            v-if="$v.birthDate.$dirty && !$v.birthDate.required"
+            v-if="$v.birthDate.$dirty && dependentNumber !== '66' && !$v.birthDate.required"
             aria-live="assertive">Birth Date is required.</div>
+        <div class="text-danger"
+            v-if="$v.birthDate.$dirty && !$v.birthDate.pastDateValidator"
+            aria-live="assertive">Birth Date cannot be in the future.</div>
         
         <h2 class="mt-5">Payment Mailing Address</h2>
         <Radio label='Whose address is this?'
@@ -134,6 +137,9 @@
         <div class="text-danger"
             v-if="$v.vehicleAccidentClaimNumber.$dirty && !$v.vehicleAccidentClaimNumber.positiveNumberValidator"
             aria-live="assertive">Motor Vehicle Accident Claim Number must be a positive number.</div>
+        <div class="text-danger"
+            v-if="$v.vehicleAccidentClaimNumber.$dirty && !$v.vehicleAccidentClaimNumber.nonZeroNumberValidator"
+            aria-live="assertive">Motor Vehicle Accident Claim Number cannot be zero.</div>
         <Input label='Correspondence Attached:'
               id='correspondence-attached'
               class='mt-3'
@@ -202,11 +208,14 @@
               v-if="v.amountBilled.$dirty && !v.amountBilled.required"
               aria-live="assertive">Amount billed is required.</div>
           <div class="text-danger"
-              v-if="v.amountBilled.$dirty && v.amountBilled.required && !v.amountBilled.floatValidator"
-              aria-live="assertive">Amount billed must be an decimal number.</div>
+              v-if="v.amountBilled.$dirty && v.amountBilled.required && !v.amountBilled.dollarNumberValidator"
+              aria-live="assertive">Amount billed must be a dollar amount. Example: 10.00</div>
           <div class="text-danger"
               v-if="v.amountBilled.$dirty && v.amountBilled.required && !v.amountBilled.positiveNumberValidator"
-              aria-live="assertive">Amount billed must be a positive number.</div>  
+              aria-live="assertive">Amount billed must be a positive number.</div> 
+          <div class="text-danger"
+              v-if="v.amountBilled.$dirty && v.amountBilled.required && !v.amountBilled.amountBilledZeroValidator"
+              aria-live="assertive">Amount billed must be zero if Fee item is '03333'.</div> 
           <TimeInput label='Called Start Time:'
                     :id='"called-start-time-" + index'
                     className='mt-3'
@@ -384,9 +393,11 @@ import {
   PractitionerNumberInput,
   Radio,
   Textarea,
-  floatValidator,
+  dollarNumberValidator,
   intValidator,
+  nonZeroNumberValidator,
   optionalValidator,
+  pastDateValidator,
   phnValidator,
   positiveNumberValidator,
 } from 'common-lib-vue';
@@ -412,14 +423,21 @@ const nameInitialValidator = (value) => {
   return criteria.test(value);
 };
 
-const dependentNumberValidator = () => {
-  return (value, vm) => {
-    const phn = vm.phn;
-    if (phn && phn[0] === '9' && !(value === '00' || value === '66')) {
-      return false;
-    }
-    return true;
-  };
+const dependentNumberValidator = (value, vm) => {
+  const phn = vm.phn;
+  if (phn && phn[0] === '9' && !(value === '00' || value === '66')) {
+    return false;
+  }
+  return true;
+};
+
+const amountBilledZeroValidator = (value, vm) => {
+  const feeItem = vm.feeItem;
+  const parsedValue = parseFloat(value);
+  if (feeItem && feeItem === '03333' && parsedValue !== 0) {
+    return false;
+  }
+  return true;
 };
 
 export default {
@@ -566,7 +584,7 @@ export default {
       dependentNumber: {
         intValidator: optionalValidator(intValidator),
         positiveNumberValidator: optionalValidator(positiveNumberValidator),
-        dependentNumberValidator: optionalValidator(dependentNumberValidator())
+        dependentNumberValidator: optionalValidator(dependentNumberValidator),
       },
       firstName: {
         required,
@@ -580,7 +598,7 @@ export default {
         nameValidator,
       },
       birthDate: {
-        required,
+        pastDateValidator: optionalValidator(pastDateValidator),
       },
       addressOwner: {
         required,
@@ -601,6 +619,7 @@ export default {
       vehicleAccidentClaimNumber: {
         intValidator: optionalValidator(intValidator),
         positiveNumberValidator: optionalValidator(positiveNumberValidator),
+        nonZeroNumberValidator: optionalValidator(nonZeroNumberValidator),
       },
       medicalServiceClaims: {
         $each: {
@@ -617,8 +636,9 @@ export default {
           },
           amountBilled: {
             required,
-            floatValidator,
+            dollarNumberValidator,
             positiveNumberValidator,
+            amountBilledZeroValidator,
           },
           diagnosticCode: {
             required,
@@ -645,6 +665,9 @@ export default {
         minLength: optionalValidator(minLength(5)),
       },
     };
+    if (this.dependentNumber === '66') {
+      validations.required = required;
+    }
     return validations;
   },
   methods: {
