@@ -150,6 +150,9 @@
               class='mt-3'
               v-model='submissionCode'
               maxlength='1'/>
+        <div class="text-danger"
+              v-if="$v.submissionCode.$dirty && !$v.submissionCode.submissionCodeValidator"
+              aria-live="assertive">Submission code is required.</div>
         <NumberInput label='Plan Reference Number of Original Claim:'
               id='plan-reference-number-of-original-claim'
               class='mt-3'
@@ -178,6 +181,9 @@
           <div class="text-danger"
               v-if="v.serviceDate.$dirty && !v.serviceDate.required"
               aria-live="assertive">Service date is required.</div>
+          <div class="text-danger"
+              v-if="v.serviceDate.$dirty && v.serviceDate.required && !v.serviceDate.serviceDateValidator"
+              aria-live="assertive">{{getServiceDateErrorMessage(claim.feeItem)}}</div>
           <NumberInput label='Number of Services:'
                 :id='"number-of-services-" + index'
                 class='mt-3'
@@ -238,11 +244,10 @@
           <div class="text-danger"
               v-if="v.diagnosticCode.$dirty && !v.diagnosticCode.required"
               aria-live="assertive">Diagnostic code is required.</div>
-          <Input label='Location of Service:'
+          <ServiceLocationSelect label='Location of Service:'
                 :id='"location-of-service-" + index'
                 class='mt-3'
-                v-model='claim.locationOfService'
-                maxlength='2' />
+                v-model='claim.locationOfService'/>
           <Textarea label='Notes:'
                 :id='"notes-" + index'
                 class='mt-3'
@@ -385,6 +390,7 @@ import { getConvertedPath } from '@/helpers/url';
 import ContinueBar from '@/components/ContinueBar.vue';
 import PageContent from '@/components/PageContent.vue';
 import TimeInput from '@/components/TimeInput.vue';
+import ServiceLocationSelect from '@/components/ServiceLocationSelect.vue';
 import {
   MODULE_NAME as formModule,
   RESET_FORM,
@@ -440,6 +446,13 @@ import {
   phnValidator,
   positiveNumberValidator,
 } from 'common-lib-vue';
+import {
+  startOfToday,
+  addDays,
+  isBefore,
+  isAfter,
+  subDays,
+} from 'date-fns';
 
 const bcPostalCodeValidator = (value) => {
   if (value && value !== '') {
@@ -479,6 +492,35 @@ const amountBilledZeroValidator = (value, vm) => {
   return true;
 };
 
+const serviceDateValidator = (value, vm) => {
+  const feeItem = vm.feeItem;
+  if (!value) {
+    return false;
+  }
+  if (feeItem === '03333') {
+    const future90Days = addDays(startOfToday(), 90);
+    return isBefore(value, future90Days);
+  }
+  return isBefore(value, addDays(startOfToday(), 1)); // Add 1 day to include today's date.
+};
+
+const submissionCodeValidator = (value, vm) => {
+  const past90Days = subDays(startOfToday(), 90);
+  let furthestServiceDate = vm.medicalServiceClaims[0].serviceDate;
+
+  for (let i=1; i<vm.medicalServiceClaims.length; i++) {
+    if (vm.medicalServiceClaims[i].serviceDate
+      && furthestServiceDate
+      && isBefore(vm.medicalServiceClaims[i].serviceDate, furthestServiceDate)) {
+      furthestServiceDate = vm.medicalServiceClaims[i].serviceDate;
+    }
+  }
+  if (!furthestServiceDate) {
+    return true;
+  }
+  return isAfter(furthestServiceDate, past90Days);
+};
+
 export default {
   name: 'MainFormPage',
   components: {
@@ -492,6 +534,7 @@ export default {
     PostalCodeInput,
     PractitionerNumberInput,
     Radio,
+    ServiceLocationSelect,
     Textarea,
     TimeInput,
   },
@@ -660,6 +703,9 @@ export default {
         positiveNumberValidator: optionalValidator(positiveNumberValidator),
         nonZeroNumberValidator: optionalValidator(nonZeroNumberValidator),
       },
+      submissionCode: {
+        submissionCodeValidator,
+      },
       planReferenceNumberOfOriginalClaim: {
         intValidator: optionalValidator(intValidator),
         positiveNumberValidator: optionalValidator(positiveNumberValidator),
@@ -668,6 +714,7 @@ export default {
         $each: {
           serviceDate: {
             required,
+            serviceDateValidator,
           },
           numberOfServices: {
             required,
@@ -797,6 +844,12 @@ export default {
         return `Medical Service Claim (${index + 1} of ${this.medicalServiceClaims.length})`;
       }
       return 'Medical Service Claim';
+    },
+    getServiceDateErrorMessage(feeItem) {
+      if (feeItem === '03333') {
+        return 'Service date cannot be more than 90 days in the future.';
+      }
+      return 'Service date cannot be in the future.';
     }
   },
   computed: {

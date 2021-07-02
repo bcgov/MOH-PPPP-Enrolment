@@ -32,14 +32,14 @@ export default {
       calledStartTime: '08:00',
       renderedFinishTime: '16:00',
       diagnosticCode: 'DC',
-      locationOfService: 'Hospital',
+      locationOfService: 'A',
       notes: 'Notes here.',
     }
   ],
 
   practitionerLastNameOrClinicName: 'Doe',
   practitionerFirstNameInitial: 'J',
-  practitionerPaymentNumber: '123',
+  practitionerPaymentNumber: 'A0001',
   practitionerPractitionerNumber: '22274',
   practitionerFacilityNumber: '12345',
   practitionerSpecialtyCode: '321',
