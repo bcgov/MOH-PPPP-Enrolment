@@ -371,6 +371,18 @@
             aria-live="assertive">Practitioner number must not be less than 5 characters.</div>
       </div>
     </PageContent>
+    <PromptModal v-if='isValidationModalShown'
+                title='Warning'
+                @yes='validationModalYesHandler()'
+                @no='validationModalNoHandler()'>
+      <p>The following items do not match our records:</p>
+      <ul v-if="validationWarningList.length > 0">
+        <li v-for="(item, index) in validationWarningList"
+            :key="index"
+            class="text-danger validation-warning-item">{{item}}</li>
+      </ul>
+      <p>Do you wish to continue?</p>
+    </PromptModal>
     <ContinueBar @continue="validateFields()" />
   </div>
 </template>
@@ -436,6 +448,7 @@ import {
   PhnInput,
   PostalCodeInput,
   PractitionerNumberInput,
+  PromptModal,
   Radio,
   Textarea,
   dollarNumberValidator,
@@ -533,6 +546,7 @@ export default {
     PhnInput,
     PostalCodeInput,
     PractitionerNumberInput,
+    PromptModal,
     Radio,
     ServiceLocationSelect,
     Textarea,
@@ -541,6 +555,7 @@ export default {
   data: () => {
     return {
       isPageLoaded: false,
+      isValidationModalShown: false,
       addressOwnerOptions: [
         {
           id: 'address-owner-practitioner',
@@ -630,7 +645,7 @@ export default {
     this.planReferenceNumberOfOriginalClaim = this.$store.state.payPatientForm.planReferenceNumberOfOriginalClaim;
     this.diagnosisOrAreaOfTreatment = this.$store.state.payPatientForm.diagnosisOrAreaOfTreatment;
 
-    this.medicalServiceClaims = this.$store.state.payPatientForm.medicalServiceClaims;
+    this.medicalServiceClaims = this.$store.state.payPatientForm.medicalServiceClaims ? [...this.$store.state.payPatientForm.medicalServiceClaims] : [];
 
     this.practitionerLastNameOrClinicName = this.$store.state.payPatientForm.practitionerLastNameOrClinicName;
     this.practitionerFirstNameInitial = this.$store.state.payPatientForm.practitionerFirstNameInitial;
@@ -791,6 +806,18 @@ export default {
         return;
       }
 
+      // Do server-side validation.
+      this.isValidationModalShown = true;
+
+      // this.navigateToNextPage();
+    },
+    validationModalYesHandler() {
+      this.navigateToNextPage();
+    },
+    validationModalNoHandler() {
+      this.isValidationModalShown = false;
+    },
+    navigateToNextPage() {
       this.$store.dispatch(formModule + '/' + SET_PHN, this.phn);
       this.$store.dispatch(formModule + '/' + SET_DEPENDENT_NUMBER, this.dependentNumber);
       this.$store.dispatch(formModule + '/' + SET_FIRST_NAME, this.firstName);
@@ -863,6 +890,11 @@ export default {
           || !!this.referredToLastName
           || !!this.referredToPractitionerNumber;
     },
+    validationWarningList() {
+      const result = [];
+      result.push('Placeholder field name');
+      return result;
+    },
   },
   // Required in order to block back navigation.
   beforeRouteLeave(to, from, next) {
@@ -892,5 +924,7 @@ export default {
 </script>
 
 <style scoped>
-
+.validation-warning-item {
+  font-size: 1rem;
+}
 </style>

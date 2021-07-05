@@ -373,4 +373,9 @@ export default {
 a {
   text-decoration: none;
 }
+/* Setting the size of the edit icons. */
+a svg {
+  width: 16px;
+  height: 16px;
+}
 </style>
