@@ -150,11 +150,20 @@
               class='mt-3'
               v-model='submissionCode'
               maxlength='1'/>
-        <Input label='Plan Reference Number of Original Claim:'
+        <div class="text-danger"
+              v-if="$v.submissionCode.$dirty && !$v.submissionCode.submissionCodeValidator"
+              aria-live="assertive">Submission code is required.</div>
+        <NumberInput label='Plan Reference Number of Original Claim:'
               id='plan-reference-number-of-original-claim'
               class='mt-3'
               v-model='planReferenceNumberOfOriginalClaim'
               maxlength='10'/>
+        <div class="text-danger"
+            v-if="$v.planReferenceNumberOfOriginalClaim.$dirty && !$v.planReferenceNumberOfOriginalClaim.intValidator"
+            aria-live="assertive">Plan Reference Number of Original Claim must be an integer.</div>
+        <div class="text-danger"
+            v-if="$v.planReferenceNumberOfOriginalClaim.$dirty && !$v.planReferenceNumberOfOriginalClaim.positiveNumberValidator"
+            aria-live="assertive">Plan Reference Number of Original Claim must be a positive number.</div>
         <Input label='Diagnosis or Area of Treatment:'
               id='diagnosis-or-area-of-treatment'
               class='mt-3'
@@ -172,6 +181,9 @@
           <div class="text-danger"
               v-if="v.serviceDate.$dirty && !v.serviceDate.required"
               aria-live="assertive">Service date is required.</div>
+          <div class="text-danger"
+              v-if="v.serviceDate.$dirty && v.serviceDate.required && !v.serviceDate.serviceDateValidator"
+              aria-live="assertive">{{getServiceDateErrorMessage(claim.feeItem)}}</div>
           <NumberInput label='Number of Services:'
                 :id='"number-of-services-" + index'
                 class='mt-3'
@@ -232,11 +244,10 @@
           <div class="text-danger"
               v-if="v.diagnosticCode.$dirty && !v.diagnosticCode.required"
               aria-live="assertive">Diagnostic code is required.</div>
-          <Input label='Location of Service:'
+          <ServiceLocationSelect label='Location of Service:'
                 :id='"location-of-service-" + index'
                 class='mt-3'
-                v-model='claim.locationOfService'
-                maxlength='2' />
+                v-model='claim.locationOfService'/>
           <Textarea label='Notes:'
                 :id='"notes-" + index'
                 class='mt-3'
@@ -257,14 +268,17 @@
               class='mt-3'
               v-model='practitionerFirstNameInitial'
               maxlength='1'/>
-        <Input label='Payment Number:'
+        <!-- Using PractitionerNumberInput because payment number has the same format as a practitioner number -->
+        <PractitionerNumberInput label='Payment Number:'
               id='payment-number'
               class='mt-3'
-              v-model='practitionerPaymentNumber'
-              maxlength='5'/>
+              v-model='practitionerPaymentNumber'/>
         <div class="text-danger"
             v-if="$v.practitionerPaymentNumber.$dirty && !$v.practitionerPaymentNumber.required"
             aria-live="assertive">Payment number is required.</div>
+        <div class="text-danger"
+            v-if="$v.practitionerPaymentNumber.$dirty && $v.practitionerPaymentNumber.required && !$v.practitionerPaymentNumber.minLength"
+            aria-live="assertive">Practitioner number must not be less than 5 characters.</div>
         <PractitionerNumberInput label='Practitioner Number:'
               id='practitioner-number'
               class='mt-3'
@@ -280,7 +294,7 @@
               class='mt-3'
               v-model='practitionerFacilityNumber'/>
         <div class="text-danger"
-            v-if="$v.practitionerFacilityNumber.$dirty && $v.practitionerFacilityNumber.minLength"
+            v-if="$v.practitionerFacilityNumber.$dirty && !$v.practitionerFacilityNumber.minLength"
             aria-live="assertive">Practitioner number must not be less than 5 characters.</div>
         <Input label='Specialty Code:'
               id='specialty-code'
@@ -294,15 +308,30 @@
               class='mt-3'
               v-model='referredByLastName'
               maxlength='18'/>
+        <div class="text-danger"
+            v-if="isReferredByPopulated && $v.referredByLastName.$dirty && !$v.referredByLastName.required"
+            aria-live="assertive">Last name is required.</div>
+        <div class="text-danger"
+            v-if="$v.referredByLastName.$dirty && !$v.referredByLastName.nameValidator"
+            aria-live="assertive">Last name must begin with a letter and cannot include special characters except hyphens, periods, apostrophes and blank characters.</div>
         <Input label='First Name Initial:'
               id='referred-by-first-name-initial'
               class='mt-3'
               v-model='referredByFirstNameInitial'
               maxlength='1'/>
+        <div class="text-danger"
+            v-if="isReferredByPopulated && $v.referredByFirstNameInitial.$dirty && !$v.referredByFirstNameInitial.required"
+            aria-live="assertive">First name initial is required.</div>
+        <div class="text-danger"
+            v-if="$v.referredByFirstNameInitial.$dirty && !$v.referredByFirstNameInitial.nameInitialValidator"
+            aria-live="assertive">First name initial must be a letter.</div>
         <PractitionerNumberInput label='Practitioner Number:'
               id='referred-by-practitioner-number'
               class='mt-3'
               v-model='referredByPractitionerNumber'/>
+        <div class="text-danger"
+            v-if="isReferredByPopulated && $v.referredByPractitionerNumber.$dirty && !$v.referredByPractitionerNumber.required"
+            aria-live="assertive">Practitioner number is required.</div>
         <div class="text-danger"
             v-if="$v.referredByPractitionerNumber.$dirty && !$v.referredByPractitionerNumber.minLength"
             aria-live="assertive">Practitioner number must not be less than 5 characters.</div>
@@ -313,20 +342,47 @@
               class='mt-3'
               v-model='referredToLastName'
               maxlength='18'/>
+        <div class="text-danger"
+            v-if="isReferredToPopulated && $v.referredToLastName.$dirty && !$v.referredToLastName.required"
+            aria-live="assertive">Last name is required.</div>
+        <div class="text-danger"
+            v-if="$v.referredToLastName.$dirty && !$v.referredToLastName.nameValidator"
+            aria-live="assertive">Last name must begin with a letter and cannot include special characters except hyphens, periods, apostrophes and blank characters.</div>
         <Input label='First Name Initial:'
               id='referred-to-first-name-initial'
               class='mt-3'
               v-model='referredToFirstNameInitial'
               maxlength='1'/>
+        <div class="text-danger"
+            v-if="isReferredToPopulated && $v.referredToFirstNameInitial.$dirty && !$v.referredToFirstNameInitial.required"
+            aria-live="assertive">First name initial is required.</div>
+        <div class="text-danger"
+            v-if="$v.referredToFirstNameInitial.$dirty && !$v.referredToFirstNameInitial.nameInitialValidator"
+            aria-live="assertive">First name initial must be a letter.</div>
         <PractitionerNumberInput label='Practitioner Number:'
               id='referred-to-practitioner-number'
               class='mt-3'
               v-model='referredToPractitionerNumber'/>
         <div class="text-danger"
+            v-if="isReferredToPopulated && $v.referredToPractitionerNumber.$dirty && !$v.referredToPractitionerNumber.required"
+            aria-live="assertive">Practitioner number is required.</div>
+        <div class="text-danger"
             v-if="$v.referredToPractitionerNumber.$dirty && !$v.referredToPractitionerNumber.minLength"
             aria-live="assertive">Practitioner number must not be less than 5 characters.</div>
       </div>
     </PageContent>
+    <PromptModal v-if='isValidationModalShown'
+                title='Warning'
+                @yes='validationModalYesHandler()'
+                @no='validationModalNoHandler()'>
+      <p>The following items do not match our records:</p>
+      <ul v-if="validationWarningList.length > 0">
+        <li v-for="(item, index) in validationWarningList"
+            :key="index"
+            class="text-danger validation-warning-item">{{item}}</li>
+      </ul>
+      <p>Do you wish to continue?</p>
+    </PromptModal>
     <ContinueBar @continue="validateFields()" />
   </div>
 </template>
@@ -346,6 +402,7 @@ import { getConvertedPath } from '@/helpers/url';
 import ContinueBar from '@/components/ContinueBar.vue';
 import PageContent from '@/components/PageContent.vue';
 import TimeInput from '@/components/TimeInput.vue';
+import ServiceLocationSelect from '@/components/ServiceLocationSelect.vue';
 import {
   MODULE_NAME as formModule,
   RESET_FORM,
@@ -391,6 +448,7 @@ import {
   PhnInput,
   PostalCodeInput,
   PractitionerNumberInput,
+  PromptModal,
   Radio,
   Textarea,
   dollarNumberValidator,
@@ -401,6 +459,13 @@ import {
   phnValidator,
   positiveNumberValidator,
 } from 'common-lib-vue';
+import {
+  startOfToday,
+  addDays,
+  isBefore,
+  isAfter,
+  subDays,
+} from 'date-fns';
 
 const bcPostalCodeValidator = (value) => {
   if (value && value !== '') {
@@ -440,6 +505,35 @@ const amountBilledZeroValidator = (value, vm) => {
   return true;
 };
 
+const serviceDateValidator = (value, vm) => {
+  const feeItem = vm.feeItem;
+  if (!value) {
+    return false;
+  }
+  if (feeItem === '03333') {
+    const future90Days = addDays(startOfToday(), 90);
+    return isBefore(value, future90Days);
+  }
+  return isBefore(value, addDays(startOfToday(), 1)); // Add 1 day to include today's date.
+};
+
+const submissionCodeValidator = (value, vm) => {
+  const past90Days = subDays(startOfToday(), 90);
+  let furthestServiceDate = vm.medicalServiceClaims[0].serviceDate;
+
+  for (let i=1; i<vm.medicalServiceClaims.length; i++) {
+    if (vm.medicalServiceClaims[i].serviceDate
+      && furthestServiceDate
+      && isBefore(vm.medicalServiceClaims[i].serviceDate, furthestServiceDate)) {
+      furthestServiceDate = vm.medicalServiceClaims[i].serviceDate;
+    }
+  }
+  if (!furthestServiceDate) {
+    return true;
+  }
+  return isAfter(furthestServiceDate, past90Days);
+};
+
 export default {
   name: 'MainFormPage',
   components: {
@@ -452,13 +546,16 @@ export default {
     PhnInput,
     PostalCodeInput,
     PractitionerNumberInput,
+    PromptModal,
     Radio,
+    ServiceLocationSelect,
     Textarea,
     TimeInput,
   },
   data: () => {
     return {
       isPageLoaded: false,
+      isValidationModalShown: false,
       addressOwnerOptions: [
         {
           id: 'address-owner-practitioner',
@@ -548,7 +645,7 @@ export default {
     this.planReferenceNumberOfOriginalClaim = this.$store.state.payPatientForm.planReferenceNumberOfOriginalClaim;
     this.diagnosisOrAreaOfTreatment = this.$store.state.payPatientForm.diagnosisOrAreaOfTreatment;
 
-    this.medicalServiceClaims = this.$store.state.payPatientForm.medicalServiceClaims;
+    this.medicalServiceClaims = this.$store.state.payPatientForm.medicalServiceClaims ? [...this.$store.state.payPatientForm.medicalServiceClaims] : [];
 
     this.practitionerLastNameOrClinicName = this.$store.state.payPatientForm.practitionerLastNameOrClinicName;
     this.practitionerFirstNameInitial = this.$store.state.payPatientForm.practitionerFirstNameInitial;
@@ -621,10 +718,18 @@ export default {
         positiveNumberValidator: optionalValidator(positiveNumberValidator),
         nonZeroNumberValidator: optionalValidator(nonZeroNumberValidator),
       },
+      submissionCode: {
+        submissionCodeValidator,
+      },
+      planReferenceNumberOfOriginalClaim: {
+        intValidator: optionalValidator(intValidator),
+        positiveNumberValidator: optionalValidator(positiveNumberValidator),
+      },
       medicalServiceClaims: {
         $each: {
           serviceDate: {
             required,
+            serviceDateValidator,
           },
           numberOfServices: {
             required,
@@ -650,6 +755,7 @@ export default {
       },
       practitionerPaymentNumber: {
         required,
+        minLength: minLength(5),
       },
       practitionerPractitionerNumber: {
         required,
@@ -658,15 +764,37 @@ export default {
       practitionerFacilityNumber: {
         minLength: optionalValidator(minLength(5)),
       },
+      referredByFirstNameInitial: {
+        nameInitialValidator: optionalValidator(nameInitialValidator),
+      },
+      referredByLastName: {
+        nameValidator: optionalValidator(nameValidator),
+      },
       referredByPractitionerNumber: {
         minLength: optionalValidator(minLength(5)),
+      },
+      referredToFirstNameInitial: {
+        nameInitialValidator: optionalValidator(nameInitialValidator),
+      },
+      referredToLastName: {
+        nameValidator: optionalValidator(nameValidator),
       },
       referredToPractitionerNumber: {
         minLength: optionalValidator(minLength(5)),
       },
     };
-    if (this.dependentNumber === '66') {
-      validations.required = required;
+    if (this.dependentNumber !== '66') {
+      validations.birthDate.required = required;
+    }
+    if (this.isReferredByPopulated) {
+      validations.referredByFirstNameInitial.required = required;
+      validations.referredByLastName.required = required;
+      validations.referredByPractitionerNumber.required = required;
+    }
+    if (this.isReferredToPopulated) {
+      validations.referredToFirstNameInitial.required = required;
+      validations.referredToLastName.required = required;
+      validations.referredToPractitionerNumber.required = required;
     }
     return validations;
   },
@@ -678,6 +806,18 @@ export default {
         return;
       }
 
+      // Do server-side validation.
+      this.isValidationModalShown = true;
+
+      // this.navigateToNextPage();
+    },
+    validationModalYesHandler() {
+      this.navigateToNextPage();
+    },
+    validationModalNoHandler() {
+      this.isValidationModalShown = false;
+    },
+    navigateToNextPage() {
       this.$store.dispatch(formModule + '/' + SET_PHN, this.phn);
       this.$store.dispatch(formModule + '/' + SET_DEPENDENT_NUMBER, this.dependentNumber);
       this.$store.dispatch(formModule + '/' + SET_FIRST_NAME, this.firstName);
@@ -731,7 +871,30 @@ export default {
         return `Medical Service Claim (${index + 1} of ${this.medicalServiceClaims.length})`;
       }
       return 'Medical Service Claim';
+    },
+    getServiceDateErrorMessage(feeItem) {
+      if (feeItem === '03333') {
+        return 'Service date cannot be more than 90 days in the future.';
+      }
+      return 'Service date cannot be in the future.';
     }
+  },
+  computed: {
+    isReferredByPopulated() {
+      return !!this.referredByFirstNameInitial
+          || !!this.referredByLastName
+          || !!this.referredByPractitionerNumber;
+    },
+    isReferredToPopulated() {
+      return !!this.referredToFirstNameInitial
+          || !!this.referredToLastName
+          || !!this.referredToPractitionerNumber;
+    },
+    validationWarningList() {
+      const result = [];
+      result.push('Placeholder field name');
+      return result;
+    },
   },
   // Required in order to block back navigation.
   beforeRouteLeave(to, from, next) {
@@ -761,5 +924,7 @@ export default {
 </script>
 
 <style scoped>
-
+.validation-warning-item {
+  font-size: 1rem;
+}
 </style>
