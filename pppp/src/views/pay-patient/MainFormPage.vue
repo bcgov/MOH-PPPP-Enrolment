@@ -227,7 +227,7 @@
               aria-live="assertive">Amount billed must be a positive number.</div> 
           <div class="text-danger"
               v-if="v.amountBilled.$dirty && v.amountBilled.required && !v.amountBilled.amountBilledZeroValidator"
-              aria-live="assertive">Amount billed must be zero if Fee item is '03333'.</div> 
+              aria-live="assertive">Amount billed must be zero if Fee item is '03333'.</div>
           <TimeInput label='Called Start Time:'
                     :id='"called-start-time-" + index'
                     className='mt-3'
@@ -295,7 +295,7 @@
               v-model='practitionerFacilityNumber'/>
         <div class="text-danger"
             v-if="$v.practitionerFacilityNumber.$dirty && !$v.practitionerFacilityNumber.minLength"
-            aria-live="assertive">Practitioner number must not be less than 5 characters.</div>
+            aria-live="assertive">Facility number must not be less than 5 characters.</div>
         <Input label='Specialty Code:'
               id='specialty-code'
               class='mt-3'
@@ -481,9 +481,6 @@ const nameValidator = (value) => {
 };
 
 const nameInitialValidator = (value) => {
-  if (!value) {
-    return true;
-  }
   const criteria = /^[a-zA-Z]*$/;
   return criteria.test(value);
 };
@@ -688,7 +685,7 @@ export default {
         nameValidator,
       },
       middleInitial: {
-        nameInitialValidator,
+        nameInitialValidator: optionalValidator(nameInitialValidator),
       },
       lastName: {
         required,
