@@ -479,6 +479,18 @@
             aria-live="assertive">Practitioner number must not be less than 5 characters.</div>
       </div>
     </PageContent>
+    <PromptModal v-if='isValidationModalShown'
+                title='Warning'
+                @yes='validationModalYesHandler()'
+                @no='validationModalNoHandler()'>
+      <p>The following items do not match our records:</p>
+      <ul v-if="validationWarningList.length > 0">
+        <li v-for="(item, index) in validationWarningList"
+            :key="index"
+            class="text-danger validation-warning-item">{{item}}</li>
+      </ul>
+      <p>Do you wish to continue?</p>
+    </PromptModal>
     <ContinueBar @continue="validateFields()" />
   </div>
 </template>
@@ -542,6 +554,7 @@ import {
   NumberInput,
   PhnInput,
   PractitionerNumberInput,
+  PromptModal,
   Radio,
   Textarea,
   dollarNumberValidator,
@@ -619,6 +632,7 @@ export default {
     PageContent,
     PhnInput,
     PractitionerNumberInput,
+    PromptModal,
     Radio,
     Textarea,
     TimeInput,
@@ -626,6 +640,7 @@ export default {
   data: () => {
     return {
       isPageLoaded: false,
+      isValidationModalShown: false,
       addressOwnerOptions: [
         {
           id: 'address-owner-practitioner',
@@ -894,6 +909,18 @@ export default {
         return;
       }
 
+      // Do server-side validation.
+      this.isValidationModalShown = true;
+
+      // this.navigateToNextPage();
+    },
+    validationModalYesHandler() {
+      this.navigateToNextPage();
+    },
+    validationModalNoHandler() {
+      this.isValidationModalShown = false;
+    },
+    navigateToNextPage() {
       this.$store.dispatch(formModule + '/' + SET_PHN, this.phn);
       this.$store.dispatch(formModule + '/' + SET_DEPENDENT_NUMBER, this.dependentNumber);
       this.$store.dispatch(formModule + '/' + SET_FIRST_NAME, this.firstName);
@@ -1001,5 +1028,7 @@ export default {
 </script>
 
 <style scoped>
-
+.validation-warning-item {
+  font-size: 1rem;
+}
 </style>
