@@ -149,6 +149,8 @@
         <div class="text-danger"
             v-if="$v.vehicleAccidentClaimNumber.$dirty && !$v.vehicleAccidentClaimNumber.nonZeroNumberValidator"
             aria-live="assertive">Motor Vehicle Accident Claim Number cannot be zero.</div>
+        
+        <hr class='mt-5'/>
         <Input label='Correspondence Attached:'
               id='correspondence-attached'
               class='mt-3'
