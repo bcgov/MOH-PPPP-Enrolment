@@ -9,7 +9,8 @@
         <PhnInput label='Personal Health Number:'
               id='phn'
               className='mt-3'
-              v-model='phn' />
+              v-model='phn'
+              :isRequiredAsteriskShown='true' />
         <div class="text-danger"
             v-if="$v.phn.$dirty && !$v.phn.required"
             aria-live="assertive">Personal Health Number is required.</div>
@@ -34,7 +35,8 @@
               id='first-name'
               className='mt-3'
               v-model='firstName'
-              maxlength='12' />
+              maxlength='12'
+              :isRequiredAsteriskShown='true' />
         <div class="text-danger"
             v-if="$v.firstName.$dirty && !$v.firstName.required"
             aria-live="assertive">Legal First Name is required.</div>
@@ -53,7 +55,8 @@
               id='last-name'
               className='mt-3'
               v-model='lastName'
-              maxlength='18' />
+              maxlength='18'
+              :isRequiredAsteriskShown='true' />
         <div class="text-danger"
             v-if="$v.lastName.$dirty && !$v.lastName.required"
             aria-live="assertive">Legal Last Name is required.</div>
@@ -63,7 +66,8 @@
         <DateInput label='Birth Date:'
               id='birth-date'
               className='mt-3'
-              v-model='birthDate' />
+              v-model='birthDate'
+              :isRequiredAsteriskShown="dependentNumber !== '66'" />
         <div class="text-danger"
             v-if="$v.birthDate.$dirty && dependentNumber !== '66' && !$v.birthDate.required"
             aria-live="assertive">Birth Date is required.</div>
@@ -75,7 +79,8 @@
         <Radio label='Whose address is this?'
               class='mt-3'
               v-model='addressOwner'
-              :items='addressOwnerOptions' />
+              :items='addressOwnerOptions'
+              :isRequiredAsteriskShown='true' />
         <div class="text-danger"
             v-if="$v.addressOwner.$dirty && !$v.addressOwner.required"
             aria-live="assertive">This field is required.</div>
@@ -93,7 +98,8 @@
               id='street-name'
               className='mt-3'
               v-model='streetName'
-              maxlength='24' />
+              maxlength='24'
+              :isRequiredAsteriskShown='true' />
         <div class="text-danger"
             v-if="$v.streetName.$dirty && !$v.streetName.required"
             aria-live="assertive">Street Name is required.</div>
@@ -101,7 +107,8 @@
               id='city'
               className='mt-3'
               v-model='city'
-              maxlength='25' />
+              maxlength='25'
+              :isRequiredAsteriskShown='true' />
         <div class="text-danger"
             v-if="$v.city.$dirty && !$v.city.required"
             aria-live="assertive">City is required.</div>
@@ -110,7 +117,8 @@
         <PostalCodeInput label='Postal Code:'
               id='postal-code'
               className='mt-3'
-              v-model='postalCode' />
+              v-model='postalCode'
+              :isRequiredAsteriskShown='true' />
         <div class="text-danger"
             v-if="$v.postalCode.$dirty && !$v.postalCode.required"
             aria-live="assertive">Postal Code is required.</div>
@@ -122,7 +130,8 @@
         <Radio label='Is this claim related to a motor vehicle accident?'
               class='mt-3'
               v-model='isVehicleAccident'
-              :items='isVehicleAccidentOptions' />
+              :items='isVehicleAccidentOptions'
+              :isRequiredAsteriskShown='true' />
         <div class="text-danger"
             v-if="$v.isVehicleAccident.$dirty && !$v.isVehicleAccident.required"
             aria-live="assertive">This field is required.</div>
@@ -140,6 +149,8 @@
         <div class="text-danger"
             v-if="$v.vehicleAccidentClaimNumber.$dirty && !$v.vehicleAccidentClaimNumber.nonZeroNumberValidator"
             aria-live="assertive">Motor Vehicle Accident Claim Number cannot be zero.</div>
+        
+        <hr class='mt-5'/>
         <Input label='Correspondence Attached:'
               id='correspondence-attached'
               class='mt-3'
@@ -177,7 +188,8 @@
           <DateInput label='Service Date:'
                     :id="'service-date' + index"
                     className='mt-3'
-                    v-model='claim.serviceDate' />
+                    v-model='claim.serviceDate'
+                    :isRequiredAsteriskShown='true' />
           <div class="text-danger"
               v-if="v.serviceDate.$dirty && !v.serviceDate.required"
               aria-live="assertive">Service date is required.</div>
@@ -188,7 +200,8 @@
                 :id='"number-of-services-" + index'
                 class='mt-3'
                 v-model='claim.numberOfServices'
-                maxlength='2' />
+                maxlength='2'
+                :isRequiredAsteriskShown='true' />
           <div class="text-danger"
               v-if="v.numberOfServices.$dirty && !v.numberOfServices.required"
               aria-live="assertive">Number of services is required.</div>
@@ -207,7 +220,8 @@
                 :id='"fee-item-" + index'
                 class='mt-3'
                 v-model='claim.feeItem'
-                maxlength='5' />
+                maxlength='5'
+                :isRequiredAsteriskShown='true' />
           <div class="text-danger"
               v-if="v.feeItem.$dirty && !v.feeItem.required"
               aria-live="assertive">Fee item is required.</div>
@@ -215,7 +229,8 @@
                 :id='"amount-billed-" + index'
                 class='mt-3'
                 v-model='claim.amountBilled'
-                maxlength='7' />
+                maxlength='7'
+                :isRequiredAsteriskShown='true' />
           <div class="text-danger"
               v-if="v.amountBilled.$dirty && !v.amountBilled.required"
               aria-live="assertive">Amount billed is required.</div>
@@ -227,7 +242,7 @@
               aria-live="assertive">Amount billed must be a positive number.</div> 
           <div class="text-danger"
               v-if="v.amountBilled.$dirty && v.amountBilled.required && !v.amountBilled.amountBilledZeroValidator"
-              aria-live="assertive">Amount billed must be zero if Fee item is '03333'.</div> 
+              aria-live="assertive">Amount billed must be zero if Fee item is '03333'.</div>
           <TimeInput label='Called Start Time:'
                     :id='"called-start-time-" + index'
                     className='mt-3'
@@ -240,7 +255,8 @@
                 :id='"diagnostic-code-" + index'
                 class='mt-3'
                 v-model='claim.diagnosticCode'
-                maxlength='5' />
+                maxlength='5'
+                :isRequiredAsteriskShown='true' />
           <div class="text-danger"
               v-if="v.diagnosticCode.$dirty && !v.diagnosticCode.required"
               aria-live="assertive">Diagnostic code is required.</div>
@@ -272,7 +288,8 @@
         <PractitionerNumberInput label='Payment Number:'
               id='payment-number'
               class='mt-3'
-              v-model='practitionerPaymentNumber'/>
+              v-model='practitionerPaymentNumber'
+              :isRequiredAsteriskShown='true'/>
         <div class="text-danger"
             v-if="$v.practitionerPaymentNumber.$dirty && !$v.practitionerPaymentNumber.required"
             aria-live="assertive">Payment number is required.</div>
@@ -282,7 +299,8 @@
         <PractitionerNumberInput label='Practitioner Number:'
               id='practitioner-number'
               class='mt-3'
-              v-model='practitionerPractitionerNumber'/>
+              v-model='practitionerPractitionerNumber'
+              :isRequiredAsteriskShown='true'/>
         <div class="text-danger"
             v-if="$v.practitionerPractitionerNumber.$dirty && !$v.practitionerPractitionerNumber.required"
             aria-live="assertive">Practitioner number is required.</div>
@@ -295,7 +313,7 @@
               v-model='practitionerFacilityNumber'/>
         <div class="text-danger"
             v-if="$v.practitionerFacilityNumber.$dirty && !$v.practitionerFacilityNumber.minLength"
-            aria-live="assertive">Practitioner number must not be less than 5 characters.</div>
+            aria-live="assertive">Facility number must not be less than 5 characters.</div>
         <Input label='Specialty Code:'
               id='specialty-code'
               class='mt-3'
@@ -307,7 +325,8 @@
               id='referred-by-last-name'
               class='mt-3'
               v-model='referredByLastName'
-              maxlength='18'/>
+              maxlength='18'
+              :isRequiredAsteriskShown='isReferredByPopulated'/>
         <div class="text-danger"
             v-if="isReferredByPopulated && $v.referredByLastName.$dirty && !$v.referredByLastName.required"
             aria-live="assertive">Last name is required.</div>
@@ -318,7 +337,8 @@
               id='referred-by-first-name-initial'
               class='mt-3'
               v-model='referredByFirstNameInitial'
-              maxlength='1'/>
+              maxlength='1'
+              :isRequiredAsteriskShown='isReferredByPopulated'/>
         <div class="text-danger"
             v-if="isReferredByPopulated && $v.referredByFirstNameInitial.$dirty && !$v.referredByFirstNameInitial.required"
             aria-live="assertive">First name initial is required.</div>
@@ -328,7 +348,8 @@
         <PractitionerNumberInput label='Practitioner Number:'
               id='referred-by-practitioner-number'
               class='mt-3'
-              v-model='referredByPractitionerNumber'/>
+              v-model='referredByPractitionerNumber'
+              :isRequiredAsteriskShown='isReferredByPopulated'/>
         <div class="text-danger"
             v-if="isReferredByPopulated && $v.referredByPractitionerNumber.$dirty && !$v.referredByPractitionerNumber.required"
             aria-live="assertive">Practitioner number is required.</div>
@@ -341,7 +362,8 @@
               id='referred-to-last-name'
               class='mt-3'
               v-model='referredToLastName'
-              maxlength='18'/>
+              maxlength='18'
+              :isRequiredAsteriskShown='isReferredToPopulated'/>
         <div class="text-danger"
             v-if="isReferredToPopulated && $v.referredToLastName.$dirty && !$v.referredToLastName.required"
             aria-live="assertive">Last name is required.</div>
@@ -352,7 +374,8 @@
               id='referred-to-first-name-initial'
               class='mt-3'
               v-model='referredToFirstNameInitial'
-              maxlength='1'/>
+              maxlength='1'
+              :isRequiredAsteriskShown='isReferredToPopulated'/>
         <div class="text-danger"
             v-if="isReferredToPopulated && $v.referredToFirstNameInitial.$dirty && !$v.referredToFirstNameInitial.required"
             aria-live="assertive">First name initial is required.</div>
@@ -362,7 +385,8 @@
         <PractitionerNumberInput label='Practitioner Number:'
               id='referred-to-practitioner-number'
               class='mt-3'
-              v-model='referredToPractitionerNumber'/>
+              v-model='referredToPractitionerNumber'
+              :isRequiredAsteriskShown='isReferredToPopulated'/>
         <div class="text-danger"
             v-if="isReferredToPopulated && $v.referredToPractitionerNumber.$dirty && !$v.referredToPractitionerNumber.required"
             aria-live="assertive">Practitioner number is required.</div>
@@ -481,9 +505,6 @@ const nameValidator = (value) => {
 };
 
 const nameInitialValidator = (value) => {
-  if (!value) {
-    return true;
-  }
   const criteria = /^[a-zA-Z]*$/;
   return criteria.test(value);
 };
@@ -688,7 +709,7 @@ export default {
         nameValidator,
       },
       middleInitial: {
-        nameInitialValidator,
+        nameInitialValidator: optionalValidator(nameInitialValidator),
       },
       lastName: {
         required,
