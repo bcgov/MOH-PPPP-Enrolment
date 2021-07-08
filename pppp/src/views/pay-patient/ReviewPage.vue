@@ -5,22 +5,25 @@
         <h1>Review request</h1>
         <p>Review your request before submission</p>
         <hr/>
+        <CorrespondenceAttachedMessage v-if="isCorrespondenceAttached" />
         <ReviewTableList :showEditButtons='true' 
                         tableBackgroundColor='#EEE'/>
+        <CorrespondenceAttachedMessage v-if="isCorrespondenceAttached" />
         <div v-if="isSystemUnavailable"
             class="text-danger mt-3 mb-5"
             aria-live="assertive">Unable to continue, system unavailable. Please try again later.</div>
       </div>
     </PageContent>
-    <ContinueBar @continue='submitForm()'
+    <ContinueBar @continue='continueHandler()'
                 :hasLoader='isLoading'
-                buttonLabel='Submit'/>
+                :buttonLabel='continueButtonLabel'/>
   </div>
 </template>
 
 <script>
 import PageContent from '@/components/PageContent.vue';
 import ContinueBar from '@/components/ContinueBar.vue';
+import CorrespondenceAttachedMessage from '@/components/CorrespondenceAttachedMessage.vue';
 import ReviewTableList from '@/components/pay-patient/ReviewTableList.vue';
 import pageStateService from '@/services/page-state-service';
 import {
@@ -45,6 +48,7 @@ import logService from '../../services/log-service';
 export default {
   name: 'ReviewPage',
   components: {
+    CorrespondenceAttachedMessage,
     PageContent,
     ContinueBar,
     ReviewTableList,
@@ -63,6 +67,13 @@ export default {
     );
   },
   methods: {
+    continueHandler() {
+      if (this.isCorrespondenceAttached) {
+        window.print();
+      } else {
+        this.submitForm();
+      }
+    },
     submitForm() {
       this.isLoading = true;
       this.isSystemUnavailable = false;
@@ -143,6 +154,17 @@ export default {
       this.$router.push(toPath);
       scrollTo();
     }
+  },
+  computed: {
+    isCorrespondenceAttached() {
+      return !!this.$store.state.payPatientForm.correspondenceAttached;
+    },
+    continueButtonLabel() {
+      if (this.isCorrespondenceAttached) {
+        return 'Print';
+      }
+      return 'Continue';
+    },
   },
   // Required in order to block back navigation.
   beforeRouteLeave(to, from, next) {
