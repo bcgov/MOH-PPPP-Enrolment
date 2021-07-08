@@ -53,7 +53,7 @@ export default {
   practitionerPaymentNumber: 'A1234',
   practitionerPractitionerNumber: '22274',
   practitionerFacilityNumber: '12345',
-  practitionerSpecialtyCode: '321',
+  practitionerSpecialtyCode: 'A1',
 
   referredByLastName: 'McDonald',
   referredByFirstNameInitial: 'R',

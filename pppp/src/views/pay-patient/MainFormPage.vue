@@ -260,6 +260,9 @@
           <div class="text-danger"
               v-if="v.diagnosticCode.$dirty && !v.diagnosticCode.required"
               aria-live="assertive">Diagnostic code is required.</div>
+          <div class="text-danger"
+              v-if="v.diagnosticCode.$dirty && v.diagnosticCode.required && !v.diagnosticCode.alphanumericValidator"
+              aria-live="assertive">Diagnostic code must be alphanumeric.</div>
           <ServiceLocationSelect label='Location of Service:'
                 :id='"location-of-service-" + index'
                 class='mt-3'
@@ -319,6 +322,9 @@
               class='mt-3'
               v-model='practitionerSpecialtyCode'
               maxlength='2'/>
+        <div class="text-danger"
+            v-if="$v.practitionerSpecialtyCode.$dirty && !$v.practitionerSpecialtyCode.alphanumericValidator"
+            aria-live="assertive">Specialty code must be alphanumeric.</div>
 
         <h2 class="mt-5">Referred By</h2>
         <Input label='Last Name:'
@@ -475,6 +481,7 @@ import {
   PromptModal,
   Radio,
   Textarea,
+  alphanumericValidator,
   dollarNumberValidator,
   intValidator,
   nonZeroNumberValidator,
@@ -768,6 +775,7 @@ export default {
           },
           diagnosticCode: {
             required,
+            alphanumericValidator,
           },
           notes: {
             maxLength: maxLength(256),
@@ -784,6 +792,9 @@ export default {
       },
       practitionerFacilityNumber: {
         minLength: optionalValidator(minLength(5)),
+      },
+      practitionerSpecialtyCode: {
+        alphanumericValidator: optionalValidator(alphanumericValidator),
       },
       referredByFirstNameInitial: {
         nameInitialValidator: optionalValidator(nameInitialValidator),
