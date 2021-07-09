@@ -231,62 +231,92 @@
             :key="'hospital-visit-claim' + index"
             :set="v = $v.hospitalVisitClaims.$each[index]">
           <h2 class="mt-5">{{getHospitalVisitClaimTitle(index)}}</h2>
-          <NumberInput label='Month:'
+          <div class="row mb-3">
+            <div class="col-md-3">
+              <Select label='Month:'
                     :id="'hvc-month-' + index"
                     className='mt-3'
-                    maxlength="2"
                     v-model='claim.month'
-                    :isRequiredAsteriskShown='true' />
-          <div class="text-danger"
-              v-if="v.month.$dirty && !v.month.required"
-              aria-live="assertive">Month is required.</div>
-          <div class="text-danger"
-            v-if="v.month.$dirty && v.month.required && !v.month.intValidator"
-            aria-live="assertive">Month must be an integer.</div>
-          <div class="text-danger"
-            v-if="v.month.$dirty && v.month.required && !v.month.positiveNumberValidator"
-            aria-live="assertive">Month must be a positive number.</div>
-          <NumberInput label='Day From:'
-                    :id="'hsv-day-from-' + index"
+                    :isRequiredAsteriskShown='true'
+                    :options='monthOptions' />
+            </div>
+            <div class="col-md-3">
+              <NumberInput label='Day From:'
+                    :id="'hvc-day-from-' + index"
                     className='mt-3'
                     maxlength="2"
                     v-model='claim.dayFrom'
                     :isRequiredAsteriskShown='true' />
-          <div class="text-danger"
-              v-if="v.dayFrom.$dirty && !v.dayFrom.required"
-              aria-live="assertive">Day From is required.</div>
-          <div class="text-danger"
-            v-if="v.dayFrom.$dirty && v.dayFrom.required && !v.dayFrom.intValidator"
-            aria-live="assertive">Day from must be an integer.</div>
-          <div class="text-danger"
-            v-if="v.dayFrom.$dirty && v.dayFrom.required && !v.dayFrom.positiveNumberValidator"
-            aria-live="assertive">Day from must be a positive number.</div>
-          <NumberInput label='Day To:'
+            </div>
+            <div class="col-md-3">
+              <NumberInput label='Day To:'
                     :id="'hvc-day-to-' + index"
                     className='mt-3'
                     maxlength="2"
                     v-model='claim.dayTo' />
-          <div class="text-danger"
-            v-if="v.dayTo.$dirty && !v.dayTo.intValidator"
-            aria-live="assertive">Day to must be an integer.</div>
-          <div class="text-danger"
-            v-if="v.dayTo.$dirty && !v.dayTo.positiveNumberValidator"
-            aria-live="assertive">Day to must be a positive number.</div>
-          <NumberInput label='Year:'
+            </div>
+            <div class="col-md-3">
+              <NumberInput label='Year:'
                     :id="'hvc-year-' + index"
                     className='mt-3'
                     maxlength="4"
                     v-model='claim.year'
                     :isRequiredAsteriskShown='true' />
+            </div>
+          </div>
+          
+          <div class="text-danger"
+              v-if="v.month.$dirty && !v.month.required"
+              aria-live="assertive">Month is required.</div>
+          <div class="text-danger"
+              v-if="v.month.$dirty && v.month.required && !v.month.intValidator"
+              aria-live="assertive">Month must be an integer.</div>
+          <div class="text-danger"
+              v-if="v.month.$dirty && v.month.required && !v.month.positiveNumberValidator"
+              aria-live="assertive">Month must be a positive number.</div>
+          <div class="text-danger"
+              v-if="v.dayFrom.$dirty && !v.dayFrom.required"
+              aria-live="assertive">Day From is required.</div>
+          <div class="text-danger"
+              v-if="v.dayFrom.$dirty && v.dayFrom.required && !v.dayFrom.intValidator"
+              aria-live="assertive">Day from must be an integer.</div>
+          <div class="text-danger"
+              v-if="v.dayFrom.$dirty && v.dayFrom.required && !v.dayFrom.positiveNumberValidator"
+              aria-live="assertive">Day from must be a positive number.</div>
+          <div class="text-danger"
+              v-if="v.dayTo.$dirty && !v.dayTo.intValidator"
+              aria-live="assertive">Day to must be an integer.</div>
+          <div class="text-danger"
+              v-if="v.dayTo.$dirty && !v.dayTo.positiveNumberValidator"
+              aria-live="assertive">Day to must be a positive number.</div>
           <div class="text-danger"
               v-if="v.year.$dirty && !v.year.required"
               aria-live="assertive">Year is required.</div>
           <div class="text-danger"
-            v-if="v.year.$dirty && v.year.required && !v.year.intValidator"
-            aria-live="assertive">Year must be an integer.</div>
+              v-if="v.year.$dirty && v.year.required && !v.year.intValidator"
+              aria-live="assertive">Year must be an integer.</div>
           <div class="text-danger"
-            v-if="v.year.$dirty && v.year.required && !v.year.positiveNumberValidator"
-            aria-live="assertive">Year must be a positive number.</div>
+              v-if="v.year.$dirty && v.year.required && !v.year.positiveNumberValidator"
+              aria-live="assertive">Year must be a positive number.</div>
+          <div class="text-danger"
+              v-if="v.month.$dirty
+                  && v.dayFrom.$dirty
+                  && v.year.$dirty
+                  && v.month.required
+                  && v.dayFrom.required
+                  && v.year.required
+                  && !v.dateValidator"
+              aria-live="assertive">Hospital Service date must be valid.</div>
+          <div class="text-danger"
+              v-if="v.month.$dirty
+                  && v.dayFrom.$dirty
+                  && v.year.$dirty
+                  && v.month.required
+                  && v.dayFrom.required
+                  && v.year.required
+                  && v.dateValidator
+                  && !v.dateRangeValidator"
+              aria-live="assertive">Hospital Service date range must be valid.</div>
           <NumberInput label='Number of Services:'
                 :id='"hvc-number-of-services-" + index'
                 class='mt-3'
@@ -565,21 +595,26 @@ import {
   PractitionerNumberInput,
   PromptModal,
   Radio,
+  Select,
   Textarea,
   alphanumericValidator,
   dollarNumberValidator,
+  getISODateString,
   intValidator,
   nonZeroNumberValidator,
   pastDateValidator,
   positiveNumberValidator,
   optionalValidator,
   phnValidator,
+  selectOptionsMonths,
 } from 'common-lib-vue';
 import {
   isSameDay,
   startOfToday,
   addDays,
   isBefore,
+  parseISO,
+  isValid,
 } from 'date-fns';
 
 const nameValidator = (value) => {
@@ -631,6 +666,38 @@ const serviceDateValidator = (value, vm) => {
   return isBefore(value, addDays(startOfToday(), 1)); // Add 1 day to include today's date.
 };
 
+const dateValidator = (value) => {
+  const month = value.month;
+  const dayFrom = value.dayFrom;
+  const year = value.year;
+  const date = parseISO(getISODateString(year, month, dayFrom));
+
+  return month
+      && month.length <= 2
+      && dayFrom
+      && dayFrom.length <= 2
+      && year
+      && year.length === 4
+      && isValid(date);
+};
+
+const dateRangeValidator = (value) => {
+  const month = value.month;
+  const dayFrom = value.dayFrom;
+  const dayTo = value.dayTo;
+  const year = value.year;
+
+  if (!dayTo) {
+    return true;
+  }
+  const dateFrom = parseISO(getISODateString(year, month, dayFrom));
+  const dateTo = parseISO(getISODateString(year, month, dayTo));
+
+  return isValid(dateFrom)
+      && isValid(dateTo)
+      && isBefore(dateFrom, addDays(dateTo, 1));
+};
+
 export default {
   name: 'MainFormPage',
   components: {
@@ -644,6 +711,7 @@ export default {
     PractitionerNumberInput,
     PromptModal,
     Radio,
+    Select,
     Textarea,
     TimeInput,
   },
@@ -675,6 +743,7 @@ export default {
           value: 'N',
         }
       ],
+      monthOptions: selectOptionsMonths,
       textareaStyle: {
         height: '150px'
       },
@@ -825,6 +894,8 @@ export default {
       },
       hospitalVisitClaims: {
         $each: {
+          dateValidator,
+          dateRangeValidator,
           month: {
             required,
             positiveNumberValidator,
