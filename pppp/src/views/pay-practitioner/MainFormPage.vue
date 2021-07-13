@@ -105,11 +105,15 @@
               class='mt-3'
               maxlength="1"
               v-model='correspondenceAttached'/>
-        <Input label='Submission Code:'
-              id='submission-code'
-              class='mt-3'
-              maxlength="1"
-              v-model='submissionCode'/>
+        <Select label='Submission Code:'
+                id='submission-code'
+                class='mt-3'
+                v-model='submissionCode'
+                :options='submissionCodeOptions'
+                :isRequiredAsteriskShown='isSubmissionCodeRequired' />
+        <div class="text-danger"
+              v-if="$v.submissionCode.$dirty && isSubmissionCodeRequired && !$v.submissionCode.required"
+              aria-live="assertive">Submission code is required.</div>
         <NumberInput label='Plan Reference Number of Original Claim:'
               id='plan-reference-number-of-original-claim'
               class='mt-3'
@@ -546,6 +550,7 @@ import {
   getTopScrollPosition
 } from '@/helpers/scroll';
 import { getConvertedPath } from '@/helpers/url';
+import { selectOptionsSubmissionCode } from '@/helpers/select-options';
 import ContinueBar from '@/components/ContinueBar.vue';
 import PageContent from '@/components/PageContent.vue';
 import TimeInput from '@/components/TimeInput.vue';
@@ -598,6 +603,7 @@ import {
   Select,
   Textarea,
   alphanumericValidator,
+  cloneDeep,
   dollarNumberValidator,
   getISODateString,
   intValidator,
@@ -612,6 +618,7 @@ import {
   isSameDay,
   startOfToday,
   addDays,
+  subDays,
   isBefore,
   parseISO,
   isValid,
@@ -744,6 +751,7 @@ export default {
         }
       ],
       monthOptions: selectOptionsMonths,
+      submissionCodeOptions: selectOptionsSubmissionCode,
       textareaStyle: {
         height: '150px'
       },
@@ -798,8 +806,8 @@ export default {
     this.coveragePreAuthNumber = this.$store.state.payPractitionerForm.coveragePreAuthNumber;
     this.procedureOrOperation = this.$store.state.payPractitionerForm.procedureOrOperation;
 
-    this.medicalServiceClaims = this.$store.state.payPractitionerForm.medicalServiceClaims ? [...this.$store.state.payPractitionerForm.medicalServiceClaims] : [];
-    this.hospitalVisitClaims = this.$store.state.payPractitionerForm.hospitalVisitClaims ? [...this.$store.state.payPractitionerForm.hospitalVisitClaims] : [];
+    this.medicalServiceClaims = this.$store.state.payPractitionerForm.medicalServiceClaims ? cloneDeep(this.$store.state.payPractitionerForm.medicalServiceClaims) : [];
+    this.hospitalVisitClaims = this.$store.state.payPractitionerForm.hospitalVisitClaims ? cloneDeep(this.$store.state.payPractitionerForm.hospitalVisitClaims) : [];
 
     this.practitionerLastNameOrClinicName = this.$store.state.payPractitionerForm.practitionerLastNameOrClinicName;
     this.practitionerFirstNameInitial = this.$store.state.payPractitionerForm.practitionerFirstNameInitial;
@@ -859,6 +867,7 @@ export default {
         positiveNumberValidator: optionalValidator(positiveNumberValidator),
         nonZeroNumberValidator: optionalValidator(nonZeroNumberValidator),
       },
+      submissionCode: {},
       planReferenceNumberOfOriginalClaim: {
         intValidator: optionalValidator(intValidator),
         positiveNumberValidator: optionalValidator(positiveNumberValidator),
@@ -985,6 +994,9 @@ export default {
       validations.referredToLastName.required = required;
       validations.referredToPractitionerNumber.required = required;
     }
+    if (this.isSubmissionCodeRequired) {
+      validations.submissionCode.required = required;
+    }
     return validations;
   },
   methods: {
@@ -1079,6 +1091,42 @@ export default {
       return !!this.referredToFirstNameInitial
           || !!this.referredToLastName
           || !!this.referredToPractitionerNumber;
+    },
+    isSubmissionCodeRequired() {
+      const past90Days = subDays(startOfToday(), 90);
+      let furthestServiceDate;
+
+      for (let i=0; i<this.medicalServiceClaims.length; i++) {
+        if (furthestServiceDate) {
+          if (this.medicalServiceClaims[i].serviceDate
+            && isBefore(this.medicalServiceClaims[i].serviceDate, furthestServiceDate)) {
+            furthestServiceDate = this.medicalServiceClaims[i].serviceDate;
+          }
+        } else {
+          furthestServiceDate = this.medicalServiceClaims[i].serviceDate;
+        }
+      }
+      for (let i=0; i<this.hospitalVisitClaims.length; i++) {
+        const ISODateStr = getISODateString(
+          this.hospitalVisitClaims[i].year,
+          this.hospitalVisitClaims[i].month,
+          this.hospitalVisitClaims[i].dayFrom,
+        );
+        console.log('ISO Date String: ', ISODateStr);
+        const serviceDate = parseISO(ISODateStr);
+        if (isValid(furthestServiceDate)) {
+          if (isValid(serviceDate)
+            && isBefore(serviceDate, furthestServiceDate)) {
+            furthestServiceDate = serviceDate;
+          }
+        } else {
+          furthestServiceDate = serviceDate;
+        }
+      }
+      if (!isValid(furthestServiceDate)) {
+        return false;
+      }
+      return isBefore(furthestServiceDate, past90Days);
     },
     validationWarningList() {
       const result = [];

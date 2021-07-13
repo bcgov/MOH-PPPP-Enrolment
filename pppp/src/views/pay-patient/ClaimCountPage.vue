@@ -43,7 +43,10 @@ import {
 } from '@/store/modules/pay-patient-form';
 import logService from '@/services/log-service';
 import { required } from 'vuelidate/lib/validators';
-import { NumberSelect } from 'common-lib-vue';
+import {
+  NumberSelect,
+  cloneDeep,
+} from 'common-lib-vue';
 
 export default {
   name: 'EmptyPage',
@@ -93,7 +96,7 @@ export default {
 
       const claims = [];
       const claimCount = parseInt(this.claimCount);
-      const existingClaims = this.$store.state.payPatientForm.medicalServiceClaims;
+      const existingClaims = this.$store.state.payPatientForm.medicalServiceClaims ? cloneDeep(this.$store.state.payPatientForm.medicalServiceClaims) : [];
 
       for (let i=0; i<claimCount; i++) {
         claims.push({

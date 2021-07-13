@@ -45,7 +45,10 @@ import {
 } from '@/helpers/scroll';
 import ContinueBar from '@/components/ContinueBar.vue';
 import PageContent from '@/components/PageContent.vue';
-import { NumberSelect } from 'common-lib-vue';
+import {
+  NumberSelect,
+  cloneDeep,
+} from 'common-lib-vue';
 import {
   MODULE_NAME as formModule,
   RESET_FORM,
@@ -113,7 +116,7 @@ export default {
 
       const medicalServiceClaims = [];
       const medicalServiceClaimsCount = parseInt(this.medicalServiceClaimsCount);
-      const existingMedicalServiceClaims = this.$store.state.payPractitionerForm.medicalServiceClaims;
+      const existingMedicalServiceClaims = this.$store.state.payPractitionerForm.medicalServiceClaims ? cloneDeep(this.$store.state.payPractitionerForm.medicalServiceClaims) : [];
 
       for (let i = 0; i < medicalServiceClaimsCount; i++) {
         medicalServiceClaims.push({
@@ -139,7 +142,7 @@ export default {
       
       const hospitalVisitClaims = [];
       const hospitalVisitClaimsCount = parseInt(this.hospitalVisitClaimsCount);
-      const existingHospitalVisitClaims = this.$store.state.payPractitionerForm.hospitalVisitClaims;
+      const existingHospitalVisitClaims = this.$store.state.payPractitionerForm.hospitalVisitClaims ? cloneDeep(this.$store.state.payPractitionerForm.hospitalVisitClaims) : [];
 
       for (let i = 0; i < hospitalVisitClaimsCount; i++) {
         hospitalVisitClaims.push({
