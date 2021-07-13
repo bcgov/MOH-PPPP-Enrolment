@@ -156,13 +156,14 @@
               class='mt-3'
               v-model='correspondenceAttached'
               maxlength='1'/>
-        <Input label='Submission Code:'
-              id='submission-code'
-              class='mt-3'
-              v-model='submissionCode'
-              maxlength='1'/>
+        <Select label='Submission Code:'
+                id='submission-code'
+                class='mt-3'
+                v-model='submissionCode'
+                :options='submissionCodeOptions'
+                :isRequiredAsteriskShown='isSubmissionCodeRequired' />
         <div class="text-danger"
-              v-if="$v.submissionCode.$dirty && !$v.submissionCode.submissionCodeValidator"
+              v-if="$v.submissionCode.$dirty && isSubmissionCodeRequired && !$v.submissionCode.required"
               aria-live="assertive">Submission code is required.</div>
         <NumberInput label='Plan Reference Number of Original Claim:'
               id='plan-reference-number-of-original-claim'
@@ -429,6 +430,7 @@ import {
   getTopScrollPosition
 } from '@/helpers/scroll';
 import { getConvertedPath } from '@/helpers/url';
+import { selectOptionsSubmissionCode } from '@/helpers/select-options';
 import ContinueBar from '@/components/ContinueBar.vue';
 import PageContent from '@/components/PageContent.vue';
 import TimeInput from '@/components/TimeInput.vue';
@@ -480,8 +482,10 @@ import {
   PractitionerNumberInput,
   PromptModal,
   Radio,
+  Select,
   Textarea,
   alphanumericValidator,
+  cloneDeep,
   dollarNumberValidator,
   intValidator,
   nonZeroNumberValidator,
@@ -494,7 +498,6 @@ import {
   startOfToday,
   addDays,
   isBefore,
-  isAfter,
   subDays,
 } from 'date-fns';
 
@@ -545,23 +548,6 @@ const serviceDateValidator = (value, vm) => {
   return isBefore(value, addDays(startOfToday(), 1)); // Add 1 day to include today's date.
 };
 
-const submissionCodeValidator = (value, vm) => {
-  const past90Days = subDays(startOfToday(), 90);
-  let furthestServiceDate = vm.medicalServiceClaims[0].serviceDate;
-
-  for (let i=1; i<vm.medicalServiceClaims.length; i++) {
-    if (vm.medicalServiceClaims[i].serviceDate
-      && furthestServiceDate
-      && isBefore(vm.medicalServiceClaims[i].serviceDate, furthestServiceDate)) {
-      furthestServiceDate = vm.medicalServiceClaims[i].serviceDate;
-    }
-  }
-  if (!furthestServiceDate) {
-    return true;
-  }
-  return isAfter(furthestServiceDate, past90Days);
-};
-
 export default {
   name: 'MainFormPage',
   components: {
@@ -576,6 +562,7 @@ export default {
     PractitionerNumberInput,
     PromptModal,
     Radio,
+    Select,
     ServiceLocationSelect,
     Textarea,
     TimeInput,
@@ -608,6 +595,7 @@ export default {
           value: 'N',
         }
       ],
+      submissionCodeOptions: selectOptionsSubmissionCode,
       textareaStyle: {
         height: '150px'
       },
@@ -673,7 +661,7 @@ export default {
     this.planReferenceNumberOfOriginalClaim = this.$store.state.payPatientForm.planReferenceNumberOfOriginalClaim;
     this.diagnosisOrAreaOfTreatment = this.$store.state.payPatientForm.diagnosisOrAreaOfTreatment;
 
-    this.medicalServiceClaims = this.$store.state.payPatientForm.medicalServiceClaims ? [...this.$store.state.payPatientForm.medicalServiceClaims] : [];
+    this.medicalServiceClaims = this.$store.state.payPatientForm.medicalServiceClaims ? cloneDeep(this.$store.state.payPatientForm.medicalServiceClaims) : [];
 
     this.practitionerLastNameOrClinicName = this.$store.state.payPatientForm.practitionerLastNameOrClinicName;
     this.practitionerFirstNameInitial = this.$store.state.payPatientForm.practitionerFirstNameInitial;
@@ -746,9 +734,7 @@ export default {
         positiveNumberValidator: optionalValidator(positiveNumberValidator),
         nonZeroNumberValidator: optionalValidator(nonZeroNumberValidator),
       },
-      submissionCode: {
-        submissionCodeValidator,
-      },
+      submissionCode: {},
       planReferenceNumberOfOriginalClaim: {
         intValidator: optionalValidator(intValidator),
         positiveNumberValidator: optionalValidator(positiveNumberValidator),
@@ -827,6 +813,9 @@ export default {
       validations.referredToFirstNameInitial.required = required;
       validations.referredToLastName.required = required;
       validations.referredToPractitionerNumber.required = required;
+    }
+    if (this.isSubmissionCodeRequired) {
+      validations.submissionCode.required = required;
     }
     return validations;
   },
@@ -921,6 +910,25 @@ export default {
       return !!this.referredToFirstNameInitial
           || !!this.referredToLastName
           || !!this.referredToPractitionerNumber;
+    },
+    isSubmissionCodeRequired() {
+      const past90Days = subDays(startOfToday(), 90);
+      let furthestServiceDate;
+
+      for (let i=0; i<this.medicalServiceClaims.length; i++) {
+        if (furthestServiceDate) {
+          if (this.medicalServiceClaims[i].serviceDate
+            && isBefore(this.medicalServiceClaims[i].serviceDate, furthestServiceDate)) {
+            furthestServiceDate = this.medicalServiceClaims[i].serviceDate;
+          }
+        } else {
+          furthestServiceDate = this.medicalServiceClaims[i].serviceDate;
+        }
+      }
+      if (!furthestServiceDate) {
+        return false;
+      }
+      return isBefore(furthestServiceDate, past90Days);
     },
     validationWarningList() {
       const result = [];

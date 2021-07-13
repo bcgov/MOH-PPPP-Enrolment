@@ -18,7 +18,7 @@ export default {
   isVehicleAccident: 'Y',
   vehicleAccidentClaimNumber: '1',
   correspondenceAttached: 'Yes',
-  submissionCode: '123',
+  submissionCode: 'I',
   planReferenceNumberOfOriginalClaim: '321',
   diagnosisOrAreaOfTreatment: 'Chicken Pox',
 
