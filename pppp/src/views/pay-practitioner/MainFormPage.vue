@@ -226,7 +226,7 @@
             :id="'msc-medical-notes-' + index"
             class="mt-3"
             v-model='claim.notes'
-            :remainingCharsMaxlength='256'
+            :remainingCharsMaxlength='400'
             :isRemainingCharsShown="true"
             :inputStyle="textareaStyle" />
         </div>
@@ -389,7 +389,7 @@
                 :id="'hvc-hospital-notes-' + index"
                 class="mt-3"
                 v-model="claim.notes"
-                :remainingCharsMaxlength="250"
+                :remainingCharsMaxlength="400"
                 :isRemainingCharsShown="true"
                 :inputStyle="textareaStyle" />
         </div>
@@ -897,7 +897,7 @@ export default {
             alphanumericValidator,
           },
           notes: {
-            maxLength: maxLength(256),
+            maxLength: maxLength(400),
           },
         }
       },
@@ -943,7 +943,7 @@ export default {
             alphanumericValidator,
           },
           notes: {
-            maxLength: maxLength(250),
+            maxLength: maxLength(400),
           },
         }
       },
