@@ -135,20 +135,14 @@
         <div class="text-danger"
             v-if="$v.isVehicleAccident.$dirty && !$v.isVehicleAccident.required"
             aria-live="assertive">This field is required.</div>
-        <NumberInput label='Motor Vehicle Accident Claim Number:'
+        <MotorVehicleAccidentClaimNumberInput
+              label='Motor Vehicle Accident Claim Number:'
               id='vehicle-accident-claim-number'
               class='mt-3'
-              v-model='vehicleAccidentClaimNumber'
-              maxlength='8' />
+              v-model='vehicleAccidentClaimNumber' />
         <div class="text-danger"
-            v-if="$v.vehicleAccidentClaimNumber.$dirty && !$v.vehicleAccidentClaimNumber.intValidator"
-            aria-live="assertive">Motor Vehicle Accident Claim Number must be an integer.</div>
-        <div class="text-danger"
-            v-if="$v.vehicleAccidentClaimNumber.$dirty && !$v.vehicleAccidentClaimNumber.positiveNumberValidator"
-            aria-live="assertive">Motor Vehicle Accident Claim Number must be a positive number.</div>
-        <div class="text-danger"
-            v-if="$v.vehicleAccidentClaimNumber.$dirty && !$v.vehicleAccidentClaimNumber.nonZeroNumberValidator"
-            aria-live="assertive">Motor Vehicle Accident Claim Number cannot be zero.</div>
+            v-if="$v.vehicleAccidentClaimNumber.$dirty && !$v.vehicleAccidentClaimNumber.motorVehicleAccidentClaimNumberValidator"
+            aria-live="assertive">Motor Vehicle Accident Claim Number must be valid.</div>
         
         <hr class='mt-5'/>
         <Input label='Correspondence Attached:'
@@ -476,6 +470,7 @@ import {
   DateInput,
   FacilityNumberInput,
   Input,
+  MotorVehicleAccidentClaimNumberInput,
   NumberInput,
   PhnInput,
   PostalCodeInput,
@@ -488,7 +483,7 @@ import {
   cloneDeep,
   dollarNumberValidator,
   intValidator,
-  nonZeroNumberValidator,
+  motorVehicleAccidentClaimNumberValidator,
   optionalValidator,
   pastDateValidator,
   phnValidator,
@@ -555,6 +550,7 @@ export default {
     DateInput,
     FacilityNumberInput,
     Input,
+    MotorVehicleAccidentClaimNumberInput,
     NumberInput,
     PageContent,
     PhnInput,
@@ -730,9 +726,7 @@ export default {
         required,
       },
       vehicleAccidentClaimNumber: {
-        intValidator: optionalValidator(intValidator),
-        positiveNumberValidator: optionalValidator(positiveNumberValidator),
-        nonZeroNumberValidator: optionalValidator(nonZeroNumberValidator),
+        motorVehicleAccidentClaimNumberValidator: optionalValidator(motorVehicleAccidentClaimNumberValidator),
       },
       submissionCode: {},
       planReferenceNumberOfOriginalClaim: {

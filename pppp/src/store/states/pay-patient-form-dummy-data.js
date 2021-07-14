@@ -16,7 +16,7 @@ export default {
   postalCode: 'V8V 8V8',
 
   isVehicleAccident: 'Y',
-  vehicleAccidentClaimNumber: '1',
+  vehicleAccidentClaimNumber: 'A0000001',
   correspondenceAttached: 'Yes',
   submissionCode: 'I',
   planReferenceNumberOfOriginalClaim: '321',

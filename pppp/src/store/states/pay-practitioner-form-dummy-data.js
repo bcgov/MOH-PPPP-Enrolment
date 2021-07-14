@@ -10,7 +10,7 @@ export default {
   birthDate: new Date(),
 
   isVehicleAccident: 'Y',
-  vehicleAccidentClaimNumber: '1',
+  vehicleAccidentClaimNumber: 'A0000001',
   correspondenceAttached: 'Yes',
   submissionCode: 'I',
   planReferenceNumberOfOriginalClaim: '321',
