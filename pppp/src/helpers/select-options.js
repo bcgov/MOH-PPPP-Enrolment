@@ -37,7 +37,8 @@ export const selectOptionsCorrespondenceAttached = [
   {
     value: 'N',
     label: 'N (Note Record following this claim record)'
-  },{
+  },
+  {
     value: 'B',
     label: 'B (both)'
   }
