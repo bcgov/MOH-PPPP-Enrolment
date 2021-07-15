@@ -24,8 +24,14 @@ export default {
       serviceClarificationCode: '1C',
       feeItem: '03333',
       amountBilled: '0.00',
-      calledStartTime: '08:00',
-      renderedFinishTime: '16:00',
+      calledStartTime: {
+        hour: '08',
+        minute: '08'
+      },
+      renderedFinishTime: {
+        hour: '16',
+        minute: '06'
+      },
       diagnosticCode: 'DC',
       locationOfService: 'Hospital',
       notes: 'Notes here.',

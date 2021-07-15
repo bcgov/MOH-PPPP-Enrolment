@@ -194,11 +194,19 @@
           <TimeInput label='Called Start Time:'
                     :id='"msc-called-start-time-" + index'
                     className='mt-3'
-                    v-model='claim.calledStartTime' />
+                    v-model='claim.calledStartTime'
+                    :isHourTwoDigits='true' />
+          <div class="text-danger"
+              v-if="v.calledStartTime.$dirty && !v.calledStartTime.partialTimeValidator"
+              aria-live="assertive">Called start time must be an exact value.</div>
           <TimeInput label='Rendered Finish Time:'
                     :id='"msc-rendered-finish-time-" + index'
                     className='mt-3'
-                    v-model='claim.renderedFinishTime' />
+                    v-model='claim.renderedFinishTime'
+                    :isHourTwoDigits='true' />
+          <div class="text-danger"
+              v-if="v.renderedFinishTime.$dirty && !v.renderedFinishTime.partialTimeValidator"
+              aria-live="assertive">Rendered finish time must be an exact value.</div>
           <Input label='Diagnostic Code:'
                 :id='"msc-diagnostic-code-" + index'
                 class='mt-3'
@@ -547,7 +555,6 @@ import { getConvertedPath } from '@/helpers/url';
 import { selectOptionsSubmissionCode } from '@/helpers/select-options';
 import ContinueBar from '@/components/ContinueBar.vue';
 import PageContent from '@/components/PageContent.vue';
-import TimeInput from '@/components/TimeInput.vue';
 import {
   MODULE_NAME as formModule,
   RESET_FORM,
@@ -597,6 +604,7 @@ import {
   Radio,
   Select,
   Textarea,
+  TimeInput,
   alphanumericValidator,
   cloneDeep,
   dollarNumberValidator,
@@ -698,6 +706,14 @@ const dateRangeValidator = (value) => {
   return isValid(dateFrom)
       && isValid(dateTo)
       && isBefore(dateFrom, addDays(dateTo, 1));
+};
+
+const partialTimeValidator = (value) => {
+  if ((value.hour && !value.minute)
+    || (!value.hour && value.minute)) {
+    return false;
+  }
+  return true;
 };
 
 export default {
@@ -885,6 +901,12 @@ export default {
             dollarNumberValidator,
             positiveNumberValidator,
             amountBilledZeroValidator,
+          },
+          calledStartTime: {
+            partialTimeValidator: optionalValidator(partialTimeValidator),
+          },
+          renderedFinishTime: {
+            partialTimeValidator: optionalValidator(partialTimeValidator),
           },
           diagnosticCode: {
             required,

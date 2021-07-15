@@ -241,11 +241,19 @@
           <TimeInput label='Called Start Time:'
                     :id='"called-start-time-" + index'
                     className='mt-3'
-                    v-model='claim.calledStartTime' />
+                    v-model='claim.calledStartTime'
+                    :isHourTwoDigits='true' />
+          <div class="text-danger"
+              v-if="v.calledStartTime.$dirty && !v.calledStartTime.partialTimeValidator"
+              aria-live="assertive">Called start time must be an exact value.</div>
           <TimeInput label='Rendered Finish Time:'
                     :id='"rendered-finish-time-" + index'
                     className='mt-3'
-                    v-model='claim.renderedFinishTime' />
+                    v-model='claim.renderedFinishTime'
+                    :isHourTwoDigits='true' />
+          <div class="text-danger"
+              v-if="v.renderedFinishTime.$dirty && !v.renderedFinishTime.partialTimeValidator"
+              aria-live="assertive">Rendered finish time must be an exact value.</div>
           <Input label='Diagnostic Code:'
                 :id='"diagnostic-code-" + index'
                 class='mt-3'
@@ -427,7 +435,6 @@ import { getConvertedPath } from '@/helpers/url';
 import { selectOptionsSubmissionCode } from '@/helpers/select-options';
 import ContinueBar from '@/components/ContinueBar.vue';
 import PageContent from '@/components/PageContent.vue';
-import TimeInput from '@/components/TimeInput.vue';
 import ServiceLocationSelect from '@/components/ServiceLocationSelect.vue';
 import {
   MODULE_NAME as formModule,
@@ -479,6 +486,7 @@ import {
   Radio,
   Select,
   Textarea,
+  TimeInput,
   alphanumericValidator,
   cloneDeep,
   dollarNumberValidator,
@@ -541,6 +549,14 @@ const serviceDateValidator = (value, vm) => {
     return isBefore(value, future90Days);
   }
   return isBefore(value, addDays(startOfToday(), 1)); // Add 1 day to include today's date.
+};
+
+const partialTimeValidator = (value) => {
+  if ((value.hour && !value.minute)
+    || (!value.hour && value.minute)) {
+    return false;
+  }
+  return true;
 };
 
 export default {
@@ -753,6 +769,12 @@ export default {
             positiveNumberValidator,
             amountBilledZeroValidator,
           },
+          calledStartTime: {
+            partialTimeValidator: optionalValidator(partialTimeValidator),
+          },
+          renderedFinishTime: {
+            partialTimeValidator: optionalValidator(partialTimeValidator),
+          },
           diagnosticCode: {
             required,
             alphanumericValidator,
@@ -892,7 +914,7 @@ export default {
         return 'Service date cannot be more than 90 days in the future.';
       }
       return 'Service date cannot be in the future.';
-    }
+    },
   },
   computed: {
     isReferredByPopulated() {
