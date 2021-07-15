@@ -62,10 +62,10 @@ export default {
   practitionerSpecialtyCode: 'A1',
 
   referredByLastName: 'McDonald',
-  referredByFirstNameInitial: 'R',
+  referredByFirstName: 'R',
   referredByPractitionerNumber: '22271',
 
   referredToLastName: 'Lee',
-  referredToFirstNameInitial: 'C',
+  referredToFirstName: 'C',
   referredToPractitionerNumber: '22272',
 };

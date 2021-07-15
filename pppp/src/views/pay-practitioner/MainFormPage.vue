@@ -450,6 +450,18 @@
             aria-live="assertive">Specialty code must be alphanumeric.</div>
 
         <h2 class="mt-5">Referred By</h2>
+        <Input label='First Name:'
+              id='referred-by-first-name'
+              class='mt-3'
+              maxlength="18"
+              v-model='referredByFirstName'
+              :isRequiredAsteriskShown='isReferredByPopulated'/>
+        <div class="text-danger"
+            v-if="isReferredByPopulated && $v.referredByFirstName.$dirty && !$v.referredByFirstName.required"
+            aria-live="assertive">First name is required.</div>
+        <div class="text-danger"
+            v-if="$v.referredByFirstName.$dirty && !$v.referredByFirstName.nameValidator"
+            aria-live="assertive">First name must begin with a letter and cannot include special characters except hyphens, periods, apostrophes and blank characters.</div>
         <Input label='Last Name:'
               id='referred-by-last-name'
               class='mt-3'
@@ -462,18 +474,6 @@
         <div class="text-danger"
             v-if="$v.referredByLastName.$dirty && !$v.referredByLastName.nameValidator"
             aria-live="assertive">Last name must begin with a letter and cannot include special characters except hyphens, periods, apostrophes and blank characters.</div>
-        <Input label='First Name Initial:'
-              id='referred-by-first-name-initial'
-              class='mt-3'
-              maxlength="1"
-              v-model='referredByFirstNameInitial'
-              :isRequiredAsteriskShown='isReferredByPopulated'/>
-        <div class="text-danger"
-            v-if="isReferredByPopulated && $v.referredByFirstNameInitial.$dirty && !$v.referredByFirstNameInitial.required"
-            aria-live="assertive">First name initial is required.</div>
-        <div class="text-danger"
-            v-if="$v.referredByFirstNameInitial.$dirty && !$v.referredByFirstNameInitial.nameInitialValidator"
-            aria-live="assertive">First name initial must be a letter.</div>
         <PractitionerNumberInput label='Practitioner Number:'
               id='referred-by-practitioner-number'
               class='mt-3'
@@ -487,6 +487,18 @@
             aria-live="assertive">Practitioner number must not be less than 5 characters.</div>
 
         <h2 class="mt-5">Referred To</h2>
+        <Input label='First Name:'
+              id='referred-to-first-name'
+              class='mt-3'
+              maxlength="1"
+              v-model='referredToFirstName'
+              :isRequiredAsteriskShown='isReferredToPopulated'/>
+        <div class="text-danger"
+            v-if="isReferredToPopulated && $v.referredToFirstName.$dirty && !$v.referredToFirstName.required"
+            aria-live="assertive">First name is required.</div>
+        <div class="text-danger"
+            v-if="$v.referredToFirstName.$dirty && !$v.referredToFirstName.nameValidator"
+            aria-live="assertive">First name must begin with a letter and cannot include special characters except hyphens, periods, apostrophes and blank characters.</div>
         <Input label='Last Name:'
               id='referred-to-last-name'
               class='mt-3'
@@ -499,18 +511,6 @@
         <div class="text-danger"
             v-if="$v.referredToLastName.$dirty && !$v.referredToLastName.nameValidator"
             aria-live="assertive">Last name must begin with a letter and cannot include special characters except hyphens, periods, apostrophes and blank characters.</div>
-        <Input label='First Name Initial:'
-              id='referred-to-first-name-initial'
-              class='mt-3'
-              maxlength="1"
-              v-model='referredToFirstNameInitial'
-              :isRequiredAsteriskShown='isReferredToPopulated'/>
-        <div class="text-danger"
-            v-if="isReferredToPopulated && $v.referredToFirstNameInitial.$dirty && !$v.referredToFirstNameInitial.required"
-            aria-live="assertive">First name initial is required.</div>
-        <div class="text-danger"
-            v-if="$v.referredToFirstNameInitial.$dirty && !$v.referredToFirstNameInitial.nameInitialValidator"
-            aria-live="assertive">First name initial must be a letter.</div>
         <PractitionerNumberInput label='Practitioner Number:'
               id='referred-to-practitioner-number'
               class='mt-3'
@@ -579,10 +579,10 @@ import {
   SET_PRACTITIONER_PRACTITIONER_NUMBER,
   SET_PRACTITIONER_SPECIALTY_CODE,
   SET_REFERRED_BY_LAST_NAME,
-  SET_REFERRED_BY_FIRST_NAME_INITIAL,
+  SET_REFERRED_BY_FIRST_NAME,
   SET_REFERRED_BY_PRACTITIONER_NUMBER,
   SET_REFERRED_TO_LAST_NAME,
-  SET_REFERRED_TO_FIRST_NAME_INITIAL,
+  SET_REFERRED_TO_FIRST_NAME,
   SET_REFERRED_TO_PRACTITIONER_NUMBER,
   SET_PRACTITIONER_FACILITY_NUMBER
 } from '@/store/modules/pay-practitioner-form';
@@ -794,11 +794,11 @@ export default {
       practitionerSpecialtyCode: null,
 
       referredByLastName: null,
-      referredByFirstNameInitial: null,
+      referredByFirstName: null,
       referredByPractitionerNumber: null,
 
       referredToLastName: null,
-      referredToFirstNameInitial: null,
+      referredToFirstName: null,
       referredToPractitionerNumber: null,
     };
   },
@@ -829,11 +829,11 @@ export default {
     this.practitionerSpecialtyCode = this.$store.state.payPractitionerForm.practitionerSpecialtyCode;
 
     this.referredByLastName = this.$store.state.payPractitionerForm.referredByLastName;
-    this.referredByFirstNameInitial = this.$store.state.payPractitionerForm.referredByFirstNameInitial;
+    this.referredByFirstName = this.$store.state.payPractitionerForm.referredByFirstName;
     this.referredByPractitionerNumber = this.$store.state.payPractitionerForm.referredByPractitionerNumber;
 
     this.referredToLastName = this.$store.state.payPractitionerForm.referredToLastName;
-    this.referredToFirstNameInitial = this.$store.state.payPractitionerForm.referredToFirstNameInitial;
+    this.referredToFirstName = this.$store.state.payPractitionerForm.referredToFirstName;
     this.referredToPractitionerNumber = this.$store.state.payPractitionerForm.referredToPractitionerNumber;
 
     setTimeout(() => {
@@ -981,14 +981,14 @@ export default {
       referredByLastName: {
         nameValidator: optionalValidator(nameValidator),
       },
-      referredByFirstNameInitial: {
-        nameInitialValidator: optionalValidator(nameInitialValidator),
+      referredByFirstName: {
+        nameValidator: optionalValidator(nameValidator),
       },
       referredByPractitionerNumber: {
         minLength: optionalValidator(minLength(5)),
       },
-      referredToFirstNameInitial: {
-        nameInitialValidator: optionalValidator(nameInitialValidator),
+      referredToFirstName: {
+        nameValidator: optionalValidator(nameValidator),
       },
       referredToLastName: {
         nameValidator: optionalValidator(nameValidator),
@@ -1001,12 +1001,12 @@ export default {
       validations.birthDate.required = required;
     }
     if (this.isReferredByPopulated) {
-      validations.referredByFirstNameInitial.required = required;
+      validations.referredByFirstName.required = required;
       validations.referredByLastName.required = required;
       validations.referredByPractitionerNumber.required = required;
     }
     if (this.isReferredToPopulated) {
-      validations.referredToFirstNameInitial.required = required;
+      validations.referredToFirstName.required = required;
       validations.referredToLastName.required = required;
       validations.referredToPractitionerNumber.required = required;
     }
@@ -1061,11 +1061,11 @@ export default {
       this.$store.dispatch(formModule + '/' + SET_PRACTITIONER_SPECIALTY_CODE, this.practitionerSpecialtyCode);
 
       this.$store.dispatch(formModule + '/' + SET_REFERRED_BY_LAST_NAME, this.referredByLastName);
-      this.$store.dispatch(formModule + '/' + SET_REFERRED_BY_FIRST_NAME_INITIAL, this.referredByFirstNameInitial);
+      this.$store.dispatch(formModule + '/' + SET_REFERRED_BY_FIRST_NAME, this.referredByFirstName);
       this.$store.dispatch(formModule + '/' + SET_REFERRED_BY_PRACTITIONER_NUMBER, this.referredByPractitionerNumber);
 
       this.$store.dispatch(formModule + '/' + SET_REFERRED_TO_LAST_NAME, this.referredToLastName);
-      this.$store.dispatch(formModule + '/' + SET_REFERRED_TO_FIRST_NAME_INITIAL, this.referredToFirstNameInitial);
+      this.$store.dispatch(formModule + '/' + SET_REFERRED_TO_FIRST_NAME, this.referredToFirstName);
       this.$store.dispatch(formModule + '/' + SET_REFERRED_TO_PRACTITIONER_NUMBER, this.referredToPractitionerNumber);
       
       // Navigate to next path.
@@ -1099,12 +1099,12 @@ export default {
   },
   computed: {
     isReferredByPopulated() {
-      return !!this.referredByFirstNameInitial
+      return !!this.referredByFirstName
           || !!this.referredByLastName
           || !!this.referredByPractitionerNumber;
     },
     isReferredToPopulated() {
-      return !!this.referredToFirstNameInitial
+      return !!this.referredToFirstName
           || !!this.referredToLastName
           || !!this.referredToPractitionerNumber;
     },

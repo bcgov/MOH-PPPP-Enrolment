@@ -39,11 +39,11 @@ export const SET_PRACTITIONER_FACILITY_NUMBER = 'setPractitionerFacilityNumber';
 export const SET_PRACTITIONER_SPECIALTY_CODE = 'setPractitionerSpecialtyCode';
 
 export const SET_REFERRED_BY_LAST_NAME = 'setReferredByLastName';
-export const SET_REFERRED_BY_FIRST_NAME_INITIAL = 'setReferredByFirstNameInitial';
+export const SET_REFERRED_BY_FIRST_NAME = 'setReferredByFirstName';
 export const SET_REFERRED_BY_PRACTITIONER_NUMBER = 'setReferredByPractitionerNumber';
 
 export const SET_REFERRED_TO_LAST_NAME = 'setReferredToLastName';
-export const SET_REFERRED_TO_FIRST_NAME_INITIAL = 'setReferredToFirstNameInitial';
+export const SET_REFERRED_TO_FIRST_NAME = 'setReferredToFirstName';
 export const SET_REFERRED_TO_PRACTITIONER_NUMBER = 'setReferredToPractitionerNumber';
 
 export default {
@@ -84,11 +84,11 @@ export default {
       practitionerSpecialtyCode: null,
 
       referredByLastName: null,
-      referredByFirstNameInitial: null,
+      referredByFirstName: null,
       referredByPractitionerNumber: null,
 
       referredToLastName: null,
-      referredToFirstNameInitial: null,
+      referredToFirstName: null,
       referredToPractitionerNumber: null,
     };
     if (settings.useDummyData) {
@@ -181,8 +181,8 @@ export default {
     [SET_REFERRED_BY_LAST_NAME](state, payload) {
       state.referredByLastName = payload;
     },
-    [SET_REFERRED_BY_FIRST_NAME_INITIAL](state, payload) {
-      state.referredByFirstNameInitial = payload;
+    [SET_REFERRED_BY_FIRST_NAME](state, payload) {
+      state.referredByFirstName = payload;
     },
     [SET_REFERRED_BY_PRACTITIONER_NUMBER](state, payload) {
       state.referredByPractitionerNumber = payload;
@@ -190,8 +190,8 @@ export default {
     [SET_REFERRED_TO_LAST_NAME](state, payload) {
       state.referredToLastName = payload;
     },
-    [SET_REFERRED_TO_FIRST_NAME_INITIAL](state, payload) {
-      state.referredToFirstNameInitial = payload;
+    [SET_REFERRED_TO_FIRST_NAME](state, payload) {
+      state.referredToFirstName = payload;
     },
     [SET_REFERRED_TO_PRACTITIONER_NUMBER](state, payload) {
       state.referredToPractitionerNumber = payload;
@@ -232,11 +232,11 @@ export default {
       commit(SET_PRACTITIONER_SPECIALTY_CODE, null);
       
       commit(SET_REFERRED_BY_LAST_NAME, null);
-      commit(SET_REFERRED_BY_FIRST_NAME_INITIAL, null);
+      commit(SET_REFERRED_BY_FIRST_NAME, null);
       commit(SET_REFERRED_BY_PRACTITIONER_NUMBER, null);
       
       commit(SET_REFERRED_TO_LAST_NAME, null);
-      commit(SET_REFERRED_TO_FIRST_NAME_INITIAL, null);
+      commit(SET_REFERRED_TO_FIRST_NAME, null);
       commit(SET_REFERRED_TO_PRACTITIONER_NUMBER, null);
     },
     [SET_APPLICATION_UUID]({ commit }, payload) {
@@ -323,8 +323,8 @@ export default {
     [SET_REFERRED_BY_LAST_NAME]({ commit }, payload) {
       commit(SET_REFERRED_BY_LAST_NAME, payload);
     },
-    [SET_REFERRED_BY_FIRST_NAME_INITIAL]({ commit }, payload) {
-      commit(SET_REFERRED_BY_FIRST_NAME_INITIAL, payload);
+    [SET_REFERRED_BY_FIRST_NAME]({ commit }, payload) {
+      commit(SET_REFERRED_BY_FIRST_NAME, payload);
     },
     [SET_REFERRED_BY_PRACTITIONER_NUMBER]({ commit }, payload) {
       commit(SET_REFERRED_BY_PRACTITIONER_NUMBER, payload);
@@ -332,8 +332,8 @@ export default {
     [SET_REFERRED_TO_LAST_NAME]({ commit }, payload) {
       commit(SET_REFERRED_TO_LAST_NAME, payload);
     },
-    [SET_REFERRED_TO_FIRST_NAME_INITIAL]({ commit }, payload) {
-      commit(SET_REFERRED_TO_FIRST_NAME_INITIAL, payload);
+    [SET_REFERRED_TO_FIRST_NAME]({ commit }, payload) {
+      commit(SET_REFERRED_TO_FIRST_NAME, payload);
     },
     [SET_REFERRED_TO_PRACTITIONER_NUMBER]({ commit }, payload) {
       commit(SET_REFERRED_TO_PRACTITIONER_NUMBER, payload);
