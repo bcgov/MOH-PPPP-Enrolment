@@ -228,13 +228,15 @@ export default {
           label: 'Amount Billed:',
           value: this.$store.state.payPractitionerForm.medicalServiceClaims[i].amountBilled,
         });
+        const calledStartTime = this.$store.state.payPractitionerForm.medicalServiceClaims[i].calledStartTime;
         itemData.push({
           label: 'Called Start Time:',
-          value: this.$store.state.payPractitionerForm.medicalServiceClaims[i].calledStartTime,
+          value: calledStartTime && calledStartTime.time ? calledStartTime.time : '',
         });
+        const renderedFinishTime = this.$store.state.payPractitionerForm.medicalServiceClaims[i].renderedFinishTime;
         itemData.push({
           label: 'Rendered Finish Time:',
-          value: this.$store.state.payPractitionerForm.medicalServiceClaims[i].renderedFinishTime,
+          value: renderedFinishTime && renderedFinishTime.time ? renderedFinishTime.time : '',
         });
         itemData.push({
           label: 'Diagnostic Code:',

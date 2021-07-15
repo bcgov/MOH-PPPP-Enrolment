@@ -120,6 +120,7 @@ export default {
 
       for (let i = 0; i < medicalServiceClaimsCount; i++) {
         medicalServiceClaims.push({
+          index: i,
           serviceDate: null,
           numberOfServices: null,
           serviceClarificationCode: null,
@@ -146,6 +147,7 @@ export default {
 
       for (let i = 0; i < hospitalVisitClaimsCount; i++) {
         hospitalVisitClaims.push({
+          index: i,
           month: null,
           dayFrom: null,
           dayTo: null,

@@ -100,6 +100,7 @@ export default {
 
       for (let i=0; i<claimCount; i++) {
         claims.push({
+          index: i,
           serviceDate: null,
           numberOfServices: null,
           serviceClarificationCode: null,
