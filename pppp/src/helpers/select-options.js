@@ -28,3 +28,17 @@ export const selectOptionsSubmissionCode = [
     label: 'X (Resubmitting of refused previous or partially paid claim)'
   }
 ];
+
+export const selectOptionsCorrespondenceAttached = [
+  {
+    value: 'C',
+    label: 'C (Paper correspondence following)'
+  },
+  {
+    value: 'N',
+    label: 'N (Note Record following this claim record)'
+  },{
+    value: 'B',
+    label: 'B (both)'
+  }
+];

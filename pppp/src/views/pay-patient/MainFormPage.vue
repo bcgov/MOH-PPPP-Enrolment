@@ -145,11 +145,12 @@
             aria-live="assertive">Motor Vehicle Accident Claim Number must be valid.</div>
         
         <hr class='mt-5'/>
-        <Input label='Correspondence Attached:'
-              id='correspondence-attached'
-              class='mt-3'
-              v-model='correspondenceAttached'
-              maxlength='1'/>
+        <Select label='Correspondence Attached:'
+                id='correspondence-attached'
+                class='mt-3'
+                v-model='correspondenceAttached'
+                :options='correspondenceAttachedOptions'
+                defaultOptionLabel='None' />
         <Select label='Submission Code:'
                 id='submission-code'
                 class='mt-3'
@@ -432,7 +433,10 @@ import {
   getTopScrollPosition
 } from '@/helpers/scroll';
 import { getConvertedPath } from '@/helpers/url';
-import { selectOptionsSubmissionCode } from '@/helpers/select-options';
+import {
+  selectOptionsSubmissionCode,
+  selectOptionsCorrespondenceAttached,
+} from '@/helpers/select-options';
 import ContinueBar from '@/components/ContinueBar.vue';
 import PageContent from '@/components/PageContent.vue';
 import ServiceLocationSelect from '@/components/ServiceLocationSelect.vue';
@@ -607,6 +611,7 @@ export default {
           value: 'N',
         }
       ],
+      correspondenceAttachedOptions: selectOptionsCorrespondenceAttached,
       submissionCodeOptions: selectOptionsSubmissionCode,
       textareaStyle: {
         height: '150px'
