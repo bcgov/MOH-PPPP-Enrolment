@@ -26,11 +26,13 @@ export const scrollToError = () => {
   }, 0);
 };
 
-export const scrollToElement = (element, smoothScroll) => {
+export const scrollToElement = (element, smoothScroll, yOffset) => {
   if (!element) {
     return;
   }
-  const yOffset = -75;
+  if (yOffset === undefined || yOffset === null) {
+    yOffset = -75;
+  }
   setTimeout(() => {
     const top = element.getBoundingClientRect().top + window.pageYOffset + yOffset;
     scrollTo(top, smoothScroll);

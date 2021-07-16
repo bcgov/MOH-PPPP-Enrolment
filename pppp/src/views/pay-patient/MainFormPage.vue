@@ -5,6 +5,7 @@
         <h1>Pay Patient Claim</h1>
         <hr/>
 
+        <a name='patient'></a>
         <h2>Patient</h2>
         <PhnInput label='Personal Health Number:'
               id='phn'
@@ -75,6 +76,7 @@
             v-if="$v.birthDate.$dirty && !$v.birthDate.pastDateValidator"
             aria-live="assertive">Birth Date cannot be in the future.</div>
         
+        <a name='mailing-address'></a>
         <h2 class="mt-5">Payment Mailing Address</h2>
         <Radio label='Whose address is this?'
               class='mt-3'
@@ -126,6 +128,7 @@
             v-if="$v.postalCode.$dirty && $v.postalCode.required && !$v.postalCode.bcPostalCodeValidator"
             aria-live="assertive">Must be a valid BC postal code.</div>
 
+        <a name='vehicle-accident'></a>
         <hr class='mt-5'/>
         <Radio label='Is this claim related to a motor vehicle accident?'
               class='mt-3'
@@ -180,6 +183,7 @@
         <div v-for="(claim, index) in medicalServiceClaims"
             :key="index"
             :set="v = $v.medicalServiceClaims.$each[index]">
+          <a :name='"medical-service-claim-" + index'></a>
           <h2 class="mt-5">{{getMedicalServiceClaimTitle(index)}}</h2>
           <DateInput label='Service Date:'
                     :id="'service-date' + index"
@@ -280,6 +284,7 @@
                 :inputStyle='textareaStyle' />
         </div>
 
+        <a name='practitioner'></a>
         <h2 class="mt-5">Practitioner</h2>
         <Input label='Last Name or Clinic Name:'
               id='last-name-or-clinic-name'
@@ -330,6 +335,7 @@
             v-if="$v.practitionerSpecialtyCode.$dirty && !$v.practitionerSpecialtyCode.alphanumericValidator"
             aria-live="assertive">Specialty code must be alphanumeric.</div>
 
+        <a name='referred-by'></a>
         <h2 class="mt-5">Referred By</h2>
         <Input label='First Name:'
               id='referred-by-first-name'
@@ -367,6 +373,7 @@
             v-if="$v.referredByPractitionerNumber.$dirty && !$v.referredByPractitionerNumber.minLength"
             aria-live="assertive">Practitioner number must not be less than 5 characters.</div>
 
+        <a name='referred-to'></a>
         <h2 class="mt-5">Referred To</h2>
         <Input label='First Name:'
               id='referred-to-first-name'

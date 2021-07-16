@@ -8,7 +8,7 @@
       <div v-if='showEditButtons'
           class="col-3 text-right">
         <a href="javascript:void(0)"
-           @click="navigateToMainFormPage()">Edit 
+           @click="navigateToMainFormPage('patient')">Edit 
           <font-awesome-icon icon="pencil-alt" />
         </a>
       </div>
@@ -23,7 +23,7 @@
       <div v-if='showEditButtons'
           class="col-3 text-right">
         <a href="javascript:void(0)"
-           @click="navigateToMainFormPage()">Edit 
+           @click="navigateToMainFormPage('mailing-address')">Edit 
           <font-awesome-icon icon="pencil-alt" />
         </a>
       </div>
@@ -38,7 +38,7 @@
       <div v-if='showEditButtons'
           class="col-3 text-right">
         <a href="javascript:void(0)"
-           @click="navigateToMainFormPage()">Edit 
+           @click="navigateToMainFormPage('vehicle-accident')">Edit 
           <font-awesome-icon icon="pencil-alt" />
         </a>
       </div>
@@ -55,7 +55,7 @@
         <div v-if='showEditButtons'
             class="col-3 text-right">
           <a href="javascript:void(0)"
-            @click="navigateToMainFormPage()">Edit 
+            @click="navigateToMainFormPage(`medical-service-claim-${index}`)">Edit 
             <font-awesome-icon icon="pencil-alt" />
           </a>
         </div>
@@ -71,7 +71,7 @@
       <div v-if='showEditButtons'
           class="col-3 text-right">
         <a href="javascript:void(0)"
-           @click="navigateToMainFormPage()">Edit 
+           @click="navigateToMainFormPage('practitioner')">Edit 
           <font-awesome-icon icon="pencil-alt" />
         </a>
       </div>
@@ -86,7 +86,7 @@
       <div v-if='showEditButtons'
           class="col-3 text-right">
         <a href="javascript:void(0)"
-           @click="navigateToMainFormPage()">Edit 
+           @click="navigateToMainFormPage('referred-by')">Edit 
           <font-awesome-icon icon="pencil-alt" />
         </a>
       </div>
@@ -101,7 +101,7 @@
       <div v-if='showEditButtons'
           class="col-3 text-right">
         <a href="javascript:void(0)"
-           @click="navigateToMainFormPage()">Edit 
+           @click="navigateToMainFormPage('referred-to')">Edit 
           <font-awesome-icon icon="pencil-alt" />
         </a>
       </div>
@@ -115,7 +115,10 @@
 <script>
 import ReviewTable from '@/components/ReviewTable.vue';
 import { payPatientRoutes } from '@/router/routes';
-import { scrollTo } from '@/helpers/scroll';
+import {
+  scrollTo,
+  scrollToElement,
+} from '@/helpers/scroll';
 import pageStateService from '@/services/page-state-service';
 import { formatDate } from '@/helpers/date';
 import { capitalCaseWord } from '@/helpers/string';
@@ -351,14 +354,17 @@ export default {
       this.$router.push(toPath);
       scrollTo();
     },
-    navigateToMainFormPage() {
+    navigateToMainFormPage(anchorName) {
       const toPath = getConvertedPath(
         this.$router.currentRoute.path,
         payPatientRoutes.MAIN_FORM_PAGE.path
       );
       pageStateService.setPageComplete(toPath);
       this.$router.push(toPath);
-      scrollTo();
+      this.$nextTick(() => {
+        const anchorEl = document.querySelector(`a[name="${anchorName}"`);
+        scrollToElement(anchorEl, false, 0);
+      }, 0);
     },
     getMedicalServiceClaimTitle(index) {
       const claims = this.$store.state.payPatientForm.medicalServiceClaims;
