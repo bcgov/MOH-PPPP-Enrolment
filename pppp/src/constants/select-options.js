@@ -1,22 +1,50 @@
-<template>
-  <div :class='className'>
-    <label :for='id'>{{label}}</label><br/>
-    <select :id='id'
-            class="form-control"
-            :style='inputStyle'
-            :value='value'
-            @change="changeHandler($event)">
-      <option :value='null'>Select</option>
-      <option v-for="(option, index) in options"
-              :key="index"
-              :value='option.value'>{{option.label}}</option>
-    </select>
-  </div>
-</template>
+export const selectOptionsSubmissionCode = [
+  {
+    value: 'A',
+    label: 'A (Requested Pre-approval claim in writing to MSP)'
+  },
+  {
+    value: 'C',
+    label: 'C (Subscriber coverage problem)'
+  },
+  {
+    value: 'D',
+    label: 'D (Duplicate claim)'
+  },
+  {
+    value: 'I',
+    label: 'I (ICBC claim)'
+  },
+  {
+    value: 'R',
+    label: 'R (Re Submitted claim)'
+  },
+  {
+    value: 'W',
+    label: 'W (Claim determined to be WSBC\'s)'
+  },
+  {
+    value: 'X',
+    label: 'X (Resubmitting of refused previous or partially paid claim)'
+  }
+];
 
-<script>
+export const selectOptionsCorrespondenceAttached = [
+  {
+    value: 'C',
+    label: 'C (Paper correspondence following)'
+  },
+  {
+    value: 'N',
+    label: 'N (Note Record following this claim record)'
+  },
+  {
+    value: 'B',
+    label: 'B (both)'
+  }
+];
 
-const options = [
+export const selectOptionsServiceLocation = [
   {
     value: 'A',
     label: '(A) Practitioner\'s Office - In Community'
@@ -102,46 +130,3 @@ const options = [
     label: '(Z) Other, e.g., accident site or in an ambulance'
   }
 ];
-
-export const getServiceLocationLabelFromValue = (value) => {
-  const resultOption = options.find((option) => option.value === value);
-  return resultOption ? resultOption.label : value;
-};
-
-export default {
-  name: 'ServiceLocationSelect',
-  props: {
-    id: {
-      type: String,
-      default: '',
-    },
-    value: {
-      type: String,
-    },
-    label: {
-      type: String,
-      default: '',
-    },
-    className: {
-      type: String,
-      default: '',
-    },
-    inputStyle: {
-      type: Object,
-      default: () => {
-        return {};
-      }
-    }
-  },
-  data: () => {
-    return {
-      options: options,
-    }
-  },
-  methods: {
-    changeHandler(event) {
-      this.$emit('input', event.target.value);
-    }
-  }
-}
-</script>

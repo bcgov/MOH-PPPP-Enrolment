@@ -33,7 +33,7 @@ export default {
         minute: '06'
       },
       diagnosticCode: 'DC',
-      locationOfService: 'Hospital',
+      locationOfService: 'A',
       notes: 'Notes here.',
     }
   ],
@@ -49,7 +49,7 @@ export default {
       feeItem: '03333',
       amountBilled: '0.00',
       diagnosticCode: 'DC',
-      locationOfService: 'Hospital',
+      locationOfService: 'A',
       notes: 'Notes here.',
     }
   ],
