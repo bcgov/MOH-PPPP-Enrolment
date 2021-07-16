@@ -563,7 +563,7 @@ import { getConvertedPath } from '@/helpers/url';
 import {
   selectOptionsSubmissionCode,
   selectOptionsCorrespondenceAttached,
-} from '@/helpers/select-options';
+} from '@/constants/select-options';
 import ContinueBar from '@/components/ContinueBar.vue';
 import PageContent from '@/components/PageContent.vue';
 import {
