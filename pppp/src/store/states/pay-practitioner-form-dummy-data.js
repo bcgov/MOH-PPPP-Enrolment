@@ -54,8 +54,8 @@ export default {
     }
   ],
 
-  practitionerLastNameOrClinicName: 'Doe',
-  practitionerFirstNameInitial: 'J',
+  practitionerLastName: 'Doe',
+  practitionerFirstName: 'J',
   practitionerPaymentNumber: 'A1234',
   practitionerPractitionerNumber: '22274',
   practitionerFacilityNumber: '12345',

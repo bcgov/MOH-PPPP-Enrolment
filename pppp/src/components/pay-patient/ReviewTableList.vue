@@ -286,28 +286,28 @@ export default {
     practitionerData() {
       const items = [];
       items.push({
-        label: 'Last Name or Clinic Name:',
-        value: this.$store.state.payPatientForm.practitionerLastNameOrClinicName,
+        label: 'Practitioner Last Name:',
+        value: this.$store.state.payPatientForm.practitionerLastName,
       });
       items.push({
-        label: 'First Name Initial:',
-        value: this.$store.state.payPatientForm.practitionerFirstNameInitial,
+        label: 'Practitioner First Name:',
+        value: this.$store.state.payPatientForm.practitionerFirstName,
       });
       items.push({
-        label: 'Payment Number:',
-        value: this.$store.state.payPatientForm.practitionerPaymentNumber,
+        label: 'Specialty Code:',
+        value: this.$store.state.payPatientForm.practitionerSpecialtyCode,
       });
       items.push({
         label: 'Practitioner Number:',
         value: this.$store.state.payPatientForm.practitionerPractitionerNumber,
       });
       items.push({
-        label: 'Facility Number:',
-        value: this.$store.state.payPatientForm.practitionerFacilityNumber,
+        label: 'Payment Number:',
+        value: this.$store.state.payPatientForm.practitionerPaymentNumber,
       });
       items.push({
-        label: 'Specialty Code:',
-        value: this.$store.state.payPatientForm.practitionerSpecialtyCode,
+        label: 'Facility Number:',
+        value: this.$store.state.payPatientForm.practitionerFacilityNumber,
       });
       return items;
     },

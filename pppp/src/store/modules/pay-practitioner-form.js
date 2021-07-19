@@ -31,8 +31,8 @@ export const SET_PROCEDURE_OR_OPERATION = 'setProcedureOrOperation';
 export const SET_MEDICAL_SERVICE_CLAIMS = 'setMedicalServiceClaims';
 export const SET_HOSPITAL_VISIT_CLAIMS = 'setHospitalVisitClaims';
 
-export const SET_PRACTITIONER_LAST_NAME_OR_CLINIC_NAME = 'setPractitionerLastNameOrClinicName';
-export const SET_PRACTITIONER_FIRST_NAME_INITIAL = 'setPractitionerFirstNameInitial';
+export const SET_PRACTITIONER_LAST_NAME = 'setPractitionerLastName';
+export const SET_PRACTITIONER_FIRST_NAME = 'setPractitionerFirstName';
 export const SET_PRACTITIONER_PAYMENT_NUMBER = 'setPractitionerPaymentNumber';
 export const SET_PRACTITIONER_PRACTITIONER_NUMBER = 'setPractitionerPractitionerNumber';
 export const SET_PRACTITIONER_FACILITY_NUMBER = 'setPractitionerFacilityNumber';
@@ -76,8 +76,8 @@ export default {
       medicalServiceClaims: [],
       hospitalVisitClaims: [],
 
-      practitionerLastNameOrClinicName: null,
-      practitionerFirstNameInitial: null,
+      practitionerLastName: null,
+      practitionerFirstName: null,
       practitionerPaymentNumber: null,
       practitionerPractitionerNumber: null,
       practitionerFacilityNumber: null,
@@ -160,11 +160,11 @@ export default {
     [SET_HOSPITAL_VISIT_CLAIMS](state, payload) {
       state.hospitalVisitClaims = payload;
     },
-    [SET_PRACTITIONER_LAST_NAME_OR_CLINIC_NAME](state, payload) {
-      state.practitionerLastNameOrClinicName = payload;
+    [SET_PRACTITIONER_LAST_NAME](state, payload) {
+      state.practitionerLastName = payload;
     },
-    [SET_PRACTITIONER_FIRST_NAME_INITIAL](state, payload) {
-      state.practitionerFirstNameInitial = payload;
+    [SET_PRACTITIONER_FIRST_NAME](state, payload) {
+      state.practitionerFirstName = payload;
     },
     [SET_PRACTITIONER_PAYMENT_NUMBER](state, payload) {
       state.practitionerPaymentNumber = payload;
@@ -225,8 +225,8 @@ export default {
       commit(SET_MEDICAL_SERVICE_CLAIMS, []);
       commit(SET_HOSPITAL_VISIT_CLAIMS, []);
       
-      commit(SET_PRACTITIONER_LAST_NAME_OR_CLINIC_NAME, null);
-      commit(SET_PRACTITIONER_FIRST_NAME_INITIAL, null);
+      commit(SET_PRACTITIONER_LAST_NAME, null);
+      commit(SET_PRACTITIONER_FIRST_NAME, null);
       commit(SET_PRACTITIONER_PAYMENT_NUMBER, null);
       commit(SET_PRACTITIONER_PRACTITIONER_NUMBER, null);
       commit(SET_PRACTITIONER_SPECIALTY_CODE, null);
@@ -302,11 +302,11 @@ export default {
     [SET_HOSPITAL_VISIT_CLAIMS]({ commit }, payload) {
       commit(SET_HOSPITAL_VISIT_CLAIMS, payload);
     },
-    [SET_PRACTITIONER_LAST_NAME_OR_CLINIC_NAME]({ commit }, payload) {
-      commit(SET_PRACTITIONER_LAST_NAME_OR_CLINIC_NAME, payload);
+    [SET_PRACTITIONER_LAST_NAME]({ commit }, payload) {
+      commit(SET_PRACTITIONER_LAST_NAME, payload);
     },
-    [SET_PRACTITIONER_FIRST_NAME_INITIAL]({ commit }, payload) {
-      commit(SET_PRACTITIONER_FIRST_NAME_INITIAL, payload);
+    [SET_PRACTITIONER_FIRST_NAME]({ commit }, payload) {
+      commit(SET_PRACTITIONER_FIRST_NAME, payload);
     },
     [SET_PRACTITIONER_PAYMENT_NUMBER]({ commit }, payload) {
       commit(SET_PRACTITIONER_PAYMENT_NUMBER, payload);
