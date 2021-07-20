@@ -49,6 +49,7 @@ export default {
   practitionerPractitionerNumber: '22274',
   practitionerFacilityNumber: '12345',
   practitionerSpecialtyCode: 'A1',
+  practitionerClinicName: 'My Clinic',
 
   referredByLastName: 'McDonald',
   referredByFirstName: 'R',

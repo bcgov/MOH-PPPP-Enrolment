@@ -37,6 +37,7 @@ export const SET_PRACTITIONER_PAYMENT_NUMBER = 'setPractitionerPaymentNumber';
 export const SET_PRACTITIONER_PRACTITIONER_NUMBER = 'setPractitionerPractitionerNumber';
 export const SET_PRACTITIONER_FACILITY_NUMBER = 'setPractitionerFacilityNumber';
 export const SET_PRACTITIONER_SPECIALTY_CODE = 'setPractitionerSpecialtyCode';
+export const SET_PRACTITIONER_CLINIC_NAME = 'setPractitionerClinicName';
 
 export const SET_REFERRED_BY_LAST_NAME = 'setReferredByLastName';
 export const SET_REFERRED_BY_FIRST_NAME = 'setReferredByFirstName';
@@ -82,6 +83,7 @@ export default {
       practitionerPractitionerNumber: null,
       practitionerFacilityNumber: null,
       practitionerSpecialtyCode: null,
+      practitionerClinicName: null,
 
       referredByLastName: null,
       referredByFirstName: null,
@@ -178,6 +180,9 @@ export default {
     [SET_PRACTITIONER_SPECIALTY_CODE](state, payload) {
       state.practitionerSpecialtyCode = payload;
     },
+    [SET_PRACTITIONER_CLINIC_NAME](state, payload) {
+      state.practitionerClinicName = payload;
+    },
     [SET_REFERRED_BY_LAST_NAME](state, payload) {
       state.referredByLastName = payload;
     },
@@ -230,6 +235,7 @@ export default {
       commit(SET_PRACTITIONER_PAYMENT_NUMBER, null);
       commit(SET_PRACTITIONER_PRACTITIONER_NUMBER, null);
       commit(SET_PRACTITIONER_SPECIALTY_CODE, null);
+      commit(SET_PRACTITIONER_CLINIC_NAME, null);
       
       commit(SET_REFERRED_BY_LAST_NAME, null);
       commit(SET_REFERRED_BY_FIRST_NAME, null);
@@ -319,6 +325,9 @@ export default {
     },
     [SET_PRACTITIONER_SPECIALTY_CODE]({ commit }, payload) {
       commit(SET_PRACTITIONER_SPECIALTY_CODE, payload);
+    },
+    [SET_PRACTITIONER_CLINIC_NAME]({ commit }, payload) {
+      commit(SET_PRACTITIONER_CLINIC_NAME, payload);
     },
     [SET_REFERRED_BY_LAST_NAME]({ commit }, payload) {
       commit(SET_REFERRED_BY_LAST_NAME, payload);

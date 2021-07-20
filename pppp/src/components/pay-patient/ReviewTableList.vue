@@ -309,6 +309,10 @@ export default {
         label: 'Facility Number:',
         value: this.$store.state.payPatientForm.practitionerFacilityNumber,
       });
+      items.push({
+        label: 'Clinic Name:',
+        value: this.$store.state.payPatientForm.practitionerClinicName,
+      });
       return items;
     },
     referredByData() {

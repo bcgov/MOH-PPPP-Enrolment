@@ -337,6 +337,10 @@ export default {
         label: 'Facility Number:',
         value: this.$store.state.payPractitionerForm.practitionerFacilityNumber,
       });
+      items.push({
+        label: 'Clinic Name:',
+        value: this.$store.state.payPractitionerForm.practitionerClinicName,
+      });
       return items;
     },
     referredByData() {
