@@ -426,18 +426,53 @@
 
         <a name='practitioner'></a>
         <h2 class="mt-5">Practitioner</h2>
-        <Input label='Last Name or Clinic Name:'
-              id='last-name-or-clinic-name'
+        <Input label='Practitioner Last Name:'
+              id='practitioner-last-name'
               class='mt-3'
-              maxlength="22"
-              v-model='practitionerLastNameOrClinicName'
-              :inputStyle='mediumStyles'/>
-        <Input label='First Name Initial:'
-              id='first-name-initial'
+              maxlength="35"
+              v-model='practitionerLastName'
+              :inputStyle='mediumStyles'
+              :isRequiredAsteriskShown='true'/>
+        <div class="text-danger"
+            v-if="$v.practitionerLastName.$dirty && !$v.practitionerLastName.required"
+            aria-live="assertive">Practitioner Last Name is required.</div>
+        <div class="text-danger"
+            v-if="$v.practitionerLastName.$dirty && $v.practitionerLastName.required && !$v.practitionerLastName.nameValidator"
+            aria-live="assertive">Practitioner Last Name must begin with a letter and cannot include special characters except hyphens, periods, apostrophes and blank characters.</div>
+        <Input label='Practitioner First Name:'
+              id='practitioner-first-name'
               class='mt-3'
-              maxlength="1"
-              v-model='practitionerFirstNameInitial'
+              maxlength="15"
+              v-model='practitionerFirstName'
+              :inputStyle='mediumStyles'
+              :isRequiredAsteriskShown='true'/>
+        <div class="text-danger"
+            v-if="$v.practitionerFirstName.$dirty && !$v.practitionerFirstName.required"
+            aria-live="assertive">Practitioner First Name is required.</div>
+        <div class="text-danger"
+            v-if="$v.practitionerFirstName.$dirty && $v.practitionerFirstName.required && !$v.practitionerFirstName.nameValidator"
+            aria-live="assertive">Practitioner First Name must begin with a letter and cannot include special characters except hyphens, periods, apostrophes and blank characters.</div>
+        <Input label='Specialty Code:'
+              id='specialty-code'
+              class='mt-3'
+              maxlength="2"
+              v-model='practitionerSpecialtyCode'
               :inputStyle='extraSmallStyles'/>
+        <div class="text-danger"
+            v-if="$v.practitionerSpecialtyCode.$dirty && !$v.practitionerSpecialtyCode.alphanumericValidator"
+            aria-live="assertive">Specialty code must be alphanumeric.</div>
+        <PractitionerNumberInput label='Practitioner Number:'
+              id='practitioner-number'
+              class='mt-3'
+              v-model='practitionerPractitionerNumber'
+              :isRequiredAsteriskShown='true'
+              :inputStyle='smallStyles'/>
+        <div class="text-danger"
+            v-if="$v.practitionerPractitionerNumber.$dirty && !$v.practitionerPractitionerNumber.required"
+            aria-live="assertive">Practitioner number is required.</div>
+        <div class="text-danger"
+            v-if="$v.practitionerPractitionerNumber.$dirty && $v.practitionerPractitionerNumber.required && !$v.practitionerPractitionerNumber.minLength"
+            aria-live="assertive">Practitioner number must not be less than 5 characters.</div>
         <Input label='Payment Number:'
               id='payment-number'
               class='mt-3'
@@ -454,18 +489,6 @@
         <div class="text-danger"
             v-if="$v.practitionerPaymentNumber.$dirty && $v.practitionerPaymentNumber.required && !$v.practitionerPaymentNumber.firstLetterAlphaValidator"
             aria-live="assertive">Practitioner payment number must begin with a letter.</div>
-        <PractitionerNumberInput label='Practitioner Number:'
-              id='practitioner-number'
-              class='mt-3'
-              v-model='practitionerPractitionerNumber'
-              :isRequiredAsteriskShown='true'
-              :inputStyle='smallStyles'/>
-        <div class="text-danger"
-            v-if="$v.practitionerPractitionerNumber.$dirty && !$v.practitionerPractitionerNumber.required"
-            aria-live="assertive">Practitioner number is required.</div>
-        <div class="text-danger"
-            v-if="$v.practitionerPractitionerNumber.$dirty && $v.practitionerPractitionerNumber.required && !$v.practitionerPractitionerNumber.minLength"
-            aria-live="assertive">Practitioner number must not be less than 5 characters.</div>
         <FacilityNumberInput label='Facility Number:'
               id='facility-number'
               class='mt-3'
@@ -474,19 +497,18 @@
         <div class="text-danger"
             v-if="$v.practitionerFacilityNumber.$dirty && !$v.practitionerFacilityNumber.minLength"
             aria-live="assertive">Facility number must not be less than 5 characters.</div>
-        <Input label='Specialty Code:'
-              id='specialty-code'
+        <Input label='Clinic Name:'
+              id='clinic-name'
               class='mt-3'
-              maxlength="2"
-              v-model='practitionerSpecialtyCode'
-              :inputStyle='extraSmallStyles'/>
+              v-model='practitionerClinicName'
+              :inputStyle='mediumStyles'/>
         <div class="text-danger"
-            v-if="$v.practitionerSpecialtyCode.$dirty && !$v.practitionerSpecialtyCode.alphanumericValidator"
-            aria-live="assertive">Specialty code must be alphanumeric.</div>
-
+            v-if="$v.practitionerClinicName.$dirty && !$v.practitionerClinicName.clinicNameValidator"
+            aria-live="assertive">Practitioner First Name must contain only alphanumeric characters and cannot include special characters except hyphens, periods, apostrophes and blank characters.</div>
+        
         <a name='referred-by'></a>
         <h2 class="mt-5">Referred By</h2>
-        <Input label='First Name:'
+        <Input label='Referred By Practitioner First Name:'
               id='referred-by-first-name'
               class='mt-3'
               maxlength="18"
@@ -499,7 +521,7 @@
         <div class="text-danger"
             v-if="$v.referredByFirstName.$dirty && !$v.referredByFirstName.nameValidator"
             aria-live="assertive">First name must begin with a letter and cannot include special characters except hyphens, periods, apostrophes and blank characters.</div>
-        <Input label='Last Name:'
+        <Input label='Referred By Practitioner Last Name:'
               id='referred-by-last-name'
               class='mt-3'
               maxlength="18"
@@ -512,7 +534,7 @@
         <div class="text-danger"
             v-if="$v.referredByLastName.$dirty && !$v.referredByLastName.nameValidator"
             aria-live="assertive">Last name must begin with a letter and cannot include special characters except hyphens, periods, apostrophes and blank characters.</div>
-        <PractitionerNumberInput label='Practitioner Number:'
+        <PractitionerNumberInput label='Referred By Practitioner Number:'
               id='referred-by-practitioner-number'
               class='mt-3'
               v-model='referredByPractitionerNumber'
@@ -527,7 +549,7 @@
 
         <a name='referred-to'></a>
         <h2 class="mt-5">Referred To</h2>
-        <Input label='First Name:'
+        <Input label='Referred To Practitioner First Name:'
               id='referred-to-first-name'
               class='mt-3'
               maxlength="1"
@@ -540,7 +562,7 @@
         <div class="text-danger"
             v-if="$v.referredToFirstName.$dirty && !$v.referredToFirstName.nameValidator"
             aria-live="assertive">First name must begin with a letter and cannot include special characters except hyphens, periods, apostrophes and blank characters.</div>
-        <Input label='Last Name:'
+        <Input label='Referred To Practitioner Last Name:'
               id='referred-to-last-name'
               class='mt-3'
               maxlength="18"
@@ -553,7 +575,7 @@
         <div class="text-danger"
             v-if="$v.referredToLastName.$dirty && !$v.referredToLastName.nameValidator"
             aria-live="assertive">Last name must begin with a letter and cannot include special characters except hyphens, periods, apostrophes and blank characters.</div>
-        <PractitionerNumberInput label='Practitioner Number:'
+        <PractitionerNumberInput label='Referred To Practitioner Number:'
               id='referred-to-practitioner-number'
               class='mt-3'
               v-model='referredToPractitionerNumber'
@@ -595,6 +617,7 @@ import {
   getTopScrollPosition
 } from '@/helpers/scroll';
 import { getConvertedPath } from '@/helpers/url';
+import { clinicNameValidator } from '@/helpers/validators';
 import {
   selectOptionsSubmissionCode,
   selectOptionsCorrespondenceAttached,
@@ -627,11 +650,12 @@ import {
   SET_PROCEDURE_OR_OPERATION,
   SET_HOSPITAL_VISIT_CLAIMS,
   SET_MEDICAL_SERVICE_CLAIMS,
-  SET_PRACTITIONER_LAST_NAME_OR_CLINIC_NAME,
-  SET_PRACTITIONER_FIRST_NAME_INITIAL,
+  SET_PRACTITIONER_LAST_NAME,
+  SET_PRACTITIONER_FIRST_NAME,
   SET_PRACTITIONER_PAYMENT_NUMBER,
   SET_PRACTITIONER_PRACTITIONER_NUMBER,
   SET_PRACTITIONER_SPECIALTY_CODE,
+  SET_PRACTITIONER_CLINIC_NAME,
   SET_REFERRED_BY_LAST_NAME,
   SET_REFERRED_BY_FIRST_NAME,
   SET_REFERRED_BY_PRACTITIONER_NUMBER,
@@ -847,12 +871,13 @@ export default {
       medicalServiceClaims: [],
       hospitalVisitClaims: [],
 
-      practitionerLastNameOrClinicName: null,
-      practitionerFirstNameInitial: null,
+      practitionerLastName: null,
+      practitionerFirstName: null,
       practitionerPaymentNumber: null,
       practitionerPractitionerNumber: null,
       practitionerFacilityNumber: null,
       practitionerSpecialtyCode: null,
+      practitionerClinicName: null,
 
       referredByLastName: null,
       referredByFirstName: null,
@@ -882,12 +907,13 @@ export default {
     this.medicalServiceClaims = this.$store.state.payPractitionerForm.medicalServiceClaims ? cloneDeep(this.$store.state.payPractitionerForm.medicalServiceClaims) : [];
     this.hospitalVisitClaims = this.$store.state.payPractitionerForm.hospitalVisitClaims ? cloneDeep(this.$store.state.payPractitionerForm.hospitalVisitClaims) : [];
 
-    this.practitionerLastNameOrClinicName = this.$store.state.payPractitionerForm.practitionerLastNameOrClinicName;
-    this.practitionerFirstNameInitial = this.$store.state.payPractitionerForm.practitionerFirstNameInitial;
+    this.practitionerLastName = this.$store.state.payPractitionerForm.practitionerLastName;
+    this.practitionerFirstName = this.$store.state.payPractitionerForm.practitionerFirstName;
     this.practitionerPaymentNumber = this.$store.state.payPractitionerForm.practitionerPaymentNumber;
     this.practitionerPractitionerNumber = this.$store.state.payPractitionerForm.practitionerPractitionerNumber;
     this.practitionerFacilityNumber = this.$store.state.payPractitionerForm.practitionerFacilityNumber;
     this.practitionerSpecialtyCode = this.$store.state.payPractitionerForm.practitionerSpecialtyCode;
+    this.practitionerClinicName = this.$store.state.payPractitionerForm.practitionerClinicName;
 
     this.referredByLastName = this.$store.state.payPractitionerForm.referredByLastName;
     this.referredByFirstName = this.$store.state.payPractitionerForm.referredByFirstName;
@@ -1024,6 +1050,14 @@ export default {
           },
         }
       },
+      practitionerLastName: {
+        required,
+        nameValidator,
+      },
+      practitionerFirstName: {
+        required,
+        nameValidator,
+      },
       practitionerPaymentNumber: {
         required,
         minLength: minLength(5),
@@ -1038,6 +1072,9 @@ export default {
       },
       practitionerSpecialtyCode: {
         alphanumericValidator: optionalValidator(alphanumericValidator),
+      },
+      practitionerClinicName: {
+        clinicNameValidator: optionalValidator(clinicNameValidator),
       },
       referredByLastName: {
         nameValidator: optionalValidator(nameValidator),
@@ -1114,12 +1151,13 @@ export default {
       this.$store.dispatch(formModule + '/' + SET_MEDICAL_SERVICE_CLAIMS, this.medicalServiceClaims);
       this.$store.dispatch(formModule + '/' + SET_HOSPITAL_VISIT_CLAIMS, this.hospitalVisitClaims);
 
-      this.$store.dispatch(formModule + '/' + SET_PRACTITIONER_LAST_NAME_OR_CLINIC_NAME, this.practitionerLastNameOrClinicName);
-      this.$store.dispatch(formModule + '/' + SET_PRACTITIONER_FIRST_NAME_INITIAL, this.practitionerFirstNameInitial);
+      this.$store.dispatch(formModule + '/' + SET_PRACTITIONER_LAST_NAME, this.practitionerLastName);
+      this.$store.dispatch(formModule + '/' + SET_PRACTITIONER_FIRST_NAME, this.practitionerFirstName);
       this.$store.dispatch(formModule + '/' + SET_PRACTITIONER_PAYMENT_NUMBER, this.practitionerPaymentNumber);
       this.$store.dispatch(formModule + '/' + SET_PRACTITIONER_PRACTITIONER_NUMBER, this.practitionerPractitionerNumber);
       this.$store.dispatch(formModule + '/' + SET_PRACTITIONER_FACILITY_NUMBER, this.practitionerFacilityNumber);
       this.$store.dispatch(formModule + '/' + SET_PRACTITIONER_SPECIALTY_CODE, this.practitionerSpecialtyCode);
+      this.$store.dispatch(formModule + '/' + SET_PRACTITIONER_CLINIC_NAME, this.practitionerClinicName);
 
       this.$store.dispatch(formModule + '/' + SET_REFERRED_BY_LAST_NAME, this.referredByLastName);
       this.$store.dispatch(formModule + '/' + SET_REFERRED_BY_FIRST_NAME, this.referredByFirstName);

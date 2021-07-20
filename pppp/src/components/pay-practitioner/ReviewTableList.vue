@@ -314,43 +314,47 @@ export default {
     practitionerData() {
       const items = [];
       items.push({
-        label: 'Last Name or Clinic Name:',
-        value: this.$store.state.payPractitionerForm.practitionerLastNameOrClinicName,
+        label: 'Practitioner Last Name:',
+        value: this.$store.state.payPractitionerForm.practitionerLastName,
       });
       items.push({
-        label: 'First Name Initial:',
-        value: this.$store.state.payPractitionerForm.practitionerFirstNameInitial,
+        label: 'Practitioner First Name:',
+        value: this.$store.state.payPractitionerForm.practitionerFirstName,
       });
       items.push({
-        label: 'Payment Number:',
-        value: this.$store.state.payPractitionerForm.practitionerPaymentNumber,
+        label: 'Specialty Code:',
+        value: this.$store.state.payPractitionerForm.practitionerSpecialtyCode,
       });
       items.push({
         label: 'Practitioner Number:',
         value: this.$store.state.payPractitionerForm.practitionerPractitionerNumber,
       });
       items.push({
+        label: 'Payment Number:',
+        value: this.$store.state.payPractitionerForm.practitionerPaymentNumber,
+      });
+      items.push({
         label: 'Facility Number:',
         value: this.$store.state.payPractitionerForm.practitionerFacilityNumber,
       });
       items.push({
-        label: 'Specialty Code:',
-        value: this.$store.state.payPractitionerForm.practitionerSpecialtyCode,
+        label: 'Clinic Name:',
+        value: this.$store.state.payPractitionerForm.practitionerClinicName,
       });
       return items;
     },
     referredByData() {
       const items = [];
       items.push({
-        label: 'First Name:',
+        label: 'Referred By Practitioner First Name:',
         value: this.$store.state.payPractitionerForm.referredByFirstName,
       });
       items.push({
-        label: 'Last Name:',
+        label: 'Referred By Practitioner Last Name:',
         value: this.$store.state.payPractitionerForm.referredByLastName,
       });
       items.push({
-        label: 'Practitioner Number:',
+        label: 'Referred By Practitioner Number:',
         value: this.$store.state.payPractitionerForm.referredByPractitionerNumber,
       });
       return items;
@@ -358,15 +362,15 @@ export default {
     referredToData() {
       const items = [];
       items.push({
-        label: 'First Name:',
+        label: 'Referred To Practitioner First Name:',
         value: this.$store.state.payPractitionerForm.referredToFirstName,
       });
       items.push({
-        label: 'Last Name:',
+        label: 'Referred To Practitioner Last Name:',
         value: this.$store.state.payPractitionerForm.referredToLastName,
       });
       items.push({
-        label: 'Practitioner Number:',
+        label: 'Referred To Practitioner Number:',
         value: this.$store.state.payPractitionerForm.referredToPractitionerNumber,
       });
       return items;
