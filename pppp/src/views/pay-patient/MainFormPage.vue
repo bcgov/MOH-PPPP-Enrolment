@@ -2,8 +2,15 @@
   <div>
     <PageContent>
       <div class="container pt-3 pt-sm-5 mb-3">
-        <h1>Pay Patient Claim</h1>
-        <hr/>
+        <div class="row align-items-end">
+          <div class="col-md-7">
+            <h1>Pay Patient Claim</h1>
+          </div>
+          <div class="col-md-5">
+            <p class="text-right"><span class="required-asterisk">*</span> Required Information</p>
+          </div>
+        </div>
+        <hr class="mt-0"/>
 
         <a name='patient'></a>
         <h2>Patient</h2>
