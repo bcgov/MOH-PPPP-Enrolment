@@ -387,7 +387,7 @@
         
         <a name='referred-by'></a>
         <h2 class="mt-5">Referred By</h2>
-        <Input label='First Name:'
+        <Input label='Referred By Practitioner First Name:'
               id='referred-by-first-name'
               class='mt-3'
               v-model='referredByFirstName'
@@ -400,7 +400,7 @@
         <div class="text-danger"
             v-if="$v.referredByFirstName.$dirty && !$v.referredByFirstName.nameValidator"
             aria-live="assertive">First name must begin with a letter and cannot include special characters except hyphens, periods, apostrophes and blank characters.</div>
-        <Input label='Last Name:'
+        <Input label='Referred By Practitioner Last Name:'
               id='referred-by-last-name'
               class='mt-3'
               v-model='referredByLastName'
@@ -413,7 +413,7 @@
         <div class="text-danger"
             v-if="$v.referredByLastName.$dirty && !$v.referredByLastName.nameValidator"
             aria-live="assertive">Last name must begin with a letter and cannot include special characters except hyphens, periods, apostrophes and blank characters.</div>
-        <PractitionerNumberInput label='Practitioner Number:'
+        <PractitionerNumberInput label='Referred By Practitioner Number:'
               id='referred-by-practitioner-number'
               class='mt-3'
               v-model='referredByPractitionerNumber'
@@ -428,7 +428,7 @@
 
         <a name='referred-to'></a>
         <h2 class="mt-5">Referred To</h2>
-        <Input label='First Name:'
+        <Input label='Referred To Practitioner First Name:'
               id='referred-to-first-name'
               class='mt-3'
               v-model='referredToFirstName'
@@ -441,7 +441,7 @@
         <div class="text-danger"
             v-if="$v.referredToFirstName.$dirty && !$v.referredToFirstName.nameValidator"
             aria-live="assertive">First name must begin with a letter and cannot include special characters except hyphens, periods, apostrophes and blank characters.</div>
-        <Input label='Last Name:'
+        <Input label='Referred To Practitioner Last Name:'
               id='referred-to-last-name'
               class='mt-3'
               v-model='referredToLastName'
@@ -454,7 +454,7 @@
         <div class="text-danger"
             v-if="$v.referredToLastName.$dirty && !$v.referredToLastName.nameValidator"
             aria-live="assertive">Last name must begin with a letter and cannot include special characters except hyphens, periods, apostrophes and blank characters.</div>
-        <PractitionerNumberInput label='Practitioner Number:'
+        <PractitionerNumberInput label='Referred To Practitioner Number:'
               id='referred-to-practitioner-number'
               class='mt-3'
               v-model='referredToPractitionerNumber'
