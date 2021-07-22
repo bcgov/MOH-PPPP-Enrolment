@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { getBCTimestamp } from '../helpers/date';
+import { getBCTimestamp } from 'common-lib-vue';
 
 const LOG_SERVICE_URL = '/pppp/api/logging';
 const PROGRAM = 'pppp';

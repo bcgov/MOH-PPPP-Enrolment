@@ -138,7 +138,7 @@ import {
   scrollToElement,
 } from '@/helpers/scroll';
 import pageStateService from '@/services/page-state-service';
-import { formatDate } from '@/helpers/date';
+import { formatDate } from 'common-lib-vue';
 import { getConvertedPath } from '@/helpers/url';
 
 export default {
