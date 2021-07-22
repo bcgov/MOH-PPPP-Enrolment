@@ -56,7 +56,7 @@
 <script>
 import PageContent from '@/components/PageContent.vue';
 import ReviewTableList from '@/components/pay-practitioner/ReviewTableList.vue';
-import { formatDate } from '@/helpers/date';
+import { formatDate } from 'common-lib-vue';
 import { getConvertedPath } from '@/helpers/url';
 import pageStateService from '@/services/page-state-service';
 import { payPractitionerRoutes } from '@/router/routes';

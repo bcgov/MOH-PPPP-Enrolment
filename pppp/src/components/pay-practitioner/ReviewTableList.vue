@@ -31,6 +31,21 @@
     <ReviewTable :elements='vehicleAccidentData'
                 :backgroundColor='tableBackgroundColor'/>
 
+    <div class="row align-items-end mt-3">
+      <div class="col-9">
+        <h2 class="mb-2"></h2>
+      </div>
+      <div v-if='showEditButtons'
+          class="col-3 text-right">
+        <a href="javascript:void(0)"
+           @click="navigateToMainFormPage('claim-info')">Edit 
+          <font-awesome-icon icon="pencil-alt" />
+        </a>
+      </div>
+    </div>
+    <ReviewTable :elements='claimInfoData'
+                :backgroundColor='tableBackgroundColor'/>
+
     <div v-for="(claimData, index) in medicalServiceClaims"
         :key="'medical-service-claim-' + index">
       <div class="row align-items-end mt-3">
@@ -123,7 +138,7 @@ import {
   scrollToElement,
 } from '@/helpers/scroll';
 import pageStateService from '@/services/page-state-service';
-import { formatDate } from '@/helpers/date';
+import { formatDate } from 'common-lib-vue';
 import { getConvertedPath } from '@/helpers/url';
 
 export default {
@@ -183,6 +198,10 @@ export default {
         label: 'Motor Vehicle Accident Claim Number:',
         value: this.$store.state.payPractitionerForm.vehicleAccidentClaimNumber,
       });
+      return items;
+    },
+    claimInfoData() {
+      const items = [];
       items.push({
         label: 'Correspondence Attached:',
         value: this.$store.state.payPractitionerForm.correspondenceAttached,
