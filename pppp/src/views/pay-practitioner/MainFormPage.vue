@@ -109,6 +109,7 @@
               aria-live="assertive">Motor Vehicle Accident Claim Number must be valid.</div>
         </div>
 
+        <a name='claim-info'></a>
         <div class="section-container p-3 mt-5">
           <Select label='Correspondence Attached:'
                   id='correspondence-attached'
