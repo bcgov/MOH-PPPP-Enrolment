@@ -5,10 +5,10 @@
         <h1>Review request</h1>
         <p>Review your request before submission</p>
         <hr/>
-        <CorrespondenceAttachedMessage v-if="isCorrespondenceAttached" />
+        <CorrespondenceAttachedMessage v-if="!isFormAbleToSubmit" />
         <ReviewTableList :showEditButtons='true' 
                         tableBackgroundColor='#EEE'/>
-        <CorrespondenceAttachedMessage v-if="isCorrespondenceAttached" />
+        <CorrespondenceAttachedMessage v-if="!isFormAbleToSubmit" />
         <div v-if="isSystemUnavailable"
             class="text-danger mt-3 mb-5"
             aria-live="assertive">Unable to continue, system unavailable. Please try again later.</div>
@@ -36,6 +36,7 @@ import {
   getTopScrollPosition
 } from '../../helpers/scroll';
 import { getConvertedPath } from '@/helpers/url';
+import { isCorrespondenceAttachedAbleToSubmit } from '@/helpers/form-helpers';
 import {
   MODULE_NAME as formModule,
   RESET_FORM,
@@ -68,10 +69,10 @@ export default {
   },
   methods: {
     continueHandler() {
-      if (this.isCorrespondenceAttached) {
-        window.print();
-      } else {
+      if (this.isFormAbleToSubmit) {
         this.submitForm();
+      } else {
+        window.print();
       }
     },
     submitForm() {
@@ -156,14 +157,15 @@ export default {
     }
   },
   computed: {
-    isCorrespondenceAttached() {
-      return !!this.$store.state.payPatientForm.correspondenceAttached;
+    isFormAbleToSubmit() {
+      const correspondenceAttached = this.$store.state.payPatientForm.correspondenceAttached;
+      return isCorrespondenceAttachedAbleToSubmit(correspondenceAttached);
     },
     continueButtonLabel() {
-      if (this.isCorrespondenceAttached) {
-        return 'Print';
+      if (this.isFormAbleToSubmit) {
+        return 'Continue';
       }
-      return 'Continue';
+      return 'Print';
     },
   },
   // Required in order to block back navigation.
