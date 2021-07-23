@@ -84,7 +84,7 @@ export default {
       const applicationUuid = this.$store.state.payPractitionerForm.applicationUuid;
       const formState = this.$store.state.payPractitionerForm;
 
-      apiService.submitApplication(token, formState)
+      apiService.submitPayPractitionerApplication(token, formState)
         .then((response) => {
           // Handle HTTP success.
           const returnCode = response.data.returnCode;
