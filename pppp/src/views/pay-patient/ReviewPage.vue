@@ -132,7 +132,7 @@ export default {
         });
       
       // Manually navigate to submission success page when middleware is down.
-      this.navigateToSubmissionErrorPage();
+      // this.navigateToSubmissionPage();
     },
     navigateToSubmissionPage() {
       const toPath = getConvertedPath(
