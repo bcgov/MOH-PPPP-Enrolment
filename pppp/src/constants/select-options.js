@@ -1,31 +1,31 @@
 export const selectOptionsSubmissionCode = [
   {
     value: 'A',
-    label: 'A (Requested Pre-approval claim in writing to MSP)'
+    label: 'A (PREAPPROVED BY CLAIMS MANAGEMENT OR STAFF)'
   },
   {
     value: 'C',
-    label: 'C (Subscriber coverage problem)'
+    label: 'C (COVERAGE REINSTATED)'
   },
   {
     value: 'D',
-    label: 'D (Duplicate claim)'
+    label: 'D (VALID DUPLICATE)'
   },
   {
     value: 'I',
-    label: 'I (ICBC claim)'
+    label: 'I (ICBC HAS ACCEPTED RESPONSIBILITY)'
   },
   {
     value: 'R',
-    label: 'R (Re Submitted claim)'
+    label: 'R (RESUBMISSION OF A PREVIOUS CLAIM)'
   },
   {
     value: 'W',
-    label: 'W (Claim determined to be WSBC\'s)'
+    label: 'W (WCB OVERAGE OR WCB REFUSED - NOW BILLING MSP)'
   },
   {
     value: 'X',
-    label: 'X (Resubmitting of refused previous or partially paid claim)'
+    label: 'X (RESUBMISSION OF A PREVIOUSLY REFUSED CLAIM)'
   }
 ];
 

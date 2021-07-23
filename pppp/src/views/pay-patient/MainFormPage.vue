@@ -179,6 +179,7 @@
                   id='submission-code'
                   class='mt-3'
                   v-model='submissionCode'
+                  defaultOptionLabel='None'
                   :options='submissionCodeOptions'
                   :isRequiredAsteriskShown='isSubmissionCodeRequired'
                   :inputStyle='largeStyles' />
