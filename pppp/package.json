@@ -21,8 +21,6 @@
     "date-fns": "^2.16.1",
     "uuid": "^8.3.2",
     "vue": "^2.6.11",
-    "vue-country-region-select": "^2.0.14",
-    "vue-masked-input": "^0.5.2",
     "vue-router": "^3.2.0",
     "vue-text-mask": "^6.1.2",
     "vuelidate": "^0.7.6",
