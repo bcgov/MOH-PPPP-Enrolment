@@ -207,6 +207,7 @@
                   class='mt-3'
                   maxlength="7"
                   v-model='claim.amountBilled'
+                  :isRequiredAsteriskShown='true'
                   :inputStyle='smallStyles' />
             <div class="text-danger"
                 v-if="v.amountBilled.$dirty && !v.amountBilled.required"
