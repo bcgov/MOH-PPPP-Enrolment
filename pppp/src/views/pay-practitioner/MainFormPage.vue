@@ -255,7 +255,11 @@
                   class='mt-3'
                   v-model='claim.locationOfService'
                   :options='serviceLocationOptions'
+                  :isRequiredAsteriskShown='true'
                   :inputStyle='extraLargeStyles'/>
+            <div class="text-danger"
+                v-if="v.locationOfService.$dirty && !v.locationOfService.required"
+                aria-live="assertive">Location of service is required.</div>
             <Textarea label="Notes:"
               :id="'msc-medical-notes-' + index"
               class="mt-3"
@@ -423,7 +427,11 @@
                   class='mt-3'
                   v-model='claim.locationOfService'
                   :options='serviceLocationOptions'
+                  :isRequiredAsteriskShown='true'
                   :inputStyle='extraLargeStyles'/>
+            <div class="text-danger"
+                v-if="v.locationOfService.$dirty && !v.locationOfService.required"
+                aria-live="assertive">Location of service is required.</div>
             <Textarea label="Notes:"
                   :id="'hvc-hospital-notes-' + index"
                   class="mt-3"
@@ -1012,6 +1020,9 @@ export default {
             required,
             alphanumericValidator,
           },
+          locationOfService: {
+            required,
+          },
           notes: {
             maxLength: maxLength(400),
           },
@@ -1057,6 +1068,9 @@ export default {
           diagnosticCode: {
             required,
             alphanumericValidator,
+          },
+          locationOfService: {
+            required,
           },
           notes: {
             maxLength: maxLength(400),
