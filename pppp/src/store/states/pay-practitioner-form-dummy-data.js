@@ -21,7 +21,7 @@ export default {
     {
       serviceDate: new Date(),
       numberOfServices: '1',
-      serviceClarificationCode: '1C',
+      serviceClarificationCode: 'A1',
       feeItem: '03333',
       amountBilled: '0.00',
       calledStartTime: {
@@ -45,7 +45,7 @@ export default {
       dayTo: '26',
       year: '2020',
       numberOfServices: '1',
-      serviceClarificationCode: '1C',
+      serviceClarificationCode: 'A1',
       feeItem: '03333',
       amountBilled: '0.00',
       diagnosticCode: 'DC',

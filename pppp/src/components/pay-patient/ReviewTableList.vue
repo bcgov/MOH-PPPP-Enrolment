@@ -339,12 +339,12 @@ export default {
     referredByData() {
       const items = [];
       items.push({
-        label: 'Referred By Practitioner First Name:',
-        value: this.$store.state.payPatientForm.referredByFirstName,
-      });
-      items.push({
         label: 'Referred By Practitioner Last Name:',
         value: this.$store.state.payPatientForm.referredByLastName,
+      });
+      items.push({
+        label: 'Referred By Practitioner First Name:',
+        value: this.$store.state.payPatientForm.referredByFirstName,
       });
       items.push({
         label: 'Referred By Practitioner Number:',
@@ -355,12 +355,12 @@ export default {
     referredToData() {
       const items = [];
       items.push({
-        label: 'Referred To Practitioner First Name:',
-        value: this.$store.state.payPatientForm.referredToFirstName,
-      });
-      items.push({
         label: 'Referred To Practitioner Last Name:',
         value: this.$store.state.payPatientForm.referredToLastName,
+      });
+      items.push({
+        label: 'Referred To Practitioner First Name:',
+        value: this.$store.state.payPatientForm.referredToFirstName,
       });
       items.push({
         label: 'Referred To Practitioner Number:',
