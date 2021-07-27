@@ -497,10 +497,10 @@
           <div class="text-danger"
               v-if="$v.practitionerPractitionerNumber.$dirty && $v.practitionerPractitionerNumber.required && !$v.practitionerPractitionerNumber.minLength"
               aria-live="assertive">Practitioner number must not be less than 5 characters.</div>
-          <Input label='Payment Number:'
+          <!-- Using PractitionerNumberInput because it has the same character format. -->
+          <PractitionerNumberInput label='Payment Number:'
                 id='payment-number'
                 class='mt-3'
-                maxlength="5"
                 v-model='practitionerPaymentNumber'
                 :isRequiredAsteriskShown='true'
                 :inputStyle='smallStyles'/>
@@ -510,9 +510,6 @@
           <div class="text-danger"
               v-if="$v.practitionerPaymentNumber.$dirty && $v.practitionerPaymentNumber.required && !$v.practitionerPaymentNumber.minLength"
               aria-live="assertive">Practitioner payment number cannot be less than 5 characters.</div>
-          <div class="text-danger"
-              v-if="$v.practitionerPaymentNumber.$dirty && $v.practitionerPaymentNumber.required && !$v.practitionerPaymentNumber.firstLetterAlphaValidator"
-              aria-live="assertive">Practitioner payment number must begin with a letter.</div>
           <FacilityNumberInput label='Facility Number:'
                 id='facility-number'
                 class='mt-3'
@@ -764,12 +761,6 @@ const amountBilledZeroValidator = (value, vm) => {
 
 const birthDatePastValidator = (value) => {
   return pastDateValidator(value) || isSameDay(value, startOfToday());
-};
-
-const firstLetterAlphaValidator = (value) => {
-  const firstChar = value && value.length > 0 ? value[0] : '';
-  const criteria = /^[a-zA-Z]*$/;
-  return criteria.test(firstChar);
 };
 
 const serviceDateValidator = (value, vm) => {
@@ -1103,7 +1094,6 @@ export default {
       practitionerPaymentNumber: {
         required,
         minLength: minLength(5),
-        firstLetterAlphaValidator,
       },
       practitionerPractitionerNumber: {
         required,
