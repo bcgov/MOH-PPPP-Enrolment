@@ -497,10 +497,10 @@
           <div class="text-danger"
               v-if="$v.practitionerPractitionerNumber.$dirty && $v.practitionerPractitionerNumber.required && !$v.practitionerPractitionerNumber.minLength"
               aria-live="assertive">Practitioner number must not be less than 5 characters.</div>
-          <Input label='Payment Number:'
+          <!-- Using PractitionerNumberInput because it has the same character format. -->
+          <PractitionerNumberInput label='Payment Number:'
                 id='payment-number'
                 class='mt-3'
-                maxlength="5"
                 v-model='practitionerPaymentNumber'
                 :isRequiredAsteriskShown='true'
                 :inputStyle='smallStyles'/>
@@ -510,9 +510,6 @@
           <div class="text-danger"
               v-if="$v.practitionerPaymentNumber.$dirty && $v.practitionerPaymentNumber.required && !$v.practitionerPaymentNumber.minLength"
               aria-live="assertive">Practitioner payment number cannot be less than 5 characters.</div>
-          <div class="text-danger"
-              v-if="$v.practitionerPaymentNumber.$dirty && $v.practitionerPaymentNumber.required && !$v.practitionerPaymentNumber.firstLetterAlphaValidator"
-              aria-live="assertive">Practitioner payment number must begin with a letter.</div>
           <FacilityNumberInput label='Facility Number:'
                 id='facility-number'
                 class='mt-3'
@@ -534,21 +531,8 @@
         <a name='referred-by'></a>
         <h2 class="mt-5">Referred By</h2>
         <div class="section-container p-3">
-          <Input label='Referred By Practitioner First Name:'
-                id='referred-by-first-name'
-                maxlength="18"
-                v-model='referredByFirstName'
-                :isRequiredAsteriskShown='isReferredByPopulated'
-                :inputStyle='mediumStyles'/>
-          <div class="text-danger"
-              v-if="isReferredByPopulated && $v.referredByFirstName.$dirty && !$v.referredByFirstName.required"
-              aria-live="assertive">First name is required.</div>
-          <div class="text-danger"
-              v-if="$v.referredByFirstName.$dirty && !$v.referredByFirstName.nameValidator"
-              aria-live="assertive">First name must begin with a letter and cannot include special characters except hyphens, periods, apostrophes and blank characters.</div>
           <Input label='Referred By Practitioner Last Name:'
                 id='referred-by-last-name'
-                class='mt-3'
                 maxlength="18"
                 v-model='referredByLastName'
                 :isRequiredAsteriskShown='isReferredByPopulated'
@@ -559,6 +543,19 @@
           <div class="text-danger"
               v-if="$v.referredByLastName.$dirty && !$v.referredByLastName.nameValidator"
               aria-live="assertive">Last name must begin with a letter and cannot include special characters except hyphens, periods, apostrophes and blank characters.</div>
+          <Input label='Referred By Practitioner First Name:'
+                id='referred-by-first-name'
+                class='mt-3'
+                maxlength="18"
+                v-model='referredByFirstName'
+                :isRequiredAsteriskShown='isReferredByPopulated'
+                :inputStyle='mediumStyles'/>
+          <div class="text-danger"
+              v-if="isReferredByPopulated && $v.referredByFirstName.$dirty && !$v.referredByFirstName.required"
+              aria-live="assertive">First name is required.</div>
+          <div class="text-danger"
+              v-if="$v.referredByFirstName.$dirty && !$v.referredByFirstName.nameValidator"
+              aria-live="assertive">First name must begin with a letter and cannot include special characters except hyphens, periods, apostrophes and blank characters.</div>
           <PractitionerNumberInput label='Referred By Practitioner Number:'
                 id='referred-by-practitioner-number'
                 class='mt-3'
@@ -576,21 +573,8 @@
         <a name='referred-to'></a>
         <h2 class="mt-5">Referred To</h2>
         <div class="section-container p-3">
-          <Input label='Referred To Practitioner First Name:'
-                id='referred-to-first-name'
-                maxlength="18"
-                v-model='referredToFirstName'
-                :isRequiredAsteriskShown='isReferredToPopulated'
-                :inputStyle='mediumStyles'/>
-          <div class="text-danger"
-              v-if="isReferredToPopulated && $v.referredToFirstName.$dirty && !$v.referredToFirstName.required"
-              aria-live="assertive">First name is required.</div>
-          <div class="text-danger"
-              v-if="$v.referredToFirstName.$dirty && !$v.referredToFirstName.nameValidator"
-              aria-live="assertive">First name must begin with a letter and cannot include special characters except hyphens, periods, apostrophes and blank characters.</div>
           <Input label='Referred To Practitioner Last Name:'
                 id='referred-to-last-name'
-                class='mt-3'
                 maxlength="18"
                 v-model='referredToLastName'
                 :isRequiredAsteriskShown='isReferredToPopulated'
@@ -601,6 +585,19 @@
           <div class="text-danger"
               v-if="$v.referredToLastName.$dirty && !$v.referredToLastName.nameValidator"
               aria-live="assertive">Last name must begin with a letter and cannot include special characters except hyphens, periods, apostrophes and blank characters.</div>
+          <Input label='Referred To Practitioner First Name:'
+                id='referred-to-first-name'
+                class='mt-3'
+                maxlength="18"
+                v-model='referredToFirstName'
+                :isRequiredAsteriskShown='isReferredToPopulated'
+                :inputStyle='mediumStyles'/>
+          <div class="text-danger"
+              v-if="isReferredToPopulated && $v.referredToFirstName.$dirty && !$v.referredToFirstName.required"
+              aria-live="assertive">First name is required.</div>
+          <div class="text-danger"
+              v-if="$v.referredToFirstName.$dirty && !$v.referredToFirstName.nameValidator"
+              aria-live="assertive">First name must begin with a letter and cannot include special characters except hyphens, periods, apostrophes and blank characters.</div>
           <PractitionerNumberInput label='Referred To Practitioner Number:'
                 id='referred-to-practitioner-number'
                 class='mt-3'
@@ -764,12 +761,6 @@ const amountBilledZeroValidator = (value, vm) => {
 
 const birthDatePastValidator = (value) => {
   return pastDateValidator(value) || isSameDay(value, startOfToday());
-};
-
-const firstLetterAlphaValidator = (value) => {
-  const firstChar = value && value.length > 0 ? value[0] : '';
-  const criteria = /^[a-zA-Z]*$/;
-  return criteria.test(firstChar);
 };
 
 const serviceDateValidator = (value, vm) => {
@@ -1103,7 +1094,6 @@ export default {
       practitionerPaymentNumber: {
         required,
         minLength: minLength(5),
-        firstLetterAlphaValidator,
       },
       practitionerPractitionerNumber: {
         required,
