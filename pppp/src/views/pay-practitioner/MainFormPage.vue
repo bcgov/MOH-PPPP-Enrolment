@@ -189,9 +189,12 @@
             <Input label='Service Clarification Code:'
                   :id='"msc-service-clarification-code-" + index'
                   class='mt-3'
-                  maxlength="1"
+                  maxlength="2"
                   v-model='claim.serviceClarificationCode'
                   :inputStyle='extraSmallStyles' />
+            <div class="text-danger"
+                v-if="v.serviceClarificationCode.$dirty && !v.serviceClarificationCode.clarificationCodeValidator"
+                aria-live="assertive">Service Clarification Code is invalid.</div>
             <Input label='Fee Item:'
                   :id='"msc-fee-item-" + index'
                   class='mt-3'
@@ -380,6 +383,9 @@
                   maxlength="2"
                   v-model='claim.serviceClarificationCode'
                   :inputStyle='extraSmallStyles' />
+            <div class="text-danger"
+                v-if="v.serviceClarificationCode.$dirty && !v.serviceClarificationCode.clarificationCodeValidator"
+                aria-live="assertive">Service Clarification Code is invalid.</div>
             <Input label='Fee Item:'
                   :id='"hvc-fee-item-" + index'
                   class='mt-3'
@@ -638,7 +644,10 @@ import {
   getTopScrollPosition
 } from '@/helpers/scroll';
 import { getConvertedPath } from '@/helpers/url';
-import { clinicNameValidator } from '@/helpers/validators';
+import {
+  clinicNameValidator,
+  clarificationCodeValidator,
+} from '@/helpers/validators';
 import {
   selectOptionsSubmissionCode,
   selectOptionsCorrespondenceAttached,
@@ -1023,6 +1032,9 @@ export default {
           locationOfService: {
             required,
           },
+          serviceClarificationCode: {
+            clarificationCodeValidator: optionalValidator(clarificationCodeValidator),
+          },
           notes: {
             maxLength: maxLength(400),
           },
@@ -1071,6 +1083,9 @@ export default {
           },
           locationOfService: {
             required,
+          },
+          serviceClarificationCode: {
+            clarificationCodeValidator: optionalValidator(clarificationCodeValidator),
           },
           notes: {
             maxLength: maxLength(400),
