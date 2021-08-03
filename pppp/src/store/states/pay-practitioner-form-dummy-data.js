@@ -61,11 +61,11 @@ export default {
   practitionerFacilityNumber: '12345',
   practitionerSpecialtyCode: 'A1',
 
-  referredByLastName: 'McDonald',
   referredByFirstName: 'R',
+  referredByLastName: 'McDonald',
   referredByPractitionerNumber: '22271',
 
-  referredToLastName: 'Lee',
   referredToFirstName: 'C',
+  referredToLastName: 'Lee',
   referredToPractitionerNumber: '22272',
 };

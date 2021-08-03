@@ -47,11 +47,11 @@ class ApiService {
         practitionerPractitionerNumber: formState.practitionerPractitionerNumber || '',
         practitionerFacilityNumber: formState.practitionerFacilityNumber || '',
         practitionerSpecialtyCode: formState.practitionerSpecialtyCode || '',
-        referredByLastName: formState.referredByLastName || '',
         referredByFirstName: formState.referredByFirstName || '',
+        referredByLastName: formState.referredByLastName || '',
         referredByPractitionerNumber: formState.referredByPractitionerNumber || '',
-        referredToLastName: formState.referredToLastName || '',
         referredToFirstName: formState.referredToFirstName || '',
+        referredToLastName: formState.referredToLastName || '',
         referredToPractitionerNumber: formState.referredToPractitionerNumber || '',
       }
     };
@@ -103,11 +103,11 @@ class ApiService {
         practitionerPractitionerNumber: formState.practitionerPractitionerNumber || '',
         practitionerFacilityNumber: formState.practitionerFacilityNumber || '',
         practitionerSpecialtyCode: formState.practitionerSpecialtyCode || '',
-        referredByLastName: formState.referredByLastName || '',
         referredByFirstName: formState.referredByFirstName || '',
+        referredByLastName: formState.referredByLastName || '',
         referredByPractitionerNumber: formState.referredByPractitionerNumber || '',
-        referredToLastName: formState.referredToLastName || '',
         referredToFirstName: formState.referredToFirstName || '',
+        referredToLastName: formState.referredToLastName || '',
         referredToPractitionerNumber: formState.referredToPractitionerNumber || '',
       }
     };
