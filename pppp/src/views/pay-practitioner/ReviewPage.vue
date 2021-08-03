@@ -158,8 +158,11 @@ export default {
   },
   computed: {
     isFormAbleToSubmit() {
-      const correspondenceAttached = this.$store.state.payPractitionerForm.correspondenceAttached;
-      return isCorrespondenceAttachedAbleToSubmit(correspondenceAttached);
+      const correspondenceAttached = [
+        ...this.$store.state.payPractitionerForm.medicalServiceClaims.map(x => x.correspondenceAttached),
+        ...this.$store.state.payPractitionerForm.hospitalVisitClaims.map(x => x.correspondenceAttached)
+      ];
+      return correspondenceAttached.every(isCorrespondenceAttachedAbleToSubmit);
     },
     continueButtonLabel() {
       if (this.isFormAbleToSubmit) {
