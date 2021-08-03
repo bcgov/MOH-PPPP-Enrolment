@@ -265,7 +265,7 @@ export default {
           value: this.$store.state.payPractitionerForm.medicalServiceClaims[i].diagnosticCode,
         });
         itemData.push({
-          label: 'Location of Service:',
+          label: 'Service Location Code:',
           value: this.$store.state.payPractitionerForm.medicalServiceClaims[i].locationOfService,
         });
         itemData.push({
@@ -319,7 +319,7 @@ export default {
           value: this.$store.state.payPractitionerForm.hospitalVisitClaims[i].diagnosticCode,
         });
         itemData.push({
-          label: 'Location of Service:',
+          label: 'Service Location Code:',
           value: this.$store.state.payPractitionerForm.hospitalVisitClaims[i].locationOfService,
         });
         itemData.push({
@@ -355,10 +355,6 @@ export default {
       items.push({
         label: 'Facility Number:',
         value: this.$store.state.payPractitionerForm.practitionerFacilityNumber,
-      });
-      items.push({
-        label: 'Clinic Name:',
-        value: this.$store.state.payPractitionerForm.practitionerClinicName,
       });
       return items;
     },

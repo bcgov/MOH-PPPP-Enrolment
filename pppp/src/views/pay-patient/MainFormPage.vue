@@ -305,7 +305,7 @@
             <div class="text-danger"
                 v-if="v.diagnosticCode.$dirty && v.diagnosticCode.required && !v.diagnosticCode.alphanumericValidator"
                 aria-live="assertive">Diagnostic code must be alphanumeric.</div>
-            <Select label='Location of Service:'
+            <Select label='Service Location Code:'
                   :id='"location-of-service-" + index'
                   class='mt-3'
                   v-model='claim.locationOfService'
@@ -314,7 +314,7 @@
                   :inputStyle='extraLargeStyles'/>
             <div class="text-danger"
                 v-if="v.locationOfService.$dirty && !v.locationOfService.required"
-                aria-live="assertive">Location of service is required.</div>
+                aria-live="assertive">Service location code is required.</div>
             <Textarea label='Notes:'
                   :id='"notes-" + index'
                   class='mt-3'
@@ -395,14 +395,6 @@
           <div class="text-danger"
               v-if="$v.practitionerFacilityNumber.$dirty && !$v.practitionerFacilityNumber.minLength"
               aria-live="assertive">Facility number must not be less than 5 characters.</div>
-          <Input label='Clinic Name:'
-                id='clinic-name'
-                class='mt-3'
-                v-model='practitionerClinicName'
-                :inputStyle='mediumStyles'/>
-          <div class="text-danger"
-              v-if="$v.practitionerClinicName.$dirty && !$v.practitionerClinicName.clinicNameValidator"
-              aria-live="assertive">Practitioner First Name must contain only alphanumeric characters and cannot include special characters except hyphens, periods, apostrophes and blank characters.</div>
         </div>
 
         <a name='referred-by'></a>
@@ -519,7 +511,6 @@ import {
 } from '@/helpers/scroll';
 import { getConvertedPath } from '@/helpers/url';
 import {
-  clinicNameValidator,
   clarificationCodeValidator,
 } from '@/helpers/validators';
 import {
@@ -564,7 +555,6 @@ import {
   SET_PRACTITIONER_PRACTITIONER_NUMBER,
   SET_PRACTITIONER_FACILITY_NUMBER,
   SET_PRACTITIONER_SPECIALTY_CODE,
-  SET_PRACTITIONER_CLINIC_NAME,
   SET_REFERRED_BY_LAST_NAME,
   SET_REFERRED_BY_FIRST_NAME,
   SET_REFERRED_BY_PRACTITIONER_NUMBER,
@@ -748,7 +738,6 @@ export default {
       practitionerPractitionerNumber: null,
       practitionerFacilityNumber: null,
       practitionerSpecialtyCode: null,
-      practitionerClinicName: null,
 
       referredByLastName: null,
       referredByFirstName: null,
@@ -789,7 +778,6 @@ export default {
     this.practitionerPractitionerNumber = this.$store.state.payPatientForm.practitionerPractitionerNumber;
     this.practitionerFacilityNumber = this.$store.state.payPatientForm.practitionerFacilityNumber;
     this.practitionerSpecialtyCode = this.$store.state.payPatientForm.practitionerSpecialtyCode;
-    this.practitionerClinicName = this.$store.state.payPatientForm.practitionerClinicName;
 
     this.referredByLastName = this.$store.state.payPatientForm.referredByLastName;
     this.referredByFirstName = this.$store.state.payPatientForm.referredByFirstName;
@@ -921,9 +909,6 @@ export default {
       practitionerSpecialtyCode: {
         alphanumericValidator: optionalValidator(alphanumericValidator),
       },
-      practitionerClinicName: {
-        clinicNameValidator: optionalValidator(clinicNameValidator),
-      },
       referredByFirstName: {
         nameValidator: optionalValidator(nameValidator),
       },
@@ -1010,7 +995,6 @@ export default {
       this.$store.dispatch(formModule + '/' + SET_PRACTITIONER_PRACTITIONER_NUMBER, this.practitionerPractitionerNumber);
       this.$store.dispatch(formModule + '/' + SET_PRACTITIONER_FACILITY_NUMBER, this.practitionerFacilityNumber);
       this.$store.dispatch(formModule + '/' + SET_PRACTITIONER_SPECIALTY_CODE, this.practitionerSpecialtyCode);
-      this.$store.dispatch(formModule + '/' + SET_PRACTITIONER_CLINIC_NAME, this.practitionerClinicName);
 
       this.$store.dispatch(formModule + '/' + SET_REFERRED_BY_LAST_NAME, this.referredByLastName);
       this.$store.dispatch(formModule + '/' + SET_REFERRED_BY_FIRST_NAME, this.referredByFirstName);

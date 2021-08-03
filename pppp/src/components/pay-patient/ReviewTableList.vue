@@ -293,7 +293,7 @@ export default {
           value: this.$store.state.payPatientForm.medicalServiceClaims[i].diagnosticCode,
         });
         itemData.push({
-          label: 'Location of Service:',
+          label: 'Service Location Code:',
           value: this.$store.state.payPatientForm.medicalServiceClaims[i].locationOfService,
         });
         itemData.push({
@@ -329,10 +329,6 @@ export default {
       items.push({
         label: 'Facility Number:',
         value: this.$store.state.payPatientForm.practitionerFacilityNumber,
-      });
-      items.push({
-        label: 'Clinic Name:',
-        value: this.$store.state.payPatientForm.practitionerClinicName,
       });
       return items;
     },
