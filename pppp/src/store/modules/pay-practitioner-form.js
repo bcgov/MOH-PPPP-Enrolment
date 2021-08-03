@@ -22,8 +22,6 @@ export const SET_BIRTH_DATE = 'setBirthDate';
 
 export const SET_IS_VEHICLE_ACCIDENT = 'setIsVehicleAccident';
 export const SET_VEHICLE_ACCIDENT_CLAIM_NUMBER = 'setVehicleAccidentClaimNumber';
-export const SET_CORRESPONDENCE_ATTACHED = 'setCorrespondenceAttached';
-export const SET_SUBMISSION_CODE = 'setSubmissionCode';
 export const SET_PLAN_REFERENCE_NUMBER_OF_ORIGINAL_CLAIM = 'setPlanReferenceNumberOfOriginalClaim';
 export const SET_COVERAGE_PRE_AUTH_NUMBER = 'setCoveragePreAuthNumber';
 export const SET_PROCEDURE_OR_OPERATION = 'setProcedureOrOperation';
@@ -67,8 +65,6 @@ export default {
 
       isVehicleAccident: null,
       vehicleAccidentClaimNumber: null,
-      correspondenceAttached: null,
-      submissionCode: null,
       planReferenceNumberOfOriginalClaim: null,
       coveragePreAuthNumber: null,
       procedureOrOperation: null,
@@ -138,12 +134,6 @@ export default {
     },
     [SET_VEHICLE_ACCIDENT_CLAIM_NUMBER](state, payload) {
       state.vehicleAccidentClaimNumber = payload;
-    },
-    [SET_CORRESPONDENCE_ATTACHED](state, payload) {
-      state.correspondenceAttached = payload;
-    },
-    [SET_SUBMISSION_CODE](state, payload) {
-      state.submissionCode = payload;
     },
     [SET_PLAN_REFERENCE_NUMBER_OF_ORIGINAL_CLAIM](state, payload) {
       state.planReferenceNumberOfOriginalClaim = payload;
@@ -216,8 +206,6 @@ export default {
 
       commit(SET_IS_VEHICLE_ACCIDENT, null);
       commit(SET_VEHICLE_ACCIDENT_CLAIM_NUMBER, null);
-      commit(SET_CORRESPONDENCE_ATTACHED, null);
-      commit(SET_SUBMISSION_CODE, null);
       commit(SET_PLAN_REFERENCE_NUMBER_OF_ORIGINAL_CLAIM, null);
       commit(SET_COVERAGE_PRE_AUTH_NUMBER, null);
       commit(SET_PROCEDURE_OR_OPERATION, null);
@@ -280,12 +268,6 @@ export default {
     },
     [SET_VEHICLE_ACCIDENT_CLAIM_NUMBER]({ commit }, payload) {
       commit(SET_VEHICLE_ACCIDENT_CLAIM_NUMBER, payload);
-    },
-    [SET_CORRESPONDENCE_ATTACHED]({ commit }, payload) {
-      commit(SET_CORRESPONDENCE_ATTACHED, payload);
-    },
-    [SET_SUBMISSION_CODE]({ commit }, payload) {
-      commit(SET_SUBMISSION_CODE, payload);
     },
     [SET_PLAN_REFERENCE_NUMBER_OF_ORIGINAL_CLAIM]({ commit }, payload) {
       commit(SET_PLAN_REFERENCE_NUMBER_OF_ORIGINAL_CLAIM, payload);

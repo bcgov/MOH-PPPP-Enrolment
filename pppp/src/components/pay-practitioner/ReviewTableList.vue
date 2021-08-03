@@ -203,14 +203,6 @@ export default {
     claimInfoData() {
       const items = [];
       items.push({
-        label: 'Correspondence Attached:',
-        value: this.$store.state.payPractitionerForm.correspondenceAttached,
-      });
-      items.push({
-        label: 'Submission Code:',
-        value: this.$store.state.payPractitionerForm.submissionCode,
-      });
-      items.push({
         label: 'Plan Reference Number of Original Claim:',
         value: this.$store.state.payPractitionerForm.planReferenceNumberOfOriginalClaim,
       });
@@ -269,6 +261,14 @@ export default {
           value: this.$store.state.payPractitionerForm.medicalServiceClaims[i].locationOfService,
         });
         itemData.push({
+          label: 'Correspondence Attached:',
+          value: this.$store.state.payPractitionerForm.medicalServiceClaims[i].correspondenceAttached,
+        });
+        itemData.push({
+          label: 'Submission Code:',
+          value: this.$store.state.payPractitionerForm.medicalServiceClaims[i].submissionCode,
+        });
+        itemData.push({
           label: 'Notes:',
           value: this.$store.state.payPractitionerForm.medicalServiceClaims[i].notes,
         });
@@ -321,6 +321,14 @@ export default {
         itemData.push({
           label: 'Service Location Code:',
           value: this.$store.state.payPractitionerForm.hospitalVisitClaims[i].locationOfService,
+        });
+        itemData.push({
+          label: 'Correspondence Attached:',
+          value: this.$store.state.payPractitionerForm.hospitalVisitClaims[i].correspondenceAttached,
+        });
+        itemData.push({
+          label: 'Submission Code:',
+          value: this.$store.state.payPractitionerForm.hospitalVisitClaims[i].submissionCode,
         });
         itemData.push({
           label: 'Notes:',

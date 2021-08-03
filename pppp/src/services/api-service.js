@@ -36,8 +36,6 @@ class ApiService {
         postalCode: formState.postalCode || '',
         isVehicleAccident: formState.isVehicleAccident || '',
         vehicleAccidentClaimNumber: formState.vehicleAccidentClaimNumber || '',
-        correspondenceAttached: formState.correspondenceAttached || '',
-        submissionCode: formState.submissionCode || '',
         planReferenceNumberOfOriginalClaim: formState.planReferenceNumberOfOriginalClaim || '',
         diagnosisOrAreaOfTreatment: formState.diagnosisOrAreaOfTreatment || '',
         medicalServiceClaims: [],
@@ -67,6 +65,8 @@ class ApiService {
         renderedFinishTime: claim.renderedFinishTime && claim.renderedFinishTime.time ? claim.renderedFinishTime.time : '' ,
         diagnosticCode: claim.diagnosticCode || '',
         locationOfService: claim.locationOfService || '',
+        correspondenceAttached: claim.correspondenceAttached || '',
+        submissionCode: claim.submissionCode || '',
         notes: claim.notes || '',
       });
     }
@@ -90,8 +90,6 @@ class ApiService {
         birthDate: formatISODate(formState.birthDate) || '',
         isVehicleAccident: formState.isVehicleAccident || '',
         vehicleAccidentClaimNumber: formState.vehicleAccidentClaimNumber || '',
-        correspondenceAttached: formState.correspondenceAttached || '',
-        submissionCode: formState.submissionCode || '',
         planReferenceNumberOfOriginalClaim: formState.planReferenceNumberOfOriginalClaim || '',
         coveragePreAuthNumber: formState.coveragePreAuthNumber || '',
         procedureOrOperation: formState.procedureOrOperation || '',
@@ -123,6 +121,8 @@ class ApiService {
         renderedFinishTime: claim.renderedFinishTime && claim.renderedFinishTime.time ? claim.renderedFinishTime.time : '',
         diagnosticCode: claim.diagnosticCode || '',
         locationOfService: claim.locationOfService || '',
+        correspondenceAttached: claim.correspondenceAttached || '',
+        submissionCode: claim.submissionCode || '',
         notes: claim.notes || '',
       });
     }
@@ -139,6 +139,8 @@ class ApiService {
         amountBilled: claim.amountBilled || '',
         diagnosticCode: claim.diagnosticCode || '',
         locationOfService: claim.locationOfService || '',
+        correspondenceAttached: claim.correspondenceAttached || '',
+        submissionCode: claim.submissionCode || '',
         notes: claim.notes || '',
       });
     }

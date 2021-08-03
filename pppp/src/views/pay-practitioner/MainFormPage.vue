@@ -111,26 +111,8 @@
 
         <a name='claim-info'></a>
         <div class="section-container p-3 mt-5">
-          <Select label='Correspondence Attached:'
-                  id='correspondence-attached'
-                  v-model='correspondenceAttached'
-                  :options='correspondenceAttachedOptions'
-                  defaultOptionLabel='None'
-                  :inputStyle='largeStyles' />
-          <Select label='Submission Code:'
-                  id='submission-code'
-                  class='mt-3'
-                  v-model='submissionCode'
-                  defaultOptionLabel='None'
-                  :options='submissionCodeOptions'
-                  :isRequiredAsteriskShown='isSubmissionCodeRequired'
-                  :inputStyle='largeStyles' />
-          <div class="text-danger"
-                v-if="$v.submissionCode.$dirty && isSubmissionCodeRequired && !$v.submissionCode.required"
-                aria-live="assertive">Submission code is required.</div>
           <NumberInput label='Plan Reference Number of Original Claim:'
                 id='plan-reference-number-of-original-claim'
-                class='mt-3'
                 maxlength="10"
                 v-model='planReferenceNumberOfOriginalClaim'
                 :inputStyle='smallStyles'/>
@@ -263,6 +245,24 @@
             <div class="text-danger"
                 v-if="v.locationOfService.$dirty && !v.locationOfService.required"
                 aria-live="assertive">Service location code is required.</div>
+            <Select label='Correspondence Attached:'
+                id='correspondence-attached'
+                class='mt-3'
+                v-model='claim.correspondenceAttached'
+                :options='correspondenceAttachedOptions'
+                defaultOptionLabel='None'
+                :inputStyle='largeStyles' />
+            <Select label='Submission Code:'
+                id='submission-code'
+                class='mt-3'
+                v-model='claim.submissionCode'
+                defaultOptionLabel='None'
+                :options='submissionCodeOptions'
+                :isRequiredAsteriskShown='isSubmissionCodeRequired'
+                :inputStyle='largeStyles' />
+            <div class="text-danger"
+                v-if="v.submissionCode.$dirty && isSubmissionCodeRequired && !v.submissionCode.required"
+                aria-live="assertive">Submission code is required.</div>
             <Textarea label="Notes:"
               :id="'msc-medical-notes-' + index"
               class="mt-3"
@@ -438,6 +438,24 @@
             <div class="text-danger"
                 v-if="v.locationOfService.$dirty && !v.locationOfService.required"
                 aria-live="assertive">Service location code is required.</div>
+            <Select label='Correspondence Attached:'
+                  id='correspondence-attached'
+                  class='mt-3'
+                  v-model='claim.correspondenceAttached'
+                  :options='correspondenceAttachedOptions'
+                  defaultOptionLabel='None'
+                  :inputStyle='largeStyles' />
+            <Select label='Submission Code:'
+                  id='submission-code'
+                  class='mt-3'
+                  v-model='claim.submissionCode'
+                  defaultOptionLabel='None'
+                  :options='submissionCodeOptions'
+                  :isRequiredAsteriskShown='isSubmissionCodeRequired'
+                  :inputStyle='largeStyles' />
+            <div class="text-danger"
+                v-if="v.submissionCode.$dirty && isSubmissionCodeRequired && !v.submissionCode.required"
+                aria-live="assertive">Submission code is required.</div>
             <Textarea label="Notes:"
                   :id="'hvc-hospital-notes-' + index"
                   class="mt-3"
@@ -661,8 +679,6 @@ import {
   SET_BIRTH_DATE,
   SET_IS_VEHICLE_ACCIDENT,
   SET_VEHICLE_ACCIDENT_CLAIM_NUMBER,
-  SET_CORRESPONDENCE_ATTACHED,
-  SET_SUBMISSION_CODE,
   SET_PLAN_REFERENCE_NUMBER_OF_ORIGINAL_CLAIM,
   SET_COVERAGE_PRE_AUTH_NUMBER,
   SET_PROCEDURE_OR_OPERATION,
@@ -873,8 +889,6 @@ export default {
 
       isVehicleAccident: null,
       vehicleAccidentClaimNumber: null,
-      correspondenceAttached: null,
-      submissionCode: null,
       planReferenceNumberOfOriginalClaim: null,
       coveragePreAuthNumber: null,
       procedureOrOperation: null,
@@ -908,8 +922,6 @@ export default {
 
     this.isVehicleAccident = this.$store.state.payPractitionerForm.isVehicleAccident;
     this.vehicleAccidentClaimNumber = this.$store.state.payPractitionerForm.vehicleAccidentClaimNumber;
-    this.correspondenceAttached = this.$store.state.payPractitionerForm.correspondenceAttached;
-    this.submissionCode = this.$store.state.payPractitionerForm.submissionCode;
     this.planReferenceNumberOfOriginalClaim = this.$store.state.payPractitionerForm.planReferenceNumberOfOriginalClaim;
     this.coveragePreAuthNumber = this.$store.state.payPractitionerForm.coveragePreAuthNumber;
     this.procedureOrOperation = this.$store.state.payPractitionerForm.procedureOrOperation;
@@ -973,7 +985,6 @@ export default {
       vehicleAccidentClaimNumber: {
         motorVehicleAccidentClaimNumberValidator: optionalValidator(motorVehicleAccidentClaimNumberValidator),
       },
-      submissionCode: {},
       planReferenceNumberOfOriginalClaim: {
         intValidator: optionalValidator(intValidator),
         positiveNumberValidator: optionalValidator(positiveNumberValidator),
@@ -1014,6 +1025,7 @@ export default {
           serviceClarificationCode: {
             clarificationCodeValidator: optionalValidator(clarificationCodeValidator),
           },
+          submissionCode: {},
           notes: {
             maxLength: maxLength(400),
           },
@@ -1066,6 +1078,7 @@ export default {
           serviceClarificationCode: {
             clarificationCodeValidator: optionalValidator(clarificationCodeValidator),
           },
+          submissionCode: {},
           notes: {
             maxLength: maxLength(400),
           },
@@ -1126,7 +1139,8 @@ export default {
       validations.referredToPractitionerNumber.required = required;
     }
     if (this.isSubmissionCodeRequired) {
-      validations.submissionCode.required = required;
+      validations.medicalServiceClaims.$each.submissionCode.required = required;
+      validations.hospitalVisitClaims.$each.submissionCode.required = required;
     }
     return validations;
   },
@@ -1159,8 +1173,6 @@ export default {
 
       this.$store.dispatch(formModule + '/' + SET_IS_VEHICLE_ACCIDENT, this.isVehicleAccident);
       this.$store.dispatch(formModule + '/' + SET_VEHICLE_ACCIDENT_CLAIM_NUMBER, this.vehicleAccidentClaimNumber);
-      this.$store.dispatch(formModule + '/' + SET_CORRESPONDENCE_ATTACHED, this.correspondenceAttached);
-      this.$store.dispatch(formModule + '/' + SET_SUBMISSION_CODE, this.submissionCode);
       this.$store.dispatch(formModule + '/' + SET_PLAN_REFERENCE_NUMBER_OF_ORIGINAL_CLAIM, this.planReferenceNumberOfOriginalClaim);
       this.$store.dispatch(formModule + '/' + SET_COVERAGE_PRE_AUTH_NUMBER, this.coveragePreAuthNumber);
       this.$store.dispatch(formModule + '/' + SET_PROCEDURE_OR_OPERATION, this.procedureOrOperation);

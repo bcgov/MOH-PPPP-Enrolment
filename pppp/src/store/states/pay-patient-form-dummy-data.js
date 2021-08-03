@@ -17,8 +17,6 @@ export default {
 
   isVehicleAccident: 'Y',
   vehicleAccidentClaimNumber: 'A0000001',
-  correspondenceAttached: 'C',
-  submissionCode: 'I',
   planReferenceNumberOfOriginalClaim: '321',
   diagnosisOrAreaOfTreatment: 'Chicken Pox',
 
@@ -39,6 +37,8 @@ export default {
       },
       diagnosticCode: 'DC',
       locationOfService: 'A',
+      correspondenceAttached: 'C',
+      submissionCode: 'I',
       notes: 'Notes here.',
     }
   ],
