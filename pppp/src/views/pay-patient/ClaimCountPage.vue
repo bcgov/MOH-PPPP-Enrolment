@@ -109,6 +109,8 @@ export default {
           renderedFinishTime: null,
           diagnosticCode: null,
           locationOfService: null,
+          correspondenceAttached: null,
+          submissionCode: null,
           notes: null,
         });
       }

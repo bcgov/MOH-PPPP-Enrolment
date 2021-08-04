@@ -32,9 +32,7 @@
                 :backgroundColor='tableBackgroundColor'/>
     
     <div class="row align-items-end mt-3">
-      <div class="col-9">
-        <h2 class="mb-2"></h2>
-      </div>
+      <div class="col-9"> </div>
       <div v-if='showEditButtons'
           class="col-3 text-right">
         <a href="javascript:void(0)"
@@ -47,9 +45,7 @@
                 :backgroundColor='tableBackgroundColor'/>
 
     <div class="row align-items-end mt-3">
-      <div class="col-9">
-        <h2 class="mb-2"></h2>
-      </div>
+      <div class="col-9"></div>
       <div v-if='showEditButtons'
           class="col-3 text-right">
         <a href="javascript:void(0)"
