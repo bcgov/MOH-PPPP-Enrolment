@@ -74,8 +74,9 @@ jobs:
             'start-build ${BUILD_NAME} -n ${NAMESPACE} --follow'
       # Sleeping before tag to give time for image stream to settle.
       - name: Sleep before Artifact Deploy
-        run: sleep 20s
-        shell: bash
+        uses: juliangruber/sleep-action@v1
+        with:
+          time: 20s
       - name: Artifact Deploy
         env:
           IMAGE_NAME: pppp-web-artifacts
@@ -100,8 +101,9 @@ jobs:
             'start-build ${BUILD_NAME} -n ${NAMESPACE} --follow'
       # Sleeping before tag to give time for image stream to settle.
       - name: Sleep before Image Deploy
-        run: sleep 20s
-        shell: bash
+        uses: juliangruber/sleep-action@v1
+        with:
+          time: 20s
       - name: Image Deploy
         env:
           IMAGE_NAME: pppp-web
