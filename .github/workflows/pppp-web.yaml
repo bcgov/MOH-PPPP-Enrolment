@@ -73,11 +73,6 @@ jobs:
             'version'
             'start-build ${BUILD_NAME} -n ${NAMESPACE} --follow'
       - name: Artifact Deploy
-        uses: redhat-developer/openshift-actions@v1.1
-        with:
-          version: "latest"
-          openshift_server_url: ${{ secrets.OpenShiftServerURL}}
-          parameters: '{"apitoken": "${{ secrets.OpenShiftToken }}", "acceptUntrustedCerts": "true"}'
         env:
           IMAGE_NAME: pppp-web-artifacts
         run:  |
@@ -96,11 +91,6 @@ jobs:
             'version'
             'start-build ${BUILD_NAME} -n ${NAMESPACE} --follow'
       - name: Image Deploy
-        uses: redhat-developer/openshift-actions@v1.1
-        with:
-          version: "latest"
-          openshift_server_url: ${{ secrets.OpenShiftServerURL}}
-          parameters: '{"apitoken": "${{ secrets.OpenShiftToken }}", "acceptUntrustedCerts": "true"}'
         env:
           IMAGE_NAME: pppp-web
         run:  |
