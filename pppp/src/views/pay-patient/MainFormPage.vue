@@ -225,6 +225,7 @@
                   class='mt-3'
                   v-model='claim.serviceClarificationCode'
                   maxlength='2'
+                  :isUpperCaseForced='true'
                   :inputStyle='extraSmallStyles' />
             <div class="text-danger"
                 v-if="v.serviceClarificationCode.$dirty && !v.serviceClarificationCode.clarificationCodeValidator"
