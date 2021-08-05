@@ -173,6 +173,7 @@
                   class='mt-3'
                   maxlength="2"
                   v-model='claim.serviceClarificationCode'
+                  :isUpperCaseForced='true'
                   :inputStyle='extraSmallStyles' />
             <div class="text-danger"
                 v-if="v.serviceClarificationCode.$dirty && !v.serviceClarificationCode.clarificationCodeValidator"
@@ -382,6 +383,7 @@
                   class='mt-3'
                   maxlength="2"
                   v-model='claim.serviceClarificationCode'
+                  :isUpperCaseForced='true'
                   :inputStyle='extraSmallStyles' />
             <div class="text-danger"
                 v-if="v.serviceClarificationCode.$dirty && !v.serviceClarificationCode.clarificationCodeValidator"
