@@ -72,13 +72,21 @@ jobs:
           cmd: |
             'version'
             'start-build ${BUILD_NAME} -n ${NAMESPACE} --follow'
+      # Sleeping before tag to give time for image stream to settle.
+      - name: Sleep before Artifact Deploy
+        run:  |
+          'sleep 20'
       - name: Artifact Deploy
         env:
           IMAGE_NAME: pppp-web-artifacts
-        run:  |
-          'oc version'
-          'sleep 20' # Sleeping before tag to give time for image stream to settle.
-          'oc tag -n ${NAMESPACE} ${NAMESPACE}/${IMAGE_NAME}:latest ${NAMESPACE}/${IMAGE_NAME}:dev'
+        uses: redhat-developer/openshift-actions@v1.1
+        with:
+          version: "latest"
+          openshift_server_url: ${{ secrets.OpenShiftServerURL}}
+          parameters: '{"apitoken": "${{ secrets.OpenShiftToken }}", "acceptUntrustedCerts": "true"}'
+          cmd: |
+            'version'
+            'tag -n ${NAMESPACE} ${NAMESPACE}/${IMAGE_NAME}:latest ${NAMESPACE}/${IMAGE_NAME}:dev'
       - name: Image Build
         env:
           BUILD_NAME: pppp-web-image-build
@@ -90,10 +98,18 @@ jobs:
           cmd: |
             'version'
             'start-build ${BUILD_NAME} -n ${NAMESPACE} --follow'
+      # Sleeping before tag to give time for image stream to settle.
+      - name: Sleep before Image Deploy
+        run:  |
+          'sleep 20'
       - name: Image Deploy
         env:
           IMAGE_NAME: pppp-web
-        run:  |
-          'oc version'
-          'sleep 20' # Sleeping before tag to give time for image stream to settle.
-          'oc tag -n ${NAMESPACE} ${NAMESPACE}/${IMAGE_NAME}:latest ${NAMESPACE}/${IMAGE_NAME}:dev'
+        uses: redhat-developer/openshift-actions@v1.1
+        with:
+          version: "latest"
+          openshift_server_url: ${{ secrets.OpenShiftServerURL}}
+          parameters: '{"apitoken": "${{ secrets.OpenShiftToken }}", "acceptUntrustedCerts": "true"}'
+          cmd: |
+            'version'
+            'tag -n ${NAMESPACE} ${NAMESPACE}/${IMAGE_NAME}:latest ${NAMESPACE}/${IMAGE_NAME}:dev'
