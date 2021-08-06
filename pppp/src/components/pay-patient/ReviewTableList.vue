@@ -331,6 +331,10 @@ export default {
     referredByData() {
       const items = [];
       items.push({
+        label: 'Referred By Practitioner Number:',
+        value: this.$store.state.payPatientForm.referredByPractitionerNumber,
+      });
+      items.push({
         label: 'Referred By Practitioner Last Name:',
         value: this.$store.state.payPatientForm.referredByLastName,
       });
@@ -338,14 +342,14 @@ export default {
         label: 'Referred By Practitioner First Name Initial:',
         value: this.$store.state.payPatientForm.referredByFirstNameInitial,
       });
-      items.push({
-        label: 'Referred By Practitioner Number:',
-        value: this.$store.state.payPatientForm.referredByPractitionerNumber,
-      });
       return items;
     },
     referredToData() {
       const items = [];
+      items.push({
+        label: 'Referred To Practitioner Number:',
+        value: this.$store.state.payPatientForm.referredToPractitionerNumber,
+      });
       items.push({
         label: 'Referred To Practitioner Last Name:',
         value: this.$store.state.payPatientForm.referredToLastName,
@@ -353,10 +357,6 @@ export default {
       items.push({
         label: 'Referred To Practitioner First Name Initial:',
         value: this.$store.state.payPatientForm.referredToFirstNameInitial,
-      });
-      items.push({
-        label: 'Referred To Practitioner Number:',
-        value: this.$store.state.payPatientForm.referredToPractitionerNumber,
       });
       return items;
     }

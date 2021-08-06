@@ -401,10 +401,22 @@
         <a name='referred-by'></a>
         <h2 class="mt-5">Referred By</h2>
         <div class="section-container p-3">
+          <PractitionerNumberInput label='Referred By Practitioner Number:'
+                id='referred-by-practitioner-number'
+                v-model='referredByPractitionerNumber'
+                :isRequiredAsteriskShown='isReferredByPopulated'
+                :inputStyle='smallStyles'/>
+          <div class="text-danger"
+              v-if="isReferredByPopulated && $v.referredByPractitionerNumber.$dirty && !$v.referredByPractitionerNumber.required"
+              aria-live="assertive">Practitioner number is required.</div>
+          <div class="text-danger"
+              v-if="$v.referredByPractitionerNumber.$dirty && !$v.referredByPractitionerNumber.minLength"
+              aria-live="assertive">Practitioner number must not be less than 5 characters.</div>
           <Input label='Referred By Practitioner Last Name:'
                 id='referred-by-last-name'
                 v-model='referredByLastName'
                 maxlength='18'
+                class='mt-3'
                 :isRequiredAsteriskShown='isReferredByPopulated'
                 :inputStyle='mediumStyles'/>
           <div class="text-danger"
@@ -426,27 +438,27 @@
           <div class="text-danger"
               v-if="$v.referredByFirstNameInitial.$dirty && !$v.referredByFirstNameInitial.alphaValidator"
               aria-live="assertive">First name initial must only be an alphabetic character.</div>
-          <PractitionerNumberInput label='Referred By Practitioner Number:'
-                id='referred-by-practitioner-number'
-                class='mt-3'
-                v-model='referredByPractitionerNumber'
-                :isRequiredAsteriskShown='isReferredByPopulated'
-                :inputStyle='smallStyles'/>
-          <div class="text-danger"
-              v-if="isReferredByPopulated && $v.referredByPractitionerNumber.$dirty && !$v.referredByPractitionerNumber.required"
-              aria-live="assertive">Practitioner number is required.</div>
-          <div class="text-danger"
-              v-if="$v.referredByPractitionerNumber.$dirty && !$v.referredByPractitionerNumber.minLength"
-              aria-live="assertive">Practitioner number must not be less than 5 characters.</div>
         </div>
 
         <a name='referred-to'></a>
         <h2 class="mt-5">Referred To</h2>
         <div class="section-container p-3">
+          <PractitionerNumberInput label='Referred To Practitioner Number:'
+                id='referred-to-practitioner-number'
+                v-model='referredToPractitionerNumber'
+                :isRequiredAsteriskShown='isReferredToPopulated'
+                :inputStyle='smallStyles'/>
+          <div class="text-danger"
+              v-if="isReferredToPopulated && $v.referredToPractitionerNumber.$dirty && !$v.referredToPractitionerNumber.required"
+              aria-live="assertive">Practitioner number is required.</div>
+          <div class="text-danger"
+              v-if="$v.referredToPractitionerNumber.$dirty && !$v.referredToPractitionerNumber.minLength"
+              aria-live="assertive">Practitioner number must not be less than 5 characters.</div>
           <Input label='Referred To Practitioner Last Name:'
                 id='referred-to-last-name'
                 v-model='referredToLastName'
                 maxlength='18'
+                class='mt-3'
                 :isRequiredAsteriskShown='isReferredToPopulated'
                 :inputStyle='mediumStyles'/>
           <div class="text-danger"
@@ -468,18 +480,6 @@
           <div class="text-danger"
               v-if="$v.referredToFirstNameInitial.$dirty && !$v.referredToFirstNameInitial.alphaValidator"
               aria-live="assertive">First name initial must only be an alphabetic character.</div>
-          <PractitionerNumberInput label='Referred To Practitioner Number:'
-                id='referred-to-practitioner-number'
-                class='mt-3'
-                v-model='referredToPractitionerNumber'
-                :isRequiredAsteriskShown='isReferredToPopulated'
-                :inputStyle='smallStyles'/>
-          <div class="text-danger"
-              v-if="isReferredToPopulated && $v.referredToPractitionerNumber.$dirty && !$v.referredToPractitionerNumber.required"
-              aria-live="assertive">Practitioner number is required.</div>
-          <div class="text-danger"
-              v-if="$v.referredToPractitionerNumber.$dirty && !$v.referredToPractitionerNumber.minLength"
-              aria-live="assertive">Practitioner number must not be less than 5 characters.</div>
         </div>
       </div>
     </PageContent>
