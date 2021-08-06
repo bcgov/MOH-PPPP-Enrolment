@@ -159,15 +159,15 @@ export default {
     patientData() {
       const items = [];
       items.push({
-        label: 'Personal Health Number:',
+        label: 'Personal Health Number (PHN):',
         value: this.$store.state.payPractitionerForm.phn,
       });
       items.push({
-        label: 'Dependant Number:',
+        label: 'Dependant:',
         value: this.$store.state.payPractitionerForm.dependentNumber,
       });
       items.push({
-        label: 'Legal First Name:',
+        label: 'Patient Legal First Name:',
         value: this.$store.state.payPractitionerForm.firstName,
       });
       items.push({
@@ -175,11 +175,11 @@ export default {
         value: this.$store.state.payPractitionerForm.middleInitial,
       });
       items.push({
-        label: 'Legal Last Name:',
+        label: 'Patient Legal Last Name:',
         value: this.$store.state.payPractitionerForm.lastName,
       });
       items.push({
-        label: 'Birth Date:',
+        label: 'Patient Birth Date:',
         value: formatDate(this.$store.state.payPractitionerForm.birthDate),
       });
       return items;
