@@ -303,12 +303,12 @@ export default {
     practitionerData() {
       const items = [];
       items.push({
-        label: 'Practitioner First Name:',
-        value: this.$store.state.payPatientForm.practitionerFirstName,
-      });
-      items.push({
         label: 'Practitioner Last Name:',
         value: this.$store.state.payPatientForm.practitionerLastName,
+      });
+      items.push({
+        label: 'Practitioner First Name:',
+        value: this.$store.state.payPatientForm.practitionerFirstName,
       });
       items.push({
         label: 'Specialty Code:',
