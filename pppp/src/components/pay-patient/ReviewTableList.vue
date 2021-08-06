@@ -311,16 +311,16 @@ export default {
         value: this.$store.state.payPatientForm.practitionerFirstName,
       });
       items.push({
-        label: 'Specialty Code:',
-        value: this.$store.state.payPatientForm.practitionerSpecialtyCode,
+        label: 'Payment Number:',
+        value: this.$store.state.payPatientForm.practitionerPaymentNumber,
       });
       items.push({
         label: 'Practitioner Number:',
         value: this.$store.state.payPatientForm.practitionerPractitionerNumber,
       });
       items.push({
-        label: 'Payment Number:',
-        value: this.$store.state.payPatientForm.practitionerPaymentNumber,
+        label: 'Specialty Code:',
+        value: this.$store.state.payPatientForm.practitionerSpecialtyCode,
       });
       items.push({
         label: 'Facility Number:',

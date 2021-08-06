@@ -345,16 +345,16 @@ export default {
         value: this.$store.state.payPractitionerForm.practitionerFirstName,
       });
       items.push({
-        label: 'Specialty Code:',
-        value: this.$store.state.payPractitionerForm.practitionerSpecialtyCode,
+        label: 'Payment Number:',
+        value: this.$store.state.payPractitionerForm.practitionerPaymentNumber,
       });
       items.push({
         label: 'Practitioner Number:',
         value: this.$store.state.payPractitionerForm.practitionerPractitionerNumber,
       });
       items.push({
-        label: 'Payment Number:',
-        value: this.$store.state.payPractitionerForm.practitionerPaymentNumber,
+        label: 'Specialty Code:',
+        value: this.$store.state.payPractitionerForm.practitionerSpecialtyCode,
       });
       items.push({
         label: 'Facility Number:',
