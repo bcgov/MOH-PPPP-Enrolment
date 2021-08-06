@@ -3,7 +3,7 @@
 
     <div class="row align-items-end mt-3">
       <div class="col-9">
-        <h2 class="mb-2">Patient</h2>
+        <h2 class="mb-2">Patient Information</h2>
       </div>
       <div v-if='showEditButtons'
           class="col-3 text-right">
@@ -80,7 +80,7 @@
     
     <div class="row align-items-end mt-3">
       <div class="col-9">
-        <h2 class="mb-2">Practitioner</h2>
+        <h2 class="mb-2">Practitioner Information</h2>
       </div>
       <div v-if='showEditButtons'
           class="col-3 text-right">
@@ -420,16 +420,16 @@ export default {
     getMedicalServiceClaimTitle(index) {
       const claims = this.$store.state.payPractitionerForm.medicalServiceClaims;
       if (claims && claims.length > 1) {
-        return `Medical Service Claim (${index + 1} of ${this.medicalServiceClaims.length})`;
+        return `Service (${index + 1} of ${this.medicalServiceClaims.length})`;
       }
-      return 'Medical Service Claim';
+      return 'Service';
     },
     getHospitalVisitClaimTitle(index) {
       const claims = this.$store.state.payPractitionerForm.hospitalVisitClaims;
       if (claims && claims.length > 1) {
-        return `Hospital Visit Claim (${index + 1} of ${this.hospitalVisitClaims.length})`;
+        return `Hospital Visit (${index + 1} of ${this.hospitalVisitClaims.length})`;
       }
-      return 'Hospital Visit Claim';
+      return 'Hospital Visit';
     }
   }
 }

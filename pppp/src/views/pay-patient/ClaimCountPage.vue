@@ -5,7 +5,7 @@
         <h1>Pay Patient Claim</h1>
         <hr/>
 
-        <h2>Medical Services Claims</h2>
+        <h2>Service(s)</h2>
         <NumberSelect label="How many medical service claims for the patient are you including in this submission?"
                 id='claim-count'
                 v-model='claimCount'

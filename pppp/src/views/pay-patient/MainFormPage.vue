@@ -13,7 +13,7 @@
         <hr class="mt-0"/>
 
         <a name='patient'></a>
-        <h2>Patient</h2>
+        <h2>Patient Information</h2>
         <div class="section-container p-3">
           <PhnInput label='Personal Health Number:'
                 id='phn'
@@ -327,7 +327,7 @@
         </div>
 
         <a name='practitioner'></a>
-        <h2 class="mt-5">Practitioner</h2>
+        <h2 class="mt-5">Practitioner Information</h2>
         <div class="section-container p-3">
           <Input label='Practitioner Last Name:'
                 id='practitioner-last-name'
@@ -1010,9 +1010,9 @@ export default {
     },
     getMedicalServiceClaimTitle(index) {
       if (this.medicalServiceClaims && this.medicalServiceClaims.length > 1) {
-        return `Medical Service Claim (${index + 1} of ${this.medicalServiceClaims.length})`;
+        return `Service (${index + 1} of ${this.medicalServiceClaims.length})`;
       }
-      return 'Medical Service Claim';
+      return 'Service';
     },
     getServiceDateErrorMessage(feeItem) {
       if (feeItem === '03333') {
