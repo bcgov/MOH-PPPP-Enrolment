@@ -1,5 +1,7 @@
 export default {
   claimCount: '1',
+
+  planReferenceNumber: '1234567890',
   
   phn: '9999 999 998',
   dependentNumber: '66',

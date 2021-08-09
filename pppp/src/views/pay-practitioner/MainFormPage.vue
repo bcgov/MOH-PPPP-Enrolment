@@ -12,6 +12,29 @@
         </div>
         <hr class="mt-0"/>
 
+        <div v-if='isCSR'
+            class="section-container p-3 mb-5">
+          <a name='plan-reference-number'></a>
+          <NumberInput label='Plan Reference Number:'
+                id='plan-reference-number'
+                v-model='planReferenceNumber'
+                maxlength='10'
+                :isRequiredAsteriskShown='true'
+                :inputStyle='smallStyles' />
+          <div class="text-danger"
+              v-if="$v.planReferenceNumber.$dirty && !$v.planReferenceNumber.required"
+              aria-live="assertive">Plan Reference Number is required.</div>
+          <div class="text-danger"
+              v-if="$v.planReferenceNumber.$dirty && $v.planReferenceNumber.required &&!$v.planReferenceNumber.intValidator"
+              aria-live="assertive">Plan Reference Number must be an integer.</div>
+          <div class="text-danger"
+              v-if="$v.planReferenceNumber.$dirty && $v.planReferenceNumber.required && !$v.planReferenceNumber.positiveNumberValidator"
+              aria-live="assertive">Plan Reference Number must be a positive number.</div>
+          <div class="text-danger"
+              v-if="$v.planReferenceNumber.$dirty && $v.planReferenceNumber.required && !$v.planReferenceNumber.minLength"
+              aria-live="assertive">Plan Reference Number must be 10 digits long.</div>
+        </div>
+
         <a name='patient'></a>
         <h2>Patient Information</h2>
         <div class="section-container p-3">
@@ -652,7 +675,10 @@ import {
   scrollToError,
   getTopScrollPosition
 } from '@/helpers/scroll';
-import { getConvertedPath } from '@/helpers/url';
+import {
+  getConvertedPath,
+  isCSR,
+} from '@/helpers/url';
 import {
   clarificationCodeValidator,
 } from '@/helpers/validators';
@@ -673,6 +699,7 @@ import PageContent from '@/components/PageContent.vue';
 import {
   MODULE_NAME as formModule,
   RESET_FORM,
+  SET_PLAN_REFERENCE_NUMBER,
   SET_PHN,
   SET_DEPENDENT_NUMBER,
   SET_FIRST_NAME,
@@ -883,6 +910,8 @@ export default {
         height: '150px'
       },
 
+      planReferenceNumber: null,
+
       phn: null,
       dependentNumber: null,
       firstName: null,
@@ -916,6 +945,8 @@ export default {
     };
   },
   created() {
+    this.planReferenceNumber = this.$store.state.payPractitionerForm.planReferenceNumber;
+
     this.phn = this.$store.state.payPractitionerForm.phn;
     this.dependentNumber = this.$store.state.payPractitionerForm.dependentNumber;
     this.firstName = this.$store.state.payPractitionerForm.firstName;
@@ -959,6 +990,7 @@ export default {
   },
   validations() {
     const validations = {
+      planReferenceNumber: {},
       phn: {
         required,
         phnValidator,
@@ -1145,6 +1177,14 @@ export default {
       validations.medicalServiceClaims.$each.submissionCode.required = required;
       validations.hospitalVisitClaims.$each.submissionCode.required = required;
     }
+    if (this.isCSR) {
+      validations.planReferenceNumber = {
+        required,
+        intValidator,
+        positiveNumberValidator,
+        minLength: minLength(10),
+      };
+    }
     return validations;
   },
   methods: {
@@ -1167,6 +1207,8 @@ export default {
       this.isValidationModalShown = false;
     },
     navigateToNextPage() {
+      this.$store.dispatch(formModule + '/' + SET_PLAN_REFERENCE_NUMBER, this.planReferenceNumber);
+
       this.$store.dispatch(formModule + '/' + SET_PHN, this.phn);
       this.$store.dispatch(formModule + '/' + SET_DEPENDENT_NUMBER, this.dependentNumber);
       this.$store.dispatch(formModule + '/' + SET_FIRST_NAME, this.firstName);
@@ -1272,6 +1314,9 @@ export default {
         return false;
       }
       return isBefore(furthestServiceDate, past90Days);
+    },
+    isCSR() {
+      return isCSR(this.$router.currentRoute.path);
     },
     validationWarningList() {
       const result = [];
