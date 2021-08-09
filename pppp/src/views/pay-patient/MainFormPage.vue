@@ -13,20 +13,20 @@
         <hr class="mt-0"/>
 
         <a name='patient'></a>
-        <h2>Patient</h2>
+        <h2>Patient Information</h2>
         <div class="section-container p-3">
-          <PhnInput label='Personal Health Number:'
+          <PhnInput label='Personal Health Number (PHN):'
                 id='phn'
                 v-model='phn'
                 :isRequiredAsteriskShown='true'
                 :inputStyle='smallStyles' />
           <div class="text-danger"
               v-if="$v.phn.$dirty && !$v.phn.required"
-              aria-live="assertive">Personal Health Number is required.</div>
+              aria-live="assertive">Personal Health Number (PHN) is required.</div>
           <div class="text-danger"
               v-if="$v.phn.$dirty && $v.phn.required && !$v.phn.phnValidator"
-              aria-live="assertive">Personal Health Number must be valid.</div>
-          <NumberInput label='Dependant Number:'
+              aria-live="assertive">Personal Health Number (PHN) must be valid.</div>
+          <NumberInput label='Dependant:'
                 id='dependent-number'
                 className='mt-3'
                 v-model='dependentNumber'
@@ -34,14 +34,14 @@
                 :inputStyle='extraSmallStyles' />
           <div class="text-danger"
               v-if="$v.dependentNumber.$dirty && !$v.dependentNumber.intValidator"
-              aria-live="assertive">Dependant number must be an integer.</div>
+              aria-live="assertive">Dependant must be an integer.</div>
           <div class="text-danger"
               v-if="$v.dependentNumber.$dirty && !$v.dependentNumber.positiveNumberValidator"
-              aria-live="assertive">Dependant number must be a positive number.</div>
+              aria-live="assertive">Dependant must be a positive number.</div>
           <div class="text-danger"
               v-if="$v.dependentNumber.$dirty && $v.dependentNumber.intValidator && $v.dependentNumber.positiveNumberValidator && !$v.dependentNumber.dependentNumberValidator"
-              aria-live="assertive">Dependant Number must be 00 or 66 for this PHN.</div>
-          <Input label='Legal First Name:'
+              aria-live="assertive">Dependant must be 00 or 66 for this PHN.</div>
+          <Input label='Patient Legal First Name:'
                 id='first-name'
                 className='mt-3'
                 v-model='firstName'
@@ -50,10 +50,10 @@
                 :inputStyle='mediumStyles' />
           <div class="text-danger"
               v-if="$v.firstName.$dirty && !$v.firstName.required"
-              aria-live="assertive">Legal First Name is required.</div>
+              aria-live="assertive">Patient Legal First Name is required.</div>
           <div class="text-danger"
               v-if="$v.firstName.$dirty && $v.firstName.required && !$v.firstName.nameValidator"
-              aria-live="assertive">First name must begin with a letter and cannot include special characters except hyphens, periods, apostrophes and blank characters.</div>
+              aria-live="assertive">Patient Legal First Name must begin with a letter and cannot include special characters except hyphens, periods, apostrophes and blank characters.</div>
           <Input label='Second Name Initial:'
                 id='middle-initial'
                 className='mt-3'
@@ -63,7 +63,7 @@
           <div class="text-danger"
               v-if="$v.middleInitial.$dirty && !$v.middleInitial.nameInitialValidator"
               aria-live="assertive">Second name initial must be a letter.</div>
-          <Input label='Legal Last Name:'
+          <Input label='Patient Legal Last Name:'
                 id='last-name'
                 className='mt-3'
                 v-model='lastName'
@@ -72,21 +72,21 @@
                 :inputStyle='mediumStyles' />
           <div class="text-danger"
               v-if="$v.lastName.$dirty && !$v.lastName.required"
-              aria-live="assertive">Legal Last Name is required.</div>
+              aria-live="assertive">Patient Legal Last Name is required.</div>
           <div class="text-danger"
               v-if="$v.lastName.$dirty && $v.lastName.required && !$v.lastName.nameValidator"
-              aria-live="assertive">Last name must begin with a letter and cannot include special characters except hyphens, periods, apostrophes and blank characters.</div>
-          <DateInput label='Birth Date:'
+              aria-live="assertive">Patient Legal Last Name must begin with a letter and cannot include special characters except hyphens, periods, apostrophes and blank characters.</div>
+          <DateInput label='Patient Birth Date:'
                 id='birth-date'
                 className='mt-3'
                 v-model='birthDate'
                 :isRequiredAsteriskShown="dependentNumber !== '66'" />
           <div class="text-danger"
               v-if="$v.birthDate.$dirty && dependentNumber !== '66' && !$v.birthDate.required"
-              aria-live="assertive">Birth Date is required.</div>
+              aria-live="assertive">Patient Birth Date is required.</div>
           <div class="text-danger"
               v-if="$v.birthDate.$dirty && !$v.birthDate.pastDateValidator"
-              aria-live="assertive">Birth Date cannot be in the future.</div>
+              aria-live="assertive">Patient Birth Date cannot be in the future.</div>
         </div>
         
         <a name='mailing-address'></a>
@@ -327,23 +327,10 @@
         </div>
 
         <a name='practitioner'></a>
-        <h2 class="mt-5">Practitioner</h2>
+        <h2 class="mt-5">Practitioner Information</h2>
         <div class="section-container p-3">
-          <Input label='Practitioner First Name:'
-                id='practitioner-first-name'
-                v-model='practitionerFirstName'
-                maxlength='15'
-                :inputStyle='mediumStyles'
-                :isRequiredAsteriskShown='true'/>
-          <div class="text-danger"
-              v-if="$v.practitionerFirstName.$dirty && !$v.practitionerFirstName.required"
-              aria-live="assertive">Practitioner First Name is required.</div>
-          <div class="text-danger"
-              v-if="$v.practitionerFirstName.$dirty && $v.practitionerFirstName.required && !$v.practitionerFirstName.nameValidator"
-              aria-live="assertive">Practitioner First Name must begin with a letter and cannot include special characters except hyphens, periods, apostrophes and blank characters.</div>
           <Input label='Practitioner Last Name:'
                 id='practitioner-last-name'
-                class='mt-3'
                 v-model='practitionerLastName'
                 maxlength='35'
                 :inputStyle='mediumStyles'
@@ -354,27 +341,19 @@
           <div class="text-danger"
               v-if="$v.practitionerLastName.$dirty && $v.practitionerLastName.required && !$v.practitionerLastName.nameValidator"
               aria-live="assertive">Practitioner Last Name must begin with a letter and cannot include special characters except hyphens, periods, apostrophes and blank characters.</div>
-          <Input label='Specialty Code:'
-                id='specialty-code'
+          <Input label='Practitioner First Name:'
+                id='practitioner-first-name'
+                v-model='practitionerFirstName'
+                maxlength='15'
                 class='mt-3'
-                v-model='practitionerSpecialtyCode'
-                maxlength='2'
-                :inputStyle='extraSmallStyles'/>
+                :inputStyle='mediumStyles'
+                :isRequiredAsteriskShown='true'/>
           <div class="text-danger"
-              v-if="$v.practitionerSpecialtyCode.$dirty && !$v.practitionerSpecialtyCode.alphanumericValidator"
-              aria-live="assertive">Specialty code must be alphanumeric.</div>
-          <PractitionerNumberInput label='Practitioner Number:'
-                id='practitioner-number'
-                class='mt-3'
-                v-model='practitionerPractitionerNumber'
-                :isRequiredAsteriskShown='true'
-                :inputStyle='smallStyles'/>
+              v-if="$v.practitionerFirstName.$dirty && !$v.practitionerFirstName.required"
+              aria-live="assertive">Practitioner First Name is required.</div>
           <div class="text-danger"
-              v-if="$v.practitionerPractitionerNumber.$dirty && !$v.practitionerPractitionerNumber.required"
-              aria-live="assertive">Practitioner number is required.</div>
-          <div class="text-danger"
-              v-if="$v.practitionerPractitionerNumber.$dirty && $v.practitionerPractitionerNumber.required && !$v.practitionerPractitionerNumber.minLength"
-              aria-live="assertive">Practitioner number must not be less than 5 characters.</div>
+              v-if="$v.practitionerFirstName.$dirty && $v.practitionerFirstName.required && !$v.practitionerFirstName.nameValidator"
+              aria-live="assertive">Practitioner First Name must begin with a letter and cannot include special characters except hyphens, periods, apostrophes and blank characters.</div>
           <!-- Using PractitionerNumberInput because payment number has the same format as a practitioner number -->
           <PractitionerNumberInput label='Payment Number:'
                 id='payment-number'
@@ -388,6 +367,27 @@
           <div class="text-danger"
               v-if="$v.practitionerPaymentNumber.$dirty && $v.practitionerPaymentNumber.required && !$v.practitionerPaymentNumber.minLength"
               aria-live="assertive">Practitioner number must not be less than 5 characters.</div>
+          <PractitionerNumberInput label='Practitioner Number:'
+                id='practitioner-number'
+                class='mt-3'
+                v-model='practitionerPractitionerNumber'
+                :isRequiredAsteriskShown='true'
+                :inputStyle='smallStyles'/>
+          <div class="text-danger"
+              v-if="$v.practitionerPractitionerNumber.$dirty && !$v.practitionerPractitionerNumber.required"
+              aria-live="assertive">Practitioner number is required.</div>
+          <div class="text-danger"
+              v-if="$v.practitionerPractitionerNumber.$dirty && $v.practitionerPractitionerNumber.required && !$v.practitionerPractitionerNumber.minLength"
+              aria-live="assertive">Practitioner number must not be less than 5 characters.</div>
+          <Input label='Specialty Code:'
+                id='specialty-code'
+                class='mt-3'
+                v-model='practitionerSpecialtyCode'
+                maxlength='2'
+                :inputStyle='extraSmallStyles'/>
+          <div class="text-danger"
+              v-if="$v.practitionerSpecialtyCode.$dirty && !$v.practitionerSpecialtyCode.alphanumericValidator"
+              aria-live="assertive">Specialty code must be alphanumeric.</div>
           <FacilityNumberInput label='Facility Number:'
                 id='facility-number'
                 class='mt-3'
@@ -401,10 +401,22 @@
         <a name='referred-by'></a>
         <h2 class="mt-5">Referred By</h2>
         <div class="section-container p-3">
+          <PractitionerNumberInput label='Referred By Practitioner Number:'
+                id='referred-by-practitioner-number'
+                v-model='referredByPractitionerNumber'
+                :isRequiredAsteriskShown='isReferredByPopulated'
+                :inputStyle='smallStyles'/>
+          <div class="text-danger"
+              v-if="isReferredByPopulated && $v.referredByPractitionerNumber.$dirty && !$v.referredByPractitionerNumber.required"
+              aria-live="assertive">Practitioner number is required.</div>
+          <div class="text-danger"
+              v-if="$v.referredByPractitionerNumber.$dirty && !$v.referredByPractitionerNumber.minLength"
+              aria-live="assertive">Practitioner number must not be less than 5 characters.</div>
           <Input label='Referred By Practitioner Last Name:'
                 id='referred-by-last-name'
                 v-model='referredByLastName'
                 maxlength='18'
+                class='mt-3'
                 :isRequiredAsteriskShown='isReferredByPopulated'
                 :inputStyle='mediumStyles'/>
           <div class="text-danger"
@@ -426,27 +438,27 @@
           <div class="text-danger"
               v-if="$v.referredByFirstNameInitial.$dirty && !$v.referredByFirstNameInitial.alphaValidator"
               aria-live="assertive">First name initial must only be an alphabetic character.</div>
-          <PractitionerNumberInput label='Referred By Practitioner Number:'
-                id='referred-by-practitioner-number'
-                class='mt-3'
-                v-model='referredByPractitionerNumber'
-                :isRequiredAsteriskShown='isReferredByPopulated'
-                :inputStyle='smallStyles'/>
-          <div class="text-danger"
-              v-if="isReferredByPopulated && $v.referredByPractitionerNumber.$dirty && !$v.referredByPractitionerNumber.required"
-              aria-live="assertive">Practitioner number is required.</div>
-          <div class="text-danger"
-              v-if="$v.referredByPractitionerNumber.$dirty && !$v.referredByPractitionerNumber.minLength"
-              aria-live="assertive">Practitioner number must not be less than 5 characters.</div>
         </div>
 
         <a name='referred-to'></a>
         <h2 class="mt-5">Referred To</h2>
         <div class="section-container p-3">
+          <PractitionerNumberInput label='Referred To Practitioner Number:'
+                id='referred-to-practitioner-number'
+                v-model='referredToPractitionerNumber'
+                :isRequiredAsteriskShown='isReferredToPopulated'
+                :inputStyle='smallStyles'/>
+          <div class="text-danger"
+              v-if="isReferredToPopulated && $v.referredToPractitionerNumber.$dirty && !$v.referredToPractitionerNumber.required"
+              aria-live="assertive">Practitioner number is required.</div>
+          <div class="text-danger"
+              v-if="$v.referredToPractitionerNumber.$dirty && !$v.referredToPractitionerNumber.minLength"
+              aria-live="assertive">Practitioner number must not be less than 5 characters.</div>
           <Input label='Referred To Practitioner Last Name:'
                 id='referred-to-last-name'
                 v-model='referredToLastName'
                 maxlength='18'
+                class='mt-3'
                 :isRequiredAsteriskShown='isReferredToPopulated'
                 :inputStyle='mediumStyles'/>
           <div class="text-danger"
@@ -468,18 +480,6 @@
           <div class="text-danger"
               v-if="$v.referredToFirstNameInitial.$dirty && !$v.referredToFirstNameInitial.alphaValidator"
               aria-live="assertive">First name initial must only be an alphabetic character.</div>
-          <PractitionerNumberInput label='Referred To Practitioner Number:'
-                id='referred-to-practitioner-number'
-                class='mt-3'
-                v-model='referredToPractitionerNumber'
-                :isRequiredAsteriskShown='isReferredToPopulated'
-                :inputStyle='smallStyles'/>
-          <div class="text-danger"
-              v-if="isReferredToPopulated && $v.referredToPractitionerNumber.$dirty && !$v.referredToPractitionerNumber.required"
-              aria-live="assertive">Practitioner number is required.</div>
-          <div class="text-danger"
-              v-if="$v.referredToPractitionerNumber.$dirty && !$v.referredToPractitionerNumber.minLength"
-              aria-live="assertive">Practitioner number must not be less than 5 characters.</div>
         </div>
       </div>
     </PageContent>
@@ -1010,9 +1010,9 @@ export default {
     },
     getMedicalServiceClaimTitle(index) {
       if (this.medicalServiceClaims && this.medicalServiceClaims.length > 1) {
-        return `Medical Service Claim (${index + 1} of ${this.medicalServiceClaims.length})`;
+        return `Service (${index + 1} of ${this.medicalServiceClaims.length})`;
       }
-      return 'Medical Service Claim';
+      return 'Service';
     },
     getServiceDateErrorMessage(feeItem) {
       if (feeItem === '03333') {

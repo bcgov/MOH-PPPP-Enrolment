@@ -5,7 +5,7 @@
         <h1>Pay Practitioner Claim</h1>
         <hr/>
 
-        <h2>Medical Services Claims</h2>
+        <h2>Service(s)</h2>
         <NumberSelect label="How many medical service claims for the patient are you including in this submission?"
                 id='services-claim-count'
                 v-model='medicalServiceClaimsCount'
@@ -16,7 +16,7 @@
             v-if="$v.medicalServiceClaimsCount.$dirty && !$v.medicalServiceClaimsCount.required"
             aria-live="assertive">Medical service claim count is required.</div>
         
-        <h2 class="mt-3">Hospital Visit Claims</h2>
+        <h2 class="mt-3">Hospital Visits</h2>
         <NumberSelect label="How many hospital visit claims for the patient are you including in this submission?"
                 id='hospital-claim-count'
                 v-model='hospitalVisitClaimsCount'
