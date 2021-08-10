@@ -229,10 +229,6 @@ export default {
         value: this.$store.state.payPractitionerForm.planReferenceNumberOfOriginalClaim,
       });
       items.push({
-        label: 'Coverage Pre-Authorization Number:',
-        value: this.$store.state.payPractitionerForm.coveragePreAuthNumber,
-      });
-      items.push({
         label: 'Procedure or Operation:',
         value: this.$store.state.payPractitionerForm.procedureOrOperation,
       });
@@ -385,6 +381,10 @@ export default {
       items.push({
         label: 'Facility Number:',
         value: this.$store.state.payPractitionerForm.practitionerFacilityNumber,
+      });
+      items.push({
+        label: 'Coverage Pre-Authorization Number:',
+        value: this.$store.state.payPractitionerForm.coveragePreAuthNumber,
       });
       return items;
     },

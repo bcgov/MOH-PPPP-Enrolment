@@ -145,12 +145,6 @@
           <div class="text-danger"
               v-if="$v.planReferenceNumberOfOriginalClaim.$dirty && !$v.planReferenceNumberOfOriginalClaim.positiveNumberValidator"
               aria-live="assertive">Motor Vehicle Accident Claim Number must be a positive number.</div>
-          <Input label='Coverage Pre-Authorization Number:'
-                id='coverage-pre-authorization-number'
-                class='mt-3'
-                maxlength="4"
-                v-model='coveragePreAuthNumber'
-                :inputStyle='smallStyles'/>
           <Input label='Procedure or Operation:'
                 id='procedure-or-operation'
                 class='mt-3'
@@ -561,6 +555,12 @@
           <div class="text-danger"
               v-if="$v.practitionerFacilityNumber.$dirty && !$v.practitionerFacilityNumber.minLength"
               aria-live="assertive">Facility number must not be less than 5 characters.</div>
+          <Input label='Coverage Pre-Authorization Number:'
+                id='coverage-pre-authorization-number'
+                class='mt-3'
+                maxlength="4"
+                v-model='coveragePreAuthNumber'
+                :inputStyle='smallStyles'/>
         </div>
 
         <a name='referred-by'></a>
