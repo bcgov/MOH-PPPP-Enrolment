@@ -160,7 +160,7 @@ export default {
           locationOfService: null,
           correspondenceAttached: null,
           submissionCode: null,
-          diagnosticOrAreaOfTreatment: null,
+          diagnosisOrAreaOfTreatment: null,
           notes: null,
         });
       }

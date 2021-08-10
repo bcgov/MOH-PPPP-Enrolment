@@ -345,8 +345,8 @@ export default {
           value: this.$store.state.payPractitionerForm.hospitalVisitClaims[i].submissionCode,
         });
         itemData.push({
-          label: 'Diagnostic or Area of Treatment:',
-          value: this.$store.state.payPractitionerForm.hospitalVisitClaims[i].diagnosticOrAreaOfTreatment,
+          label: 'Diagnosis or Area of Treatment:',
+          value: this.$store.state.payPractitionerForm.hospitalVisitClaims[i].diagnosisOrAreaOfTreatment,
         });
         itemData.push({
           label: 'Notes:',

@@ -469,11 +469,11 @@
             <div class="text-danger"
                 v-if="v.submissionCode.$dirty && isSubmissionCodeRequired && !v.submissionCode.required"
                 aria-live="assertive">Submission code is required.</div>
-            <Input label='Diagnostic or Area of Treatment:'
-                :id='"hvc-diagnostic-or-area-of-treatment-" + index'
+            <Input label='Diagnosis or Area of Treatment:'
+                :id='"hvc-diagnosis-or-area-of-treatment-" + index'
                 class='mt-3'
                 maxlength="100"
-                v-model='claim.diagnosticOrAreaOfTreatment'
+                v-model='claim.diagnosisOrAreaOfTreatment'
                 :inputStyle='largeStyles'/>
             <Textarea label="Notes:"
                   :id="'hvc-hospital-notes-' + index"
