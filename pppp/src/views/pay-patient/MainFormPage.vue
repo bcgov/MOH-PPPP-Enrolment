@@ -337,7 +337,7 @@
                   :id='"diagnosis-or-area-of-treatment-" + index'
                   class='mt-3'
                   v-model='claim.diagnosisOrAreaOfTreatment'
-                  maxlength='256'
+                  maxlength='100'
                   :inputStyle='largeStyles'/>
             <Textarea label='Notes:'
                   :id='"notes-" + index'
