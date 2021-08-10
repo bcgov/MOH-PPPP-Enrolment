@@ -203,12 +203,6 @@
           <div class="text-danger"
               v-if="$v.planReferenceNumberOfOriginalClaim.$dirty && !$v.planReferenceNumberOfOriginalClaim.positiveNumberValidator"
               aria-live="assertive">Plan Reference Number of Original Claim must be a positive number.</div>
-          <Input label='Diagnosis or Area of Treatment:'
-                id='diagnosis-or-area-of-treatment'
-                class='mt-3'
-                v-model='diagnosisOrAreaOfTreatment'
-                maxlength='256'
-                :inputStyle='largeStyles'/>
         </div>
 
         <div v-for="(claim, index) in medicalServiceClaims"
@@ -339,6 +333,12 @@
             <div class="text-danger"
                 v-if="v.submissionCode.$dirty && isSubmissionCodeRequired && !v.submissionCode.required"
                 aria-live="assertive">Submission code is required.</div>
+            <Input label='Diagnosis or Area of Treatment:'
+                  :id='"diagnosis-or-area-of-treatment-" + index'
+                  class='mt-3'
+                  v-model='claim.diagnosisOrAreaOfTreatment'
+                  maxlength='100'
+                  :inputStyle='largeStyles'/>
             <Textarea label='Notes:'
                   :id='"notes-" + index'
                   class='mt-3'
@@ -573,7 +573,6 @@ import {
   SET_IS_VEHICLE_ACCIDENT,
   SET_VEHICLE_ACCIDENT_CLAIM_NUMBER,
   SET_PLAN_REFERENCE_NUMBER_OF_ORIGINAL_CLAIM,
-  SET_DIAGNOSIS_OR_AREA_OF_TREATMENT,
   SET_MEDICAL_SERVICE_CLAIMS,
   SET_PRACTITIONER_LAST_NAME,
   SET_PRACTITIONER_FIRST_NAME,
@@ -753,8 +752,8 @@ export default {
 
       isVehicleAccident: null,
       vehicleAccidentClaimNumber: null,
+
       planReferenceNumberOfOriginalClaim: null,
-      diagnosisOrAreaOfTreatment: null,
 
       medicalServiceClaims: [],
 
@@ -793,8 +792,8 @@ export default {
 
     this.isVehicleAccident = this.$store.state.payPatientForm.isVehicleAccident;
     this.vehicleAccidentClaimNumber = this.$store.state.payPatientForm.vehicleAccidentClaimNumber;
+
     this.planReferenceNumberOfOriginalClaim = this.$store.state.payPatientForm.planReferenceNumberOfOriginalClaim;
-    this.diagnosisOrAreaOfTreatment = this.$store.state.payPatientForm.diagnosisOrAreaOfTreatment;
 
     this.medicalServiceClaims = this.$store.state.payPatientForm.medicalServiceClaims ? cloneDeep(this.$store.state.payPatientForm.medicalServiceClaims) : [];
 
@@ -1019,8 +1018,8 @@ export default {
 
       this.$store.dispatch(formModule + '/' + SET_IS_VEHICLE_ACCIDENT, this.isVehicleAccident);
       this.$store.dispatch(formModule + '/' + SET_VEHICLE_ACCIDENT_CLAIM_NUMBER, this.vehicleAccidentClaimNumber);
+
       this.$store.dispatch(formModule + '/' + SET_PLAN_REFERENCE_NUMBER_OF_ORIGINAL_CLAIM, this.planReferenceNumberOfOriginalClaim);
-      this.$store.dispatch(formModule + '/' + SET_DIAGNOSIS_OR_AREA_OF_TREATMENT, this.diagnosisOrAreaOfTreatment);
 
       this.$store.dispatch(formModule + '/' + SET_MEDICAL_SERVICE_CLAIMS, this.medicalServiceClaims);
 

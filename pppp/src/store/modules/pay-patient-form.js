@@ -30,8 +30,8 @@ export const SET_POSTAL_CODE = 'setPostalCode';
 
 export const SET_IS_VEHICLE_ACCIDENT = 'setIsVehicleAccident';
 export const SET_VEHICLE_ACCIDENT_CLAIM_NUMBER = 'setVehicleAccidentClaimNumber';
+
 export const SET_PLAN_REFERENCE_NUMBER_OF_ORIGINAL_CLAIM = 'setPlanReferenceNumberOfOriginalClaim';
-export const SET_DIAGNOSIS_OR_AREA_OF_TREATMENT = 'setDiagnosisOrAreaOfTreatment';
 
 export const SET_MEDICAL_SERVICE_CLAIMS = 'setMedicalServiceClaims';
 
@@ -79,9 +79,9 @@ export default {
 
       isVehicleAccident: null,
       vehicleAccidentClaimNumber: null,
-      planReferenceNumberOfOriginalClaim: null,
-      diagnosisOrAreaOfTreatment: null,
 
+      planReferenceNumberOfOriginalClaim: null,
+      
       medicalServiceClaims: [],
 
       practitionerLastName: null,
@@ -168,9 +168,6 @@ export default {
     [SET_PLAN_REFERENCE_NUMBER_OF_ORIGINAL_CLAIM](state, payload) {
       state.planReferenceNumberOfOriginalClaim = payload;
     },
-    [SET_DIAGNOSIS_OR_AREA_OF_TREATMENT](state, payload) {
-      state.diagnosisOrAreaOfTreatment = payload;
-    },
     [SET_MEDICAL_SERVICE_CLAIMS](state, payload) {
       state.medicalServiceClaims = payload;
     },
@@ -238,8 +235,8 @@ export default {
 
       commit(SET_IS_VEHICLE_ACCIDENT, null);
       commit(SET_VEHICLE_ACCIDENT_CLAIM_NUMBER, null);
+
       commit(SET_PLAN_REFERENCE_NUMBER_OF_ORIGINAL_CLAIM, null);
-      commit(SET_DIAGNOSIS_OR_AREA_OF_TREATMENT, null);
 
       commit(SET_MEDICAL_SERVICE_CLAIMS, []);
       
@@ -320,9 +317,6 @@ export default {
     },
     [SET_PLAN_REFERENCE_NUMBER_OF_ORIGINAL_CLAIM]({ commit }, payload) {
       commit(SET_PLAN_REFERENCE_NUMBER_OF_ORIGINAL_CLAIM, payload);
-    },
-    [SET_DIAGNOSIS_OR_AREA_OF_TREATMENT]({ commit }, payload) {
-      commit(SET_DIAGNOSIS_OR_AREA_OF_TREATMENT, payload);
     },
     [SET_MEDICAL_SERVICE_CLAIMS]({ commit }, payload) {
       commit(SET_MEDICAL_SERVICE_CLAIMS, payload);

@@ -260,10 +260,6 @@ export default {
         label: 'Plan Reference Number of Original Claim:',
         value: this.$store.state.payPatientForm.planReferenceNumberOfOriginalClaim,
       });
-      items.push({
-        label: 'Diagnosis or Area of Treatment:',
-        value: this.$store.state.payPatientForm.diagnosisOrAreaOfTreatment,
-      });
       return items;
     },
     medicalServiceClaims() {
@@ -317,6 +313,10 @@ export default {
         itemData.push({
           label: 'Submission Code:',
           value: this.$store.state.payPatientForm.medicalServiceClaims[i].submissionCode,
+        });
+        itemData.push({
+          label: 'Diagnosis or Area of Treatment:',
+          value: this.$store.state.payPatientForm.medicalServiceClaims[i].diagnosisOrAreaOfTreatment,
         });
         itemData.push({
           label: 'Notes:',

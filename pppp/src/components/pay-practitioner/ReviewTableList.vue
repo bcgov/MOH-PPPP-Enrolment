@@ -228,14 +228,6 @@ export default {
         label: 'Plan Reference Number of Original Claim:',
         value: this.$store.state.payPractitionerForm.planReferenceNumberOfOriginalClaim,
       });
-      items.push({
-        label: 'Coverage Pre-Authorization Number:',
-        value: this.$store.state.payPractitionerForm.coveragePreAuthNumber,
-      });
-      items.push({
-        label: 'Procedure or Operation:',
-        value: this.$store.state.payPractitionerForm.procedureOrOperation,
-      });
       return items;
     },
     medicalServiceClaims() {
@@ -353,6 +345,10 @@ export default {
           value: this.$store.state.payPractitionerForm.hospitalVisitClaims[i].submissionCode,
         });
         itemData.push({
+          label: 'Diagnosis or Area of Treatment:',
+          value: this.$store.state.payPractitionerForm.hospitalVisitClaims[i].diagnosisOrAreaOfTreatment,
+        });
+        itemData.push({
           label: 'Notes:',
           value: this.$store.state.payPractitionerForm.hospitalVisitClaims[i].notes,
         });
@@ -385,6 +381,10 @@ export default {
       items.push({
         label: 'Facility Number:',
         value: this.$store.state.payPractitionerForm.practitionerFacilityNumber,
+      });
+      items.push({
+        label: 'Coverage Pre-Authorization Number:',
+        value: this.$store.state.payPractitionerForm.coveragePreAuthNumber,
       });
       return items;
     },

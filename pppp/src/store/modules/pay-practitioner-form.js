@@ -24,9 +24,8 @@ export const SET_BIRTH_DATE = 'setBirthDate';
 
 export const SET_IS_VEHICLE_ACCIDENT = 'setIsVehicleAccident';
 export const SET_VEHICLE_ACCIDENT_CLAIM_NUMBER = 'setVehicleAccidentClaimNumber';
+
 export const SET_PLAN_REFERENCE_NUMBER_OF_ORIGINAL_CLAIM = 'setPlanReferenceNumberOfOriginalClaim';
-export const SET_COVERAGE_PRE_AUTH_NUMBER = 'setCoveragePreAuthNumber';
-export const SET_PROCEDURE_OR_OPERATION = 'setProcedureOrOperation';
 
 export const SET_MEDICAL_SERVICE_CLAIMS = 'setMedicalServiceClaims';
 export const SET_HOSPITAL_VISIT_CLAIMS = 'setHospitalVisitClaims';
@@ -37,6 +36,7 @@ export const SET_PRACTITIONER_PAYMENT_NUMBER = 'setPractitionerPaymentNumber';
 export const SET_PRACTITIONER_PRACTITIONER_NUMBER = 'setPractitionerPractitionerNumber';
 export const SET_PRACTITIONER_FACILITY_NUMBER = 'setPractitionerFacilityNumber';
 export const SET_PRACTITIONER_SPECIALTY_CODE = 'setPractitionerSpecialtyCode';
+export const SET_COVERAGE_PRE_AUTH_NUMBER = 'setCoveragePreAuthNumber';
 
 export const SET_REFERRED_BY_FIRST_NAME_INITIAL = 'setReferredByFirstNameInitial';
 export const SET_REFERRED_BY_LAST_NAME = 'setReferredByLastName';
@@ -69,9 +69,8 @@ export default {
 
       isVehicleAccident: null,
       vehicleAccidentClaimNumber: null,
+
       planReferenceNumberOfOriginalClaim: null,
-      coveragePreAuthNumber: null,
-      procedureOrOperation: null,
 
       medicalServiceClaims: [],
       hospitalVisitClaims: [],
@@ -82,6 +81,7 @@ export default {
       practitionerPractitionerNumber: null,
       practitionerFacilityNumber: null,
       practitionerSpecialtyCode: null,
+      coveragePreAuthNumber: null,
 
       referredByFirstNameInitial: null,
       referredByLastName: null,
@@ -148,9 +148,6 @@ export default {
     [SET_COVERAGE_PRE_AUTH_NUMBER](state, payload) {
       state.coveragePreAuthNumber = payload;
     },
-    [SET_PROCEDURE_OR_OPERATION](state, payload) {
-      state.procedureOrOperation = payload;
-    },
     [SET_MEDICAL_SERVICE_CLAIMS](state, payload) {
       state.medicalServiceClaims = payload;
     },
@@ -215,10 +212,9 @@ export default {
 
       commit(SET_IS_VEHICLE_ACCIDENT, null);
       commit(SET_VEHICLE_ACCIDENT_CLAIM_NUMBER, null);
-      commit(SET_PLAN_REFERENCE_NUMBER_OF_ORIGINAL_CLAIM, null);
-      commit(SET_COVERAGE_PRE_AUTH_NUMBER, null);
-      commit(SET_PROCEDURE_OR_OPERATION, null);
 
+      commit(SET_PLAN_REFERENCE_NUMBER_OF_ORIGINAL_CLAIM, null);
+      
       commit(SET_MEDICAL_SERVICE_CLAIMS, []);
       commit(SET_HOSPITAL_VISIT_CLAIMS, []);
       
@@ -227,6 +223,7 @@ export default {
       commit(SET_PRACTITIONER_PAYMENT_NUMBER, null);
       commit(SET_PRACTITIONER_PRACTITIONER_NUMBER, null);
       commit(SET_PRACTITIONER_SPECIALTY_CODE, null);
+      commit(SET_COVERAGE_PRE_AUTH_NUMBER, null);
       
       commit(SET_REFERRED_BY_FIRST_NAME_INITIAL, null);
       commit(SET_REFERRED_BY_LAST_NAME, null);
@@ -286,9 +283,6 @@ export default {
     },
     [SET_COVERAGE_PRE_AUTH_NUMBER]({ commit }, payload) {
       commit(SET_COVERAGE_PRE_AUTH_NUMBER, payload);
-    },
-    [SET_PROCEDURE_OR_OPERATION]({ commit }, payload) {
-      commit(SET_PROCEDURE_OR_OPERATION, payload);
     },
     [SET_MEDICAL_SERVICE_CLAIMS]({ commit }, payload) {
       commit(SET_MEDICAL_SERVICE_CLAIMS, payload);
