@@ -145,12 +145,6 @@
           <div class="text-danger"
               v-if="$v.planReferenceNumberOfOriginalClaim.$dirty && !$v.planReferenceNumberOfOriginalClaim.positiveNumberValidator"
               aria-live="assertive">Motor Vehicle Accident Claim Number must be a positive number.</div>
-          <Input label='Procedure or Operation:'
-                id='procedure-or-operation'
-                class='mt-3'
-                maxlength="256"
-                v-model='procedureOrOperation'
-                :inputStyle='largeStyles'/>
         </div>
 
         <div v-for="(claim, index) in medicalServiceClaims"
@@ -475,6 +469,12 @@
             <div class="text-danger"
                 v-if="v.submissionCode.$dirty && isSubmissionCodeRequired && !v.submissionCode.required"
                 aria-live="assertive">Submission code is required.</div>
+            <Input label='Diagnostic or Area of Treatment:'
+                :id='"hvc-diagnostic-or-area-of-treatment-" + index'
+                class='mt-3'
+                maxlength="100"
+                v-model='claim.diagnosticOrAreaOfTreatment'
+                :inputStyle='largeStyles'/>
             <Textarea label="Notes:"
                   :id="'hvc-hospital-notes-' + index"
                   class="mt-3"
@@ -710,7 +710,6 @@ import {
   SET_VEHICLE_ACCIDENT_CLAIM_NUMBER,
   SET_PLAN_REFERENCE_NUMBER_OF_ORIGINAL_CLAIM,
   SET_COVERAGE_PRE_AUTH_NUMBER,
-  SET_PROCEDURE_OR_OPERATION,
   SET_HOSPITAL_VISIT_CLAIMS,
   SET_MEDICAL_SERVICE_CLAIMS,
   SET_PRACTITIONER_LAST_NAME,
@@ -1218,9 +1217,8 @@ export default {
 
       this.$store.dispatch(formModule + '/' + SET_IS_VEHICLE_ACCIDENT, this.isVehicleAccident);
       this.$store.dispatch(formModule + '/' + SET_VEHICLE_ACCIDENT_CLAIM_NUMBER, this.vehicleAccidentClaimNumber);
+
       this.$store.dispatch(formModule + '/' + SET_PLAN_REFERENCE_NUMBER_OF_ORIGINAL_CLAIM, this.planReferenceNumberOfOriginalClaim);
-      this.$store.dispatch(formModule + '/' + SET_COVERAGE_PRE_AUTH_NUMBER, this.coveragePreAuthNumber);
-      this.$store.dispatch(formModule + '/' + SET_PROCEDURE_OR_OPERATION, this.procedureOrOperation);
 
       this.$store.dispatch(formModule + '/' + SET_MEDICAL_SERVICE_CLAIMS, this.medicalServiceClaims);
       this.$store.dispatch(formModule + '/' + SET_HOSPITAL_VISIT_CLAIMS, this.hospitalVisitClaims);
@@ -1231,6 +1229,7 @@ export default {
       this.$store.dispatch(formModule + '/' + SET_PRACTITIONER_PRACTITIONER_NUMBER, this.practitionerPractitionerNumber);
       this.$store.dispatch(formModule + '/' + SET_PRACTITIONER_FACILITY_NUMBER, this.practitionerFacilityNumber);
       this.$store.dispatch(formModule + '/' + SET_PRACTITIONER_SPECIALTY_CODE, this.practitionerSpecialtyCode);
+      this.$store.dispatch(formModule + '/' + SET_COVERAGE_PRE_AUTH_NUMBER, this.coveragePreAuthNumber);
 
       this.$store.dispatch(formModule + '/' + SET_REFERRED_BY_FIRST_NAME_INITIAL, this.referredByFirstNameInitial);
       this.$store.dispatch(formModule + '/' + SET_REFERRED_BY_LAST_NAME, this.referredByLastName);

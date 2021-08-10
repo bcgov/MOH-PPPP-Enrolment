@@ -13,10 +13,9 @@ export default {
 
   isVehicleAccident: 'Y',
   vehicleAccidentClaimNumber: 'A0000001',
-  planReferenceNumberOfOriginalClaim: '321',
-  coveragePreAuthNumber: '22',
-  procedureOrOperation: 'Triple bypass',
 
+  planReferenceNumberOfOriginalClaim: '321',
+  
   medicalServiceClaims: [
     {
       serviceDate: new Date(),
@@ -54,6 +53,7 @@ export default {
       locationOfService: 'A',
       correspondenceAttached: 'C',
       submissionCode: 'I',
+      diagnosticOrAreaOfTreatment: 'X-ray',
       notes: 'Notes here.',
     }
   ],
@@ -64,6 +64,7 @@ export default {
   practitionerPractitionerNumber: '22274',
   practitionerFacilityNumber: '12345',
   practitionerSpecialtyCode: 'A1',
+  coveragePreAuthNumber: '22',
 
   referredByFirstNameInitial: 'R',
   referredByLastName: 'McDonald',
