@@ -12,6 +12,8 @@ export const SET_REFERENCE_NUMBER = 'setReferenceNumber';
 
 export const SET_CLAIM_COUNT = 'setClaimCount';
 
+export const SET_PLAN_REFERENCE_NUMBER = 'setPlanReferenceNumber';
+
 export const SET_PHN = 'setPhn';
 export const SET_DEPENDENT_NUMBER = 'setDependentNumber';
 export const SET_FIRST_NAME = 'setFirstName';
@@ -58,6 +60,8 @@ export default {
       referenceNumber: null,
 
       claimCount: null,
+
+      planReferenceNumber: null,
 
       phn: null,
       dependentNumber: null,
@@ -115,6 +119,9 @@ export default {
     },
     [SET_CLAIM_COUNT](state, payload) {
       state.claimCount = payload;
+    },
+    [SET_PLAN_REFERENCE_NUMBER](state, payload) {
+      state.planReferenceNumber = payload;
     },
     [SET_PHN](state, payload) {
       state.phn = payload;
@@ -213,6 +220,8 @@ export default {
 
       commit(SET_CLAIM_COUNT, null);
 
+      commit(SET_PLAN_REFERENCE_NUMBER, null);
+
       commit(SET_PHN, null);
       commit(SET_DEPENDENT_NUMBER, null);
       commit(SET_FIRST_NAME, null);
@@ -263,6 +272,9 @@ export default {
     },
     [SET_CLAIM_COUNT]({ commit }, payload) {
       commit(SET_CLAIM_COUNT, payload);
+    },
+    [SET_PLAN_REFERENCE_NUMBER]({ commit }, payload) {
+      commit(SET_PLAN_REFERENCE_NUMBER, payload);
     },
     [SET_PHN]({ commit }, payload) {
       commit(SET_PHN, payload);

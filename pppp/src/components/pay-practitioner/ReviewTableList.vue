@@ -1,6 +1,21 @@
 <template>
   <div :class="className">
 
+    <div v-if='isCSR'
+        class="row align-items-end mt-3">
+      <div class="col-9"></div>
+      <div v-if='showEditButtons'
+          class="col-3 text-right">
+        <a href="javascript:void(0)"
+           @click="navigateToMainFormPage('plan-reference-number')">Edit 
+          <font-awesome-icon icon="pencil-alt" />
+        </a>
+      </div>
+    </div>
+    <ReviewTable v-if='isCSR'
+                :elements='planReferenceNumberData'
+                :backgroundColor='tableBackgroundColor'/>
+
     <div class="row align-items-end mt-3">
       <div class="col-9">
         <h2 class="mb-2">Patient Information</h2>
@@ -135,7 +150,10 @@ import {
 } from '@/helpers/scroll';
 import pageStateService from '@/services/page-state-service';
 import { formatDate } from 'common-lib-vue';
-import { getConvertedPath } from '@/helpers/url';
+import {
+  getConvertedPath,
+  isCSR,
+} from '@/helpers/url';
 
 export default {
   name: 'PayPractitionerReviewTableList',
@@ -156,6 +174,14 @@ export default {
     }
   },
   computed: {
+    planReferenceNumberData() {
+      const items = [];
+      items.push({
+        label: 'Plan Reference Number:',
+        value: this.$store.state.payPractitionerForm.planReferenceNumber,
+      });
+      return items;
+    },
     patientData() {
       const items = [];
       items.push({
@@ -393,6 +419,9 @@ export default {
         value: this.$store.state.payPractitionerForm.referredToFirstNameInitial,
       });
       return items;
+    },
+    isCSR() {
+      return isCSR(this.$router.currentRoute.path);
     }
   },
   methods: {
