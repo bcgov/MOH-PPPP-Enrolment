@@ -37,7 +37,7 @@ export default {
         hour: '16',
         minute: '05'
       },
-      diagnosticCode: 'DC',
+      diagnosticCode: '001',
       locationOfService: 'A',
       correspondenceAttached: 'C',
       submissionCode: 'I',

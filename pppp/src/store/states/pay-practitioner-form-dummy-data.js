@@ -31,7 +31,7 @@ export default {
         hour: '16',
         minute: '06'
       },
-      diagnosticCode: 'DC',
+      diagnosticCode: '001',
       locationOfService: 'A',
       correspondenceAttached: 'C',
       submissionCode: 'I',
@@ -49,7 +49,7 @@ export default {
       serviceClarificationCode: 'A1',
       feeItem: '03333',
       amountBilled: '0.00',
-      diagnosticCode: 'DC',
+      diagnosticCode: '001',
       locationOfService: 'A',
       correspondenceAttached: 'C',
       submissionCode: 'I',
