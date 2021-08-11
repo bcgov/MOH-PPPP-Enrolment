@@ -245,8 +245,8 @@
                 v-if="v.diagnosticCode.$dirty && !v.diagnosticCode.required"
                 aria-live="assertive">Diagnostic code is required.</div>
             <div class="text-danger"
-                v-if="v.diagnosticCode.$dirty && v.diagnosticCode.required && !v.diagnosticCode.alphanumericValidator"
-                aria-live="assertive">Diagnostic code must be alphanumeric.</div>
+                v-if="v.diagnosticCode.$dirty && v.diagnosticCode.required && !v.diagnosticCode.diagnosticCodeValidator"
+                aria-live="assertive">Diagnostic code must be valid.</div>
             <Select label='Service Location Code:'
                   :id='"location-of-service-" + index'
                   class='mt-3'
@@ -539,6 +539,7 @@ import {
 } from '@/helpers/url';
 import {
   clarificationCodeValidator,
+  diagnosticCodeValidator,
 } from '@/helpers/validators';
 import {
   selectOptionsSubmissionCode,
@@ -899,7 +900,7 @@ export default {
           },
           diagnosticCode: {
             required,
-            alphanumericValidator,
+            diagnosticCodeValidator,
           },
           locationOfService: {
             required,
