@@ -112,64 +112,6 @@
               aria-live="assertive">Patient Birth Date cannot be in the future.</div>
         </div>
         
-        <a name='mailing-address'></a>
-        <h2 class="mt-5">Payment Mailing Address</h2>
-        <div class="section-container p-3">
-          <Radio label='Whose address is this?'
-                v-model='addressOwner'
-                :items='addressOwnerOptions'
-                :isRequiredAsteriskShown='true' />
-          <div class="text-danger"
-              v-if="$v.addressOwner.$dirty && !$v.addressOwner.required"
-              aria-live="assertive">This field is required.</div>
-          <Input label='Apartment / Unit:'
-                id='unit-number'
-                className='mt-3'
-                v-model='unitNumber'
-                maxlength='6'
-                :inputStyle='smallStyles' />
-          <Input label='Street Number:'
-                id='street-number'
-                className='mt-3'
-                v-model='streetNumber'
-                maxlength='6'
-                :inputStyle='smallStyles' />
-          <Input label='Street Name:'
-                id='street-name'
-                className='mt-3'
-                v-model='streetName'
-                maxlength='24'
-                :isRequiredAsteriskShown='true'
-                :inputStyle='mediumStyles' />
-          <div class="text-danger"
-              v-if="$v.streetName.$dirty && !$v.streetName.required"
-              aria-live="assertive">Street Name is required.</div>
-          <Input label='City:'
-                id='city'
-                className='mt-3'
-                v-model='city'
-                maxlength='22'
-                :isRequiredAsteriskShown='true'
-                :inputStyle='mediumStyles' />
-          <div class="text-danger"
-              v-if="$v.city.$dirty && !$v.city.required"
-              aria-live="assertive">City is required.</div>
-          <div class='my-3'>Province:</div>
-          <p><strong>British Columbia</strong></p>
-          <PostalCodeInput label='Postal Code:'
-                id='postal-code'
-                className='mt-3'
-                v-model='postalCode'
-                :isRequiredAsteriskShown='true'
-                :inputStyle='smallStyles' />
-          <div class="text-danger"
-              v-if="$v.postalCode.$dirty && !$v.postalCode.required"
-              aria-live="assertive">Postal Code is required.</div>
-          <div class="text-danger"
-              v-if="$v.postalCode.$dirty && $v.postalCode.required && !$v.postalCode.bcPostalCodeValidator"
-              aria-live="assertive">Must be a valid BC postal code.</div>
-        </div>
-
         <a name='vehicle-accident'></a>
         <div class="section-container p-3 mt-5">
           <Radio label='Is this claim related to a motor vehicle accident?'
@@ -347,6 +289,64 @@
                   :isRemainingCharsShown='true'
                   :inputStyle='textareaStyle' />
           </div>
+        </div>
+
+        <a name='mailing-address'></a>
+        <h2 class="mt-5">Payment Mailing Address</h2>
+        <div class="section-container p-3">
+          <Radio label='Whose address is this?'
+                v-model='addressOwner'
+                :items='addressOwnerOptions'
+                :isRequiredAsteriskShown='true' />
+          <div class="text-danger"
+              v-if="$v.addressOwner.$dirty && !$v.addressOwner.required"
+              aria-live="assertive">This field is required.</div>
+          <Input label='Apartment / Unit:'
+                id='unit-number'
+                className='mt-3'
+                v-model='unitNumber'
+                maxlength='6'
+                :inputStyle='smallStyles' />
+          <Input label='Street Number:'
+                id='street-number'
+                className='mt-3'
+                v-model='streetNumber'
+                maxlength='6'
+                :inputStyle='smallStyles' />
+          <Input label='Street Name:'
+                id='street-name'
+                className='mt-3'
+                v-model='streetName'
+                maxlength='24'
+                :isRequiredAsteriskShown='true'
+                :inputStyle='mediumStyles' />
+          <div class="text-danger"
+              v-if="$v.streetName.$dirty && !$v.streetName.required"
+              aria-live="assertive">Street Name is required.</div>
+          <Input label='City:'
+                id='city'
+                className='mt-3'
+                v-model='city'
+                maxlength='22'
+                :isRequiredAsteriskShown='true'
+                :inputStyle='mediumStyles' />
+          <div class="text-danger"
+              v-if="$v.city.$dirty && !$v.city.required"
+              aria-live="assertive">City is required.</div>
+          <div class='my-3'>Province:</div>
+          <p><strong>British Columbia</strong></p>
+          <PostalCodeInput label='Postal Code:'
+                id='postal-code'
+                className='mt-3'
+                v-model='postalCode'
+                :isRequiredAsteriskShown='true'
+                :inputStyle='smallStyles' />
+          <div class="text-danger"
+              v-if="$v.postalCode.$dirty && !$v.postalCode.required"
+              aria-live="assertive">Postal Code is required.</div>
+          <div class="text-danger"
+              v-if="$v.postalCode.$dirty && $v.postalCode.required && !$v.postalCode.bcPostalCodeValidator"
+              aria-live="assertive">Must be a valid BC postal code.</div>
         </div>
 
         <a name='practitioner'></a>
