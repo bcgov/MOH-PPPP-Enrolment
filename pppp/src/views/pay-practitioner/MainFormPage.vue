@@ -275,7 +275,7 @@
             <div class="text-danger"
                 v-if="v.submissionCode.$dirty && isSubmissionCodeRequired && !v.submissionCode.required"
                 aria-live="assertive">Submission code is required.</div>
-            <Textarea label="Notes:"
+            <Textarea label="Notes/Additional Information:"
               :id="'msc-medical-notes-' + index"
               class="mt-3"
               v-model='claim.notes'
@@ -469,13 +469,7 @@
             <div class="text-danger"
                 v-if="v.submissionCode.$dirty && isSubmissionCodeRequired && !v.submissionCode.required"
                 aria-live="assertive">Submission code is required.</div>
-            <Input label='Diagnosis or Area of Treatment:'
-                :id='"hvc-diagnosis-or-area-of-treatment-" + index'
-                class='mt-3'
-                maxlength="100"
-                v-model='claim.diagnosisOrAreaOfTreatment'
-                :inputStyle='largeStyles'/>
-            <Textarea label="Notes:"
+            <Textarea label="Notes/Additional Information:"
                   :id="'hvc-hospital-notes-' + index"
                   class="mt-3"
                   v-model="claim.notes"

@@ -111,7 +111,6 @@ export default {
           locationOfService: null,
           correspondenceAttached: null,
           submissionCode: null,
-          diagnosisOrAreaOfTreatment: null,
           notes: null,
         });
       }

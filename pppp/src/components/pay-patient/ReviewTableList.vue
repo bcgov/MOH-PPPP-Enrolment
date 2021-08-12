@@ -315,11 +315,7 @@ export default {
           value: this.$store.state.payPatientForm.medicalServiceClaims[i].submissionCode,
         });
         itemData.push({
-          label: 'Diagnosis or Area of Treatment:',
-          value: this.$store.state.payPatientForm.medicalServiceClaims[i].diagnosisOrAreaOfTreatment,
-        });
-        itemData.push({
-          label: 'Notes:',
+          label: 'Notes/Additional Information:',
           value: this.$store.state.payPatientForm.medicalServiceClaims[i].notes,
         });
         claims.push(itemData);

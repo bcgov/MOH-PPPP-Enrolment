@@ -275,13 +275,7 @@
             <div class="text-danger"
                 v-if="v.submissionCode.$dirty && isSubmissionCodeRequired && !v.submissionCode.required"
                 aria-live="assertive">Submission code is required.</div>
-            <Input label='Diagnosis or Area of Treatment:'
-                  :id='"diagnosis-or-area-of-treatment-" + index'
-                  class='mt-3'
-                  v-model='claim.diagnosisOrAreaOfTreatment'
-                  maxlength='100'
-                  :inputStyle='largeStyles'/>
-            <Textarea label='Notes:'
+            <Textarea label='Notes/Additional Information:'
                   :id='"notes-" + index'
                   class='mt-3'
                   v-model='claim.notes'

@@ -19,9 +19,9 @@ export default {
 
   isVehicleAccident: 'Y',
   vehicleAccidentClaimNumber: 'A0000001',
-  planReferenceNumberOfOriginalClaim: '321',
-  diagnosisOrAreaOfTreatment: 'Chicken Pox',
 
+  planReferenceNumberOfOriginalClaim: '321',
+  
   medicalServiceClaims: [
     {
       serviceDate: new Date(),
@@ -41,7 +41,6 @@ export default {
       locationOfService: 'A',
       correspondenceAttached: 'C',
       submissionCode: 'I',
-      diagnosisOrAreaOfTreatment: 'X-ray',
       notes: 'Notes here.',
     }
   ],
