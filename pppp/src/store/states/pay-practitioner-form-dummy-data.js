@@ -53,7 +53,6 @@ export default {
       locationOfService: 'A',
       correspondenceAttached: 'C',
       submissionCode: 'I',
-      diagnosisOrAreaOfTreatment: 'X-ray',
       notes: 'Notes here.',
     }
   ],

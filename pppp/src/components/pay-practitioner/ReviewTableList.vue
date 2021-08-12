@@ -283,7 +283,7 @@ export default {
           value: this.$store.state.payPractitionerForm.medicalServiceClaims[i].submissionCode,
         });
         itemData.push({
-          label: 'Notes:',
+          label: 'Notes/Additional Information:',
           value: this.$store.state.payPractitionerForm.medicalServiceClaims[i].notes,
         });
         claims.push(itemData);
@@ -345,11 +345,7 @@ export default {
           value: this.$store.state.payPractitionerForm.hospitalVisitClaims[i].submissionCode,
         });
         itemData.push({
-          label: 'Diagnosis or Area of Treatment:',
-          value: this.$store.state.payPractitionerForm.hospitalVisitClaims[i].diagnosisOrAreaOfTreatment,
-        });
-        itemData.push({
-          label: 'Notes:',
+          label: 'Notes/Additional Information:',
           value: this.$store.state.payPractitionerForm.hospitalVisitClaims[i].notes,
         });
         claims.push(itemData);
