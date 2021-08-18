@@ -149,7 +149,10 @@ import {
   scrollToElement,
 } from '@/helpers/scroll';
 import pageStateService from '@/services/page-state-service';
-import { formatDate } from 'common-lib-vue';
+import {
+  formatDate,
+  selectOptionsMonths,
+} from 'common-lib-vue';
 import {
   getConvertedPath,
   isCSR,
@@ -296,9 +299,12 @@ export default {
 
       for (let i = 0; i < numClaims; i++) {
         const itemData = [];
+        const month = this.$store.state.payPractitionerForm.hospitalVisitClaims[i].month;
+        const monthIndex = selectOptionsMonths.findIndex((item) => item.value === month);
+        const monthLabel = selectOptionsMonths[monthIndex].label;
         itemData.push({
           label: 'Month:',
-          value: this.$store.state.payPractitionerForm.hospitalVisitClaims[i].month,
+          value: monthLabel,
         });
         itemData.push({
           label: 'Day from:',
