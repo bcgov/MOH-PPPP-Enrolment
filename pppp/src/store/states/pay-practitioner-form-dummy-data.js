@@ -33,7 +33,7 @@ export default {
       },
       diagnosticCode: '001',
       locationOfService: 'A',
-      correspondenceAttached: 'C',
+      correspondenceAttached: null,
       submissionCode: 'I',
       notes: 'Notes here.',
     }
@@ -51,7 +51,7 @@ export default {
       amountBilled: '0.00',
       diagnosticCode: '001',
       locationOfService: 'A',
-      correspondenceAttached: 'C',
+      correspondenceAttached: null,
       submissionCode: 'I',
       notes: 'Notes here.',
     }

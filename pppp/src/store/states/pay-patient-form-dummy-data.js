@@ -39,7 +39,7 @@ export default {
       },
       diagnosticCode: '001',
       locationOfService: 'A',
-      correspondenceAttached: 'C',
+      correspondenceAttached: null,
       submissionCode: 'I',
       notes: 'Notes here.',
     }

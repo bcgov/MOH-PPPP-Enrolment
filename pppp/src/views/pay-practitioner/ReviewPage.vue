@@ -166,7 +166,7 @@ export default {
     },
     continueButtonLabel() {
       if (this.isFormAbleToSubmit) {
-        return 'Continue';
+        return 'Submit';
       }
       return 'Print';
     },

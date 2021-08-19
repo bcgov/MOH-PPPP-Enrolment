@@ -290,12 +290,12 @@ export default {
         });
         const calledStartTime = this.$store.state.payPatientForm.medicalServiceClaims[i].calledStartTime;
         itemData.push({
-          label: 'Called Start Time:',
+          label: 'Called Start Time (HH:MM):',
           value: calledStartTime && calledStartTime.time ? calledStartTime.time : '',
         });
         const renderedFinishTime = this.$store.state.payPatientForm.medicalServiceClaims[i].renderedFinishTime;
         itemData.push({
-          label: 'Rendered Finish Time:',
+          label: 'Rendered Finish Time (HH:MM):',
           value: renderedFinishTime && renderedFinishTime.time ? renderedFinishTime.time : '',
         });
         itemData.push({
