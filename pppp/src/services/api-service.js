@@ -4,19 +4,21 @@ import { formatISODate } from 'common-lib-vue';
 import { isCSR } from '@/helpers/url';
 
 const BASE_API_PATH = '/pppp/api/';
-const SUBMIT_PAY_PATIENT_APPLICATION_URL = BASE_API_PATH + 'ppppIntegration/payPatientSubmission';
-const SUBMIT_PAY_PRACTITIONER_APPLICATION_URL = BASE_API_PATH + 'ppppIntegration/payPractitionerSubmission';
-const VALIDATE_APPLICATION_URL = BASE_API_PATH + 'ppppIntegration/validateClaim';
+const SUBMIT_PAY_PATIENT_APPLICATION_URL = BASE_API_PATH + 'payformsIntegration/patient';
+const SUBMIT_PAY_PRACTITIONER_APPLICATION_URL = BASE_API_PATH + 'payformsIntegration/practitioner';
+const VALIDATE_APPLICATION_URL = BASE_API_PATH + 'payformsIntegration/validateClaim';
 
 class ApiService {
   validateApplication(token, jsonPayload) {
+    const applicationUuid = jsonPayload.applicationUuid;
     jsonPayload.requestUuid = uuidv4();
-    return this._sendPostRequest(VALIDATE_APPLICATION_URL, token, jsonPayload);
+    return this._sendPostRequest(`${VALIDATE_APPLICATION_URL}/${applicationUuid}`, token, jsonPayload);
   }
 
   submitPayPatientApplication(token, formState) {
+    const applicationUuid = formState.applicationUuid;
     const jsonPayload = {
-      applicationUuid: formState.applicationUuid,
+      applicationUuid: applicationUuid,
       requestUuid: uuidv4(),
       submissionDate: formatISODate(formState.submissionDate) || '',
       isCSR: isCSR(window.location.pathname) ? 'Y' : 'N',
@@ -69,12 +71,13 @@ class ApiService {
         notes: claim.notes || '',
       });
     }
-    return this._sendPostRequest(SUBMIT_PAY_PATIENT_APPLICATION_URL, token, jsonPayload);
+    return this._sendPostRequest(`${SUBMIT_PAY_PATIENT_APPLICATION_URL}/${applicationUuid}`, token, jsonPayload);
   }
 
   submitPayPractitionerApplication(token, formState) {
+    const applicationUuid = formState.applicationUuid;
     const jsonPayload = {
-      applicationUuid: formState.applicationUuid,
+      applicationUuid: applicationUuid,
       requestUuid: uuidv4(),
       submissionDate: formatISODate(formState.submissionDate) || '',
       isCSR: isCSR(window.location.pathname) ? 'Y' : 'N',
@@ -142,7 +145,7 @@ class ApiService {
         notes: claim.notes || '',
       });
     }
-    return this._sendPostRequest(SUBMIT_PAY_PRACTITIONER_APPLICATION_URL, token, jsonPayload);
+    return this._sendPostRequest(`${SUBMIT_PAY_PRACTITIONER_APPLICATION_URL}/${applicationUuid}`, token, jsonPayload);
   }
 
   _sendPostRequest(url, token, jsonPayload) {

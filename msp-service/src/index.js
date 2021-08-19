@@ -125,32 +125,11 @@ app.use('/', function (req, res, next) {
         var pathnameParts = pathname.split("/");
 
         // find the noun(s)
-        var nounIndex = pathnameParts.indexOf("MSPDESubmitAttachment");
-        if (nounIndex < 0) {
-            nounIndex = pathnameParts.indexOf("MSPDESubmitApplication");
-        }
-        if (nounIndex < 0) {
-            nounIndex = pathnameParts.indexOf("submit-attachment");
-        }
-        if (nounIndex < 0) {
-            nounIndex = pathnameParts.indexOf("submit-application");
-        }
-        if (nounIndex < 0) {
-            nounIndex = pathnameParts.indexOf("accLetterIntegration");
-        }
-        if (nounIndex < 0) {
-            nounIndex = pathnameParts.indexOf("siteregIntegration");
-        }
-        if (nounIndex < 0) {
-          nounIndex = pathnameParts.indexOf("ppppIntegration");
-          console.log('A');
-        }
-        if (nounIndex < 0) {
-          nounIndex = pathnameParts.indexOf("ppnsIntegration");
-        }
-        if (nounIndex < 0) {
-          nounIndex = pathnameParts.indexOf("bcp");
-        }
+        var nounIndex = pathnameParts.indexOf("payformsIntegration");
+        
+        // if (nounIndex < 0) {
+        //   nounIndex = pathnameParts.indexOf("payformsIntegration");
+        // }
         
         if (nounIndex < 0 ||
           pathnameParts.length < nounIndex + 2) {
@@ -161,17 +140,12 @@ app.use('/', function (req, res, next) {
             return;
         }
 
-		// check to see if not accLetterIntegration/suppbenefit
-		if (pathnameParts.indexOf("suppbenefit") > 0 || pathnameParts.indexOf("siteregIntegration") > 0) {
+		// check to see if not payformsIntegration/patient or payformsIntegration/practitioner
+		if (pathnameParts.indexOf("payformsIntegration") > -1) {
 			if (pathnameParts[nounIndex + 2] != decoded.data.nonce) {                                                                                 
                 denyAccess("resource id and nonce are not equal: " + pathnameParts[nounIndex + 2] + "; " + decoded.data.nonce, res, req);             
                 return;                                                                                                                            
             } 
-        }
-        // Bypassing nonce match check for PPPP, because it isn't contained in URL path.
-        else if (pathnameParts.indexOf("ppnsIntegration") > -1) {
-            next();
-            return;
         }
 		else {
 			// Finally, check that resource ID against the nonce
