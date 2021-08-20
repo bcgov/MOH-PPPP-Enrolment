@@ -27,6 +27,7 @@ class ApiService {
       isCSR: isCSR(window.location.pathname) ? 'Y' : 'N',
       payPatient: {
         claimCount: formState.claimCount,
+        planReferenceNumber: formState.planReferenceNumber || '',
         phn: stripSpaces(formState.phn) || '',
         dependentNumber: formState.dependentNumber || '',
         firstName: formState.firstName || '',
@@ -87,6 +88,7 @@ class ApiService {
       payPractitioner: {
         medicalServiceClaimsCount: formState.medicalServiceClaimsCount,
         hospitalVisitClaimsCount: formState.hospitalVisitClaimsCount,
+        planReferenceNumber: formState.planReferenceNumber || '',
         phn: formState.phn || '',
         dependentNumber: formState.dependentNumber || '',
         firstName: formState.firstName || '',
