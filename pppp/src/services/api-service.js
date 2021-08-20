@@ -1,6 +1,9 @@
 import axios from 'axios';
 import { v4 as uuidv4 } from 'uuid';
-import { formatISODate } from 'common-lib-vue';
+import {
+  formatISODate,
+  stripSpaces,
+} from 'common-lib-vue';
 import { isCSR } from '@/helpers/url';
 
 const BASE_API_PATH = '/pppp/api/';
@@ -24,7 +27,8 @@ class ApiService {
       isCSR: isCSR(window.location.pathname) ? 'Y' : 'N',
       payPatient: {
         claimCount: formState.claimCount,
-        phn: formState.phn || '',
+        planReferenceNumber: formState.planReferenceNumber || '',
+        phn: stripSpaces(formState.phn) || '',
         dependentNumber: formState.dependentNumber || '',
         firstName: formState.firstName || '',
         middleInitial: formState.middleInitial || '',
@@ -35,7 +39,7 @@ class ApiService {
         streetNumber: formState.streetNumber || '',
         streetName: formState.streetName || '',
         city: formState.city || '',
-        postalCode: formState.postalCode || '',
+        postalCode: stripSpaces(formState.postalCode) || '',
         isVehicleAccident: formState.isVehicleAccident || '',
         vehicleAccidentClaimNumber: formState.vehicleAccidentClaimNumber || '',
         planReferenceNumberOfOriginalClaim: formState.planReferenceNumberOfOriginalClaim || '',
@@ -84,6 +88,7 @@ class ApiService {
       payPractitioner: {
         medicalServiceClaimsCount: formState.medicalServiceClaimsCount,
         hospitalVisitClaimsCount: formState.hospitalVisitClaimsCount,
+        planReferenceNumber: formState.planReferenceNumber || '',
         phn: formState.phn || '',
         dependentNumber: formState.dependentNumber || '',
         firstName: formState.firstName || '',

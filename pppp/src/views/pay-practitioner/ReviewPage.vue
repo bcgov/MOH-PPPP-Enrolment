@@ -89,26 +89,21 @@ export default {
         .then((response) => {
           // Handle HTTP success.
           const returnCode = response.data.returnCode;
-          const referenceNumber = response.data.referenceNumber;
+          const planReferenceNumber = response.data.planReferenceNumber;
 
           this.isLoading = false;
+
+          if (planReferenceNumber) {
+            this.$store.dispatch(formModule + '/' + SET_REFERENCE_NUMBER, planReferenceNumber);
+          }
 
           switch (returnCode) {
             case '0': // Submission successful.
               logService.logSubmission(applicationUuid, {
-                event: 'submission',
+                event: 'submission success',
                 response: response.data,
-              }, referenceNumber);
-              this.$store.dispatch(formModule + '/' + SET_REFERENCE_NUMBER, referenceNumber);
+              }, planReferenceNumber);
               this.navigateToSubmissionPage();
-              break;
-            case '1': // Submission failed.
-            case '2': // Unknown case, but not '0', so failing the the submission.
-              logService.logError(applicationUuid, {
-                event: 'submission failure',
-                response: response.data,
-              });
-              this.navigateToSubmissionErrorPage();
               break;
             case '3': // System unavailable.
               this.isSystemUnavailable = true;
@@ -117,6 +112,13 @@ export default {
                 response: response.data,
               });
               scrollToError();
+              break;
+            default: // Catch-all for all other errors (non-zero).
+              logService.logError(applicationUuid, {
+                event: 'submission failure',
+                response: response.data,
+              });
+              this.navigateToSubmissionErrorPage();
               break;
           }
         })

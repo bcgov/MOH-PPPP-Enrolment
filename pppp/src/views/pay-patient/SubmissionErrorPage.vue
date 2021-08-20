@@ -13,6 +13,9 @@
             <div class="col-10 pl-0 py-3">
               <h1>There was a technical issue with your submission</h1>
               <p>Your application was not submitted.</p>
+              <div v-if="referenceNumber">
+                <p>Plan Reference Number: <strong>{{referenceNumber}}</strong></p>
+              </div>
             </div>
           </div>
         </div>
@@ -48,6 +51,11 @@ export default {
       payPatientRoutes.SUBMISSION_ERROR_PAGE.path,
       payPatientRoutes.SUBMISSION_ERROR_PAGE.title
     );
+  },
+  computed: {
+    referenceNumber() {
+      return this.$store.state.payPatientForm.referenceNumber;
+    }
   },
   // Required in order to block back navigation.
   beforeRouteLeave(to, from, next) {
