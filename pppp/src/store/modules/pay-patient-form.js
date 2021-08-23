@@ -7,6 +7,7 @@ export const MODULE_NAME = 'payPatientForm';
 export const RESET_FORM = 'resetForm';
 export const SET_APPLICATION_UUID = 'setApplicationUuid';
 export const SET_CAPTCHA_TOKEN = 'setCaptchaToken';
+export const SET_IS_INFO_COLLECTION_NOTICE_OPEN = 'setIsInfoCollectionNoticeOpen';
 export const SET_SUBMISSION_DATE = 'setSubmissionDate';
 export const SET_REFERENCE_NUMBER = 'setReferenceNumber';
 
@@ -56,6 +57,7 @@ export default {
     const state = {
       applicationUuid: null,
       captchaToken: null,
+      isInfoCollectionNoticeOpen: true,
       submissionDate: null,
       referenceNumber: null,
 
@@ -110,6 +112,9 @@ export default {
     },
     [SET_CAPTCHA_TOKEN](state, payload) {
       state.captchaToken = payload;
+    },
+    [SET_IS_INFO_COLLECTION_NOTICE_OPEN](state, payload) {
+      state.isInfoCollectionNoticeOpen = payload;
     },
     [SET_SUBMISSION_DATE](state, payload) {
       state.submissionDate = payload;
@@ -212,6 +217,7 @@ export default {
     [RESET_FORM]({ commit }) {
       commit(SET_APPLICATION_UUID, null);
       commit(SET_CAPTCHA_TOKEN, null);
+      commit(SET_IS_INFO_COLLECTION_NOTICE_OPEN, true);
       commit(SET_SUBMISSION_DATE, null);
       commit(SET_REFERENCE_NUMBER, null);
 
@@ -260,6 +266,9 @@ export default {
     },
     [SET_CAPTCHA_TOKEN]({ commit }, payload) {
       commit(SET_CAPTCHA_TOKEN, payload);
+    },
+    [SET_IS_INFO_COLLECTION_NOTICE_OPEN]({ commit }, payload) {
+      commit(SET_IS_INFO_COLLECTION_NOTICE_OPEN, payload);
     },
     [SET_SUBMISSION_DATE]({ commit }, payload) {
       commit(SET_SUBMISSION_DATE, payload);

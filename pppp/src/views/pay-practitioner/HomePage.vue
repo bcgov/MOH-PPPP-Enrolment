@@ -1,9 +1,5 @@
 <template>
   <div>
-    <ConsentModal v-if="showConsentModal"
-                  :applicationUuid="applicationUuid"
-                  @close="handleCloseConsentModal"
-                  @captchaVerified="handleCaptchaVerified" />
     <PageContent>
       <div class="container pt-3 pt-sm-5 mb-5">
         <h1>Pay Practitioner Claim</h1>
@@ -70,12 +66,10 @@ import {
 } from '@/helpers/scroll';
 import ContinueBar from '@/components/ContinueBar.vue';
 import PageContent from '@/components/PageContent.vue';
-import ConsentModal from '@/components/ConsentModal.vue';
 import { v4 as uuidv4 } from 'uuid';
 import {
   MODULE_NAME as formModule,
   SET_APPLICATION_UUID,
-  SET_CAPTCHA_TOKEN,
 } from '@/store/modules/pay-practitioner-form';
 import logService from '@/services/log-service';
 import { getConvertedPath } from '@/helpers/url';
@@ -83,13 +77,11 @@ import { getConvertedPath } from '@/helpers/url';
 export default {
   name: 'HomePage',
   components: {
-    ConsentModal,
     ContinueBar,
     PageContent,
   },
   data: () => {
     return {
-      showConsentModal: true,
       applicationUuid: null,
     }
   },
@@ -120,12 +112,6 @@ export default {
     );
   },
   methods: {
-    handleCaptchaVerified(captchaToken) {
-      this.$store.dispatch(formModule + '/' + SET_CAPTCHA_TOKEN, captchaToken);
-    },
-    handleCloseConsentModal() {
-      this.showConsentModal = false;
-    },
     nextPage() {
       const toPath = getConvertedPath(
         this.$router.currentRoute.path,
