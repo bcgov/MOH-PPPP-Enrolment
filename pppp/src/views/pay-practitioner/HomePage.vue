@@ -5,7 +5,7 @@
         <h1>Pay Practitioner Claim</h1>
         <hr/>
         <h2>Who Can Use This Form</h2>
-        <p>This form is for use by Medical Practitioners registered with MSP who are submitting a claim within 90 days of the date of service and/or Submission Codes, A, C, D, E, I, R, W, or X. This form allows Practitioners to submit claims for services provided to BC residents who are enrolled under MSP. If your claim exceeds 90 days, use the <a href="http://www2.gov.bc.ca/assets/gov/health/forms/2943fil.pdf" target="_blank">Request for Approval of Over-age Claims form (2943)</a>.</p>
+        <p>This form is for use by Medical Practitioners registered with MSP who are submitting a claim within 90 days of the date of service and/or Submission Codes, A, C, D, I, R, W, or X. This form allows Practitioners to submit claims for services provided to BC residents who are enrolled under MSP. If your claim exceeds 90 days, use the <a href="http://www2.gov.bc.ca/assets/gov/health/forms/2943fil.pdf" target="_blank">Request for Approval of Over-age Claims form (2943)</a>.</p>
         <p>This form is restricted to Medical Practitioners who submit claims for fewer than 2,400 services per year and earn less than $72,000 annually in fee-for-service payments and who do not submit claims to MSP via Teleplan.</p>
 
         <h2>Form Submission Instructions</h2>
