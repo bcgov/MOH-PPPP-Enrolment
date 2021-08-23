@@ -26,6 +26,13 @@
         <div class="text-danger"
             v-if="$v.hospitalVisitClaimsCount.$dirty && !$v.hospitalVisitClaimsCount.required"
             aria-live="assertive">Hospital visit claim count is required.</div>
+        <div class="text-danger mt-3"
+            v-if=" $v.medicalServiceClaimsCount.$dirty
+                && $v.medicalServiceClaimsCount.required
+                && $v.hospitalVisitClaimsCount.$dirty
+                && $v.hospitalVisitClaimsCount.required
+                && !$v.atLeastOneClaimValidator"
+            aria-live="assertive">At least one claim is required.</div>
       </div>
     </PageContent>
     <ContinueBar @continue="validateFields()" />
@@ -63,6 +70,19 @@ import {
 import { SET_MEDICAL_SERVICE_CLAIMS } from '@/store/modules/pay-patient-form';
 import { getConvertedPath } from '@/helpers/url';
 
+const atLeastOneClaimValidator = (vm) => {
+  if ( vm.medicalServiceClaimsCount
+    && vm.hospitalVisitClaimsCount
+    && (
+      parseInt(vm.medicalServiceClaimsCount) > 0 ||
+      parseInt(vm.hospitalVisitClaimsCount) > 0
+    )
+  ) {
+    return true;
+  }
+  return false;
+};
+
 export default {
   name: 'ClaimCountPage',
   components: {
@@ -97,6 +117,7 @@ export default {
   },
   validations() {
     const validations = {
+      atLeastOneClaimValidator,
       medicalServiceClaimsCount: {
         required,
       },
