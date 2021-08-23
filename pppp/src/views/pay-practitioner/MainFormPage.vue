@@ -811,11 +811,11 @@ const dateValidator = (value) => {
   const year = value.year;
   const date = parseISO(getISODateString(year, month, dayFrom));
 
-  return month
+  return !!month
       && month.length <= 2
-      && dayFrom
+      && !!dayFrom
       && dayFrom.length <= 2
-      && year
+      && !!year
       && year.length === 4
       && isValid(date);
 };

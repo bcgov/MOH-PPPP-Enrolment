@@ -1,5 +1,9 @@
 <template>
   <div>
+    <ConsentModal v-if="isConsentModalOpen"
+                  :applicationUuid="applicationUuid"
+                  @close="handleCloseConsentModal"
+                  @captchaVerified="handleCaptchaVerified" />
     <PageContent>
       <div class="container pt-3 pt-sm-5 mb-3">
         <h1>Pay Practitioner Claim</h1>
@@ -26,6 +30,13 @@
         <div class="text-danger"
             v-if="$v.hospitalVisitClaimsCount.$dirty && !$v.hospitalVisitClaimsCount.required"
             aria-live="assertive">Hospital visit claim count is required.</div>
+        <div class="text-danger mt-3"
+            v-if=" $v.medicalServiceClaimsCount.$dirty
+                && $v.medicalServiceClaimsCount.required
+                && $v.hospitalVisitClaimsCount.$dirty
+                && $v.hospitalVisitClaimsCount.required
+                && !$v.atLeastOneClaimValidator"
+            aria-live="assertive">At least one claim is required.</div>
       </div>
     </PageContent>
     <ContinueBar @continue="validateFields()" />
@@ -45,6 +56,7 @@ import {
 } from '@/helpers/scroll';
 import ContinueBar from '@/components/ContinueBar.vue';
 import PageContent from '@/components/PageContent.vue';
+import ConsentModal from '@/components/ConsentModal.vue';
 import {
   NumberSelect,
   cloneDeep,
@@ -52,20 +64,34 @@ import {
 import {
   MODULE_NAME as formModule,
   RESET_FORM,
+  SET_CAPTCHA_TOKEN,
+  SET_IS_INFO_COLLECTION_NOTICE_OPEN,
+  SET_MEDICAL_SERVICE_CLAIMS,
   SET_HOSPITAL_VISIT_CLAIMS,
+  SET_MEDICAL_SERVICE_CLAIMS_COUNT, 
+  SET_HOSPITAL_VISIT_CLAIMS_COUNT,
 } from '@/store/modules/pay-practitioner-form';
 import logService from '@/services/log-service';
 import { required } from 'vuelidate/lib/validators';
-import { 
-  SET_MEDICAL_SERVICE_CLAIMS_COUNT, 
-  SET_HOSPITAL_VISIT_CLAIMS_COUNT 
-} from '@/store/modules/pay-practitioner-form';
-import { SET_MEDICAL_SERVICE_CLAIMS } from '@/store/modules/pay-patient-form';
 import { getConvertedPath } from '@/helpers/url';
+
+const atLeastOneClaimValidator = (vm) => {
+  if ( vm.medicalServiceClaimsCount
+    && vm.hospitalVisitClaimsCount
+    && (
+      parseInt(vm.medicalServiceClaimsCount) > 0 ||
+      parseInt(vm.hospitalVisitClaimsCount) > 0
+    )
+  ) {
+    return true;
+  }
+  return false;
+};
 
 export default {
   name: 'ClaimCountPage',
   components: {
+    ConsentModal,
     ContinueBar,
     PageContent,
     NumberSelect
@@ -79,9 +105,11 @@ export default {
         width: '160px',
         maxWidth: '100%',
       },
+      applicationUuid: null,
     };
   },
   created() {
+    this.applicationUuid = this.$store.state.payPractitionerForm.applicationUuid;
     this.medicalServiceClaimsCount = this.$store.state.payPractitionerForm.medicalServiceClaimsCount;
     this.hospitalVisitClaimsCount = this.$store.state.payPractitionerForm.hospitalVisitClaimsCount;
 
@@ -97,6 +125,7 @@ export default {
   },
   validations() {
     const validations = {
+      atLeastOneClaimValidator,
       medicalServiceClaimsCount: {
         required,
       },
@@ -106,7 +135,18 @@ export default {
     };
     return validations;
   },
+  computed: {
+    isConsentModalOpen() {
+      return this.$store.state.payPractitionerForm.isInfoCollectionNoticeOpen;
+    },
+  },
   methods: {
+    handleCaptchaVerified(captchaToken) {
+      this.$store.dispatch(formModule + '/' + SET_CAPTCHA_TOKEN, captchaToken);
+    },
+    handleCloseConsentModal() {
+      this.$store.dispatch(formModule + '/' + SET_IS_INFO_COLLECTION_NOTICE_OPEN, false);
+    },
     validateFields() {
       this.$v.$touch()
       if (this.$v.$invalid) {

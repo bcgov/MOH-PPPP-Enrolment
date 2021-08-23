@@ -1,5 +1,9 @@
 <template>
   <div>
+    <ConsentModal v-if="isConsentModalOpen"
+                  :applicationUuid="applicationUuid"
+                  @close="handleCloseConsentModal"
+                  @captchaVerified="handleCaptchaVerified" />
     <PageContent>
       <div class="container pt-3 pt-sm-5 mb-3">
         <h1>Pay Patient Claim</h1>
@@ -35,9 +39,12 @@ import {
 import { getConvertedPath } from '@/helpers/url';
 import ContinueBar from '@/components/ContinueBar.vue';
 import PageContent from '@/components/PageContent.vue';
+import ConsentModal from '@/components/ConsentModal.vue';
 import {
   MODULE_NAME as formModule,
   RESET_FORM,
+  SET_CAPTCHA_TOKEN,
+  SET_IS_INFO_COLLECTION_NOTICE_OPEN,
   SET_CLAIM_COUNT,
   SET_MEDICAL_SERVICE_CLAIMS,
 } from '@/store/modules/pay-patient-form';
@@ -51,6 +58,7 @@ import {
 export default {
   name: 'EmptyPage',
   components: {
+    ConsentModal,
     ContinueBar,
     NumberSelect,
     PageContent,
@@ -63,9 +71,11 @@ export default {
         width: '160px',
         maxWidth: '100%',
       },
+      applicationUuid: null,
     };
   },
   created() {
+    this.applicationUuid = this.$store.state.payPatientForm.applicationUuid;
     this.claimCount = this.$store.state.payPatientForm.claimCount;
     
     setTimeout(() => {
@@ -86,7 +96,18 @@ export default {
     };
     return validations;
   },
+  computed: {
+    isConsentModalOpen() {
+      return this.$store.state.payPatientForm.isInfoCollectionNoticeOpen;
+    },
+  },
   methods: {
+    handleCaptchaVerified(captchaToken) {
+      this.$store.dispatch(formModule + '/' + SET_CAPTCHA_TOKEN, captchaToken);
+    },
+    handleCloseConsentModal() {
+      this.$store.dispatch(formModule + '/' + SET_IS_INFO_COLLECTION_NOTICE_OPEN, false);
+    },
     validateFields() {
       this.$v.$touch()
       if (this.$v.$invalid) {

@@ -1,20 +1,17 @@
 <template>
   <div>
-    <ConsentModal v-if="showConsentModal"
-                  :applicationUuid="applicationUuid"
-                  @close="handleCloseConsentModal"
-                  @captchaVerified="handleCaptchaVerified" />
     <PageContent>
       <div class="container pt-3 pt-sm-5 mb-5">
         <h1>Pay Patient Claim</h1>
         <hr/>
         <h2>Who Can Use This Form</h2>
-        <p>This form is for use by Medical Practitioners registered with MSP who are submitting a claim within 90 days of the date of service and/or Submission Codes, A, C, D, E, I, R, W, or X. This form allows Practitioners to submit claims for services provided to BC residents who are enrolled under MSP. If your claim exceeds 90 days, use the <a href="http://www2.gov.bc.ca/assets/gov/health/forms/2943fil.pdf" target="_blank">Request for Approval of Over-age Claims form (2943)</a>.</p>
+        <p>This form is for use by Medical Practitioners registered with MSP who are submitting a claim within 90 days of the date of service and/or Submission Codes, A, C, D, I, R, W, or X. This form allows Practitioners to submit claims for services provided to BC residents who are enrolled under MSP. If your claim exceeds 90 days, use the <a href="http://www2.gov.bc.ca/assets/gov/health/forms/2943fil.pdf" target="_blank">Request for Approval of Over-age Claims form (2943)</a>.</p>
         <p>This form is restricted to Medical Practitioners who submit claims for fewer than 2,400 services per year and earn less than $72,000 annually in fee-for-service payments and who do not submit claims to MSP via Teleplan.</p>
         <p>When submitting this form you are declaring that the information provided in this claim form is true and accurate, and you are agreeing to be bound by any authorization or representations made in this claim form.</p>
 
         <h2>Form Submission Instructions</h2>
-        <p>Fill out this online form and submit your request electronically.</p>
+        <p><a href='javascript:void(0)'
+              @click="nextPage()">Fill out this online form</a> and submit your request electronically.</p>
         <p>If you are submitting one of the claim types below, you must submit by mail using this downloadable <a href="http://www2.gov.bc.ca/assets/gov/health/forms/1916fil.pdf" target="_blank">Fill, Print and Mail</a> format:</p>
         <ul>
           <li>Pay patient claims for opted-out practitioners</li>
@@ -51,7 +48,9 @@
         <p>All information is subject to change in accordance with the <em>Medicare Protection Act</em> and Regulations and the <em>Hospital Insurance Act</em> and Regulations. If a discrepancy exists between the information Health Insurance BC has provided on this application and the legislation, the legislation will prevail.</p>
       </div>
     </PageContent>
-    <ContinueBar @continue='nextPage()'/>
+    <ContinueBar @continue='nextPage()'
+                :isSticky='false'
+                buttonLabel='Continue to the Online Form'/>
   </div>
 </template>
 
@@ -67,27 +66,23 @@ import {
   scrollTo,
   getTopScrollPosition
 } from '../../helpers/scroll';
-import ContinueBar from '../../components/ContinueBar.vue';
 import PageContent from '../../components/PageContent.vue';
-import ConsentModal from '../../components/ConsentModal.vue';
 import { v4 as uuidv4 } from 'uuid';
 import {
   MODULE_NAME as formModule,
   SET_APPLICATION_UUID,
-  SET_CAPTCHA_TOKEN,
 } from '../../store/modules/pay-patient-form';
 import logService from '../../services/log-service';
+import { ContinueBar } from 'common-lib-vue';
 
 export default {
   name: 'HomePage',
   components: {
-    ConsentModal,
     ContinueBar,
     PageContent,
   },
   data: () => {
     return {
-      showConsentModal: true,
       applicationUuid: null,
     }
   },
@@ -118,12 +113,6 @@ export default {
     );
   },
   methods: {
-    handleCaptchaVerified(captchaToken) {
-      this.$store.dispatch(formModule + '/' + SET_CAPTCHA_TOKEN, captchaToken);
-    },
-    handleCloseConsentModal() {
-      this.showConsentModal = false;
-    },
     nextPage() {
       const toPath = getConvertedPath(
         this.$router.currentRoute.path,
