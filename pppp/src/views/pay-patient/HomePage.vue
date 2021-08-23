@@ -10,7 +10,8 @@
         <p>When submitting this form you are declaring that the information provided in this claim form is true and accurate, and you are agreeing to be bound by any authorization or representations made in this claim form.</p>
 
         <h2>Form Submission Instructions</h2>
-        <p>Fill out this online form and submit your request electronically.</p>
+        <p><a href='javascript:void(0)'
+              @click="nextPage()">Fill out this online form</a> and submit your request electronically.</p>
         <p>If you are submitting one of the claim types below, you must submit by mail using this downloadable <a href="http://www2.gov.bc.ca/assets/gov/health/forms/1916fil.pdf" target="_blank">Fill, Print and Mail</a> format:</p>
         <ul>
           <li>Pay patient claims for opted-out practitioners</li>
@@ -47,7 +48,9 @@
         <p>All information is subject to change in accordance with the <em>Medicare Protection Act</em> and Regulations and the <em>Hospital Insurance Act</em> and Regulations. If a discrepancy exists between the information Health Insurance BC has provided on this application and the legislation, the legislation will prevail.</p>
       </div>
     </PageContent>
-    <ContinueBar @continue='nextPage()'/>
+    <ContinueBar @continue='nextPage()'
+                :isSticky='false'
+                buttonLabel='Continue to the Online Form'/>
   </div>
 </template>
 
@@ -63,7 +66,6 @@ import {
   scrollTo,
   getTopScrollPosition
 } from '../../helpers/scroll';
-import ContinueBar from '../../components/ContinueBar.vue';
 import PageContent from '../../components/PageContent.vue';
 import { v4 as uuidv4 } from 'uuid';
 import {
@@ -71,6 +73,7 @@ import {
   SET_APPLICATION_UUID,
 } from '../../store/modules/pay-patient-form';
 import logService from '../../services/log-service';
+import { ContinueBar } from 'common-lib-vue';
 
 export default {
   name: 'HomePage',
