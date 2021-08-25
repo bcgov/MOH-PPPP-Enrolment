@@ -977,6 +977,11 @@ export default {
   },
   methods: {
     validateFields() {
+      // If no dependent number is given, then default to "00".
+      if (!this.dependentNumber) {
+        this.dependentNumber = '00';
+      }
+
       this.$v.$touch()
       if (this.$v.$invalid) {
         scrollToError();
