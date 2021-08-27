@@ -108,7 +108,7 @@ export default {
       const toPath = getConvertedPath(
         this.$router.currentRoute.path,
         payPatientRoutes.HOME_PAGE.path
-      )
+      );
       next({ path: toPath });
     }
     setTimeout(() => {

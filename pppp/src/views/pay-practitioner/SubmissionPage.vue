@@ -59,11 +59,14 @@ import ReviewTableList from '@/components/pay-practitioner/ReviewTableList.vue';
 import { formatDate } from 'common-lib-vue';
 import { getConvertedPath } from '@/helpers/url';
 import pageStateService from '@/services/page-state-service';
-import { payPractitionerRoutes } from '@/router/routes';
+import {
+  payPractitionerRoutes,
+  payPractitionerCSRRoutes,
+} from '@/router/routes';
 import {
   MODULE_NAME as formModule,
   RESET_FORM
-} from '@/store/modules/pay-patient-form';
+} from '@/store/modules/pay-practitioner-form';
 import { scrollTo } from '@/helpers/scroll';
 import logService from '@/services/log-service';
 
@@ -98,13 +101,14 @@ export default {
   beforeRouteLeave(to, from, next) {
     pageStateService.setPageIncomplete(from.path);
     this.$store.dispatch(formModule + '/' + RESET_FORM);
-    if (to.path === payPractitionerRoutes.HOME_PAGE.path) {
+    if ( to.path === payPractitionerRoutes.HOME_PAGE.path
+      || to.path === payPractitionerCSRRoutes.HOME_PAGE.path) {
       next();
     } else {
       const toPath = getConvertedPath(
         this.$router.currentRoute.path,
         payPractitionerRoutes.HOME_PAGE.path
-      )
+      );
       next({ path: toPath });
     }
     setTimeout(() => {

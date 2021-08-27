@@ -10,7 +10,7 @@ export const payPatientRoutes = {
     name: 'PayPatientHomePage',
   },
   CLAIM_COUNT_PAGE: {
-    path: PAY_PATIENT_BASE_URL + '/claim-count',
+    path: PAY_PATIENT_BASE_URL,
     title: 'Number of claims',
     name: 'PayPatientClaimCountPage',
   },
@@ -43,7 +43,7 @@ export const payPatientCSRRoutes = {
     name: 'PayPatientCSRHomePage',
   },
   CLAIM_COUNT_PAGE: {
-    path: PAY_PATIENT_CSR_BASE_URL + '/claim-count',
+    path: PAY_PATIENT_CSR_BASE_URL,
     title: 'Number of claims',
     name: 'PayPatientCSRClaimCountPage',
   },
@@ -76,7 +76,7 @@ export const payPractitionerRoutes = {
     name: 'PayPractitionerHomePage',
   },
   CLAIM_COUNT_PAGE: {
-    path: PAY_PRACTITIONER_BASE_URL + '/claim-count',
+    path: PAY_PRACTITIONER_BASE_URL,
     title: 'Number of claims',
     name: 'PayPractitionerClaimCountPage',
   },
@@ -109,7 +109,7 @@ export const payPractitionerCSRRoutes = {
     name: 'PayPractitionerCSRHomePage',
   },
   CLAIM_COUNT_PAGE: {
-    path: PAY_PRACTITIONER_CSR_BASE_URL + '/claim-count',
+    path: PAY_PRACTITIONER_CSR_BASE_URL,
     title: 'Number of claims',
     name: 'PayPractitionerCSRClaimCountPage',
   },
@@ -154,7 +154,6 @@ export const commonRoutes = {
 };
 
 export const payPatientRouteStepOrder = [
-  payPatientRoutes.HOME_PAGE,
   payPatientRoutes.CLAIM_COUNT_PAGE,
   payPatientRoutes.MAIN_FORM_PAGE,
   payPatientRoutes.REVIEW_PAGE,
@@ -162,7 +161,6 @@ export const payPatientRouteStepOrder = [
 ];
 
 export const payPractitionerRouteStepOrder = [
-  payPractitionerRoutes.HOME_PAGE,
   payPractitionerRoutes.CLAIM_COUNT_PAGE,
   payPractitionerRoutes.MAIN_FORM_PAGE,
   payPractitionerRoutes.REVIEW_PAGE,
@@ -170,7 +168,6 @@ export const payPractitionerRouteStepOrder = [
 ];
 
 export const payPatientCSRRouteStepOrder = [
-  payPatientCSRRoutes.HOME_PAGE,
   payPatientCSRRoutes.CLAIM_COUNT_PAGE,
   payPatientCSRRoutes.MAIN_FORM_PAGE,
   payPatientCSRRoutes.REVIEW_PAGE,
@@ -178,7 +175,6 @@ export const payPatientCSRRouteStepOrder = [
 ];
 
 export const payPractitionerCSRRouteStepOrder = [
-  payPractitionerCSRRoutes.HOME_PAGE,
   payPractitionerCSRRoutes.CLAIM_COUNT_PAGE,
   payPractitionerCSRRoutes.MAIN_FORM_PAGE,
   payPractitionerCSRRoutes.REVIEW_PAGE,
@@ -188,14 +184,14 @@ export const payPractitionerCSRRouteStepOrder = [
 export const isPastPath = (toPath, fromPath) => {
   let stepRoutes = [];
 
-  if (toPath.includes(PAY_PATIENT_BASE_URL + '/')) {
-    stepRoutes = payPatientRouteStepOrder;
-  } else if (toPath.includes(PAY_PRACTITIONER_BASE_URL + '/')) {
-    stepRoutes = payPractitionerRouteStepOrder;
-  } else if (toPath.includes(PAY_PATIENT_CSR_BASE_URL)) {
+  if (toPath.includes(PAY_PATIENT_CSR_BASE_URL)) {
     stepRoutes = payPatientCSRRouteStepOrder;
   } else if (toPath.includes(PAY_PRACTITIONER_CSR_BASE_URL)) {
     stepRoutes = payPractitionerCSRRouteStepOrder;
+  } else if (toPath.includes(PAY_PATIENT_BASE_URL)) {
+    stepRoutes = payPatientRouteStepOrder;
+  } else if (toPath.includes(PAY_PRACTITIONER_BASE_URL)) {
+    stepRoutes = payPractitionerRouteStepOrder;
   }
 
   for (let i=0; i<stepRoutes.length; i++) {
