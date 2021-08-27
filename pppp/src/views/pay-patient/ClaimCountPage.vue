@@ -26,7 +26,9 @@
 </template>
 
 <script>
+import { v4 as uuidv4 } from 'uuid';
 import pageStateService from '@/services/page-state-service';
+import spaEnvService from '@/services/spa-env-service';
 import {
   payPatientRoutes,
   isPastPath,
@@ -42,7 +44,7 @@ import PageContent from '@/components/PageContent.vue';
 import ConsentModal from '@/components/ConsentModal.vue';
 import {
   MODULE_NAME as formModule,
-  RESET_FORM,
+  SET_APPLICATION_UUID,
   SET_CAPTCHA_TOKEN,
   SET_IS_INFO_COLLECTION_NOTICE_OPEN,
   SET_CLAIM_COUNT,
@@ -75,6 +77,27 @@ export default {
     };
   },
   created() {
+    if (this.isFirstLoad()) {
+      this.applicationUuid = uuidv4();
+      this.$store.dispatch(formModule + '/' + SET_APPLICATION_UUID, this.applicationUuid);
+
+      // Load environment variables, and route to maintenance page.
+      spaEnvService.loadEnvs()
+        .then(() => {
+          if (spaEnvService.values && spaEnvService.values.SPA_ENV_OOP_MAINTENANCE_FLAG === 'true') {
+            const toPath = payPatientRoutes.MAINTENANCE_PAGE.path;
+            pageStateService.setPageComplete(toPath);
+            pageStateService.visitPage(toPath);
+            this.$router.push(toPath);
+          }
+        })
+        .catch((error) => {
+          logService.logError(this.applicationUuid, {
+            event: 'HTTP error getting values from spa-env-server',
+            status: error.response.status,
+          });
+        });
+    }
     this.applicationUuid = this.$store.state.payPatientForm.applicationUuid;
     this.claimCount = this.$store.state.payPatientForm.claimCount;
     
@@ -102,6 +125,9 @@ export default {
     },
   },
   methods: {
+    isFirstLoad() {
+      return !this.$store.state.payPatientForm.applicationUuid;
+    },
     handleCaptchaVerified(captchaToken) {
       this.$store.dispatch(formModule + '/' + SET_CAPTCHA_TOKEN, captchaToken);
     },
@@ -159,10 +185,7 @@ export default {
   // Required in order to block back navigation.
   beforeRouteLeave(to, from, next) {
     pageStateService.setPageIncomplete(from.path);
-    if (to.path === payPatientRoutes.HOME_PAGE.path) {
-      this.$store.dispatch(formModule + '/' + RESET_FORM);
-      next();
-    } else if (pageStateService.isPageComplete(to.path) || isPastPath(to.path, from.path)) {
+    if (pageStateService.isPageComplete(to.path) || isPastPath(to.path, from.path)) {
       next();
     } else {
       // Navigate to self.

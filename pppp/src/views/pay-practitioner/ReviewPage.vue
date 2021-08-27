@@ -39,10 +39,9 @@ import { getConvertedPath } from '@/helpers/url';
 import { isCorrespondenceAttachedAbleToSubmit } from '@/helpers/form-helpers';
 import {
   MODULE_NAME as formModule,
-  RESET_FORM,
   SET_REFERENCE_NUMBER,
-SET_SUBMISSION_DATE
-} from '@/store/modules/pay-patient-form';
+  SET_SUBMISSION_DATE,
+} from '@/store/modules/pay-practitioner-form';
 import apiService from '@/services/api-service';
 import logService from '@/services/log-service';
 
@@ -176,10 +175,7 @@ export default {
   // Required in order to block back navigation.
   beforeRouteLeave(to, from, next) {
     pageStateService.setPageIncomplete(from.path);
-    if (to.path === payPractitionerRoutes.HOME_PAGE.path) {
-      this.$store.dispatch(formModule + '/' + RESET_FORM);
-      next();
-    } else if ((pageStateService.isPageComplete(to.path)) || isPastPath(to.path, from.path)) {
+    if ((pageStateService.isPageComplete(to.path)) || isPastPath(to.path, from.path)) {
       next();
     } else {
       // Navigate to self.
