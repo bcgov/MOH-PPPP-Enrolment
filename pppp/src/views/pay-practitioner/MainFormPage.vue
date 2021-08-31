@@ -191,13 +191,19 @@
                   @blur='handleBlurField($v.medicalServiceClaims.$each[index].numberOfServices)' />
             <div class="text-danger"
                 v-if="v.numberOfServices.$dirty && !v.numberOfServices.required"
-                aria-live="assertive">Number of services is required.</div>
+                aria-live="assertive">Number of Services is required.</div>
             <div class="text-danger"
                 v-if="v.numberOfServices.$dirty && v.numberOfServices.required && !v.numberOfServices.intValidator"
                 aria-live="assertive">Number of Services must be an integer.</div>
             <div class="text-danger"
                 v-if="v.numberOfServices.$dirty && v.numberOfServices.required && !v.numberOfServices.positiveNumberValidator"
-                aria-live="assertive">Number of Services must be a positive number.</div>
+                aria-live="assertive">Number of Services must be greater than 0.</div>
+            <div class="text-danger"
+                v-if="v.numberOfServices.$dirty
+                  && v.numberOfServices.required
+                  && v.numberOfServices.positiveNumberValidator
+                  && !v.numberOfServices.nonZeroNumberValidator"
+                aria-live="assertive">Number of Services must be greater than 0.</div>
             <Input label='Service Clarification Code:'
                   :id='"msc-service-clarification-code-" + index'
                   class='mt-3'
@@ -414,13 +420,19 @@
                   @blur='handleBlurField($v.hospitalVisitClaims.$each[index].numberOfServices)' />
             <div class="text-danger"
                 v-if="v.numberOfServices.$dirty && !v.numberOfServices.required"
-                aria-live="assertive">Number of services is required.</div>
+                aria-live="assertive">Number of Services is required.</div>
             <div class="text-danger"
                 v-if="v.numberOfServices.$dirty && v.numberOfServices.required && !v.numberOfServices.intValidator"
                 aria-live="assertive">Number of Services must be an integer.</div>
             <div class="text-danger"
                 v-if="v.numberOfServices.$dirty && v.numberOfServices.required && !v.numberOfServices.positiveNumberValidator"
-                aria-live="assertive">Number of Services must be a positive number.</div> 
+                aria-live="assertive">Number of Services must be greater than 0.</div>
+            <div class="text-danger"
+                v-if="v.numberOfServices.$dirty
+                  && v.numberOfServices.required
+                  && v.numberOfServices.positiveNumberValidator
+                  && !v.numberOfServices.nonZeroNumberValidator"
+                aria-live="assertive">Number of Services must be greater than 0.</div>
             <Input label='Service Clarification Code:'
                   :id='"hvc-service-clarification-code-" + index'
                   class='mt-3'
@@ -797,6 +809,7 @@ import {
   intValidator,
   isValidISODateString,
   motorVehicleAccidentClaimNumberValidator,
+  nonZeroNumberValidator,
   pastDateValidator,
   positiveNumberValidator,
   optionalValidator,
@@ -1083,6 +1096,7 @@ export default {
             required,
             intValidator,
             positiveNumberValidator,
+            nonZeroNumberValidator,
           },
           feeItem: {
             required,
@@ -1142,6 +1156,7 @@ export default {
             required,
             intValidator,
             positiveNumberValidator,
+            nonZeroNumberValidator,
           },
           feeItem: {
             required,
