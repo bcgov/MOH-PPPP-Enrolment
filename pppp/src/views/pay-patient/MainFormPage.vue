@@ -575,6 +575,7 @@ import {
   isCSR,
 } from '@/helpers/url';
 import {
+  birthDateValidator,
   clarificationCodeValidator,
   diagnosticCodeValidator,
 } from '@/helpers/validators';
@@ -644,9 +645,7 @@ import {
   alphaValidator,
   cloneDeep,
   dollarNumberValidator,
-  getISODateString,
   intValidator,
-  isValidISODateString,
   motorVehicleAccidentClaimNumberValidator,
   optionalValidator,
   pastDateValidator,
@@ -689,22 +688,6 @@ const dependentNumberValidator = (value, vm) => {
 
 const birthDatePastValidator = (value) => {
   return pastDateValidator(value) || isSameDay(value, startOfToday());
-};
-
-const birthDateValidator = (value, vm) => {
-  const data = vm.birthDateData;
-  if (!data || (!data.year && typeof data.month !== 'number' && !data.day)) {
-    return true;
-  }
-  const year = data.year;
-  const month = data.month;
-  const day = data.day;
-  if (!(year && typeof month === 'number' && day)
-    && (year || typeof month === 'number' || day)) {
-    return false;
-  }
-  const isoDateString = getISODateString(year, month + 1, day);
-  return isValidISODateString(isoDateString);
 };
 
 const amountBilledZeroValidator = (value, vm) => {

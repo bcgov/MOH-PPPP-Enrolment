@@ -724,6 +724,7 @@ import {
   isCSR,
 } from '@/helpers/url';
 import {
+  birthDateValidator,
   clarificationCodeValidator,
   diagnosticCodeValidator,
 } from '@/helpers/validators';
@@ -830,22 +831,6 @@ const dependentNumberValidator = (value, vm) => {
   return true;
 };
 
-const birthDateValidator = (value, vm) => {
-  const data = vm.birthDateData;
-  if (!data || (!data.year && typeof data.month !== 'number' && !data.day)) {
-    return true;
-  }
-  const year = data.year;
-  const month = data.month;
-  const day = data.day;
-  if (!(year && typeof month === 'number' && day)
-    && (year || typeof month === 'number' || day)) {
-    return false;
-  }
-  const isoDateString = getISODateString(year, month + 1, day);
-  return isValidISODateString(isoDateString);
-};
-
 const amountBilledZeroValidator = (value, vm) => {
   const feeItem = vm.feeItem;
   const parsedValue = parseFloat(value);
@@ -875,7 +860,8 @@ const dateValidator = (value) => {
   const month = value.month;
   const dayFrom = value.dayFrom;
   const year = value.year;
-  const date = parseISO(getISODateString(year, month, dayFrom));
+  const isoDateString = getISODateString(year, month, dayFrom);
+  const date = parseISO(isoDateString);
 
   return !!month
       && month.length <= 2
@@ -883,6 +869,7 @@ const dateValidator = (value) => {
       && dayFrom.length <= 2
       && !!year
       && year.length === 4
+      && isValidISODateString(isoDateString)
       && isValid(date);
 };
 
