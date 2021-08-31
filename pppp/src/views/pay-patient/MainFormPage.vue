@@ -110,12 +110,19 @@
                 className='mt-3'
                 v-model='birthDate'
                 :isRequiredAsteriskShown="dependentNumber !== '66'"
-                @blur='handleBlurField($v.birthDate)' />
+                @blur='handleBlurField($v.birthDate)'
+                @processDate='handleProcessBirthDate($event)' />
           <div class="text-danger"
-              v-if="$v.birthDate.$dirty && dependentNumber !== '66' && !$v.birthDate.required"
+              v-if="$v.birthDate.$dirty && !$v.birthDate.birthDateValidator"
+              aria-live="assertive">Patient Birth Date must be valid.</div>
+          <div class="text-danger"
+              v-if="$v.birthDate.$dirty
+                && dependentNumber !== '66'
+                && $v.birthDate.birthDateValidator
+                && !$v.birthDate.required"
               aria-live="assertive">Patient Birth Date is required.</div>
           <div class="text-danger"
-              v-if="$v.birthDate.$dirty && !$v.birthDate.pastDateValidator"
+              v-if="$v.birthDate.$dirty && !$v.birthDate.birthDatePastValidator"
               aria-live="assertive">Patient Birth Date cannot be in the future.</div>
         </div>
         
@@ -568,6 +575,7 @@ import {
   isCSR,
 } from '@/helpers/url';
 import {
+  birthDateValidator,
   clarificationCodeValidator,
   diagnosticCodeValidator,
 } from '@/helpers/validators';
@@ -648,6 +656,7 @@ import {
   startOfToday,
   addDays,
   isBefore,
+  isSameDay,
   subDays,
 } from 'date-fns';
 
@@ -675,6 +684,10 @@ const dependentNumberValidator = (value, vm) => {
     return false;
   }
   return true;
+};
+
+const birthDatePastValidator = (value) => {
+  return pastDateValidator(value) || isSameDay(value, startOfToday());
 };
 
 const amountBilledZeroValidator = (value, vm) => {
@@ -772,6 +785,7 @@ export default {
       middleInitial: null,
       lastName: null,
       birthDate: null,
+      birthDateData: null,
 
       addressOwner: null,
       unitNumber: null,
@@ -876,7 +890,8 @@ export default {
         nameValidator,
       },
       birthDate: {
-        pastDateValidator: optionalValidator(pastDateValidator),
+        birthDatePastValidator: optionalValidator(birthDatePastValidator),
+        birthDateValidator,
       },
       addressOwner: {
         required,
@@ -1015,6 +1030,9 @@ export default {
       if (validation) {
         validation.$touch();
       }
+    },
+    handleProcessBirthDate(data) {
+      this.birthDateData = data;
     },
     validateFields() {
       // If no dependent number is given, then default to "00".
