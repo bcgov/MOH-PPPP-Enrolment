@@ -110,9 +110,16 @@
                 className='mt-3'
                 v-model='birthDate'
                 :isRequiredAsteriskShown="dependentNumber !== '66'"
-                @blur='handleBlurField($v.birthDate)' />
+                @blur='handleBlurField($v.birthDate)'
+                @processDate='handleProcessBirthDate($event)' />
           <div class="text-danger"
-              v-if="$v.birthDate.$dirty && dependentNumber !== '66' && !$v.birthDate.required"
+              v-if="$v.birthDate.$dirty && !$v.birthDate.birthDateValidator"
+              aria-live="assertive">Patient Birth Date must be valid.</div>
+          <div class="text-danger"
+              v-if="$v.birthDate.$dirty
+                && dependentNumber !== '66'
+                && $v.birthDate.birthDateValidator
+                && !$v.birthDate.required"
               aria-live="assertive">Patient Birth Date is required.</div>
           <div class="text-danger"
               v-if="$v.birthDate.$dirty && !$v.birthDate.birthDatePastValidator"
@@ -787,6 +794,7 @@ import {
   dollarNumberValidator,
   getISODateString,
   intValidator,
+  isValidISODateString,
   motorVehicleAccidentClaimNumberValidator,
   pastDateValidator,
   positiveNumberValidator,
@@ -820,6 +828,22 @@ const dependentNumberValidator = (value, vm) => {
     return false;
   }
   return true;
+};
+
+const birthDateValidator = (value, vm) => {
+  const data = vm.birthDateData;
+  if (!data || (!data.year && typeof data.month !== 'number' && !data.day)) {
+    return true;
+  }
+  const year = data.year;
+  const month = data.month;
+  const day = data.day;
+  if (!(year && typeof month === 'number' && day)
+    && (year || typeof month === 'number' || day)) {
+    return false;
+  }
+  const isoDateString = getISODateString(year, month + 1, day);
+  return isValidISODateString(isoDateString);
 };
 
 const amountBilledZeroValidator = (value, vm) => {
@@ -954,6 +978,7 @@ export default {
       middleInitial: null,
       lastName: null,
       birthDate: null,
+      birthDateData: null,
 
       isVehicleAccident: null,
       vehicleAccidentClaimNumber: null,
@@ -1049,6 +1074,7 @@ export default {
       },
       birthDate: {
         birthDatePastValidator: optionalValidator(birthDatePastValidator),
+        birthDateValidator,
       },
       isVehicleAccident: {
         required,
@@ -1228,6 +1254,9 @@ export default {
       if (validation) {
         validation.$touch();
       }
+    },
+    handleProcessBirthDate(data) {
+      this.birthDateData = data;
     },
     validateFields() {
       // If no dependent number is given, then default to "00".
