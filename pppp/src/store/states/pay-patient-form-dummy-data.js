@@ -27,7 +27,7 @@ export default {
       serviceDate: new Date(),
       numberOfServices: '1',
       serviceClarificationCode: 'A1',
-      feeItem: 'item',
+      feeItem: '12345',
       amountBilled: '1.00',
       calledStartTime: {
         hour: '08',

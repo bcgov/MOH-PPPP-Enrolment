@@ -216,7 +216,7 @@
             <div class="text-danger"
                 v-if="v.serviceClarificationCode.$dirty && !v.serviceClarificationCode.clarificationCodeValidator"
                 aria-live="assertive">Service Clarification Code is invalid.</div>  
-            <Input label='Fee Item:'
+            <NumberInput label='Fee Item:'
                   :id='"fee-item-" + index'
                   class='mt-3'
                   v-model='claim.feeItem'
@@ -226,7 +226,13 @@
                   @blur='handleBlurField($v.medicalServiceClaims.$each[index].feeItem)' />
             <div class="text-danger"
                 v-if="v.feeItem.$dirty && !v.feeItem.required"
-                aria-live="assertive">Fee item is required.</div>
+                aria-live="assertive">Fee Item is required.</div>
+            <div class="text-danger"
+                v-if="v.feeItem.$dirty && v.feeItem.required && !v.feeItem.intValidator"
+                aria-live="assertive">Fee Item must be an integer.</div>
+            <div class="text-danger"
+                v-if="v.feeItem.$dirty && v.feeItem.required && !v.feeItem.positiveNumberValidator"
+                aria-live="assertive">Fee Item must be a positive number.</div>
             <NumberInput label='Amount Billed:'
                   :id='"amount-billed-" + index'
                   class='mt-3'
@@ -938,6 +944,8 @@ export default {
           },
           feeItem: {
             required,
+            intValidator,
+            positiveNumberValidator,
           },
           amountBilled: {
             required,
