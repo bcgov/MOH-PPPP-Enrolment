@@ -476,11 +476,11 @@
           <PractitionerNumberInput label='Referred By Practitioner Number:'
                 id='referred-by-practitioner-number'
                 v-model='referredByPractitionerNumber'
-                :isRequiredAsteriskShown='isReferredByPopulated'
+                :isRequiredAsteriskShown='isReferredByRequired'
                 :inputStyle='smallStyles'
                 @blur='handleBlurField($v.referredByPractitionerNumber)'/>
           <div class="text-danger"
-              v-if="isReferredByPopulated && $v.referredByPractitionerNumber.$dirty && !$v.referredByPractitionerNumber.required"
+              v-if="isReferredByRequired && $v.referredByPractitionerNumber.$dirty && !$v.referredByPractitionerNumber.required"
               aria-live="assertive">Practitioner number is required.</div>
           <div class="text-danger"
               v-if="$v.referredByPractitionerNumber.$dirty && !$v.referredByPractitionerNumber.minLength"
@@ -490,11 +490,11 @@
                 v-model='referredByLastName'
                 maxlength='18'
                 class='mt-3'
-                :isRequiredAsteriskShown='isReferredByPopulated'
+                :isRequiredAsteriskShown='isReferredByRequired'
                 :inputStyle='mediumStyles'
                 @blur='handleBlurField($v.referredByLastName)'/>
           <div class="text-danger"
-              v-if="isReferredByPopulated && $v.referredByLastName.$dirty && !$v.referredByLastName.required"
+              v-if="isReferredByRequired && $v.referredByLastName.$dirty && !$v.referredByLastName.required"
               aria-live="assertive">Last name is required.</div>
           <div class="text-danger"
               v-if="$v.referredByLastName.$dirty && !$v.referredByLastName.nameValidator"
@@ -504,11 +504,11 @@
                 v-model='referredByFirstNameInitial'
                 maxlength='1'
                 class='mt-3'
-                :isRequiredAsteriskShown='isReferredByPopulated'
+                :isRequiredAsteriskShown='isReferredByRequired'
                 :inputStyle='extraSmallStyles'
                 @blur='handleBlurField($v.referredByFirstNameInitial)'/>
           <div class="text-danger"
-              v-if="isReferredByPopulated && $v.referredByFirstNameInitial.$dirty && !$v.referredByFirstNameInitial.required"
+              v-if="isReferredByRequired && $v.referredByFirstNameInitial.$dirty && !$v.referredByFirstNameInitial.required"
               aria-live="assertive">First Name Initial is required.</div>
           <div class="text-danger"
               v-if="$v.referredByFirstNameInitial.$dirty && !$v.referredByFirstNameInitial.alphaValidator"
@@ -521,11 +521,11 @@
           <PractitionerNumberInput label='Referred To Practitioner Number:'
                 id='referred-to-practitioner-number'
                 v-model='referredToPractitionerNumber'
-                :isRequiredAsteriskShown='isReferredToPopulated'
+                :isRequiredAsteriskShown='isReferredToRequired'
                 :inputStyle='smallStyles'
                 @blur='handleBlurField($v.referredToPractitionerNumber)'/>
           <div class="text-danger"
-              v-if="isReferredToPopulated && $v.referredToPractitionerNumber.$dirty && !$v.referredToPractitionerNumber.required"
+              v-if="isReferredToRequired && $v.referredToPractitionerNumber.$dirty && !$v.referredToPractitionerNumber.required"
               aria-live="assertive">Practitioner number is required.</div>
           <div class="text-danger"
               v-if="$v.referredToPractitionerNumber.$dirty && !$v.referredToPractitionerNumber.minLength"
@@ -535,11 +535,11 @@
                 v-model='referredToLastName'
                 maxlength='18'
                 class='mt-3'
-                :isRequiredAsteriskShown='isReferredToPopulated'
+                :isRequiredAsteriskShown='isReferredToRequired'
                 :inputStyle='mediumStyles'
                 @blur='handleBlurField($v.referredToLastName)'/>
           <div class="text-danger"
-              v-if="isReferredToPopulated && $v.referredToLastName.$dirty && !$v.referredToLastName.required"
+              v-if="isReferredToRequired && $v.referredToLastName.$dirty && !$v.referredToLastName.required"
               aria-live="assertive">Last name is required.</div>
           <div class="text-danger"
               v-if="$v.referredToLastName.$dirty && !$v.referredToLastName.nameValidator"
@@ -549,11 +549,11 @@
                 v-model='referredToFirstNameInitial'
                 maxlength='1'
                 class='mt-3'
-                :isRequiredAsteriskShown='isReferredToPopulated'
+                :isRequiredAsteriskShown='isReferredToRequired'
                 :inputStyle='extraSmallStyles'
                 @blur='handleBlurField($v.referredToFirstNameInitial)'/>
           <div class="text-danger"
-              v-if="isReferredToPopulated && $v.referredToFirstNameInitial.$dirty && !$v.referredToFirstNameInitial.required"
+              v-if="isReferredToRequired && $v.referredToFirstNameInitial.$dirty && !$v.referredToFirstNameInitial.required"
               aria-live="assertive">First Name Initial is required.</div>
           <div class="text-danger"
               v-if="$v.referredToFirstNameInitial.$dirty && !$v.referredToFirstNameInitial.alphaValidator"
@@ -1026,12 +1026,12 @@ export default {
     if (this.dependentNumber !== '66') {
       validations.birthDate.required = required;
     }
-    if (this.isReferredByPopulated) {
+    if (this.isReferredByRequired) {
       validations.referredByFirstNameInitial.required = required;
       validations.referredByLastName.required = required;
       validations.referredByPractitionerNumber.required = required;
     }
-    if (this.isReferredToPopulated) {
+    if (this.isReferredToRequired) {
       validations.referredToFirstNameInitial.required = required;
       validations.referredToLastName.required = required;
       validations.referredToPractitionerNumber.required = required;
@@ -1144,15 +1144,24 @@ export default {
     },
   },
   computed: {
-    isReferredByPopulated() {
+    isReferredByRequired() {
       return !!this.referredByFirstNameInitial
           || !!this.referredByLastName
           || !!this.referredByPractitionerNumber;
     },
-    isReferredToPopulated() {
+    isReferredToRequired() {
       return !!this.referredToFirstNameInitial
           || !!this.referredToLastName
-          || !!this.referredToPractitionerNumber;
+          || !!this.referredToPractitionerNumber
+          || this.isContainingNoChargeFeeItem;
+    },
+    isContainingNoChargeFeeItem() {
+      for (let i=0; i<this.medicalServiceClaims.length; i++) {
+        if (this.medicalServiceClaims[i].feeItem === '03333') {
+          return true;
+        }
+      }
+      return false;
     },
     isSubmissionCodeRequired() {
       const past90Days = subDays(startOfToday(), 90);
