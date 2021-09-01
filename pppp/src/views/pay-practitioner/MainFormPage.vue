@@ -664,10 +664,10 @@
                 @blur='handleBlurField($v.referredByFirstNameInitial)' />
           <div class="text-danger"
               v-if="isReferredByPopulated && $v.referredByFirstNameInitial.$dirty && !$v.referredByFirstNameInitial.required"
-              aria-live="assertive">First name is required.</div>
+              aria-live="assertive">First Name Initial is required.</div>
           <div class="text-danger"
               v-if="$v.referredByFirstNameInitial.$dirty && !$v.referredByFirstNameInitial.alphaValidator"
-              aria-live="assertive">First name initial must only contain an alphabetic character.</div>
+              aria-live="assertive">First Name Initial must only contain an alphabetic character.</div>
         </div>
 
         <a name='referred-to'></a>
@@ -709,10 +709,10 @@
                 @blur='handleBlurField($v.referredToFirstNameInitial)'/>
           <div class="text-danger"
               v-if="isReferredToPopulated && $v.referredToFirstNameInitial.$dirty && !$v.referredToFirstNameInitial.required"
-              aria-live="assertive">First name is required.</div>
+              aria-live="assertive">First Name Initial is required.</div>
           <div class="text-danger"
               v-if="$v.referredToFirstNameInitial.$dirty && !$v.referredToFirstNameInitial.alphaValidator"
-              aria-live="assertive">First name initial must only contain an alphabetic character.</div>
+              aria-live="assertive">First Name Initial must only contain an alphabetic character.</div>
         </div>
       </div>
     </PageContent>
