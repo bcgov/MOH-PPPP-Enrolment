@@ -668,6 +668,7 @@ import {
   motorVehicleAccidentClaimNumberValidator,
   nonZeroNumberValidator,
   optionalValidator,
+  padLeadingZeros,
   pastDateValidator,
   phnValidator,
   positiveNumberValidator,
@@ -1062,6 +1063,12 @@ export default {
       // If no dependent number is given, then default to "00".
       if (!this.dependentNumber) {
         this.dependentNumber = '00';
+      }
+      // Pad Fee Items with leading zeros.
+      for (let i=0; i<this.medicalServiceClaims.length; i++) {
+        if (this.medicalServiceClaims[i].feeItem) {
+          this.medicalServiceClaims[i].feeItem = padLeadingZeros(this.medicalServiceClaims[i].feeItem, 5);
+        }
       }
 
       this.$v.$touch()
