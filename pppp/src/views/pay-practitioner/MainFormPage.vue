@@ -117,6 +117,11 @@
               aria-live="assertive">Patient Birth Date must be valid.</div>
           <div class="text-danger"
               v-if="$v.birthDate.$dirty
+                && $v.birthDate.birthDateValidator
+                && !$v.birthDate.distantPastValidator"
+              aria-live="assertive">Patient Birth Date must be valid.</div>
+          <div class="text-danger"
+              v-if="$v.birthDate.$dirty
                 && dependentNumber !== '66'
                 && $v.birthDate.birthDateValidator
                 && !$v.birthDate.required"
@@ -816,6 +821,7 @@ import {
   alphanumericValidator,
   alphaValidator,
   cloneDeep,
+  distantPastValidator,
   dollarNumberValidator,
   getISODateString,
   intValidator,
@@ -1087,6 +1093,7 @@ export default {
       birthDate: {
         birthDatePastValidator: optionalValidator(birthDatePastValidator),
         birthDateValidator,
+        distantPastValidator: optionalValidator(distantPastValidator),
       },
       isVehicleAccident: {
         required,
