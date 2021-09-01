@@ -117,6 +117,11 @@
               aria-live="assertive">Patient Birth Date must be valid.</div>
           <div class="text-danger"
               v-if="$v.birthDate.$dirty
+                && $v.birthDate.birthDateValidator
+                && !$v.birthDate.distantPastValidator"
+              aria-live="assertive">Patient Birth Date must be valid.</div>
+          <div class="text-danger"
+              v-if="$v.birthDate.$dirty
                 && dependentNumber !== '66'
                 && $v.birthDate.birthDateValidator
                 && !$v.birthDate.required"
@@ -191,13 +196,20 @@
                   @blur='handleBlurField($v.medicalServiceClaims.$each[index].numberOfServices)' />
             <div class="text-danger"
                 v-if="v.numberOfServices.$dirty && !v.numberOfServices.required"
-                aria-live="assertive">Number of services is required.</div>
+                aria-live="assertive">Number of Services is required.</div>
             <div class="text-danger"
                 v-if="v.numberOfServices.$dirty && v.numberOfServices.required && !v.numberOfServices.intValidator"
                 aria-live="assertive">Number of Services must be an integer.</div>
             <div class="text-danger"
                 v-if="v.numberOfServices.$dirty && v.numberOfServices.required && !v.numberOfServices.positiveNumberValidator"
-                aria-live="assertive">Number of Services must be a positive number.</div>  
+                aria-live="assertive">Number of Services must be greater than 0.</div>
+            <div class="text-danger"
+                v-if="v.numberOfServices.$dirty
+                  && v.numberOfServices.required
+                  && v.numberOfServices.positiveNumberValidator
+                  && !v.numberOfServices.nonZeroNumberValidator"
+                aria-live="assertive">Number of Services must be greater than 0.</div>
+                 
             <Input label='Service Clarification Code:'
                   :id='"service-clarification-code-" + index'
                   class='mt-3'
@@ -209,7 +221,7 @@
             <div class="text-danger"
                 v-if="v.serviceClarificationCode.$dirty && !v.serviceClarificationCode.clarificationCodeValidator"
                 aria-live="assertive">Service Clarification Code is invalid.</div>  
-            <Input label='Fee Item:'
+            <NumberInput label='Fee Item:'
                   :id='"fee-item-" + index'
                   class='mt-3'
                   v-model='claim.feeItem'
@@ -219,7 +231,13 @@
                   @blur='handleBlurField($v.medicalServiceClaims.$each[index].feeItem)' />
             <div class="text-danger"
                 v-if="v.feeItem.$dirty && !v.feeItem.required"
-                aria-live="assertive">Fee item is required.</div>
+                aria-live="assertive">Fee Item is required.</div>
+            <div class="text-danger"
+                v-if="v.feeItem.$dirty && v.feeItem.required && !v.feeItem.intValidator"
+                aria-live="assertive">Fee Item must be an integer.</div>
+            <div class="text-danger"
+                v-if="v.feeItem.$dirty && v.feeItem.required && !v.feeItem.positiveNumberValidator"
+                aria-live="assertive">Fee Item must be a positive number.</div>
             <NumberInput label='Amount Billed:'
                   :id='"amount-billed-" + index'
                   class='mt-3'
@@ -491,10 +509,10 @@
                 @blur='handleBlurField($v.referredByFirstNameInitial)'/>
           <div class="text-danger"
               v-if="isReferredByPopulated && $v.referredByFirstNameInitial.$dirty && !$v.referredByFirstNameInitial.required"
-              aria-live="assertive">First name is required.</div>
+              aria-live="assertive">First Name Initial is required.</div>
           <div class="text-danger"
               v-if="$v.referredByFirstNameInitial.$dirty && !$v.referredByFirstNameInitial.alphaValidator"
-              aria-live="assertive">First name initial must only be an alphabetic character.</div>
+              aria-live="assertive">First Name Initial must only be an alphabetic character.</div>
         </div>
 
         <a name='referred-to'></a>
@@ -536,10 +554,10 @@
                 @blur='handleBlurField($v.referredToFirstNameInitial)'/>
           <div class="text-danger"
               v-if="isReferredToPopulated && $v.referredToFirstNameInitial.$dirty && !$v.referredToFirstNameInitial.required"
-              aria-live="assertive">First name is required.</div>
+              aria-live="assertive">First Name Initial is required.</div>
           <div class="text-danger"
               v-if="$v.referredToFirstNameInitial.$dirty && !$v.referredToFirstNameInitial.alphaValidator"
-              aria-live="assertive">First name initial must only be an alphabetic character.</div>
+              aria-live="assertive">First Name Initial must only be an alphabetic character.</div>
         </div>
       </div>
     </PageContent>
@@ -644,9 +662,11 @@ import {
   alphanumericValidator,
   alphaValidator,
   cloneDeep,
+  distantPastValidator,
   dollarNumberValidator,
   intValidator,
   motorVehicleAccidentClaimNumberValidator,
+  nonZeroNumberValidator,
   optionalValidator,
   pastDateValidator,
   phnValidator,
@@ -892,6 +912,7 @@ export default {
       birthDate: {
         birthDatePastValidator: optionalValidator(birthDatePastValidator),
         birthDateValidator,
+        distantPastValidator: optionalValidator(distantPastValidator),
       },
       addressOwner: {
         required,
@@ -926,9 +947,12 @@ export default {
             required,
             intValidator,
             positiveNumberValidator,
+            nonZeroNumberValidator,
           },
           feeItem: {
             required,
+            intValidator,
+            positiveNumberValidator,
           },
           amountBilled: {
             required,
