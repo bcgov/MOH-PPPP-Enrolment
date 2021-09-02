@@ -186,6 +186,11 @@
             <div class="text-danger"
                 v-if="v.serviceDate.$dirty && v.serviceDate.required && !v.serviceDate.serviceDateValidator"
                 aria-live="assertive">{{getServiceDateErrorMessage(claim.feeItem)}}</div>
+            <div class="text-danger"
+                v-if="v.serviceDate.$dirty
+                  && v.serviceDate.required
+                  && !v.serviceDate.distantPastValidator"
+                aria-live="assertive">Service Date is too far in the past.</div>
             <NumberInput label='Number of Services:'
                   :id='"number-of-services-" + index'
                   class='mt-3'
@@ -943,6 +948,7 @@ export default {
           serviceDate: {
             required,
             serviceDateValidator,
+            distantPastValidator,
           },
           numberOfServices: {
             required,
