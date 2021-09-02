@@ -414,7 +414,7 @@
                     && v.month.required
                     && v.dayFrom.required
                     && v.year.required
-                    && !v.dateValidator"
+                    && !v.hospitalVisitDateValidator"
                 aria-live="assertive">Hospital Service date must be valid.</div>
             <div class="text-danger"
                 v-if="v.month.$dirty
@@ -423,8 +423,30 @@
                     && v.month.required
                     && v.dayFrom.required
                     && v.year.required
-                    && v.dateValidator
-                    && !v.dateRangeValidator"
+                    && v.hospitalVisitDateValidator
+                    && !v.hospitalVisitDatePastValidator"
+                aria-live="assertive">Hospital Service Day From is over 18 months in the past.</div>
+            <div class="text-danger"
+                v-if="v.month.$dirty
+                    && v.dayFrom.$dirty
+                    && v.year.$dirty
+                    && v.month.required
+                    && v.dayFrom.required
+                    && v.year.required
+                    && v.hospitalVisitDateValidator
+                    && !v.hospitalVisitDateFutureValidator"
+                aria-live="assertive">Hospital Service Day From cannot be in the future.</div>
+            <div class="text-danger"
+                v-if="v.month.$dirty
+                    && v.dayFrom.$dirty
+                    && v.year.$dirty
+                    && v.month.required
+                    && v.dayFrom.required
+                    && v.year.required
+                    && v.hospitalVisitDateValidator
+                    && v.hospitalVisitDatePastValidator
+                    && v.hospitalVisitDateFutureValidator
+                    && !v.hospitalVisitDateRangeValidator"
                 aria-live="assertive">Hospital Service date range must be valid.</div>
             <NumberInput label='Number of Services:'
                   :id='"hvc-number-of-services-" + index'
@@ -846,8 +868,10 @@ import {
   addDays,
   subDays,
   isBefore,
+  isAfter,
   parseISO,
   isValid,
+  subMonths,
 } from 'date-fns';
 
 const nameValidator = (value) => {
@@ -893,7 +917,7 @@ const serviceDateValidator = (value, vm) => {
   return isBefore(value, addDays(startOfToday(), 1)); // Add 1 day to include today's date.
 };
 
-const dateValidator = (value) => {
+const hospitalVisitDateValidator = (value) => {
   const month = value.month;
   const dayFrom = value.dayFrom;
   const year = value.year;
@@ -910,7 +934,31 @@ const dateValidator = (value) => {
       && isValid(date);
 };
 
-const dateRangeValidator = (value) => {
+const hospitalVisitDatePastValidator = (value) => {
+  const month = value.month;
+  const dayFrom = value.dayFrom;
+  const year = value.year;
+  const isoDateString = getISODateString(year, month, dayFrom);
+  const date = parseISO(isoDateString);
+
+  return isValidISODateString(isoDateString)
+      && isValid(date)
+      && isAfter(date, subDays(subMonths(startOfToday(), 18), 1));
+};
+
+const hospitalVisitDateFutureValidator = (value) => {
+  const month = value.month;
+  const dayFrom = value.dayFrom;
+  const year = value.year;
+  const isoDateString = getISODateString(year, month, dayFrom);
+  const date = parseISO(isoDateString);
+
+  return isValidISODateString(isoDateString)
+      && isValid(date)
+      && isBefore(date, addDays(startOfToday(), 1));
+};
+
+const hospitalVisitDateRangeValidator = (value) => {
   const month = value.month;
   const dayFrom = value.dayFrom;
   const dayTo = value.dayTo;
@@ -1159,8 +1207,10 @@ export default {
       },
       hospitalVisitClaims: {
         $each: {
-          dateValidator,
-          dateRangeValidator,
+          hospitalVisitDateValidator,
+          hospitalVisitDatePastValidator,
+          hospitalVisitDateFutureValidator,
+          hospitalVisitDateRangeValidator,
           month: {
             required,
             positiveNumberValidator,
