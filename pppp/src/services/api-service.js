@@ -89,7 +89,7 @@ class ApiService {
         medicalServiceClaimsCount: formState.medicalServiceClaimsCount,
         hospitalVisitClaimsCount: formState.hospitalVisitClaimsCount,
         planReferenceNumber: formState.planReferenceNumber || '',
-        phn: formState.phn || '',
+        phn: stripSpaces(formState.phn) || '',
         dependentNumber: formState.dependentNumber || '',
         firstName: formState.firstName || '',
         middleInitial: formState.middleInitial || '',

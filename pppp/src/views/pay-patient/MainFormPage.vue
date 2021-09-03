@@ -449,7 +449,7 @@
               aria-live="assertive">Payment number is required.</div>
           <div class="text-danger"
               v-if="$v.practitionerPaymentNumber.$dirty && $v.practitionerPaymentNumber.required && !$v.practitionerPaymentNumber.minLength"
-              aria-live="assertive">Practitioner number must not be less than 5 characters.</div>
+              aria-live="assertive">Payment number must not be less than 5 characters.</div>
           <PractitionerNumberInput label='Practitioner Number:'
                 id='practitioner-number'
                 class='mt-3'
