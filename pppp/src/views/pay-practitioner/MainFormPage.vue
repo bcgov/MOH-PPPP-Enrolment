@@ -179,13 +179,21 @@
                       :id="'msc-service-date-' + index"
                       v-model='claim.serviceDate'
                       :isRequiredAsteriskShown='true'
-                      @blur='handleBlurField($v.medicalServiceClaims.$each[index].serviceDate)' />
+                      @blur='handleBlurField($v.medicalServiceClaims.$each[index].serviceDate)'
+                      @processDate='handleProcessServiceDate($event, index)' />
             <div class="text-danger"
-                v-if="v.serviceDate.$dirty && !v.serviceDate.required"
-                aria-live="assertive">Service date is required.</div>
+                v-if="v.serviceDate.$dirty && !v.serviceDate.serviceDateValidator"
+                aria-live="assertive">Service Date must be a valid date.</div>
             <div class="text-danger"
-                v-if="v.serviceDate.$dirty && v.serviceDate.required && !v.serviceDate.serviceDateValidator"
-                aria-live="assertive">{{getServiceDateErrorMessage(claim.feeItem)}}</div>
+                v-if="v.serviceDate.$dirty
+                  && v.serviceDate.serviceDateValidator
+                  && !v.serviceDate.required"
+                aria-live="assertive">Service Date is required.</div>
+            <div class="text-danger"
+                v-if="v.serviceDate.$dirty
+                  && v.serviceDate.required
+                  && !v.serviceDate.serviceDateFutureValidator"
+                aria-live="assertive">{{getServiceDateFutureErrorMessage(claim.feeItem)}}</div>
             <div class="text-danger"
                 v-if="v.serviceDate.$dirty
                   && v.serviceDate.required
@@ -783,6 +791,7 @@ import {
   birthDateValidator,
   clarificationCodeValidator,
   diagnosticCodeValidator,
+  serviceDateValidator,
 } from '@/helpers/validators';
 import {
   selectOptionsSubmissionCode,
@@ -905,7 +914,7 @@ const birthDatePastValidator = (value) => {
   return pastDateValidator(value) || isSameDay(value, startOfToday());
 };
 
-const serviceDateValidator = (value, vm) => {
+const serviceDateFutureValidator = (value, vm) => {
   const feeItem = vm.feeItem;
   if (!value) {
     return false;
@@ -1164,6 +1173,7 @@ export default {
           serviceDate: {
             required,
             serviceDateValidator,
+            serviceDateFutureValidator,
             distantPastValidator,
           },
           numberOfServices: {
@@ -1340,6 +1350,9 @@ export default {
     handleProcessBirthDate(data) {
       this.birthDateData = data;
     },
+    handleProcessServiceDate(data, claimIndex) {
+      this.medicalServiceClaims[claimIndex].serviceDateData = data;
+    },
     validateFields() {
       // If no dependent number is given, then default to "00".
       if (!this.dependentNumber) {
@@ -1430,11 +1443,11 @@ export default {
       }
       return 'Hospital Visit';
     },
-    getServiceDateErrorMessage(feeItem) {
+    getServiceDateFutureErrorMessage(feeItem) {
       if (feeItem === '03333') {
-        return 'Service date cannot be more than 90 days in the future.';
+        return 'Service Date cannot be more than 90 days in the future.';
       }
-      return 'Service date cannot be in the future.';
+      return 'Service Date cannot be in the future.';
     }
   },
   computed: {

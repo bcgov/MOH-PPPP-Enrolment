@@ -148,6 +148,7 @@ export default {
       for (let i=0; i<claimCount; i++) {
         claims.push({
           serviceDate: null,
+          serviceDateData: null,
           numberOfServices: null,
           serviceClarificationCode: null,
           feeItem: null,
