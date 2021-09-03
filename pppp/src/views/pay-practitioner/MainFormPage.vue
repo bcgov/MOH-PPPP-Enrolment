@@ -179,13 +179,21 @@
                       :id="'msc-service-date-' + index"
                       v-model='claim.serviceDate'
                       :isRequiredAsteriskShown='true'
-                      @blur='handleBlurField($v.medicalServiceClaims.$each[index].serviceDate)' />
+                      @blur='handleBlurField($v.medicalServiceClaims.$each[index].serviceDate)'
+                      @processDate='handleProcessServiceDate($event, index)' />
             <div class="text-danger"
-                v-if="v.serviceDate.$dirty && !v.serviceDate.required"
-                aria-live="assertive">Service date is required.</div>
+                v-if="v.serviceDate.$dirty && !v.serviceDate.serviceDateValidator"
+                aria-live="assertive">Service Date must be a valid date.</div>
             <div class="text-danger"
-                v-if="v.serviceDate.$dirty && v.serviceDate.required && !v.serviceDate.serviceDateValidator"
-                aria-live="assertive">{{getServiceDateErrorMessage(claim.feeItem)}}</div>
+                v-if="v.serviceDate.$dirty
+                  && v.serviceDate.serviceDateValidator
+                  && !v.serviceDate.required"
+                aria-live="assertive">Service Date is required.</div>
+            <div class="text-danger"
+                v-if="v.serviceDate.$dirty
+                  && v.serviceDate.required
+                  && !v.serviceDate.serviceDateFutureValidator"
+                aria-live="assertive">{{getServiceDateFutureErrorMessage(claim.feeItem)}}</div>
             <div class="text-danger"
                 v-if="v.serviceDate.$dirty
                   && v.serviceDate.required
@@ -414,7 +422,7 @@
                     && v.month.required
                     && v.dayFrom.required
                     && v.year.required
-                    && !v.dateValidator"
+                    && !v.hospitalVisitDateValidator"
                 aria-live="assertive">Hospital Service date must be valid.</div>
             <div class="text-danger"
                 v-if="v.month.$dirty
@@ -423,8 +431,30 @@
                     && v.month.required
                     && v.dayFrom.required
                     && v.year.required
-                    && v.dateValidator
-                    && !v.dateRangeValidator"
+                    && v.hospitalVisitDateValidator
+                    && !v.hospitalVisitDatePastValidator"
+                aria-live="assertive">Hospital Service Day From is over 18 months in the past.</div>
+            <div class="text-danger"
+                v-if="v.month.$dirty
+                    && v.dayFrom.$dirty
+                    && v.year.$dirty
+                    && v.month.required
+                    && v.dayFrom.required
+                    && v.year.required
+                    && v.hospitalVisitDateValidator
+                    && !v.hospitalVisitDateFutureValidator"
+                aria-live="assertive">Hospital Service Day From cannot be in the future.</div>
+            <div class="text-danger"
+                v-if="v.month.$dirty
+                    && v.dayFrom.$dirty
+                    && v.year.$dirty
+                    && v.month.required
+                    && v.dayFrom.required
+                    && v.year.required
+                    && v.hospitalVisitDateValidator
+                    && v.hospitalVisitDatePastValidator
+                    && v.hospitalVisitDateFutureValidator
+                    && !v.hospitalVisitDateRangeValidator"
                 aria-live="assertive">Hospital Service date range must be valid.</div>
             <NumberInput label='Number of Services:'
                   :id='"hvc-number-of-services-" + index'
@@ -761,6 +791,7 @@ import {
   birthDateValidator,
   clarificationCodeValidator,
   diagnosticCodeValidator,
+  serviceDateValidator,
 } from '@/helpers/validators';
 import {
   selectOptionsSubmissionCode,
@@ -846,8 +877,10 @@ import {
   addDays,
   subDays,
   isBefore,
+  isAfter,
   parseISO,
   isValid,
+  subMonths,
 } from 'date-fns';
 
 const nameValidator = (value) => {
@@ -881,7 +914,7 @@ const birthDatePastValidator = (value) => {
   return pastDateValidator(value) || isSameDay(value, startOfToday());
 };
 
-const serviceDateValidator = (value, vm) => {
+const serviceDateFutureValidator = (value, vm) => {
   const feeItem = vm.feeItem;
   if (!value) {
     return false;
@@ -893,7 +926,7 @@ const serviceDateValidator = (value, vm) => {
   return isBefore(value, addDays(startOfToday(), 1)); // Add 1 day to include today's date.
 };
 
-const dateValidator = (value) => {
+const hospitalVisitDateValidator = (value) => {
   const month = value.month;
   const dayFrom = value.dayFrom;
   const year = value.year;
@@ -910,7 +943,31 @@ const dateValidator = (value) => {
       && isValid(date);
 };
 
-const dateRangeValidator = (value) => {
+const hospitalVisitDatePastValidator = (value) => {
+  const month = value.month;
+  const dayFrom = value.dayFrom;
+  const year = value.year;
+  const isoDateString = getISODateString(year, month, dayFrom);
+  const date = parseISO(isoDateString);
+
+  return isValidISODateString(isoDateString)
+      && isValid(date)
+      && isAfter(date, subDays(subMonths(startOfToday(), 18), 1));
+};
+
+const hospitalVisitDateFutureValidator = (value) => {
+  const month = value.month;
+  const dayFrom = value.dayFrom;
+  const year = value.year;
+  const isoDateString = getISODateString(year, month, dayFrom);
+  const date = parseISO(isoDateString);
+
+  return isValidISODateString(isoDateString)
+      && isValid(date)
+      && isBefore(date, addDays(startOfToday(), 1));
+};
+
+const hospitalVisitDateRangeValidator = (value) => {
   const month = value.month;
   const dayFrom = value.dayFrom;
   const dayTo = value.dayTo;
@@ -1116,6 +1173,7 @@ export default {
           serviceDate: {
             required,
             serviceDateValidator,
+            serviceDateFutureValidator,
             distantPastValidator,
           },
           numberOfServices: {
@@ -1159,8 +1217,10 @@ export default {
       },
       hospitalVisitClaims: {
         $each: {
-          dateValidator,
-          dateRangeValidator,
+          hospitalVisitDateValidator,
+          hospitalVisitDatePastValidator,
+          hospitalVisitDateFutureValidator,
+          hospitalVisitDateRangeValidator,
           month: {
             required,
             positiveNumberValidator,
@@ -1290,6 +1350,9 @@ export default {
     handleProcessBirthDate(data) {
       this.birthDateData = data;
     },
+    handleProcessServiceDate(data, claimIndex) {
+      this.medicalServiceClaims[claimIndex].serviceDateData = data;
+    },
     validateFields() {
       // If no dependent number is given, then default to "00".
       if (!this.dependentNumber) {
@@ -1380,11 +1443,11 @@ export default {
       }
       return 'Hospital Visit';
     },
-    getServiceDateErrorMessage(feeItem) {
+    getServiceDateFutureErrorMessage(feeItem) {
       if (feeItem === '03333') {
-        return 'Service date cannot be more than 90 days in the future.';
+        return 'Service Date cannot be more than 90 days in the future.';
       }
-      return 'Service date cannot be in the future.';
+      return 'Service Date cannot be in the future.';
     }
   },
   computed: {

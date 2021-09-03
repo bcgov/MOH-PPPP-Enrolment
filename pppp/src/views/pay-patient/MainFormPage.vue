@@ -179,16 +179,25 @@
                       :id="'service-date' + index"
                       v-model='claim.serviceDate'
                       :isRequiredAsteriskShown='true'
-                      @blur='handleBlurField($v.medicalServiceClaims.$each[index].serviceDate)' />
+                      @blur='handleBlurField($v.medicalServiceClaims.$each[index].serviceDate)'
+                      @processDate='handleProcessServiceDate($event, index)' />
             <div class="text-danger"
-                v-if="v.serviceDate.$dirty && !v.serviceDate.required"
-                aria-live="assertive">Service date is required.</div>
+                v-if="v.serviceDate.$dirty && !v.serviceDate.serviceDateValidator"
+                aria-live="assertive">Service Date must be a valid date.</div>
             <div class="text-danger"
-                v-if="v.serviceDate.$dirty && v.serviceDate.required && !v.serviceDate.serviceDateValidator"
-                aria-live="assertive">{{getServiceDateErrorMessage(claim.feeItem)}}</div>
+                v-if="v.serviceDate.$dirty
+                  && v.serviceDate.serviceDateValidator
+                  && !v.serviceDate.required"
+                aria-live="assertive">Service Date is required.</div>
             <div class="text-danger"
                 v-if="v.serviceDate.$dirty
                   && v.serviceDate.required
+                  && !v.serviceDate.serviceDateFutureValidator"
+                aria-live="assertive">{{getServiceDateFutureErrorMessage(claim.feeItem)}}</div>
+            <div class="text-danger"
+                v-if="v.serviceDate.$dirty
+                  && v.serviceDate.required
+                  && v.serviceDate.serviceDateFutureValidator
                   && !v.serviceDate.distantPastValidator"
                 aria-live="assertive">Service Date is too far in the past.</div>
             <NumberInput label='Number of Services:'
@@ -601,6 +610,7 @@ import {
   birthDateValidator,
   clarificationCodeValidator,
   diagnosticCodeValidator,
+  serviceDateValidator,
 } from '@/helpers/validators';
 import {
   selectOptionsSubmissionCode,
@@ -725,7 +735,7 @@ const amountBilledZeroValidator = (value, vm) => {
   return true;
 };
 
-const serviceDateValidator = (value, vm) => {
+const serviceDateFutureValidator = (value, vm) => {
   const feeItem = vm.feeItem;
   if (!value) {
     return false;
@@ -948,6 +958,7 @@ export default {
           serviceDate: {
             required,
             serviceDateValidator,
+            serviceDateFutureValidator,
             distantPastValidator,
           },
           numberOfServices: {
@@ -1065,6 +1076,9 @@ export default {
     handleProcessBirthDate(data) {
       this.birthDateData = data;
     },
+    handleProcessServiceDate(data, claimIndex) {
+      this.medicalServiceClaims[claimIndex].serviceDateData = data;
+    },
     validateFields() {
       // If no dependent number is given, then default to "00".
       if (!this.dependentNumber) {
@@ -1149,7 +1163,7 @@ export default {
       }
       return 'Service';
     },
-    getServiceDateErrorMessage(feeItem) {
+    getServiceDateFutureErrorMessage(feeItem) {
       if (feeItem === '03333') {
         return 'Service date cannot be more than 90 days in the future.';
       }

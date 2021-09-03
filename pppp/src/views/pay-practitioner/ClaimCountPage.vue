@@ -188,6 +188,7 @@ export default {
       for (let i = 0; i < medicalServiceClaimsCount; i++) {
         medicalServiceClaims.push({
           serviceDate: null,
+          serviceDateData: null,
           numberOfServices: null,
           serviceClarificationCode: null,
           feeItem: null,
