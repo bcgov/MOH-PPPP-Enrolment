@@ -15,7 +15,7 @@
         <div v-if='isCSR'
             class="section-container p-3 mb-5">
           <a name='plan-reference-number'></a>
-          <NumberInput label='Plan Reference Number:'
+          <DigitInput label='Plan Reference Number:'
                 id='plan-reference-number'
                 v-model='planReferenceNumber'
                 maxlength='10'
@@ -51,7 +51,7 @@
           <div class="text-danger"
               v-if="$v.phn.$dirty && $v.phn.required && !$v.phn.phnValidator"
               aria-live="assertive">Personal Health Number (PHN) must be valid.</div>
-          <NumberInput label='Dependant:'
+          <DigitInput label='Dependant:'
                 id='dependent-number'
                 className='mt-3'
                 v-model='dependentNumber'
@@ -155,7 +155,7 @@
 
         <a name='claim-info'></a>
         <div class="section-container p-3 mt-5">
-          <NumberInput label='Plan Reference Number of Original Claim:'
+          <DigitInput label='Plan Reference Number of Original Claim:'
                 id='plan-reference-number-of-original-claim'
                 v-model='planReferenceNumberOfOriginalClaim'
                 maxlength='10'
@@ -200,7 +200,7 @@
                   && v.serviceDate.serviceDateFutureValidator
                   && !v.serviceDate.distantPastValidator"
                 aria-live="assertive">Service Date is too far in the past.</div>
-            <NumberInput label='Number of Services:'
+            <DigitInput label='Number of Services:'
                   :id='"number-of-services-" + index'
                   class='mt-3'
                   v-model='claim.numberOfServices'
@@ -235,7 +235,7 @@
             <div class="text-danger"
                 v-if="v.serviceClarificationCode.$dirty && !v.serviceClarificationCode.clarificationCodeValidator"
                 aria-live="assertive">Service Clarification Code is invalid.</div>  
-            <NumberInput label='Fee Item:'
+            <DigitInput label='Fee Item:'
                   :id='"fee-item-" + index'
                   class='mt-3'
                   v-model='claim.feeItem'
@@ -662,6 +662,7 @@ import logService from '@/services/log-service';
 import { required, maxLength, minLength } from 'vuelidate/lib/validators';
 import {
   DateInput,
+  DigitInput,
   FacilityNumberInput,
   Input,
   MotorVehicleAccidentClaimNumberInput,
@@ -760,6 +761,7 @@ export default {
   components: {
     ContinueBar,
     DateInput,
+    DigitInput,
     FacilityNumberInput,
     Input,
     MotorVehicleAccidentClaimNumberInput,
