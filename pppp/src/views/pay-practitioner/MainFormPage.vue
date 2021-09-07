@@ -657,12 +657,22 @@
           <div class="text-danger"
               v-if="$v.practitionerFacilityNumber.$dirty && !$v.practitionerFacilityNumber.minLength"
               aria-live="assertive">Facility number must not be less than 5 characters.</div>
-          <Input label='Coverage Pre-Authorization Number:'
+          <NumberInput label='Coverage Pre-Authorization Number:'
                 id='coverage-pre-authorization-number'
                 class='mt-3'
                 maxlength="4"
                 v-model='coveragePreAuthNumber'
-                :inputStyle='smallStyles'/>
+                :inputStyle='smallStyles'
+                @blur='handleBlurField($v.coveragePreAuthNumber)' />
+          <div class="text-danger"
+              v-if="$v.coveragePreAuthNumber.$dirty && !$v.coveragePreAuthNumber.minLength"
+              aria-live="assertive">Coverage Pre-Authorization Number cannot be less than 4 characters.</div>
+          <div class="text-danger"
+              v-if="$v.coveragePreAuthNumber.$dirty && !$v.coveragePreAuthNumber.intValidator"
+              aria-live="assertive">Coverage Pre-Authorization Number must be an integer.</div>
+          <div class="text-danger"
+              v-if="$v.coveragePreAuthNumber.$dirty && !$v.coveragePreAuthNumber.positiveNumberValidator"
+              aria-live="assertive">Coverage Pre-Authorization Number must be a positive number.</div>
         </div>
 
         <a name='referred-by'></a>
@@ -1294,6 +1304,11 @@ export default {
       },
       practitionerSpecialtyCode: {
         alphanumericValidator: optionalValidator(alphanumericValidator),
+      },
+      coveragePreAuthNumber: {
+        minLength: optionalValidator(minLength(4)),
+        intValidator: optionalValidator(intValidator),
+        positiveNumberValidator: optionalValidator(positiveNumberValidator),
       },
       referredByFirstNameInitial: {
         alphaValidator: optionalValidator(alphaValidator),

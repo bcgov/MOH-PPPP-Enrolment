@@ -63,7 +63,7 @@ export default {
   practitionerPractitionerNumber: '22274',
   practitionerFacilityNumber: '12345',
   practitionerSpecialtyCode: 'A1',
-  coveragePreAuthNumber: '22',
+  coveragePreAuthNumber: '2222',
 
   referredByFirstNameInitial: 'R',
   referredByLastName: 'McDonald',
