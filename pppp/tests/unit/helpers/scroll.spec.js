@@ -10,7 +10,7 @@ describe("Helper scroll.js scrollTo()", () => {
     jest.clearAllMocks();
   });
 
-  it("calls window.scrollTo() when helper scrollTo() is called", () => {
+  it("calls window.scrollTo() when helperscrollTo() is called", () => {
     scroll.scrollTo(0);
     expect(spyOnWindowScrollTo).toHaveBeenCalled();
   });
