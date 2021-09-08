@@ -61,3 +61,24 @@ describe("validators.js clinicNameValidator()", () => {
     expect(result).toEqual(false);
   });
 });
+
+describe("validators.js clarificationCodeValidator()", () => {
+  afterEach(() => {
+    jest.resetModules();
+  });
+
+  it("returns false if given an empty value", () => {
+    const result = clarificationCodeValidator();
+    expect(result).toEqual(false);
+  });
+
+  it("returns false if given a value that's not on the list", () => {
+    const result = clarificationCodeValidator("potato");
+    expect(result).toEqual(false);
+  });
+
+  it("returns true if given a value that is on the list", () => {
+    const result = clarificationCodeValidator("AC");
+    expect(result).toEqual(true);
+  });
+});
