@@ -30,3 +30,9 @@ describe("url.js isCSR()", () => {
     expect(result).toEqual(true);
   });
 });
+
+describe("url.js isCSR()", () => {
+  afterEach(() => {
+    jest.resetModules();
+  });
+});
