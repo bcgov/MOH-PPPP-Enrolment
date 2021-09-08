@@ -82,3 +82,24 @@ describe("validators.js clarificationCodeValidator()", () => {
     expect(result).toEqual(true);
   });
 });
+
+describe("validators.js diagnosticCodeValidator()", () => {
+  afterEach(() => {
+    jest.resetModules();
+  });
+
+  it("returns false if given an empty value", () => {
+    const result = diagnosticCodeValidator();
+    expect(result).toEqual(false);
+  });
+
+  it("returns false if given a value that's not on the list", () => {
+    const result = diagnosticCodeValidator("potato");
+    expect(result).toEqual(false);
+  });
+
+  it("returns true if given a value that is on the list", () => {
+    const result = diagnosticCodeValidator("01A");
+    expect(result).toEqual(true);
+  });
+});
