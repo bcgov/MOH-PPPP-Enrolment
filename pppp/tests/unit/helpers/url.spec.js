@@ -31,8 +31,27 @@ describe("url.js isCSR()", () => {
   });
 });
 
-describe("url.js isCSR()", () => {
+describe.skip("url.js convertURLToCSR()", () => {
   afterEach(() => {
     jest.resetModules();
+  });
+
+  it.skip("throws error if not given a value", () => {
+    expect(convertURLToCSR()).toThrow()
+  });
+
+  it("appends -csr to the end of a path it's passed", () => {
+    expect(convertURLToCSR("potato")).toEqual("potato-csr")
+  });
+});
+
+describe.skip("url.js getConvertedPath()", () => {
+  afterEach(() => {
+    jest.resetModules();
+  });
+
+  it("doesn't duplicate suffix", () => {
+    const result = getConvertedPath("string/string1-csr", "string/string2-csr")
+    expect(result).not.toEqual("/string2-csr-csr")
   });
 });
