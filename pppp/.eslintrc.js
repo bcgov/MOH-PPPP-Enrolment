@@ -20,7 +20,6 @@ module.exports = {
   rules: {
     'no-console': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
     'no-debugger': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
-    'indent': ["error", 2],
     "jest/no-disabled-tests": "warn",
     "jest/no-focused-tests": "warn",
     "jest/no-identical-title": "warn",
