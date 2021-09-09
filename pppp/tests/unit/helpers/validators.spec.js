@@ -103,3 +103,25 @@ describe("validators.js diagnosticCodeValidator()", () => {
     expect(result).toEqual(true);
   });
 });
+
+describe.skip("validators.js birthDateValidator()", () => {
+  afterEach(() => {
+    jest.resetModules();
+  });
+
+  it("returns false if given an empty value", () => {
+    const result = birthDateValidator();
+    expect(result).toEqual(false);
+  });
+});
+
+describe.skip("validators.js serviceDateValidator()", () => {
+  afterEach(() => {
+    jest.resetModules();
+  });
+
+  it("returns false if given an empty value", () => {
+    const result = serviceDateValidator();
+    expect(result).toEqual(false);
+  });
+});
