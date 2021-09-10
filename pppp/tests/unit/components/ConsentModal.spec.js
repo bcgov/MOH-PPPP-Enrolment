@@ -200,7 +200,7 @@ describe("ConsentModal.vue handleKeyDown()", () => {
   });
 });
 
-describe.only("ConsentModal.vue handleTab()", () => {
+describe("ConsentModal.vue handleTab()", () => {
   const mockElements = [
     { name: "default1", focus: jest.fn() },
     { name: "default2", focus: jest.fn() },
@@ -282,30 +282,23 @@ describe("ConsentModal.vue handleTabBackwards()", () => {
     { name: "default4", focus: jest.fn() },
   ];
 
-  it("assigns focus to the first element in the focusableEls array if nothing is focused", async () => {
-    const wrapper = mount(Component, {
+  let wrapper;
+
+  beforeEach(() => {
+    wrapper = mount(Component, {
       localVue,
-      mocks: {
-        $store: {
-          state: {
-            form: {
-              applicationUuid: "default1",
-            },
-          },
-        },
-      },
-      data: () => {
-        return {
-          focusableEls: mockElements,
-          focusedEl: null,
-          captchaAPIBasePath: "/oop/api/captcha",
-          applicationUuid: null,
-          isCaptchaValid: false,
-          isTermsAccepted: false,
-        };
+      propsData: {
+        applicationUuid: "11111",
       },
     });
+  });
 
+  afterEach(() => {
+    jest.resetModules();
+    jest.clearAllMocks();
+  });
+
+  it("assigns focus to the last element in the focusableEls array if nothing is focused", async () => {
     await wrapper.setData({
       focusableEls: mockElements,
     });
@@ -317,29 +310,6 @@ describe("ConsentModal.vue handleTabBackwards()", () => {
   });
 
   it("moves focus from the second element to the first if the second is focused", async () => {
-    const wrapper = mount(Component, {
-      localVue,
-      mocks: {
-        $store: {
-          state: {
-            form: {
-              applicationUuid: "default1",
-            },
-          },
-        },
-      },
-      data: () => {
-        return {
-          focusableEls: mockElements,
-          focusedEl: null,
-          captchaAPIBasePath: "/oop/api/captcha",
-          applicationUuid: null,
-          isCaptchaValid: false,
-          isTermsAccepted: false,
-        };
-      },
-    });
-
     await wrapper.setData({
       focusableEls: mockElements,
     });
@@ -352,29 +322,6 @@ describe("ConsentModal.vue handleTabBackwards()", () => {
   });
 
   it("moves focus from the first element to the last if the first is focused", async () => {
-    const wrapper = mount(Component, {
-      localVue,
-      mocks: {
-        $store: {
-          state: {
-            form: {
-              applicationUuid: "default1",
-            },
-          },
-        },
-      },
-      data: () => {
-        return {
-          focusableEls: mockElements,
-          focusedEl: null,
-          captchaAPIBasePath: "/oop/api/captcha",
-          applicationUuid: null,
-          isCaptchaValid: false,
-          isTermsAccepted: false,
-        };
-      },
-    });
-
     await wrapper.setData({
       focusableEls: mockElements,
     });
@@ -386,29 +333,6 @@ describe("ConsentModal.vue handleTabBackwards()", () => {
   });
 
   it("should call focus function on focused element", async () => {
-    const wrapper = mount(Component, {
-      localVue,
-      mocks: {
-        $store: {
-          state: {
-            form: {
-              applicationUuid: "default1",
-            },
-          },
-        },
-      },
-      data: () => {
-        return {
-          focusableEls: mockElements,
-          focusedEl: null,
-          captchaAPIBasePath: "/oop/api/captcha",
-          applicationUuid: null,
-          isCaptchaValid: false,
-          isTermsAccepted: false,
-        };
-      },
-    });
-
     await wrapper.setData({
       focusableEls: mockElements,
     });
