@@ -593,6 +593,7 @@
 
 <script>
 import pageStateService from '@/services/page-state-service';
+import apiService from '@/services/api-service';
 import {
   payPatientRoutes,
   isPastPath,
@@ -779,6 +780,7 @@ export default {
   data: () => {
     return {
       isPageLoaded: false,
+      isValidating: false,
       isValidationModalShown: false,
       addressOwnerOptions: [
         {
@@ -1099,8 +1101,36 @@ export default {
         return;
       }
 
+      this.isValidating = true;
+
+      const token = this.$store.state.payPatientForm.captchaToken;
+      const applicationUuid = this.$store.state.payPatientForm.applicationUuid;
+      
       // Do server-side validation.
-      this.isValidationModalShown = true;
+      apiService.validateApplication(token, {
+        applicationUuid: applicationUuid,
+        practitionerFirstName: this.practitionerFirstName || '',
+        practitionerLastName: this.practitionerLastName || '',
+        practitionerNumber: this.practitionerPractitionerNumber || '',
+        serviceFeeItem1: this.medicalServiceClaims[0] && this.medicalServiceClaims[0].feeItem ? this.medicalServiceClaims[0].feeItem : '',
+        serviceFeeItem2: this.medicalServiceClaims[1] && this.medicalServiceClaims[1].feeItem ? this.medicalServiceClaims[1].feeItem : '',
+        serviceFeeItem3: this.medicalServiceClaims[2] && this.medicalServiceClaims[2].feeItem ? this.medicalServiceClaims[2].feeItem : '',
+        serviceFeeItem4: this.medicalServiceClaims[3] && this.medicalServiceClaims[3].feeItem ? this.medicalServiceClaims[3].feeItem : '',
+        serviceLocationCode1: this.medicalServiceClaims[0] && this.medicalServiceClaims[0].locationOfService ? this.medicalServiceClaims[0].locationOfService : '',
+        serviceLocationCode2: this.medicalServiceClaims[1] && this.medicalServiceClaims[1].locationOfService ? this.medicalServiceClaims[1].locationOfService : '',
+        serviceLocationCode3: this.medicalServiceClaims[2] && this.medicalServiceClaims[2].locationOfService ? this.medicalServiceClaims[2].locationOfService : '',
+        serviceLocationCode4: this.medicalServiceClaims[3] && this.medicalServiceClaims[3].locationOfService ? this.medicalServiceClaims[3].locationOfService : '',
+        hospitalFeeItem1: '',
+        hospitalFeeItem2: '',
+        hospitalLocationCode1: '',
+        hospitalLocationCode2: ''
+      }).then((response) => {
+        console.log('Response:', response);
+        this.isValidating = false;
+      }).catch(() => {
+        this.isValidating = false;
+      })
+      // this.isValidationModalShown = true;
 
       // this.navigateToNextPage();
     },
