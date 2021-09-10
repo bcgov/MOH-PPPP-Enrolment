@@ -11,6 +11,9 @@ Vue.use(Vuelidate);
 describe("ConsentModal.vue", () => {
   const wrapper = mount(Component, {
     localVue,
+    propsData: {
+      applicationUuid: "11111",
+    },
   });
 
   it("renders", () => {
@@ -121,6 +124,9 @@ describe("ConsentModal.vue handleCaptchaVerified()", () => {
 describe("ConsentModal.vue closeModal()", () => {
   const wrapper = mount(Component, {
     localVue,
+    propsData: {
+      applicationUuid: "11111",
+    },
   });
 
   it("emits close signal on function call", () => {
@@ -129,7 +135,7 @@ describe("ConsentModal.vue closeModal()", () => {
   });
 });
 
-describe.only("ConsentModal.vue handleKeyDown()", () => {
+describe("ConsentModal.vue handleKeyDown()", () => {
   const fakeEvent = {
     target: { value: "potato" },
     key: "Tab",
@@ -194,42 +200,37 @@ describe.only("ConsentModal.vue handleKeyDown()", () => {
   });
 });
 
-describe("ConsentModal.vue handleTab()", () => {
+describe.only("ConsentModal.vue handleTab()", () => {
   const mockElements = [
     { name: "default1", focus: jest.fn() },
     { name: "default2", focus: jest.fn() },
     { name: "default3", focus: jest.fn() },
     { name: "default4", focus: jest.fn() },
   ];
+  let wrapper;
 
-  it("assigns focus to the first element in the focusableEls array if nothing is focused", async () => {
-    const wrapper = mount(Component, {
+  beforeEach(() => {
+    wrapper = mount(Component, {
       localVue,
-      mocks: {
-        $store: {
-          state: {
-            form: {
-              applicationUuid: "default1",
-            },
-          },
-        },
-      },
-      data: () => {
-        return {
-          focusableEls: mockElements,
-          focusedEl: null,
-          captchaAPIBasePath: "/oop/api/captcha",
-          applicationUuid: null,
-          isCaptchaValid: false,
-          isTermsAccepted: false,
-        };
+      propsData: {
+        applicationUuid: "11111",
       },
     });
+  });
 
+  afterEach(() => {
+    jest.resetModules();
+    jest.clearAllMocks();
+  });
+
+  it("assigns focus to the first element in the focusableEls array if nothing is focused", async () => {
+    //setData required because there's a mounted() call in the .vue that overwrites focusableEls on page load
     await wrapper.setData({
       focusableEls: mockElements,
     });
-
+    await wrapper.setData({
+      focusedEl: null,
+    });
     const spyOnFocus = jest.spyOn(wrapper.vm.focusableEls[0], "focus");
 
     wrapper.vm.handleTab();
@@ -238,29 +239,6 @@ describe("ConsentModal.vue handleTab()", () => {
   });
 
   it("moves focus from the first element to the second if the first is focused", async () => {
-    const wrapper = mount(Component, {
-      localVue,
-      mocks: {
-        $store: {
-          state: {
-            form: {
-              applicationUuid: "default1",
-            },
-          },
-        },
-      },
-      data: () => {
-        return {
-          focusableEls: mockElements,
-          focusedEl: null,
-          captchaAPIBasePath: "/oop/api/captcha",
-          applicationUuid: null,
-          isCaptchaValid: false,
-          isTermsAccepted: false,
-        };
-      },
-    });
-
     await wrapper.setData({
       focusableEls: mockElements,
     });
@@ -273,29 +251,6 @@ describe("ConsentModal.vue handleTab()", () => {
   });
 
   it("moves focus from the last element to the first if the last is focused", async () => {
-    const wrapper = mount(Component, {
-      localVue,
-      mocks: {
-        $store: {
-          state: {
-            form: {
-              applicationUuid: "default1",
-            },
-          },
-        },
-      },
-      data: () => {
-        return {
-          focusableEls: mockElements,
-          focusedEl: null,
-          captchaAPIBasePath: "/oop/api/captcha",
-          applicationUuid: null,
-          isCaptchaValid: false,
-          isTermsAccepted: false,
-        };
-      },
-    });
-
     await wrapper.setData({
       focusableEls: mockElements,
     });
@@ -306,30 +261,7 @@ describe("ConsentModal.vue handleTab()", () => {
     expect(wrapper.vm.focusedEl.name).toEqual("default1");
   });
 
-  it("should call focus function on focused element", async () => {
-    const wrapper = mount(Component, {
-      localVue,
-      mocks: {
-        $store: {
-          state: {
-            form: {
-              applicationUuid: "default1",
-            },
-          },
-        },
-      },
-      data: () => {
-        return {
-          focusableEls: mockElements,
-          focusedEl: null,
-          captchaAPIBasePath: "/oop/api/captcha",
-          applicationUuid: null,
-          isCaptchaValid: false,
-          isTermsAccepted: false,
-        };
-      },
-    });
-
+  it("should call the focus function belonging to the newly focused element", async () => {
     await wrapper.setData({
       focusableEls: mockElements,
     });
