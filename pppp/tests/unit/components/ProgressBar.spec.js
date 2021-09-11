@@ -4,7 +4,7 @@ import Vue from "vue";
 import VueRouter from "vue-router";
 import Vuelidate from "vuelidate";
 import Component from "@/components/ProgressBar.vue";
-// import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import pageStateService from "@/services/page-state-service";
 import { cloneDeep } from "lodash";
 import { payPatientStepRoutes as stepRoutes } from "@/router/step-routes";
@@ -12,7 +12,6 @@ import { payPatientRouteStepOrder as routeStepOrder } from "@/router/routes";
 import * as module1 from "../../../src/store/modules/app";
 import * as module2 from "../../../src/store/modules/pay-patient-form";
 import * as module3 from "../../../src/store/modules/pay-practitioner-form";
-// import * as module4 from "../../../src/store/modules/app"
 
 const storeTemplate = {
   modules: {
@@ -26,7 +25,7 @@ const localVue = createLocalVue();
 localVue.use(Vuex);
 localVue.use(VueRouter);
 Vue.use(Vuelidate);
-// Vue.component("font-awesome-icon", FontAwesomeIcon);
+Vue.component("font-awesome-icon", FontAwesomeIcon);
 const router = new VueRouter();
 
 const scrollHelper = require("@/helpers/scroll");
@@ -56,7 +55,7 @@ const spyOnScrollTo = jest.spyOn(scrollHelper, "scrollTo");
 
 // const spyOnScrollToError = jest.spyOn(scrollHelper, "scrollToError");
 
-describe.only("ProgressBar.vue", () => {
+describe("ProgressBar.vue", () => {
   let wrapper;
   let store;
 
@@ -65,11 +64,6 @@ describe.only("ProgressBar.vue", () => {
     wrapper = shallowMount(Component, {
       localVue,
       store,
-      stubs: {
-        FontAwesomeIcon: {
-          template: "<span />",
-        },
-      },
       propsData: {
         currentPath: routeStepOrder[1].path,
         routes: stepRoutes,
@@ -93,25 +87,13 @@ describe("ProgressBar.vue onClickLink()", () => {
   let store;
 
   beforeEach(() => {
-    store = new Vuex.Store({
-      modules: {
-        // form: cloneDeep(formTemplate),
-        // app: cloneDeep(appTemplate),
-      },
-    });
+    store = new Vuex.Store(storeTemplate);
     wrapper = shallowMount(Component, {
       localVue,
       store,
-      global: {
-        stubs: {
-          FontAwesomeIcon: {
-            template: "<span />",
-          },
-        },
-      },
       propsData: {
         currentPath: routeStepOrder[1].path,
-        routes: stepRoutes.default,
+        routes: stepRoutes,
       },
       router,
     });
@@ -184,31 +166,19 @@ describe("ProgressBar.vue onClickLink()", () => {
   });
 });
 
-describe("ProgressBar.vue openDropdown() and closeDropdown()", () => {
-  //   const stringCall = `${appTemplate.MODULE_NAME}/${appTemplate.SET_SHOW_MOBILE_STEPPER_DETAILS}`;
+describe.only("ProgressBar.vue openDropdown() and closeDropdown()", () => {
+    // const stringCall = `${appTemplate.MODULE_NAME}/${appTemplate.SET_SHOW_MOBILE_STEPPER_DETAILS}`;
   let wrapper;
   let store;
 
   beforeEach(() => {
-    store = new Vuex.Store({
-      modules: {
-        // form: cloneDeep(formTemplate.default),
-        // app: cloneDeep(appTemplate.default),
-      },
-    });
+    store = new Vuex.Store(storeTemplate);
     wrapper = shallowMount(Component, {
       localVue,
       store,
-      global: {
-        stubs: {
-          FontAwesomeIcon: {
-            template: "<span />",
-          },
-        },
-      },
       propsData: {
         currentPath: routeStepOrder[1].path,
-        routes: stepRoutes.default,
+        routes: stepRoutes,
       },
       router,
     });
@@ -239,25 +209,13 @@ describe("ProgressBar.vue getLinkStyles()", () => {
   let store;
 
   beforeEach(() => {
-    store = new Vuex.Store({
-      modules: {
-        // form: cloneDeep(formTemplate.default),
-        // app: cloneDeep(appTemplate.default),
-      },
-    });
+    store = new Vuex.Store(storeTemplate);
     wrapper = shallowMount(Component, {
       localVue,
       store,
-      global: {
-        stubs: {
-          FontAwesomeIcon: {
-            template: "<span />",
-          },
-        },
-      },
       propsData: {
         currentPath: routeStepOrder[1].path,
-        routes: stepRoutes.default,
+        routes: stepRoutes,
       },
       router,
     });
@@ -270,29 +228,21 @@ describe("ProgressBar.vue getLinkStyles()", () => {
 
   it("returns an object", async () => {
     const result = wrapper.vm.getLinkStyles(routeStepOrder[0].path);
-    await wrapper.vm.openDropdown();
-    await wrapper.vm.$nextTick();
     expect(typeof result).toEqual("object");
   });
 
   it("returns an object containing pointer when passed a valid path in the past", async () => {
     const result = wrapper.vm.getLinkStyles(routeStepOrder[0].path);
-    await wrapper.vm.openDropdown();
-    await wrapper.vm.$nextTick();
     expect(result).toHaveProperty("cursor", "pointer");
   });
 
   it("returns an object containing default when passed an invalid path", async () => {
     const result = wrapper.vm.getLinkStyles("asdf");
-    await wrapper.vm.openDropdown();
-    await wrapper.vm.$nextTick();
     expect(result).toHaveProperty("cursor", "default");
   });
 
   it("returns an object containing default when passed a valid path in the future", async () => {
     const result = wrapper.vm.getLinkStyles(routeStepOrder[2].path);
-    await wrapper.vm.openDropdown();
-    await wrapper.vm.$nextTick();
     expect(result).toHaveProperty("cursor", "default");
   });
 });
