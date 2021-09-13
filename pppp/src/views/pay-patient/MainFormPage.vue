@@ -472,7 +472,10 @@
                 @blur='handleBlurField($v.practitionerSpecialtyCode)'/>
           <div class="text-danger"
               v-if="$v.practitionerSpecialtyCode.$dirty && !$v.practitionerSpecialtyCode.alphanumericValidator"
-              aria-live="assertive">Specialty code must be alphanumeric.</div>
+              aria-live="assertive">Specialty Code must be alphanumeric.</div>
+          <div class="text-danger"
+              v-if="$v.practitionerSpecialtyCode.$dirty && !$v.practitionerSpecialtyCode.minLength"
+              aria-live="assertive">Specialty Code cannot be less than 2 characters.</div>
           <FacilityNumberInput label='Facility Number:'
                 id='facility-number'
                 class='mt-3'
@@ -1029,6 +1032,7 @@ export default {
       },
       practitionerSpecialtyCode: {
         alphanumericValidator: optionalValidator(alphanumericValidator),
+        minLength: optionalValidator(minLength(2)),
       },
       referredByFirstNameInitial: {
         alphaValidator: optionalValidator(alphaValidator),
