@@ -587,7 +587,8 @@
       </ul>
       <p>Do you wish to continue?</p>
     </PromptModal>
-    <ContinueBar @continue="validateFields()" />
+    <ContinueBar @continue="validateFields()"
+                :hasLoader="isValidating" />
   </div>
 </template>
 
@@ -743,7 +744,7 @@ const serviceDateFutureValidator = (value, vm) => {
     return false;
   }
   if (feeItem === '03333') {
-    const future90Days = addDays(startOfToday(), 90);
+    const future90Days = addDays(startOfToday(), 91); // Add 1 day to include today's date.
     return isBefore(value, future90Days);
   }
   return isBefore(value, addDays(startOfToday(), 1)); // Add 1 day to include today's date.
@@ -1127,9 +1128,11 @@ export default {
       }).then((response) => {
         console.log('Response:', response);
         this.isValidating = false;
+        this.isValidationModalShown = true;
       }).catch(() => {
         this.isValidating = false;
-      })
+        this.isValidationModalShown = true;
+      });
       // this.isValidationModalShown = true;
 
       // this.navigateToNextPage();
