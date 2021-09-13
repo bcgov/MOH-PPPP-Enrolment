@@ -1389,13 +1389,42 @@ export default {
       if (!this.dependentNumber) {
         this.dependentNumber = '00';
       }
-      // Pad Fee Items with leading zeros.
+      // Iterate over all "Service" claims.
       for (let i=0; i<this.medicalServiceClaims.length; i++) {
+        // Pad Fee Items with leading zeros.
         if (this.medicalServiceClaims[i].feeItem) {
           this.medicalServiceClaims[i].feeItem = padLeadingZeros(this.medicalServiceClaims[i].feeItem, 5);
         }
+        // Set default "calledStartTime" to "00:00".
+        if (!this.medicalServiceClaims[i].calledStartTime
+          || (
+            !this.medicalServiceClaims[i].calledStartTime.hour &&
+            !this.medicalServiceClaims[i].calledStartTime.minute
+          )
+        ) {
+          this.medicalServiceClaims[i].calledStartTime = {
+            hour: '00',
+            minute: '00',
+            time: '00:00'
+          };
+        }
+        // Set default "renderedFinishTime" to "00:00".
+        if (!this.medicalServiceClaims[i].renderedFinishTime
+          || (
+            !this.medicalServiceClaims[i].renderedFinishTime.hour &&
+            !this.medicalServiceClaims[i].renderedFinishTime.minute
+          )
+        ) {
+          this.medicalServiceClaims[i].renderedFinishTime = {
+            hour: '00',
+            minute: '00',
+            time: '00:00'
+          };
+        }
       }
+      // Iterate over all "Hospital Visit" claims.
       for (let i=0; i<this.hospitalVisitClaims.length; i++) {
+        // Pad Fee Items with leading zeros.
         if (this.hospitalVisitClaims[i].feeItem) {
           this.hospitalVisitClaims[i].feeItem = padLeadingZeros(this.hospitalVisitClaims[i].feeItem, 5);
         }
