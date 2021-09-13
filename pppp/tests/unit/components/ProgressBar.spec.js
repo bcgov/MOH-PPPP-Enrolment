@@ -166,8 +166,8 @@ describe("ProgressBar.vue onClickLink()", () => {
   });
 });
 
-describe.only("ProgressBar.vue openDropdown() and closeDropdown()", () => {
-    // const stringCall = `${appTemplate.MODULE_NAME}/${appTemplate.SET_SHOW_MOBILE_STEPPER_DETAILS}`;
+describe("ProgressBar.vue openDropdown() and closeDropdown()", () => {
+  const stringCall = `${module1.MODULE_NAME}/${module1.SET_SHOW_MOBILE_STEPPER_DETAILS}`;
   let wrapper;
   let store;
 
@@ -190,17 +190,17 @@ describe.only("ProgressBar.vue openDropdown() and closeDropdown()", () => {
   });
 
   it("dispatches with true when openDropdown() is called", async () => {
-    const spyOnDispatch = jest.spyOn(wrapper.vm.$store, "dispatch");
+    const spyOnDispatch = jest.spyOn(wrapper.vm.$store, "dispatch").mockImplementation(jest.fn());
     await wrapper.vm.openDropdown();
     await wrapper.vm.$nextTick();
-    // expect(spyOnDispatch).toHaveBeenCalledWith(stringCall, true);
+    expect(spyOnDispatch).toHaveBeenCalledWith(stringCall, true);
   });
 
   it("dispatches with false when closeDropdown() is called", async () => {
-    const spyOnDispatch = jest.spyOn(wrapper.vm.$store, "dispatch");
+    const spyOnDispatch = jest.spyOn(wrapper.vm.$store, "dispatch").mockImplementation(jest.fn());
     await wrapper.vm.closeDropdown();
     await wrapper.vm.$nextTick();
-    // expect(spyOnDispatch).toHaveBeenCalledWith(stringCall, false);
+    expect(spyOnDispatch).toHaveBeenCalledWith(stringCall, false);
   });
 });
 
