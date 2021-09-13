@@ -328,11 +328,11 @@
                 v-model='claim.submissionCode'
                 defaultOptionLabel='None'
                 :options='submissionCodeOptions'
-                :isRequiredAsteriskShown='isSubmissionCodeRequired'
+                :isRequiredAsteriskShown='isSubmissionCodeRequired(index)'
                 :inputStyle='largeStyles'
                 @blur='handleBlurField($v.medicalServiceClaims.$each[index].submissionCode)' />
             <div class="text-danger"
-                v-if="v.submissionCode.$dirty && isSubmissionCodeRequired && !v.submissionCode.required"
+                v-if="v.submissionCode.$dirty && isSubmissionCodeRequired(index) && !v.submissionCode.submissionCodeValidator"
                 aria-live="assertive">Submission code is required.</div>
             <Textarea label='Notes/Additional Information:'
                   :id='"notes-" + index'
@@ -613,6 +613,7 @@ import {
   clarificationCodeValidator,
   diagnosticCodeValidator,
   serviceDateValidator,
+  submissionCodeValidator,
 } from '@/helpers/validators';
 import {
   selectOptionsSubmissionCode,
@@ -999,7 +1000,9 @@ export default {
           serviceClarificationCode: {
             clarificationCodeValidator: optionalValidator(clarificationCodeValidator),
           },
-          submissionCode: {},
+          submissionCode: {
+            submissionCodeValidator,
+          },
           notes: {
             maxLength: maxLength(400),
           },
@@ -1058,9 +1061,6 @@ export default {
       validations.referredToFirstNameInitial.required = required;
       validations.referredToLastName.required = required;
       validations.referredToPractitionerNumber.required = required;
-    }
-    if (this.isSubmissionCodeRequired) {
-      validations.medicalServiceClaims.$each.submissionCode.required = required; 
     }
     if (this.isCSR) {
       validations.planReferenceNumber = {
@@ -1204,6 +1204,14 @@ export default {
       }
       return 'Service date cannot be in the future.';
     },
+    isSubmissionCodeRequired(index) {
+      const past90Days = subDays(startOfToday(), 90);
+      let serviceDate = this.medicalServiceClaims[index].serviceDate;
+      if (!serviceDate) {
+        return false;
+      }
+      return isBefore(serviceDate, past90Days);
+    },
   },
   computed: {
     isReferredByRequired() {
@@ -1224,25 +1232,6 @@ export default {
         }
       }
       return false;
-    },
-    isSubmissionCodeRequired() {
-      const past90Days = subDays(startOfToday(), 90);
-      let furthestServiceDate;
-
-      for (let i=0; i<this.medicalServiceClaims.length; i++) {
-        if (furthestServiceDate) {
-          if (this.medicalServiceClaims[i].serviceDate
-            && isBefore(this.medicalServiceClaims[i].serviceDate, furthestServiceDate)) {
-            furthestServiceDate = this.medicalServiceClaims[i].serviceDate;
-          }
-        } else {
-          furthestServiceDate = this.medicalServiceClaims[i].serviceDate;
-        }
-      }
-      if (!furthestServiceDate) {
-        return false;
-      }
-      return isBefore(furthestServiceDate, past90Days);
     },
     isCSR() {
       return isCSR(this.$router.currentRoute.path);

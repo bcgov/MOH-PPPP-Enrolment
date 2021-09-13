@@ -326,11 +326,11 @@
                 v-model='claim.submissionCode'
                 defaultOptionLabel='None'
                 :options='submissionCodeOptions'
-                :isRequiredAsteriskShown='isSubmissionCodeRequired'
+                :isRequiredAsteriskShown='isSubmissionCodeRequired(index)'
                 :inputStyle='largeStyles'
                 @blur='handleBlurField($v.medicalServiceClaims.$each[index].submissionCode)' />
             <div class="text-danger"
-                v-if="v.submissionCode.$dirty && isSubmissionCodeRequired && !v.submissionCode.required"
+                v-if="v.submissionCode.$dirty && isSubmissionCodeRequired(index) && !v.submissionCode.submissionCodeValidator"
                 aria-live="assertive">Submission code is required.</div>
             <Textarea label="Notes/Additional Information:"
               :id="'msc-medical-notes-' + index"
@@ -565,11 +565,11 @@
                   v-model='claim.submissionCode'
                   defaultOptionLabel='None'
                   :options='submissionCodeOptions'
-                  :isRequiredAsteriskShown='isSubmissionCodeRequired'
+                  :isRequiredAsteriskShown='isHospitalVisitSubmissionCodeRequired(index)'
                   :inputStyle='largeStyles'
                   @blur='handleBlurField($v.hospitalVisitClaims.$each[index].submissionCode)' />
             <div class="text-danger"
-                v-if="v.submissionCode.$dirty && isSubmissionCodeRequired && !v.submissionCode.required"
+                v-if="v.submissionCode.$dirty && isHospitalVisitSubmissionCodeRequired(index) && !v.submissionCode.hospitalVisitSubmissionCodeValidator"
                 aria-live="assertive">Submission code is required.</div>
             <Textarea label="Notes/Additional Information:"
                   :id="'hvc-hospital-notes-' + index"
@@ -802,6 +802,7 @@ import {
   clarificationCodeValidator,
   diagnosticCodeValidator,
   serviceDateValidator,
+  submissionCodeValidator,
 } from '@/helpers/validators';
 import {
   selectOptionsSubmissionCode,
@@ -1002,6 +1003,19 @@ const partialTimeValidator = (value) => {
   }
   return true;
 };
+
+const hospitalVisitSubmissionCodeValidator = (value, vm) => {
+  const past90Days = subDays(startOfToday(), 90);
+  const ISODateStr = getISODateString(vm.year, vm.month, vm.dayFrom);
+  const serviceDate = parseISO(ISODateStr);
+  if (!isValid(serviceDate) || !isValidISODateString(ISODateStr)) {
+    return true;
+  }
+  if (isBefore(serviceDate, past90Days)) {
+    return !!value;
+  }
+  return true;
+}
 
 export default {
   name: 'MainFormPage',
@@ -1221,7 +1235,9 @@ export default {
           serviceClarificationCode: {
             clarificationCodeValidator: optionalValidator(clarificationCodeValidator),
           },
-          submissionCode: {},
+          submissionCode: {
+            submissionCodeValidator,
+          },
           notes: {
             maxLength: maxLength(400),
           },
@@ -1279,7 +1295,9 @@ export default {
           serviceClarificationCode: {
             clarificationCodeValidator: optionalValidator(clarificationCodeValidator),
           },
-          submissionCode: {},
+          submissionCode: {
+            hospitalVisitSubmissionCodeValidator,
+          },
           notes: {
             maxLength: maxLength(400),
           },
@@ -1343,10 +1361,6 @@ export default {
       validations.referredToFirstNameInitial.required = required;
       validations.referredToLastName.required = required;
       validations.referredToPractitionerNumber.required = required;
-    }
-    if (this.isSubmissionCodeRequired) {
-      validations.medicalServiceClaims.$each.submissionCode.required = required;
-      validations.hospitalVisitClaims.$each.submissionCode.required = required;
     }
     if (this.isCSR) {
       validations.planReferenceNumber = {
@@ -1465,7 +1479,29 @@ export default {
         return 'Service Date cannot be more than 90 days in the future.';
       }
       return 'Service Date cannot be in the future.';
-    }
+    },
+    isSubmissionCodeRequired(index) {
+      const past90Days = subDays(startOfToday(), 90);
+      let serviceDate = this.medicalServiceClaims[index].serviceDate;
+      
+      if (!isValid(serviceDate)) {
+        return false;
+      }
+      return isBefore(serviceDate, past90Days);
+    },
+    isHospitalVisitSubmissionCodeRequired(index) {
+      const past90Days = subDays(startOfToday(), 90);
+      const ISODateStr = getISODateString(
+        this.hospitalVisitClaims[index].year,
+        this.hospitalVisitClaims[index].month,
+        this.hospitalVisitClaims[index].dayFrom,
+      );
+      const serviceDate = parseISO(ISODateStr);
+      if (!isValid(serviceDate) || !isValidISODateString(ISODateStr)) {
+        return false;
+      }
+      return isBefore(serviceDate, past90Days);
+    },
   },
   computed: {
     isReferredByRequired() {
@@ -1491,41 +1527,6 @@ export default {
         }
       }
       return false;
-    },
-    isSubmissionCodeRequired() {
-      const past90Days = subDays(startOfToday(), 90);
-      let furthestServiceDate;
-
-      for (let i=0; i<this.medicalServiceClaims.length; i++) {
-        if (furthestServiceDate) {
-          if (this.medicalServiceClaims[i].serviceDate
-            && isBefore(this.medicalServiceClaims[i].serviceDate, furthestServiceDate)) {
-            furthestServiceDate = this.medicalServiceClaims[i].serviceDate;
-          }
-        } else {
-          furthestServiceDate = this.medicalServiceClaims[i].serviceDate;
-        }
-      }
-      for (let i=0; i<this.hospitalVisitClaims.length; i++) {
-        const ISODateStr = getISODateString(
-          this.hospitalVisitClaims[i].year,
-          this.hospitalVisitClaims[i].month,
-          this.hospitalVisitClaims[i].dayFrom,
-        );
-        const serviceDate = parseISO(ISODateStr);
-        if (isValid(furthestServiceDate)) {
-          if (isValid(serviceDate)
-            && isBefore(serviceDate, furthestServiceDate)) {
-            furthestServiceDate = serviceDate;
-          }
-        } else {
-          furthestServiceDate = serviceDate;
-        }
-      }
-      if (!isValid(furthestServiceDate)) {
-        return false;
-      }
-      return isBefore(furthestServiceDate, past90Days);
     },
     isCSR() {
       return isCSR(this.$router.currentRoute.path);
