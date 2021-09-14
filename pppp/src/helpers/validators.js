@@ -7,6 +7,7 @@ import {
   startOfToday,
   subDays,
 } from 'date-fns';
+import { selectOptionsSpecialtyCode } from '@/constants/select-options';
 
 export const bcPostalCodeValidator = (value) => {
   const criteria = RegExp('^[Vv]\\d[A-Za-z][ ]?\\d[A-Za-z]\\d$');
@@ -70,4 +71,9 @@ export const submissionCodeValidator = (value, vm) => {
     return !!value;
   }
   return true;
+};
+
+export const specialtyCodeValidator = (value) => {
+  const index = selectOptionsSpecialtyCode.findIndex((item) => item.value === value);
+  return index > -1;
 };
