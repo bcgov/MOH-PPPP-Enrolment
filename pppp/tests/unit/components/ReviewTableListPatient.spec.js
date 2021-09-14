@@ -34,6 +34,8 @@ const patientState = {
   streetName: "defaultstreetName",
   city: "defaultcity",
   postalCode: "defaultpostalCode",
+  isVehicleAccident: "Y",
+  vehicleAccidentClaimNumber: "defaultAccidentClaimNumber",
 };
 storeTemplate.modules.payPatientForm.state = cloneDeep(patientState);
 
@@ -194,16 +196,17 @@ describe("ReviewTableList patient paymentMailAddressData()", () => {
   });
 
   it("renders addressOwner", () => {
-    console.log("avocado", wrapper.text())
+    console.log("avocado", wrapper.text());
     const addressOwner = wrapper.vm.$store.state.payPatientForm.addressOwner;
     expect(addressOwner).toBe("Default address owner");
     //it capitalizes the value, so I capitalized it below
-    expect(wrapper.text()).toEqual(expect.stringContaining("Default address owner"));
+    expect(wrapper.text()).toEqual(
+      expect.stringContaining("Default address owner")
+    );
   });
 
   it("renders unitNumber", () => {
-    const unitNumber =
-      wrapper.vm.$store.state.payPatientForm.unitNumber;
+    const unitNumber = wrapper.vm.$store.state.payPatientForm.unitNumber;
     expect(unitNumber).toBe("defaultunitNumber");
     expect(wrapper.text()).toEqual(
       expect.stringContaining("defaultunitNumber")
@@ -213,13 +216,17 @@ describe("ReviewTableList patient paymentMailAddressData()", () => {
   it("renders streetNumber", () => {
     const streetNumber = wrapper.vm.$store.state.payPatientForm.streetNumber;
     expect(streetNumber).toBe("defaultstreetNumber");
-    expect(wrapper.text()).toEqual(expect.stringContaining("defaultstreetNumber"));
+    expect(wrapper.text()).toEqual(
+      expect.stringContaining("defaultstreetNumber")
+    );
   });
 
   it("renders streetName", () => {
     const streetName = wrapper.vm.$store.state.payPatientForm.streetName;
     expect(streetName).toBe("defaultstreetName");
-    expect(wrapper.text()).toEqual(expect.stringContaining("defaultstreetName"));
+    expect(wrapper.text()).toEqual(
+      expect.stringContaining("defaultstreetName")
+    );
   });
 
   it("renders city", () => {
@@ -231,6 +238,48 @@ describe("ReviewTableList patient paymentMailAddressData()", () => {
   it("renders postalCode", () => {
     const postalCode = wrapper.vm.$store.state.payPatientForm.postalCode;
     expect(postalCode).toBe("defaultpostalCode");
-    expect(wrapper.text()).toEqual(expect.stringContaining("defaultpostalCode"));
+    expect(wrapper.text()).toEqual(
+      expect.stringContaining("defaultpostalCode")
+    );
+  });
+});
+
+describe("ReviewTableList patient vehicleAccidentData()", () => {
+  let store;
+  let wrapper;
+
+  beforeEach(() => {
+    store = new Vuex.Store(storeTemplate);
+    wrapper = mount(Page, {
+      localVue,
+      store,
+      mocks: {
+        $route: {
+          path: "/",
+        },
+        $router: {
+          push: jest.fn(),
+          currentRoute: {
+            path: "/potato-csr",
+          },
+        },
+      },
+    });
+  });
+
+  it("renders isVehicleAccident", () => {
+    const isVehicleAccident =
+      wrapper.vm.$store.state.payPatientForm.isVehicleAccident;
+    expect(isVehicleAccident).toBe("Y");
+    expect(wrapper.text()).toEqual(expect.stringContaining("Yes"));
+  });
+
+  it("renders vehicleAccidentClaimNumber", () => {
+    const vehicleAccidentClaimNumber =
+      wrapper.vm.$store.state.payPatientForm.vehicleAccidentClaimNumber;
+    expect(vehicleAccidentClaimNumber).toBe("defaultAccidentClaimNumber");
+    expect(wrapper.text()).toEqual(
+      expect.stringContaining("defaultAccidentClaimNumber")
+    );
   });
 });
