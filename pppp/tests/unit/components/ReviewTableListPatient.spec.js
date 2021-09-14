@@ -22,11 +22,16 @@ const storeTemplate = {
 
 const patientState = {
   medicalServiceClaims: ["1", "2", "3"],
-  planReferenceNumber: "11111",
+  planReferenceNumber: "defaultReferenceNumber",
+  phn: "defaultphn",
+  dependentNumber: "defaultdependentNumber",
+  firstName: "defaultfirstName",
+  lastName: "defaultlastName",
+  birthDate: "defaultBirthDate",
 };
 storeTemplate.modules.payPatientForm.state = cloneDeep(patientState);
 
-describe.skip("ReviewTableList -- patient", () => {
+describe.skip("ReviewTableList patient", () => {
   it("renders", () => {
     const store = new Vuex.Store(storeTemplate);
     const wrapper = mount(Page, {
@@ -48,7 +53,7 @@ describe.skip("ReviewTableList -- patient", () => {
   });
 });
 
-describe("ReviewTableList -- patient planReferenceNumberData() CSR", () => {
+describe("ReviewTableList patient planReferenceNumberData() CSR", () => {
   let store;
   let wrapper;
 
@@ -71,8 +76,10 @@ describe("ReviewTableList -- patient planReferenceNumberData() CSR", () => {
       },
     });
     const result = wrapper.vm.$store.state.payPatientForm.planReferenceNumber;
-    expect(result).toBe("11111");
-    expect(wrapper.text()).toEqual(expect.stringContaining("11111"));
+    expect(result).toBe("defaultReferenceNumber");
+    expect(wrapper.text()).toEqual(
+      expect.stringContaining("defaultReferenceNumber")
+    );
   });
 
   it("does not render plan reference number when path is NOT CSR", () => {
@@ -93,7 +100,68 @@ describe("ReviewTableList -- patient planReferenceNumberData() CSR", () => {
       },
     });
     const result = wrapper.vm.$store.state.payPatientForm.planReferenceNumber;
-    expect(result).toBe("11111");
-    expect(wrapper.text()).not.toEqual(expect.stringContaining("11111"));
+    expect(result).toBe("defaultReferenceNumber");
+    expect(wrapper.text()).not.toEqual(
+      expect.stringContaining("defaultReferenceNumber")
+    );
   });
 });
+
+describe("ReviewTableList patient patientData()", () => {
+  let store;
+  let wrapper;
+
+  beforeEach(() => {
+    store = new Vuex.Store(storeTemplate);
+    wrapper = mount(Page, {
+      localVue,
+      store,
+      mocks: {
+        $route: {
+          path: "/",
+        },
+        $router: {
+          push: jest.fn(),
+          currentRoute: {
+            path: "/potato-csr",
+          },
+        },
+      },
+    });
+  });
+
+  it("renders phn", () => {
+    const phn = wrapper.vm.$store.state.payPatientForm.phn;
+    expect(phn).toBe("defaultphn");
+    expect(wrapper.text()).toEqual(expect.stringContaining("defaultphn"));
+  });
+
+  it("renders dependentNumber", () => {
+    const dependentNumber =
+      wrapper.vm.$store.state.payPatientForm.dependentNumber;
+    expect(dependentNumber).toBe("defaultdependentNumber");
+    expect(wrapper.text()).toEqual(
+      expect.stringContaining("defaultdependentNumber")
+    );
+  });
+
+  it("renders firstName", () => {
+    const firstName = wrapper.vm.$store.state.payPatientForm.firstName;
+    expect(firstName).toBe("defaultfirstName");
+    expect(wrapper.text()).toEqual(expect.stringContaining("defaultfirstName"));
+  });
+
+  it("renders lastName", () => {
+    const lastName = wrapper.vm.$store.state.payPatientForm.lastName;
+    expect(lastName).toBe("defaultlastName");
+    expect(wrapper.text()).toEqual(expect.stringContaining("defaultlastName"));
+  });
+
+  it("renders birthDate", () => {
+    const birthDate = wrapper.vm.$store.state.payPatientForm.birthDate;
+    expect(birthDate).toBe("defaultBirthDate");
+    expect(wrapper.text()).toEqual(expect.stringContaining("defaultBirthDate"));
+  });
+});
+
+
