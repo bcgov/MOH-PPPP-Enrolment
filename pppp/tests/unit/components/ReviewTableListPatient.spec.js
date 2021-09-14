@@ -28,10 +28,16 @@ const patientState = {
   firstName: "defaultfirstName",
   lastName: "defaultlastName",
   birthDate: "defaultBirthDate",
+  addressOwner: "Default address owner",
+  unitNumber: "defaultunitNumber",
+  streetNumber: "defaultstreetNumber",
+  streetName: "defaultstreetName",
+  city: "defaultcity",
+  postalCode: "defaultpostalCode",
 };
 storeTemplate.modules.payPatientForm.state = cloneDeep(patientState);
 
-describe.skip("ReviewTableList patient", () => {
+describe("ReviewTableList patient", () => {
   it("renders", () => {
     const store = new Vuex.Store(storeTemplate);
     const wrapper = mount(Page, {
@@ -164,4 +170,67 @@ describe("ReviewTableList patient patientData()", () => {
   });
 });
 
+describe("ReviewTableList patient paymentMailAddressData()", () => {
+  let store;
+  let wrapper;
 
+  beforeEach(() => {
+    store = new Vuex.Store(storeTemplate);
+    wrapper = mount(Page, {
+      localVue,
+      store,
+      mocks: {
+        $route: {
+          path: "/",
+        },
+        $router: {
+          push: jest.fn(),
+          currentRoute: {
+            path: "/potato-csr",
+          },
+        },
+      },
+    });
+  });
+
+  it("renders addressOwner", () => {
+    console.log("avocado", wrapper.text())
+    const addressOwner = wrapper.vm.$store.state.payPatientForm.addressOwner;
+    expect(addressOwner).toBe("Default address owner");
+    //it capitalizes the value, so I capitalized it below
+    expect(wrapper.text()).toEqual(expect.stringContaining("Default address owner"));
+  });
+
+  it("renders unitNumber", () => {
+    const unitNumber =
+      wrapper.vm.$store.state.payPatientForm.unitNumber;
+    expect(unitNumber).toBe("defaultunitNumber");
+    expect(wrapper.text()).toEqual(
+      expect.stringContaining("defaultunitNumber")
+    );
+  });
+
+  it("renders streetNumber", () => {
+    const streetNumber = wrapper.vm.$store.state.payPatientForm.streetNumber;
+    expect(streetNumber).toBe("defaultstreetNumber");
+    expect(wrapper.text()).toEqual(expect.stringContaining("defaultstreetNumber"));
+  });
+
+  it("renders streetName", () => {
+    const streetName = wrapper.vm.$store.state.payPatientForm.streetName;
+    expect(streetName).toBe("defaultstreetName");
+    expect(wrapper.text()).toEqual(expect.stringContaining("defaultstreetName"));
+  });
+
+  it("renders city", () => {
+    const city = wrapper.vm.$store.state.payPatientForm.city;
+    expect(city).toBe("defaultcity");
+    expect(wrapper.text()).toEqual(expect.stringContaining("defaultcity"));
+  });
+
+  it("renders postalCode", () => {
+    const postalCode = wrapper.vm.$store.state.payPatientForm.postalCode;
+    expect(postalCode).toBe("defaultpostalCode");
+    expect(wrapper.text()).toEqual(expect.stringContaining("defaultpostalCode"));
+  });
+});
