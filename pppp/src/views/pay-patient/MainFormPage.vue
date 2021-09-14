@@ -328,11 +328,11 @@
                 v-model='claim.submissionCode'
                 defaultOptionLabel='None'
                 :options='submissionCodeOptions'
-                :isRequiredAsteriskShown='isSubmissionCodeRequired'
+                :isRequiredAsteriskShown='isSubmissionCodeRequired(index)'
                 :inputStyle='largeStyles'
                 @blur='handleBlurField($v.medicalServiceClaims.$each[index].submissionCode)' />
             <div class="text-danger"
-                v-if="v.submissionCode.$dirty && isSubmissionCodeRequired && !v.submissionCode.required"
+                v-if="v.submissionCode.$dirty && isSubmissionCodeRequired(index) && !v.submissionCode.submissionCodeValidator"
                 aria-live="assertive">Submission code is required.</div>
             <Textarea label='Notes/Additional Information:'
                   :id='"notes-" + index'
@@ -472,7 +472,10 @@
                 @blur='handleBlurField($v.practitionerSpecialtyCode)'/>
           <div class="text-danger"
               v-if="$v.practitionerSpecialtyCode.$dirty && !$v.practitionerSpecialtyCode.alphanumericValidator"
-              aria-live="assertive">Specialty code must be alphanumeric.</div>
+              aria-live="assertive">Specialty Code must be alphanumeric.</div>
+          <div class="text-danger"
+              v-if="$v.practitionerSpecialtyCode.$dirty && !$v.practitionerSpecialtyCode.minLength"
+              aria-live="assertive">Specialty Code cannot be less than 2 characters.</div>
           <FacilityNumberInput label='Facility Number:'
                 id='facility-number'
                 class='mt-3'
@@ -587,12 +590,14 @@
       </ul>
       <p>Do you wish to continue?</p>
     </PromptModal>
-    <ContinueBar @continue="validateFields()" />
+    <ContinueBar @continue="validateFields()"
+                :hasLoader="isValidating" />
   </div>
 </template>
 
 <script>
 import pageStateService from '@/services/page-state-service';
+import apiService from '@/services/api-service';
 import {
   payPatientRoutes,
   isPastPath,
@@ -611,6 +616,7 @@ import {
   clarificationCodeValidator,
   diagnosticCodeValidator,
   serviceDateValidator,
+  submissionCodeValidator,
 } from '@/helpers/validators';
 import {
   selectOptionsSubmissionCode,
@@ -742,7 +748,7 @@ const serviceDateFutureValidator = (value, vm) => {
     return false;
   }
   if (feeItem === '03333') {
-    const future90Days = addDays(startOfToday(), 90);
+    const future90Days = addDays(startOfToday(), 91); // Add 1 day to include today's date.
     return isBefore(value, future90Days);
   }
   return isBefore(value, addDays(startOfToday(), 1)); // Add 1 day to include today's date.
@@ -779,6 +785,7 @@ export default {
   data: () => {
     return {
       isPageLoaded: false,
+      isValidating: false,
       isValidationModalShown: false,
       addressOwnerOptions: [
         {
@@ -996,7 +1003,9 @@ export default {
           serviceClarificationCode: {
             clarificationCodeValidator: optionalValidator(clarificationCodeValidator),
           },
-          submissionCode: {},
+          submissionCode: {
+            submissionCodeValidator,
+          },
           notes: {
             maxLength: maxLength(400),
           },
@@ -1023,6 +1032,7 @@ export default {
       },
       practitionerSpecialtyCode: {
         alphanumericValidator: optionalValidator(alphanumericValidator),
+        minLength: optionalValidator(minLength(2)),
       },
       referredByFirstNameInitial: {
         alphaValidator: optionalValidator(alphaValidator),
@@ -1056,9 +1066,6 @@ export default {
       validations.referredToLastName.required = required;
       validations.referredToPractitionerNumber.required = required;
     }
-    if (this.isSubmissionCodeRequired) {
-      validations.medicalServiceClaims.$each.submissionCode.required = required; 
-    }
     if (this.isCSR) {
       validations.planReferenceNumber = {
         required,
@@ -1086,10 +1093,37 @@ export default {
       if (!this.dependentNumber) {
         this.dependentNumber = '00';
       }
-      // Pad Fee Items with leading zeros.
+      
       for (let i=0; i<this.medicalServiceClaims.length; i++) {
+        // Pad Fee Items with leading zeros.
         if (this.medicalServiceClaims[i].feeItem) {
           this.medicalServiceClaims[i].feeItem = padLeadingZeros(this.medicalServiceClaims[i].feeItem, 5);
+        }
+        // Set default "calledStartTime" to "00:00".
+        if (!this.medicalServiceClaims[i].calledStartTime
+          || (
+            !this.medicalServiceClaims[i].calledStartTime.hour &&
+            !this.medicalServiceClaims[i].calledStartTime.minute
+          )
+        ) {
+          this.medicalServiceClaims[i].calledStartTime = {
+            hour: '00',
+            minute: '00',
+            time: '00:00'
+          };
+        }
+        // Set default "renderedFinishTime" to "00:00".
+        if (!this.medicalServiceClaims[i].renderedFinishTime
+          || (
+            !this.medicalServiceClaims[i].renderedFinishTime.hour &&
+            !this.medicalServiceClaims[i].renderedFinishTime.minute
+          )
+        ) {
+          this.medicalServiceClaims[i].renderedFinishTime = {
+            hour: '00',
+            minute: '00',
+            time: '00:00'
+          };
         }
       }
 
@@ -1099,8 +1133,38 @@ export default {
         return;
       }
 
+      this.isValidating = true;
+
+      const token = this.$store.state.payPatientForm.captchaToken;
+      const applicationUuid = this.$store.state.payPatientForm.applicationUuid;
+      
       // Do server-side validation.
-      this.isValidationModalShown = true;
+      apiService.validateApplication(token, {
+        applicationUuid: applicationUuid,
+        practitionerFirstName: this.practitionerFirstName || '',
+        practitionerLastName: this.practitionerLastName || '',
+        practitionerNumber: this.practitionerPractitionerNumber || '',
+        serviceFeeItem1: this.medicalServiceClaims[0] && this.medicalServiceClaims[0].feeItem ? this.medicalServiceClaims[0].feeItem : '',
+        serviceFeeItem2: this.medicalServiceClaims[1] && this.medicalServiceClaims[1].feeItem ? this.medicalServiceClaims[1].feeItem : '',
+        serviceFeeItem3: this.medicalServiceClaims[2] && this.medicalServiceClaims[2].feeItem ? this.medicalServiceClaims[2].feeItem : '',
+        serviceFeeItem4: this.medicalServiceClaims[3] && this.medicalServiceClaims[3].feeItem ? this.medicalServiceClaims[3].feeItem : '',
+        serviceLocationCode1: this.medicalServiceClaims[0] && this.medicalServiceClaims[0].locationOfService ? this.medicalServiceClaims[0].locationOfService : '',
+        serviceLocationCode2: this.medicalServiceClaims[1] && this.medicalServiceClaims[1].locationOfService ? this.medicalServiceClaims[1].locationOfService : '',
+        serviceLocationCode3: this.medicalServiceClaims[2] && this.medicalServiceClaims[2].locationOfService ? this.medicalServiceClaims[2].locationOfService : '',
+        serviceLocationCode4: this.medicalServiceClaims[3] && this.medicalServiceClaims[3].locationOfService ? this.medicalServiceClaims[3].locationOfService : '',
+        hospitalFeeItem1: '',
+        hospitalFeeItem2: '',
+        hospitalLocationCode1: '',
+        hospitalLocationCode2: ''
+      }).then((response) => {
+        console.log('Response:', response);
+        this.isValidating = false;
+        this.isValidationModalShown = true;
+      }).catch(() => {
+        this.isValidating = false;
+        this.isValidationModalShown = true;
+      });
+      // this.isValidationModalShown = true;
 
       // this.navigateToNextPage();
     },
@@ -1171,6 +1235,14 @@ export default {
       }
       return 'Service date cannot be in the future.';
     },
+    isSubmissionCodeRequired(index) {
+      const past90Days = subDays(startOfToday(), 90);
+      let serviceDate = this.medicalServiceClaims[index].serviceDate;
+      if (!serviceDate) {
+        return false;
+      }
+      return isBefore(serviceDate, past90Days);
+    },
   },
   computed: {
     isReferredByRequired() {
@@ -1191,25 +1263,6 @@ export default {
         }
       }
       return false;
-    },
-    isSubmissionCodeRequired() {
-      const past90Days = subDays(startOfToday(), 90);
-      let furthestServiceDate;
-
-      for (let i=0; i<this.medicalServiceClaims.length; i++) {
-        if (furthestServiceDate) {
-          if (this.medicalServiceClaims[i].serviceDate
-            && isBefore(this.medicalServiceClaims[i].serviceDate, furthestServiceDate)) {
-            furthestServiceDate = this.medicalServiceClaims[i].serviceDate;
-          }
-        } else {
-          furthestServiceDate = this.medicalServiceClaims[i].serviceDate;
-        }
-      }
-      if (!furthestServiceDate) {
-        return false;
-      }
-      return isBefore(furthestServiceDate, past90Days);
     },
     isCSR() {
       return isCSR(this.$router.currentRoute.path);

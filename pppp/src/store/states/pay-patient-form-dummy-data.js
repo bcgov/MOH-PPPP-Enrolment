@@ -27,8 +27,8 @@ export default {
       serviceDate: new Date(),
       numberOfServices: '1',
       serviceClarificationCode: 'A1',
-      feeItem: '12345',
-      amountBilled: '1.00',
+      feeItem: '00010',
+      amountBilled: '0.00',
       calledStartTime: {
         hour: '08',
         minute: '01'
@@ -45,10 +45,10 @@ export default {
     }
   ],
 
-  practitionerLastName: 'Doe',
-  practitionerFirstName: 'J',
+  practitionerLastName: 'OPXUWPW',
+  practitionerFirstName: 'UJGIJPQ',
   practitionerPaymentNumber: 'A0001',
-  practitionerPractitionerNumber: '22274',
+  practitionerPractitionerNumber: 'B1419',
   practitionerFacilityNumber: '12345',
   practitionerSpecialtyCode: 'A1',
 

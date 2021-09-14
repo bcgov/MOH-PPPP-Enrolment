@@ -2,6 +2,11 @@ import {
   getISODateString,
   isValidISODateString,
 } from 'common-lib-vue';
+import {
+  isBefore,
+  startOfToday,
+  subDays,
+} from 'date-fns';
 
 export const bcPostalCodeValidator = (value) => {
   const criteria = RegExp('^[Vv]\\d[A-Za-z][ ]?\\d[A-Za-z]\\d$');
@@ -53,4 +58,16 @@ export const serviceDateValidator = (_, vm) => {
   }
   const isoDateString = getISODateString(year, month + 1, day);
   return isValidISODateString(isoDateString);
+};
+
+export const submissionCodeValidator = (value, vm) => {
+  const past90Days = subDays(startOfToday(), 90);
+  const serviceDate = vm.serviceDate;
+  if (!serviceDate) {
+    return true;
+  }
+  if (isBefore(serviceDate, past90Days)) {
+    return !!value;
+  }
+  return true;
 };

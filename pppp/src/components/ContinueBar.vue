@@ -41,4 +41,9 @@ export default {
   position: sticky;
   bottom: 0;
 }
+@media print {
+  .continue-bar {
+    display: none;
+  }
+}
 </style>
