@@ -24,15 +24,19 @@ jest
 
 jest.mock("@/helpers/scroll", () => ({
   scrollTo: jest.fn(),
-  scrollToError: jest.fn(),
+  scrollToElement: jest.fn(),
 }));
 
 const spyOnLogNavigation = jest
   .spyOn(logService, "logNavigation")
   .mockImplementation(() => Promise.resolve("logged"));
 
-const spyOnScrollTo = jest.spyOn(scrollHelper, "scrollTo");
-const spyOnScrollToError = jest.spyOn(scrollHelper, "scrollToError");
+const spyOnScrollTo = jest
+  .spyOn(scrollHelper, "scrollTo")
+  .mockImplementation(() => Promise.resolve("scrolled"));
+const spyOnScrollToElement = jest
+  .spyOn(scrollHelper, "scrollToElement")
+  .mockImplementation(() => Promise.resolve("scrolled"));
 
 const storeTemplate = {
   modules: {
@@ -735,6 +739,11 @@ describe("ReviewTableList patient navigateToClaimCountPage()", () => {
       .mockImplementation(() => Promise.resolve("pushed"));
   });
 
+  afterEach(() => {
+    jest.resetModules();
+    jest.clearAllMocks();
+  });
+
   it("calls router push", () => {
     wrapper.vm.navigateToClaimCountPage();
     expect(spyOnRouter).toHaveBeenCalledWith("/pay-patient");
@@ -801,5 +810,115 @@ describe("ReviewTableList patient navigateToClaimCountPage() (part 2 CSR)", () =
   it("calls scrollTo", () => {
     wrapper.vm.navigateToClaimCountPage();
     expect(spyOnScrollTo).toHaveBeenCalled();
+  });
+});
+
+describe("ReviewTableList patient navigateToMainFormPage(anchorName)", () => {
+  let store;
+  let wrapper;
+  let $route;
+  let $router;
+  let spyOnRouter;
+
+  const anchorName = "anchorName";
+
+  beforeEach(() => {
+    $route = {
+      path: "/potato",
+    };
+    $router = {
+      $route,
+      currentRoute: $route,
+      push: jest.fn(),
+    };
+    store = new Vuex.Store(storeTemplate);
+    wrapper = mount(Page, {
+      localVue,
+      store,
+      mocks: {
+        $route,
+        $router,
+      },
+    });
+    spyOnRouter = jest
+      .spyOn($router, "push")
+      .mockImplementation(() => Promise.resolve("pushed"));
+  });
+
+  afterEach(() => {
+    jest.resetModules();
+    jest.clearAllMocks();
+  });
+
+  it("calls router push", () => {
+    wrapper.vm.navigateToMainFormPage(anchorName);
+    expect(spyOnRouter).toHaveBeenCalledWith("/pay-patient/main-form");
+  });
+
+  it("calls setPageComplete", () => {
+    wrapper.vm.navigateToMainFormPage(anchorName);
+    expect(spyOnSetPageComplete).toHaveBeenCalledWith("/pay-patient/main-form");
+  });
+
+  it("calls scrollToElement", async () => {
+    wrapper.vm.navigateToMainFormPage(anchorName);
+    await wrapper.vm.$nextTick;
+    expect(spyOnScrollToElement).toHaveBeenCalled();
+  });
+});
+
+describe("ReviewTableList patient navigateToMainFormPage(anchorName) (part 2 CSR)", () => {
+  let store;
+  let wrapper;
+  let $route;
+  let $router;
+  let spyOnRouter;
+
+  const anchorName = "anchorName";
+
+  beforeEach(() => {
+    $route = {
+      path: "/potato-csr",
+    };
+    $router = {
+      $route,
+      currentRoute: $route,
+      push: jest.fn(),
+    };
+    store = new Vuex.Store(storeTemplate);
+    wrapper = mount(Page, {
+      localVue,
+      store,
+      mocks: {
+        $route,
+        $router,
+      },
+    });
+    spyOnRouter = jest
+      .spyOn($router, "push")
+      .mockImplementation(() => Promise.resolve("pushed"));
+  });
+
+  afterEach(() => {
+    jest.resetModules();
+    jest.clearAllMocks();
+  });
+
+  it("calls router push", () => {
+    wrapper.vm.navigateToMainFormPage(anchorName);
+    expect(spyOnRouter).toHaveBeenCalledWith("/pay-patient-csr/main-form");
+  });
+
+  it("calls setPageComplete", () => {
+    wrapper.vm.navigateToMainFormPage(anchorName);
+    expect(spyOnSetPageComplete).toHaveBeenCalledWith(
+      "/pay-patient-csr/main-form"
+    );
+  });
+
+  it("calls scrollToElement", async () => {
+    wrapper.vm.navigateToMainFormPage(anchorName);
+    await wrapper.vm.$nextTick;
+    expect(spyOnScrollToElement).toHaveBeenCalled();
   });
 });
