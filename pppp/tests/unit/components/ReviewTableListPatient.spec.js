@@ -59,6 +59,9 @@ const patientState = {
   practitionerPractitionerNumber: "defaultpractitionerPractitionerNumber",
   practitionerSpecialtyCode: "defaultpractitionerSpecialtyCode",
   practitionerFacilityNumber: "defaultpractitionerFacilityNumber",
+  referredByPractitionerNumber: "defaultreferredByPractitionerNumber",
+  referredByLastName: "defaultreferredByLastName",
+  referredByFirstNameInitial: "defaultreferredByFirstNameInitial",
 };
 storeTemplate.modules.payPatientForm.state = cloneDeep(patientState);
 
@@ -530,7 +533,9 @@ describe("ReviewTableList patient practitionerData()", () => {
   it("renders practitionerPractitionerNumber", () => {
     const practitionerPractitionerNumber =
       wrapper.vm.$store.state.payPatientForm.practitionerPractitionerNumber;
-    expect(practitionerPractitionerNumber).toBe("defaultpractitionerPractitionerNumber");
+    expect(practitionerPractitionerNumber).toBe(
+      "defaultpractitionerPractitionerNumber"
+    );
     expect(wrapper.text()).toEqual(
       expect.stringContaining("defaultpractitionerPractitionerNumber")
     );
@@ -548,10 +553,54 @@ describe("ReviewTableList patient practitionerData()", () => {
   it("renders practitionerFacilityNumber", () => {
     const practitionerFacilityNumber =
       wrapper.vm.$store.state.payPatientForm.practitionerFacilityNumber;
-    expect(practitionerFacilityNumber).toBe("defaultpractitionerFacilityNumber");
+    expect(practitionerFacilityNumber).toBe(
+      "defaultpractitionerFacilityNumber"
+    );
     expect(wrapper.text()).toEqual(
       expect.stringContaining("defaultpractitionerFacilityNumber")
     );
+  });
+});
+
+describe("ReviewTableList patient referredByData()", () => {
+  let store;
+  let wrapper;
+
+  beforeEach(() => {
+    store = new Vuex.Store(storeTemplate);
+    wrapper = mount(Page, {
+      localVue,
+      store,
+      mocks: {
+        $route: {
+          path: "/",
+        },
+        $router: {
+          push: jest.fn(),
+          currentRoute: {
+            path: "/potato-csr",
+          },
+        },
+      },
+    });
+  });
+
+  it("renders referredByPractitionerNumber", () => {
+    const referredByPractitionerNumber = wrapper.vm.$store.state.payPatientForm.referredByPractitionerNumber;
+    expect(referredByPractitionerNumber).toBe("defaultreferredByPractitionerNumber");
+    expect(wrapper.text()).toEqual(expect.stringContaining("defaultreferredByPractitionerNumber"));
+  });
+
+  it("renders referredByLastName", () => {
+    const referredByLastName = wrapper.vm.$store.state.payPatientForm.referredByLastName;
+    expect(referredByLastName).toBe("defaultreferredByLastName");
+    expect(wrapper.text()).toEqual(expect.stringContaining("defaultreferredByLastName"));
+  });
+
+  it("renders referredByFirstNameInitial", () => {
+    const referredByFirstNameInitial = wrapper.vm.$store.state.payPatientForm.referredByFirstNameInitial;
+    expect(referredByFirstNameInitial).toBe("defaultreferredByFirstNameInitial");
+    expect(wrapper.text()).toEqual(expect.stringContaining("defaultreferredByFirstNameInitial"));
   });
 });
 
