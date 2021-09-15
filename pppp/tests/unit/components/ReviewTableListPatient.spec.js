@@ -53,6 +53,12 @@ const patientState = {
       notes: "defaultnotes",
     },
   ],
+  practitionerLastName: "defaultpractitionerLastName",
+  practitionerFirstName: "defaultpractitionerFirstName",
+  practitionerPaymentNumber: "defaultpractitionerPaymentNumber",
+  practitionerPractitionerNumber: "defaultpractitionerPractitionerNumber",
+  practitionerSpecialtyCode: "defaultpractitionerSpecialtyCode",
+  practitionerFacilityNumber: "defaultpractitionerFacilityNumber",
 };
 storeTemplate.modules.payPatientForm.state = cloneDeep(patientState);
 
@@ -468,6 +474,84 @@ describe("ReviewTableList patient medicalServiceClaims()", () => {
       wrapper.vm.$store.state.payPatientForm.medicalServiceClaims[0].notes;
     expect(notes).toBe("defaultnotes");
     expect(wrapper.text()).toEqual(expect.stringContaining("defaultnotes"));
+  });
+});
+
+describe("ReviewTableList patient practitionerData()", () => {
+  let store;
+  let wrapper;
+
+  beforeEach(() => {
+    store = new Vuex.Store(storeTemplate);
+    wrapper = mount(Page, {
+      localVue,
+      store,
+      mocks: {
+        $route: {
+          path: "/",
+        },
+        $router: {
+          push: jest.fn(),
+          currentRoute: {
+            path: "/potato-csr",
+          },
+        },
+      },
+    });
+  });
+
+  it("renders practitionerLastName", () => {
+    const practitionerLastName =
+      wrapper.vm.$store.state.payPatientForm.practitionerLastName;
+    expect(practitionerLastName).toBe("defaultpractitionerLastName");
+    expect(wrapper.text()).toEqual(
+      expect.stringContaining("defaultpractitionerLastName")
+    );
+  });
+
+  it("renders practitionerFirstName", () => {
+    const practitionerFirstName =
+      wrapper.vm.$store.state.payPatientForm.practitionerFirstName;
+    expect(practitionerFirstName).toBe("defaultpractitionerFirstName");
+    expect(wrapper.text()).toEqual(
+      expect.stringContaining("defaultpractitionerFirstName")
+    );
+  });
+
+  it("renders practitionerPaymentNumber", () => {
+    const practitionerPaymentNumber =
+      wrapper.vm.$store.state.payPatientForm.practitionerPaymentNumber;
+    expect(practitionerPaymentNumber).toBe("defaultpractitionerPaymentNumber");
+    expect(wrapper.text()).toEqual(
+      expect.stringContaining("defaultpractitionerPaymentNumber")
+    );
+  });
+
+  it("renders practitionerPractitionerNumber", () => {
+    const practitionerPractitionerNumber =
+      wrapper.vm.$store.state.payPatientForm.practitionerPractitionerNumber;
+    expect(practitionerPractitionerNumber).toBe("defaultpractitionerPractitionerNumber");
+    expect(wrapper.text()).toEqual(
+      expect.stringContaining("defaultpractitionerPractitionerNumber")
+    );
+  });
+
+  it("renders practitionerSpecialtyCode", () => {
+    const practitionerSpecialtyCode =
+      wrapper.vm.$store.state.payPatientForm.practitionerSpecialtyCode;
+    expect(practitionerSpecialtyCode).toBe("defaultpractitionerSpecialtyCode");
+    expect(wrapper.text()).toEqual(
+      expect.stringContaining("defaultpractitionerSpecialtyCode")
+    );
+  });
+
+  it("renders practitionerFacilityNumber", () => {
+    const practitionerFacilityNumber =
+      wrapper.vm.$store.state.payPatientForm.practitionerFacilityNumber;
+    expect(practitionerFacilityNumber).toBe("defaultpractitionerFacilityNumber");
+    expect(wrapper.text()).toEqual(
+      expect.stringContaining("defaultpractitionerFacilityNumber")
+    );
   });
 });
 
