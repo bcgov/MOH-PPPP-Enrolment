@@ -46,6 +46,14 @@ const storeTemplate = {
   },
 };
 
+const storeTemplate2 = {
+  modules: {
+    app: cloneDeep(module1),
+    payPatientForm: cloneDeep(module2),
+    payPractitionerForm: cloneDeep(module3),
+  },
+};
+
 const patientState = {
   planReferenceNumber: "defaultReferenceNumber",
   phn: "defaultphn",
@@ -92,7 +100,12 @@ const patientState = {
   referredToLastName: "defaultreferredToLastName",
   referredToFirstNameInitial: "defaultreferredToFirstNameInitial",
 };
+
+const patientState2 = {
+  medicalServiceClaims: ["1", "2", "3"],
+};
 storeTemplate.modules.payPatientForm.state = cloneDeep(patientState);
+storeTemplate2.modules.payPatientForm.state = cloneDeep(patientState2);
 
 //-------COMPUTED-------
 describe("ReviewTableList patient", () => {
@@ -920,5 +933,46 @@ describe("ReviewTableList patient navigateToMainFormPage(anchorName) (part 2 CSR
     wrapper.vm.navigateToMainFormPage(anchorName);
     await wrapper.vm.$nextTick;
     expect(spyOnScrollToElement).toHaveBeenCalled();
+  });
+});
+
+describe("ReviewTableList patient getMedicalServiceClaimTitle(index)", () => {
+  let store;
+  let wrapper;
+  const $route = {
+    path: "/potato-csr",
+  };
+  const $router = {
+    $route,
+    currentRoute: $route,
+    push: jest.fn(),
+  };
+
+  it("returns 1", () => {
+    store = new Vuex.Store(storeTemplate);
+    wrapper = mount(Page, {
+      localVue,
+      store,
+      mocks: {
+        $route,
+        $router,
+      },
+    });
+    const result = wrapper.vm.getMedicalServiceClaimTitle(0);
+    expect(result).toEqual("Service");
+  });
+
+  it("returns 2", () => {
+    store = new Vuex.Store(storeTemplate2);
+    wrapper = mount(Page, {
+      localVue,
+      store,
+      mocks: {
+        $route,
+        $router,
+      },
+    });
+    const result = wrapper.vm.getMedicalServiceClaimTitle(0);
+    expect(result).toEqual("Service (1 of 3)");
   });
 });
