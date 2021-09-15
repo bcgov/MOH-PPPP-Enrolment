@@ -62,6 +62,9 @@ const patientState = {
   referredByPractitionerNumber: "defaultreferredByPractitionerNumber",
   referredByLastName: "defaultreferredByLastName",
   referredByFirstNameInitial: "defaultreferredByFirstNameInitial",
+  referredToPractitionerNumber: "defaultreferredToPractitionerNumber",
+  referredToLastName: "defaultreferredToLastName",
+  referredToFirstNameInitial: "defaultreferredToFirstNameInitial",
 };
 storeTemplate.modules.payPatientForm.state = cloneDeep(patientState);
 
@@ -586,21 +589,85 @@ describe("ReviewTableList patient referredByData()", () => {
   });
 
   it("renders referredByPractitionerNumber", () => {
-    const referredByPractitionerNumber = wrapper.vm.$store.state.payPatientForm.referredByPractitionerNumber;
-    expect(referredByPractitionerNumber).toBe("defaultreferredByPractitionerNumber");
-    expect(wrapper.text()).toEqual(expect.stringContaining("defaultreferredByPractitionerNumber"));
+    const referredByPractitionerNumber =
+      wrapper.vm.$store.state.payPatientForm.referredByPractitionerNumber;
+    expect(referredByPractitionerNumber).toBe(
+      "defaultreferredByPractitionerNumber"
+    );
+    expect(wrapper.text()).toEqual(
+      expect.stringContaining("defaultreferredByPractitionerNumber")
+    );
   });
 
   it("renders referredByLastName", () => {
-    const referredByLastName = wrapper.vm.$store.state.payPatientForm.referredByLastName;
+    const referredByLastName =
+      wrapper.vm.$store.state.payPatientForm.referredByLastName;
     expect(referredByLastName).toBe("defaultreferredByLastName");
-    expect(wrapper.text()).toEqual(expect.stringContaining("defaultreferredByLastName"));
+    expect(wrapper.text()).toEqual(
+      expect.stringContaining("defaultreferredByLastName")
+    );
   });
 
   it("renders referredByFirstNameInitial", () => {
-    const referredByFirstNameInitial = wrapper.vm.$store.state.payPatientForm.referredByFirstNameInitial;
-    expect(referredByFirstNameInitial).toBe("defaultreferredByFirstNameInitial");
-    expect(wrapper.text()).toEqual(expect.stringContaining("defaultreferredByFirstNameInitial"));
+    const referredByFirstNameInitial =
+      wrapper.vm.$store.state.payPatientForm.referredByFirstNameInitial;
+    expect(referredByFirstNameInitial).toBe(
+      "defaultreferredByFirstNameInitial"
+    );
+    expect(wrapper.text()).toEqual(
+      expect.stringContaining("defaultreferredByFirstNameInitial")
+    );
+  });
+});
+
+describe("ReviewTableList patient referredToData()", () => {
+  let store;
+  let wrapper;
+
+  beforeEach(() => {
+    store = new Vuex.Store(storeTemplate);
+    wrapper = mount(Page, {
+      localVue,
+      store,
+      mocks: {
+        $route: {
+          path: "/",
+        },
+        $router: {
+          push: jest.fn(),
+          currentRoute: {
+            path: "/potato-csr",
+          },
+        },
+      },
+    });
+  });
+
+  it("renders referredToPractitionerNumber", () => {
+    const referredToPractitionerNumber =
+      wrapper.vm.$store.state.payPatientForm.referredToPractitionerNumber;
+    expect(referredToPractitionerNumber).toBe("defaultreferredToPractitionerNumber");
+    expect(wrapper.text()).toEqual(
+      expect.stringContaining("defaultreferredToPractitionerNumber")
+    );
+  });
+
+  it("renders referredToLastName", () => {
+    const referredToLastName =
+      wrapper.vm.$store.state.payPatientForm.referredToLastName;
+    expect(referredToLastName).toBe("defaultreferredToLastName");
+    expect(wrapper.text()).toEqual(
+      expect.stringContaining("defaultreferredToLastName")
+    );
+  });
+
+  it("renders referredToFirstNameInitial", () => {
+    const referredToFirstNameInitial =
+      wrapper.vm.$store.state.payPatientForm.referredToFirstNameInitial;
+    expect(referredToFirstNameInitial).toBe("defaultreferredToFirstNameInitial");
+    expect(wrapper.text()).toEqual(
+      expect.stringContaining("defaultreferredToFirstNameInitial")
+    );
   });
 });
 
