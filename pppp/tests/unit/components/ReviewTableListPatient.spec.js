@@ -7,6 +7,7 @@ import { cloneDeep } from "lodash";
 import * as module1 from "../../../src/store/modules/app";
 import * as module2 from "../../../src/store/modules/pay-patient-form";
 import * as module3 from "../../../src/store/modules/pay-practitioner-form";
+import { isCSR as isCSRHelper } from "@/helpers/url";
 
 const localVue = createLocalVue();
 localVue.use(Vuex);
@@ -646,7 +647,9 @@ describe("ReviewTableList patient referredToData()", () => {
   it("renders referredToPractitionerNumber", () => {
     const referredToPractitionerNumber =
       wrapper.vm.$store.state.payPatientForm.referredToPractitionerNumber;
-    expect(referredToPractitionerNumber).toBe("defaultreferredToPractitionerNumber");
+    expect(referredToPractitionerNumber).toBe(
+      "defaultreferredToPractitionerNumber"
+    );
     expect(wrapper.text()).toEqual(
       expect.stringContaining("defaultreferredToPractitionerNumber")
     );
@@ -664,20 +667,17 @@ describe("ReviewTableList patient referredToData()", () => {
   it("renders referredToFirstNameInitial", () => {
     const referredToFirstNameInitial =
       wrapper.vm.$store.state.payPatientForm.referredToFirstNameInitial;
-    expect(referredToFirstNameInitial).toBe("defaultreferredToFirstNameInitial");
+    expect(referredToFirstNameInitial).toBe(
+      "defaultreferredToFirstNameInitial"
+    );
     expect(wrapper.text()).toEqual(
       expect.stringContaining("defaultreferredToFirstNameInitial")
     );
   });
 });
 
-/*
-it("renders AAA", () => {
-    const AAA =
-      wrapper.vm.$store.state.payPatientForm.AAA;
-    expect(AAA).toBe("BBB");
-    expect(wrapper.text()).toEqual(
-      expect.stringContaining("BBB")
-    );
-  });
-  */
+//isCSR() is weirdly difficult to test. 
+//Can't call the function directly because it relies on mounted variables
+//Can't check the rendered output directly because it doesn't put text on the page
+//Next best thing is to check the v-if code on the planReferenceNumberData ReviewTable, currently line 15
+//So I did that in that test and skipped this specific test
