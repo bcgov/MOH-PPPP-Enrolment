@@ -1,17 +1,38 @@
 import { mount, createLocalVue } from "@vue/test-utils";
 import Vuex from "vuex";
-import Vue from "vue";
 import Vuelidate from "vuelidate";
 import Page from "@/components/pay-patient/ReviewTableList.vue";
 import { cloneDeep } from "lodash";
 import * as module1 from "../../../src/store/modules/app";
 import * as module2 from "../../../src/store/modules/pay-patient-form";
 import * as module3 from "../../../src/store/modules/pay-practitioner-form";
-import { isCSR as isCSRHelper } from "@/helpers/url";
+import pageStateService from "@/services/page-state-service";
+import logService from "@/services/log-service";
 
 const localVue = createLocalVue();
 localVue.use(Vuex);
-Vue.use(Vuelidate);
+localVue.use(Vuelidate);
+
+const scrollHelper = require("@/helpers/scroll");
+
+const spyOnSetPageComplete = jest
+  .spyOn(pageStateService, "setPageComplete")
+  .mockImplementation(() => Promise.resolve("set"));
+jest
+  .spyOn(pageStateService, "visitPage")
+  .mockImplementation(() => Promise.resolve("visited"));
+
+jest.mock("@/helpers/scroll", () => ({
+  scrollTo: jest.fn(),
+  scrollToError: jest.fn(),
+}));
+
+const spyOnLogNavigation = jest
+  .spyOn(logService, "logNavigation")
+  .mockImplementation(() => Promise.resolve("logged"));
+
+const spyOnScrollTo = jest.spyOn(scrollHelper, "scrollTo");
+const spyOnScrollToError = jest.spyOn(scrollHelper, "scrollToError");
 
 const storeTemplate = {
   modules: {
@@ -69,6 +90,7 @@ const patientState = {
 };
 storeTemplate.modules.payPatientForm.state = cloneDeep(patientState);
 
+//-------COMPUTED-------
 describe("ReviewTableList patient", () => {
   it("renders", () => {
     const store = new Vuex.Store(storeTemplate);
@@ -676,8 +698,108 @@ describe("ReviewTableList patient referredToData()", () => {
   });
 });
 
-//isCSR() is weirdly difficult to test. 
+//isCSR() is weirdly difficult to test.
 //Can't call the function directly because it relies on mounted variables
 //Can't check the rendered output directly because it doesn't put text on the page
 //Next best thing is to check the v-if code on the planReferenceNumberData ReviewTable, currently line 15
 //So I did that in that test and skipped this specific test
+
+//-------METHODS-------
+describe("ReviewTableList patient navigateToClaimCountPage()", () => {
+  let store;
+  let wrapper;
+  let $route;
+  let $router;
+  let spyOnRouter;
+
+  beforeEach(() => {
+    $route = {
+      path: "/potato",
+    };
+    $router = {
+      $route,
+      currentRoute: $route,
+      push: jest.fn(),
+    };
+    store = new Vuex.Store(storeTemplate);
+    wrapper = mount(Page, {
+      localVue,
+      store,
+      mocks: {
+        $route,
+        $router,
+      },
+    });
+    spyOnRouter = jest
+      .spyOn($router, "push")
+      .mockImplementation(() => Promise.resolve("pushed"));
+  });
+
+  it("calls router push", () => {
+    wrapper.vm.navigateToClaimCountPage();
+    expect(spyOnRouter).toHaveBeenCalledWith("/pay-patient");
+  });
+
+  it("calls setPageComplete", () => {
+    wrapper.vm.navigateToClaimCountPage();
+    expect(spyOnSetPageComplete).toHaveBeenCalledWith("/pay-patient");
+  });
+
+  it("calls scrollTo", () => {
+    wrapper.vm.navigateToClaimCountPage();
+    expect(spyOnScrollTo).toHaveBeenCalled();
+  });
+});
+
+describe("ReviewTableList patient navigateToClaimCountPage() (part 2 CSR)", () => {
+  let store;
+  let wrapper;
+  let $route;
+  let $router;
+  let spyOnRouter;
+
+  beforeEach(() => {
+    $route = {
+      path: "/potato-csr",
+    };
+    $router = {
+      $route,
+      currentRoute: $route,
+      push: jest.fn(),
+    };
+    store = new Vuex.Store(storeTemplate);
+    wrapper = mount(Page, {
+      localVue,
+      store,
+      mocks: {
+        $route,
+        $router,
+      },
+    });
+    spyOnRouter = jest
+      .spyOn($router, "push")
+      .mockImplementation(() => Promise.resolve("pushed"));
+  });
+
+  afterEach(() => {
+    jest.resetModules();
+    jest.clearAllMocks();
+  });
+
+  it("calls router push", async () => {
+    await wrapper.vm.$router.push("/potato-csr");
+    await wrapper.vm.$nextTick;
+    wrapper.vm.navigateToClaimCountPage();
+    expect(spyOnRouter).toHaveBeenCalledWith("/pay-patient-csr");
+  });
+
+  it("calls setPageComplete", () => {
+    wrapper.vm.navigateToClaimCountPage();
+    expect(spyOnSetPageComplete).toHaveBeenCalledWith("/pay-patient-csr");
+  });
+
+  it("calls scrollTo", () => {
+    wrapper.vm.navigateToClaimCountPage();
+    expect(spyOnScrollTo).toHaveBeenCalled();
+  });
+});
