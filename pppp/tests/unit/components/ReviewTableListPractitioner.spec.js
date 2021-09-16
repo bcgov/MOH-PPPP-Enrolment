@@ -670,7 +670,7 @@ describe("ReviewTableList practitioner referredToData()", () => {
   });
 });
 
-describe.only("ReviewTableList practitioner avocado()", () => {
+describe.only("ReviewTableList practitioner hospitalVisitClaims()", () => {
   let store;
   let wrapper;
 
@@ -693,36 +693,126 @@ describe.only("ReviewTableList practitioner avocado()", () => {
     });
   });
 
-  it("renders referredToPractitionerNumber", () => {
-    const referredToPractitionerNumber =
-      wrapper.vm.$store.state.payPractitionerForm.referredToPractitionerNumber;
-    expect(referredToPractitionerNumber).toBe(
-      "defaultreferredToPractitionerNumber"
+  it("renders HVC month", () => {
+    const month =
+      wrapper.vm.$store.state.payPractitionerForm.hospitalVisitClaims[0].month;
+    expect(month).toBe(
+      '1'
     );
     expect(wrapper.text()).toEqual(
-      expect.stringContaining("defaultreferredToPractitionerNumber")
+      expect.stringContaining('January')
     );
   });
 
-  it("renders referredToLastName", () => {
-    const referredToLastName =
-      wrapper.vm.$store.state.payPractitionerForm.referredToLastName;
-    expect(referredToLastName).toBe("defaultreferredToLastName");
+  it("renders HVC dayFrom", () => {
+    const dayFrom =
+      wrapper.vm.$store.state.payPractitionerForm.hospitalVisitClaims[0].dayFrom;
+    expect(dayFrom).toBe("defaultHVCdayFrom");
     expect(wrapper.text()).toEqual(
-      expect.stringContaining("defaultreferredToLastName")
+      expect.stringContaining("defaultHVCdayFrom")
     );
   });
 
-  it("renders referredToFirstNameInitial", () => {
-    const referredToFirstNameInitial =
-      wrapper.vm.$store.state.payPractitionerForm.referredToFirstNameInitial;
-    expect(referredToFirstNameInitial).toBe(
-      "defaultreferredToFirstNameInitial"
-    );
+  it("renders HVC dayTo", () => {
+    const dayTo =
+      wrapper.vm.$store.state.payPractitionerForm.hospitalVisitClaims[0].dayTo;
+    expect(dayTo).toBe("defaultHVCdayTo");
     expect(wrapper.text()).toEqual(
-      expect.stringContaining("defaultreferredToFirstNameInitial")
+      expect.stringContaining("defaultHVCdayTo")
     );
   });
+
+  it("renders HVC year", () => {
+    const year =
+      wrapper.vm.$store.state.payPractitionerForm.hospitalVisitClaims[0].year;
+    expect(year).toBe("defaultHVCyear");
+    expect(wrapper.text()).toEqual(
+      expect.stringContaining("defaultHVCyear")
+    );
+  });
+
+  it("renders HVC numberOfServices", () => {
+    const numberOfServices =
+      wrapper.vm.$store.state.payPractitionerForm.hospitalVisitClaims[0].numberOfServices;
+    expect(numberOfServices).toBe("defaultHVCnumberOfServices");
+    expect(wrapper.text()).toEqual(
+      expect.stringContaining("defaultHVCnumberOfServices")
+    );
+  });
+
+  it("renders HVC serviceClarificationCode", () => {
+    const serviceClarificationCode =
+      wrapper.vm.$store.state.payPractitionerForm.hospitalVisitClaims[0].serviceClarificationCode;
+    expect(serviceClarificationCode).toBe("defaultHVCserviceClarificationCode");
+    expect(wrapper.text()).toEqual(
+      expect.stringContaining("defaultHVCserviceClarificationCode")
+    );
+  });
+
+  it("renders HVC feeItem", () => {
+    const feeItem =
+      wrapper.vm.$store.state.payPractitionerForm.hospitalVisitClaims[0].feeItem;
+    expect(feeItem).toBe("defaultHVCfeeItem");
+    expect(wrapper.text()).toEqual(
+      expect.stringContaining("defaultHVCfeeItem")
+    );
+  });
+
+  it("renders HVC amountBilled", () => {
+    const amountBilled =
+      wrapper.vm.$store.state.payPractitionerForm.hospitalVisitClaims[0].amountBilled;
+    expect(amountBilled).toBe("defaultHVCamountBilled");
+    expect(wrapper.text()).toEqual(
+      expect.stringContaining("defaultHVCamountBilled")
+    );
+  });
+
+  it("renders HVC diagnosticCode", () => {
+    const diagnosticCode =
+      wrapper.vm.$store.state.payPractitionerForm.hospitalVisitClaims[0].diagnosticCode;
+    expect(diagnosticCode).toBe("defaultHVCdiagnosticCode");
+    expect(wrapper.text()).toEqual(
+      expect.stringContaining("defaultHVCdiagnosticCode")
+    );
+  });
+
+  it("renders HVC locationOfService", () => {
+    const locationOfService =
+      wrapper.vm.$store.state.payPractitionerForm.hospitalVisitClaims[0].locationOfService;
+    expect(locationOfService).toBe("defaultHVClocationOfService");
+    expect(wrapper.text()).toEqual(
+      expect.stringContaining("defaultHVClocationOfService")
+    );
+  });
+
+  it("renders HVC correspondenceAttached", () => {
+    const correspondenceAttached =
+      wrapper.vm.$store.state.payPractitionerForm.hospitalVisitClaims[0].correspondenceAttached;
+    expect(correspondenceAttached).toBe("defaultHVCcorrespondenceAttached");
+    expect(wrapper.text()).toEqual(
+      expect.stringContaining("defaultHVCcorrespondenceAttached")
+    );
+  });
+
+  it("renders HVC submissionCode", () => {
+    const submissionCode =
+      wrapper.vm.$store.state.payPractitionerForm.hospitalVisitClaims[0].submissionCode;
+    expect(submissionCode).toBe("defaultHVCsubmissionCode");
+    expect(wrapper.text()).toEqual(
+      expect.stringContaining("defaultHVCsubmissionCode")
+    );
+  });
+
+  it("renders HVC notes", () => {
+    const notes =
+      wrapper.vm.$store.state.payPractitionerForm.hospitalVisitClaims[0].notes;
+    expect(notes).toBe("defaultHVCnotes");
+    expect(wrapper.text()).toEqual(
+      expect.stringContaining("defaultHVCnotes")
+    );
+  });
+
+  
 });
 
 //isCSR() is weirdly difficult to test.
