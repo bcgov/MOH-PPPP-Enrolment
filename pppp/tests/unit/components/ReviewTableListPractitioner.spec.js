@@ -96,27 +96,117 @@ const practitionerState = {
   referredToFirstNameInitial: "defaultreferredToFirstNameInitial",
   hospitalVisitClaims: [
     {
-      month: '1',
-      dayFrom: 'defaultHVCdayFrom',
-      dayTo: 'defaultHVCdayTo',
-      year: 'defaultHVCyear',
-      numberOfServices: 'defaultHVCnumberOfServices',
-      serviceClarificationCode: 'defaultHVCserviceClarificationCode',
-      feeItem: 'defaultHVCfeeItem',
-      amountBilled: 'defaultHVCamountBilled',
-      diagnosticCode: 'defaultHVCdiagnosticCode',
-      locationOfService: 'defaultHVClocationOfService',
-      correspondenceAttached: 'defaultHVCcorrespondenceAttached',
-      submissionCode: 'defaultHVCsubmissionCode',
-      notes: 'defaultHVCnotes',
-    }
+      month: "1",
+      dayFrom: "defaultHVCdayFrom",
+      dayTo: "defaultHVCdayTo",
+      year: "defaultHVCyear",
+      numberOfServices: "defaultHVCnumberOfServices",
+      serviceClarificationCode: "defaultHVCserviceClarificationCode",
+      feeItem: "defaultHVCfeeItem",
+      amountBilled: "defaultHVCamountBilled",
+      diagnosticCode: "defaultHVCdiagnosticCode",
+      locationOfService: "defaultHVClocationOfService",
+      correspondenceAttached: "defaultHVCcorrespondenceAttached",
+      submissionCode: "defaultHVCsubmissionCode",
+      notes: "defaultHVCnotes",
+    },
   ],
-  coveragePreAuthNumber: "defaultcoveragePreAuthNumber"
+  coveragePreAuthNumber: "defaultcoveragePreAuthNumber",
 };
 
-const practitionerState2 = {
-  medicalServiceClaims: ["1", "2", "3"],
-};
+let practitionerState2 = cloneDeep(practitionerState);
+practitionerState2.medicalServiceClaims = [
+  {
+    serviceDate: "defaultserviceDate",
+    numberOfServices: "defaultnumberOfServices",
+    serviceClarificationCode: "defaultserviceClarificationCode",
+    feeItem: "defaultfeeItem",
+    amountBilled: "defaultamountBilled",
+    calledStartTime: { time: "defaultcalledStartTime" },
+    renderedFinishTime: { time: "defaultrenderedFinishTime" },
+    diagnosticCode: "defaultdiagnosticCode",
+    locationOfService: "defaultlocationOfService",
+    correspondenceAttached: "defaultcorrespondenceAttached",
+    submissionCode: "defaultsubmissionCode",
+    notes: "defaultnotes",
+  },
+  {
+    serviceDate: "defaultserviceDate",
+    numberOfServices: "defaultnumberOfServices",
+    serviceClarificationCode: "defaultserviceClarificationCode",
+    feeItem: "defaultfeeItem",
+    amountBilled: "defaultamountBilled",
+    calledStartTime: { time: "defaultcalledStartTime" },
+    renderedFinishTime: { time: "defaultrenderedFinishTime" },
+    diagnosticCode: "defaultdiagnosticCode",
+    locationOfService: "defaultlocationOfService",
+    correspondenceAttached: "defaultcorrespondenceAttached",
+    submissionCode: "defaultsubmissionCode",
+    notes: "defaultnotes",
+  },
+  {
+    serviceDate: "defaultserviceDate",
+    numberOfServices: "defaultnumberOfServices",
+    serviceClarificationCode: "defaultserviceClarificationCode",
+    feeItem: "defaultfeeItem",
+    amountBilled: "defaultamountBilled",
+    calledStartTime: { time: "defaultcalledStartTime" },
+    renderedFinishTime: { time: "defaultrenderedFinishTime" },
+    diagnosticCode: "defaultdiagnosticCode",
+    locationOfService: "defaultlocationOfService",
+    correspondenceAttached: "defaultcorrespondenceAttached",
+    submissionCode: "defaultsubmissionCode",
+    notes: "defaultnotes",
+  },
+];
+practitionerState2.hospitalVisitClaims = [
+  {
+    month: "1",
+    dayFrom: "defaultHVCdayFrom",
+    dayTo: "defaultHVCdayTo",
+    year: "defaultHVCyear",
+    numberOfServices: "defaultHVCnumberOfServices",
+    serviceClarificationCode: "defaultHVCserviceClarificationCode",
+    feeItem: "defaultHVCfeeItem",
+    amountBilled: "defaultHVCamountBilled",
+    diagnosticCode: "defaultHVCdiagnosticCode",
+    locationOfService: "defaultHVClocationOfService",
+    correspondenceAttached: "defaultHVCcorrespondenceAttached",
+    submissionCode: "defaultHVCsubmissionCode",
+    notes: "defaultHVCnotes",
+  },
+  {
+    month: "1",
+    dayFrom: "defaultHVCdayFrom",
+    dayTo: "defaultHVCdayTo",
+    year: "defaultHVCyear",
+    numberOfServices: "defaultHVCnumberOfServices",
+    serviceClarificationCode: "defaultHVCserviceClarificationCode",
+    feeItem: "defaultHVCfeeItem",
+    amountBilled: "defaultHVCamountBilled",
+    diagnosticCode: "defaultHVCdiagnosticCode",
+    locationOfService: "defaultHVClocationOfService",
+    correspondenceAttached: "defaultHVCcorrespondenceAttached",
+    submissionCode: "defaultHVCsubmissionCode",
+    notes: "defaultHVCnotes",
+  },
+  {
+    month: "1",
+    dayFrom: "defaultHVCdayFrom",
+    dayTo: "defaultHVCdayTo",
+    year: "defaultHVCyear",
+    numberOfServices: "defaultHVCnumberOfServices",
+    serviceClarificationCode: "defaultHVCserviceClarificationCode",
+    feeItem: "defaultHVCfeeItem",
+    amountBilled: "defaultHVCamountBilled",
+    diagnosticCode: "defaultHVCdiagnosticCode",
+    locationOfService: "defaultHVClocationOfService",
+    correspondenceAttached: "defaultHVCcorrespondenceAttached",
+    submissionCode: "defaultHVCsubmissionCode",
+    notes: "defaultHVCnotes",
+  },
+];
+
 storeTemplate.modules.payPractitionerForm.state = cloneDeep(practitionerState);
 storeTemplate2.modules.payPractitionerForm.state = cloneDeep(
   practitionerState2
@@ -167,7 +257,8 @@ describe("ReviewTableList practitioner planReferenceNumberData() CSR", () => {
         },
       },
     });
-    const result = wrapper.vm.$store.state.payPractitionerForm.planReferenceNumber;
+    const result =
+      wrapper.vm.$store.state.payPractitionerForm.planReferenceNumber;
     expect(result).toBe("defaultReferenceNumber");
     expect(wrapper.text()).toEqual(
       expect.stringContaining("defaultReferenceNumber")
@@ -191,7 +282,8 @@ describe("ReviewTableList practitioner planReferenceNumberData() CSR", () => {
         },
       },
     });
-    const result = wrapper.vm.$store.state.payPractitionerForm.planReferenceNumber;
+    const result =
+      wrapper.vm.$store.state.payPractitionerForm.planReferenceNumber;
     expect(result).toBe("defaultReferenceNumber");
     expect(wrapper.text()).not.toEqual(
       expect.stringContaining("defaultReferenceNumber")
@@ -321,7 +413,8 @@ describe("ReviewTableList Practitioner claimInfoData()", () => {
 
   it("renders planReferenceNumberOfOriginalClaim", () => {
     const isVehicleAccident =
-      wrapper.vm.$store.state.payPractitionerForm.planReferenceNumberOfOriginalClaim;
+      wrapper.vm.$store.state.payPractitionerForm
+        .planReferenceNumberOfOriginalClaim;
     expect(isVehicleAccident).toBe("defaultplanReferenceNumberOfOriginalClaim");
     expect(wrapper.text()).toEqual(
       expect.stringContaining("defaultplanReferenceNumberOfOriginalClaim")
@@ -384,7 +477,8 @@ describe("ReviewTableList Practitioner medicalServiceClaims()", () => {
 
   it("renders feeItem", () => {
     const feeItem =
-      wrapper.vm.$store.state.payPractitionerForm.medicalServiceClaims[0].feeItem;
+      wrapper.vm.$store.state.payPractitionerForm.medicalServiceClaims[0]
+        .feeItem;
     expect(feeItem).toBe("defaultfeeItem");
     expect(wrapper.text()).toEqual(expect.stringContaining("defaultfeeItem"));
   });
@@ -519,7 +613,8 @@ describe("ReviewTableList Practitioner practitionerData()", () => {
 
   it("renders practitionerPractitionerNumber", () => {
     const practitionerPractitionerNumber =
-      wrapper.vm.$store.state.payPractitionerForm.practitionerPractitionerNumber;
+      wrapper.vm.$store.state.payPractitionerForm
+        .practitionerPractitionerNumber;
     expect(practitionerPractitionerNumber).toBe(
       "defaultpractitionerPractitionerNumber"
     );
@@ -551,9 +646,7 @@ describe("ReviewTableList Practitioner practitionerData()", () => {
   it("renders Coverage Pre-Authorization Number", () => {
     const coveragePreAuthNumber =
       wrapper.vm.$store.state.payPractitionerForm.coveragePreAuthNumber;
-    expect(coveragePreAuthNumber).toBe(
-      "defaultcoveragePreAuthNumber"
-    );
+    expect(coveragePreAuthNumber).toBe("defaultcoveragePreAuthNumber");
     expect(wrapper.text()).toEqual(
       expect.stringContaining("defaultcoveragePreAuthNumber")
     );
@@ -670,7 +763,7 @@ describe("ReviewTableList practitioner referredToData()", () => {
   });
 });
 
-describe.only("ReviewTableList practitioner hospitalVisitClaims()", () => {
+describe("ReviewTableList practitioner hospitalVisitClaims()", () => {
   let store;
   let wrapper;
 
@@ -696,17 +789,14 @@ describe.only("ReviewTableList practitioner hospitalVisitClaims()", () => {
   it("renders HVC month", () => {
     const month =
       wrapper.vm.$store.state.payPractitionerForm.hospitalVisitClaims[0].month;
-    expect(month).toBe(
-      '1'
-    );
-    expect(wrapper.text()).toEqual(
-      expect.stringContaining('January')
-    );
+    expect(month).toBe("1");
+    expect(wrapper.text()).toEqual(expect.stringContaining("January"));
   });
 
   it("renders HVC dayFrom", () => {
     const dayFrom =
-      wrapper.vm.$store.state.payPractitionerForm.hospitalVisitClaims[0].dayFrom;
+      wrapper.vm.$store.state.payPractitionerForm.hospitalVisitClaims[0]
+        .dayFrom;
     expect(dayFrom).toBe("defaultHVCdayFrom");
     expect(wrapper.text()).toEqual(
       expect.stringContaining("defaultHVCdayFrom")
@@ -717,23 +807,20 @@ describe.only("ReviewTableList practitioner hospitalVisitClaims()", () => {
     const dayTo =
       wrapper.vm.$store.state.payPractitionerForm.hospitalVisitClaims[0].dayTo;
     expect(dayTo).toBe("defaultHVCdayTo");
-    expect(wrapper.text()).toEqual(
-      expect.stringContaining("defaultHVCdayTo")
-    );
+    expect(wrapper.text()).toEqual(expect.stringContaining("defaultHVCdayTo"));
   });
 
   it("renders HVC year", () => {
     const year =
       wrapper.vm.$store.state.payPractitionerForm.hospitalVisitClaims[0].year;
     expect(year).toBe("defaultHVCyear");
-    expect(wrapper.text()).toEqual(
-      expect.stringContaining("defaultHVCyear")
-    );
+    expect(wrapper.text()).toEqual(expect.stringContaining("defaultHVCyear"));
   });
 
   it("renders HVC numberOfServices", () => {
     const numberOfServices =
-      wrapper.vm.$store.state.payPractitionerForm.hospitalVisitClaims[0].numberOfServices;
+      wrapper.vm.$store.state.payPractitionerForm.hospitalVisitClaims[0]
+        .numberOfServices;
     expect(numberOfServices).toBe("defaultHVCnumberOfServices");
     expect(wrapper.text()).toEqual(
       expect.stringContaining("defaultHVCnumberOfServices")
@@ -742,7 +829,8 @@ describe.only("ReviewTableList practitioner hospitalVisitClaims()", () => {
 
   it("renders HVC serviceClarificationCode", () => {
     const serviceClarificationCode =
-      wrapper.vm.$store.state.payPractitionerForm.hospitalVisitClaims[0].serviceClarificationCode;
+      wrapper.vm.$store.state.payPractitionerForm.hospitalVisitClaims[0]
+        .serviceClarificationCode;
     expect(serviceClarificationCode).toBe("defaultHVCserviceClarificationCode");
     expect(wrapper.text()).toEqual(
       expect.stringContaining("defaultHVCserviceClarificationCode")
@@ -751,7 +839,8 @@ describe.only("ReviewTableList practitioner hospitalVisitClaims()", () => {
 
   it("renders HVC feeItem", () => {
     const feeItem =
-      wrapper.vm.$store.state.payPractitionerForm.hospitalVisitClaims[0].feeItem;
+      wrapper.vm.$store.state.payPractitionerForm.hospitalVisitClaims[0]
+        .feeItem;
     expect(feeItem).toBe("defaultHVCfeeItem");
     expect(wrapper.text()).toEqual(
       expect.stringContaining("defaultHVCfeeItem")
@@ -760,7 +849,8 @@ describe.only("ReviewTableList practitioner hospitalVisitClaims()", () => {
 
   it("renders HVC amountBilled", () => {
     const amountBilled =
-      wrapper.vm.$store.state.payPractitionerForm.hospitalVisitClaims[0].amountBilled;
+      wrapper.vm.$store.state.payPractitionerForm.hospitalVisitClaims[0]
+        .amountBilled;
     expect(amountBilled).toBe("defaultHVCamountBilled");
     expect(wrapper.text()).toEqual(
       expect.stringContaining("defaultHVCamountBilled")
@@ -769,7 +859,8 @@ describe.only("ReviewTableList practitioner hospitalVisitClaims()", () => {
 
   it("renders HVC diagnosticCode", () => {
     const diagnosticCode =
-      wrapper.vm.$store.state.payPractitionerForm.hospitalVisitClaims[0].diagnosticCode;
+      wrapper.vm.$store.state.payPractitionerForm.hospitalVisitClaims[0]
+        .diagnosticCode;
     expect(diagnosticCode).toBe("defaultHVCdiagnosticCode");
     expect(wrapper.text()).toEqual(
       expect.stringContaining("defaultHVCdiagnosticCode")
@@ -778,7 +869,8 @@ describe.only("ReviewTableList practitioner hospitalVisitClaims()", () => {
 
   it("renders HVC locationOfService", () => {
     const locationOfService =
-      wrapper.vm.$store.state.payPractitionerForm.hospitalVisitClaims[0].locationOfService;
+      wrapper.vm.$store.state.payPractitionerForm.hospitalVisitClaims[0]
+        .locationOfService;
     expect(locationOfService).toBe("defaultHVClocationOfService");
     expect(wrapper.text()).toEqual(
       expect.stringContaining("defaultHVClocationOfService")
@@ -787,7 +879,8 @@ describe.only("ReviewTableList practitioner hospitalVisitClaims()", () => {
 
   it("renders HVC correspondenceAttached", () => {
     const correspondenceAttached =
-      wrapper.vm.$store.state.payPractitionerForm.hospitalVisitClaims[0].correspondenceAttached;
+      wrapper.vm.$store.state.payPractitionerForm.hospitalVisitClaims[0]
+        .correspondenceAttached;
     expect(correspondenceAttached).toBe("defaultHVCcorrespondenceAttached");
     expect(wrapper.text()).toEqual(
       expect.stringContaining("defaultHVCcorrespondenceAttached")
@@ -796,7 +889,8 @@ describe.only("ReviewTableList practitioner hospitalVisitClaims()", () => {
 
   it("renders HVC submissionCode", () => {
     const submissionCode =
-      wrapper.vm.$store.state.payPractitionerForm.hospitalVisitClaims[0].submissionCode;
+      wrapper.vm.$store.state.payPractitionerForm.hospitalVisitClaims[0]
+        .submissionCode;
     expect(submissionCode).toBe("defaultHVCsubmissionCode");
     expect(wrapper.text()).toEqual(
       expect.stringContaining("defaultHVCsubmissionCode")
@@ -807,12 +901,8 @@ describe.only("ReviewTableList practitioner hospitalVisitClaims()", () => {
     const notes =
       wrapper.vm.$store.state.payPractitionerForm.hospitalVisitClaims[0].notes;
     expect(notes).toBe("defaultHVCnotes");
-    expect(wrapper.text()).toEqual(
-      expect.stringContaining("defaultHVCnotes")
-    );
+    expect(wrapper.text()).toEqual(expect.stringContaining("defaultHVCnotes"));
   });
-
-  
 });
 
 //isCSR() is weirdly difficult to test.
@@ -970,7 +1060,9 @@ describe("ReviewTableList practitioner navigateToMainFormPage(anchorName)", () =
 
   it("calls setPageComplete", () => {
     wrapper.vm.navigateToMainFormPage(anchorName);
-    expect(spyOnSetPageComplete).toHaveBeenCalledWith("/pay-practitioner/main-form");
+    expect(spyOnSetPageComplete).toHaveBeenCalledWith(
+      "/pay-practitioner/main-form"
+    );
   });
 
   it("calls scrollToElement", async () => {
