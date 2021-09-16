@@ -96,21 +96,22 @@ const practitionerState = {
   referredToFirstNameInitial: "defaultreferredToFirstNameInitial",
   hospitalVisitClaims: [
     {
-      month: '12',
-      dayFrom: '24',
-      dayTo: '26',
-      year: '2020',
-      numberOfServices: '1',
-      serviceClarificationCode: 'A1',
-      feeItem: '03333',
-      amountBilled: '0.00',
-      diagnosticCode: '001',
-      locationOfService: 'A',
-      correspondenceAttached: null,
-      submissionCode: 'I',
-      notes: 'Notes here.',
+      month: '1',
+      dayFrom: 'defaultHVCdayFrom',
+      dayTo: 'defaultHVCdayTo',
+      year: 'defaultHVCyear',
+      numberOfServices: 'defaultHVCnumberOfServices',
+      serviceClarificationCode: 'defaultHVCserviceClarificationCode',
+      feeItem: 'defaultHVCfeeItem',
+      amountBilled: 'defaultHVCamountBilled',
+      diagnosticCode: 'defaultHVCdiagnosticCode',
+      locationOfService: 'defaultHVClocationOfService',
+      correspondenceAttached: 'defaultHVCcorrespondenceAttached',
+      submissionCode: 'defaultHVCsubmissionCode',
+      notes: 'defaultHVCnotes',
     }
   ],
+  coveragePreAuthNumber: "defaultcoveragePreAuthNumber"
 };
 
 const practitionerState2 = {
@@ -295,7 +296,7 @@ describe("ReviewTableList Practitioner vehicleAccidentData()", () => {
   });
 });
 
-describe.only("ReviewTableList Practitioner claimInfoData()", () => {
+describe("ReviewTableList Practitioner claimInfoData()", () => {
   let store;
   let wrapper;
 
@@ -466,7 +467,7 @@ describe("ReviewTableList Practitioner medicalServiceClaims()", () => {
   });
 });
 
-describe("ReviewTableList Practitioner PractitionerData()", () => {
+describe("ReviewTableList Practitioner practitionerData()", () => {
   let store;
   let wrapper;
 
@@ -546,6 +547,17 @@ describe("ReviewTableList Practitioner PractitionerData()", () => {
       expect.stringContaining("defaultpractitionerFacilityNumber")
     );
   });
+
+  it("renders Coverage Pre-Authorization Number", () => {
+    const coveragePreAuthNumber =
+      wrapper.vm.$store.state.payPractitionerForm.coveragePreAuthNumber;
+    expect(coveragePreAuthNumber).toBe(
+      "defaultcoveragePreAuthNumber"
+    );
+    expect(wrapper.text()).toEqual(
+      expect.stringContaining("defaultcoveragePreAuthNumber")
+    );
+  });
 });
 
 describe("ReviewTableList practitioner referredByData()", () => {
@@ -604,6 +616,61 @@ describe("ReviewTableList practitioner referredByData()", () => {
 });
 
 describe("ReviewTableList practitioner referredToData()", () => {
+  let store;
+  let wrapper;
+
+  beforeEach(() => {
+    store = new Vuex.Store(storeTemplate);
+    wrapper = mount(Page, {
+      localVue,
+      store,
+      mocks: {
+        $route: {
+          path: "/",
+        },
+        $router: {
+          push: jest.fn(),
+          currentRoute: {
+            path: "/potato-csr",
+          },
+        },
+      },
+    });
+  });
+
+  it("renders referredToPractitionerNumber", () => {
+    const referredToPractitionerNumber =
+      wrapper.vm.$store.state.payPractitionerForm.referredToPractitionerNumber;
+    expect(referredToPractitionerNumber).toBe(
+      "defaultreferredToPractitionerNumber"
+    );
+    expect(wrapper.text()).toEqual(
+      expect.stringContaining("defaultreferredToPractitionerNumber")
+    );
+  });
+
+  it("renders referredToLastName", () => {
+    const referredToLastName =
+      wrapper.vm.$store.state.payPractitionerForm.referredToLastName;
+    expect(referredToLastName).toBe("defaultreferredToLastName");
+    expect(wrapper.text()).toEqual(
+      expect.stringContaining("defaultreferredToLastName")
+    );
+  });
+
+  it("renders referredToFirstNameInitial", () => {
+    const referredToFirstNameInitial =
+      wrapper.vm.$store.state.payPractitionerForm.referredToFirstNameInitial;
+    expect(referredToFirstNameInitial).toBe(
+      "defaultreferredToFirstNameInitial"
+    );
+    expect(wrapper.text()).toEqual(
+      expect.stringContaining("defaultreferredToFirstNameInitial")
+    );
+  });
+});
+
+describe.only("ReviewTableList practitioner avocado()", () => {
   let store;
   let wrapper;
 
