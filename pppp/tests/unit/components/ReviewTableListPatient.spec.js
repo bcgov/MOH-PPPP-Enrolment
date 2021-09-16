@@ -7,7 +7,6 @@ import * as module1 from "../../../src/store/modules/app";
 import * as module2 from "../../../src/store/modules/pay-patient-form";
 import * as module3 from "../../../src/store/modules/pay-practitioner-form";
 import pageStateService from "@/services/page-state-service";
-import logService from "@/services/log-service";
 
 const localVue = createLocalVue();
 localVue.use(Vuex);
@@ -26,10 +25,6 @@ jest.mock("@/helpers/scroll", () => ({
   scrollTo: jest.fn(),
   scrollToElement: jest.fn(),
 }));
-
-const spyOnLogNavigation = jest
-  .spyOn(logService, "logNavigation")
-  .mockImplementation(() => Promise.resolve("logged"));
 
 const spyOnScrollTo = jest
   .spyOn(scrollHelper, "scrollTo")
