@@ -50,7 +50,7 @@ export default {
   practitionerPaymentNumber: 'A0001',
   practitionerPractitionerNumber: 'B1419',
   practitionerFacilityNumber: '12345',
-  practitionerSpecialtyCode: 'A1',
+  practitionerSpecialtyCode: '99',
 
   referredByFirstNameInitial: 'R',
   referredByLastName: 'McDonald',

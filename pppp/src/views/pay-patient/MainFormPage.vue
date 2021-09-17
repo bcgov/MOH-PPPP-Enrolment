@@ -471,11 +471,19 @@
                 :inputStyle='extraSmallStyles'
                 @blur='handleBlurField($v.practitionerSpecialtyCode)'/>
           <div class="text-danger"
-              v-if="$v.practitionerSpecialtyCode.$dirty && !$v.practitionerSpecialtyCode.alphanumericValidator"
+              v-if="$v.practitionerSpecialtyCode.$dirty
+                && !$v.practitionerSpecialtyCode.alphanumericValidator"
               aria-live="assertive">Specialty Code must be alphanumeric.</div>
           <div class="text-danger"
-              v-if="$v.practitionerSpecialtyCode.$dirty && !$v.practitionerSpecialtyCode.minLength"
+              v-if="$v.practitionerSpecialtyCode.$dirty
+                && !$v.practitionerSpecialtyCode.minLength"
               aria-live="assertive">Specialty Code cannot be less than 2 characters.</div>
+          <div class="text-danger"
+              v-if="$v.practitionerSpecialtyCode.$dirty
+                && $v.practitionerSpecialtyCode.minLength
+                && $v.practitionerSpecialtyCode.alphanumericValidator
+                && !$v.practitionerSpecialtyCode.specialtyCodeValidator"
+              aria-live="assertive">Specialty Code is invalid.</div>
           <FacilityNumberInput label='Facility Number:'
                 id='facility-number'
                 class='mt-3'
@@ -616,6 +624,7 @@ import {
   clarificationCodeValidator,
   diagnosticCodeValidator,
   serviceDateValidator,
+  specialtyCodeValidator,
   submissionCodeValidator,
 } from '@/helpers/validators';
 import {
@@ -1033,6 +1042,7 @@ export default {
       practitionerSpecialtyCode: {
         alphanumericValidator: optionalValidator(alphanumericValidator),
         minLength: optionalValidator(minLength(2)),
+        specialtyCodeValidator: optionalValidator(specialtyCodeValidator),
       },
       referredByFirstNameInitial: {
         alphaValidator: optionalValidator(alphaValidator),

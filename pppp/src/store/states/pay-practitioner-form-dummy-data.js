@@ -62,7 +62,7 @@ export default {
   practitionerPaymentNumber: 'A1234',
   practitionerPractitionerNumber: '22274',
   practitionerFacilityNumber: '12345',
-  practitionerSpecialtyCode: 'A1',
+  practitionerSpecialtyCode: '99',
   coveragePreAuthNumber: '2222',
 
   referredByFirstNameInitial: 'R',
