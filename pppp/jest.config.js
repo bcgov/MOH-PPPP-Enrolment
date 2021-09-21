@@ -4,5 +4,8 @@ module.exports = {
   collectCoverageFrom: [
     "src/**/*.{js,vue}",
     "!src/main.js", // No need to cover bootstrap file
+    "!src/constants/*", // Nothing to test here either
+    "!src/store/states/*", // Entirely constant exports
+    "!src/helpers/form-helpers.js", // Entirely constant exports
   ]
 }
