@@ -311,7 +311,11 @@
                   :options='serviceLocationOptions'
                   :isRequiredAsteriskShown='true'
                   :inputStyle='extraLargeStyles'
-                  @blur='handleBlurField($v.medicalServiceClaims.$each[index].locationOfService)' />
+                  @blur='handleBlurField($v.medicalServiceClaims.$each[index].locationOfService)'>
+              <template v-slot:description>
+                <p class="input-description">MSP Claims submitted with Service Location Code (<b>A</b>) for dates of service on or after October 1, 2021, will not be accepted.</p>
+              </template>
+            </Select>
             <div class="text-danger"
                 v-if="v.locationOfService.$dirty && !v.locationOfService.required"
                 aria-live="assertive">Service location code is required.</div>
