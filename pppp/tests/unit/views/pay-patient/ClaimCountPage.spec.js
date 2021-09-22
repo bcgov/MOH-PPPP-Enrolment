@@ -215,3 +215,52 @@ describe("ClaimCountPage.vue handleCaptchaVerified()", () => {
     );
   });
 });
+
+describe("ClaimCountPage.vue handleCloseConsentModal()", () => {
+  let store;
+  let wrapper;
+
+  beforeEach(() => {
+    store = new Vuex.Store(storeTemplate);
+    wrapper = mount(Page, {
+      localVue,
+      store,
+      mocks: {
+        $route: {
+          path: "/",
+        },
+        $router: {
+          push: jest.fn(),
+          currentRoute: {
+            path: "/potato-csr",
+          },
+        },
+      },
+    });
+
+    wrapper.vm.$options.created.forEach((hook) => {
+      hook.call(wrapper.vm);
+    });
+  });
+
+  afterEach(() => {
+    jest.resetModules();
+    jest.clearAllMocks();
+  });
+
+  it("calls dispatch with correct parameters", () => {
+    const spyOnDispatch = jest.spyOn(wrapper.vm.$store, "dispatch");
+    wrapper.vm.handleCloseConsentModal();
+    expect(spyOnDispatch).toHaveBeenCalledWith(
+      `${module2.MODULE_NAME}/${module2.SET_IS_INFO_COLLECTION_NOTICE_OPEN}`,
+      false
+    );
+  });
+
+  it("assigns value to store such that it can be retrieved later", () => {
+    wrapper.vm.handleCloseConsentModal();
+    expect(
+      wrapper.vm.$store.state.payPatientForm.isInfoCollectionNoticeOpen
+    ).toEqual(false);
+  });
+});
