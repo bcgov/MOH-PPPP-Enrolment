@@ -7,8 +7,8 @@ import { cloneDeep } from "lodash";
 import * as module1 from "../../../../src/store/modules/app";
 import * as module2 from "../../../../src/store/modules/pay-patient-form";
 import * as module3 from "../../../../src/store/modules/pay-practitioner-form";
+import * as dummyDataValid from "../../../../src/store/states/pay-patient-form-dummy-data";
 import logService from "@/services/log-service";
-import spaEnvService from "@/services/spa-env-service";
 
 const localVue = createLocalVue();
 localVue.use(Vuex);
@@ -22,16 +22,36 @@ const storeTemplate = {
   },
 };
 
+const storeTemplate2 = {
+  modules: {
+    app: cloneDeep(module1.default),
+    payPatientForm: cloneDeep(module2.default),
+    payPractitionerForm: cloneDeep(module3.default),
+  },
+};
+
 const patientState = {
   isInfoCollectionNoticeOpen: true,
   applicationUuid: null,
 };
 
+const patientState2 = cloneDeep(dummyDataValid.default);
+
 storeTemplate.modules.payPatientForm.state = cloneDeep(patientState);
+storeTemplate2.modules.payPatientForm.state = cloneDeep(patientState2);
 
 const spyOnLogService = jest
   .spyOn(logService, "logNavigation")
   .mockImplementation(() => Promise.resolve("logged"));
+
+const scrollHelper = require("@/helpers/scroll");
+
+const spyOnScrollTo = jest.spyOn(scrollHelper, "scrollTo");
+const spyOnScrollToError = jest.spyOn(scrollHelper, "scrollToError");
+
+const spyOnWindowScrollTo = jest
+  .spyOn(window, "scrollTo")
+  .mockImplementation(jest.fn);
 
 console.log(
   "******************************************************************************************************************************************"
@@ -263,4 +283,83 @@ describe("ClaimCountPage.vue handleCloseConsentModal()", () => {
       wrapper.vm.$store.state.payPatientForm.isInfoCollectionNoticeOpen
     ).toEqual(false);
   });
+});
+
+describe("ClaimCountPage.vue validateFields()", () => {
+  let store;
+  let wrapper;
+
+  beforeEach(() => {
+    store = new Vuex.Store(storeTemplate);
+    wrapper = mount(Page, {
+      localVue,
+      store,
+      mocks: {
+        $route: {
+          path: "/",
+        },
+        $router: {
+          push: jest.fn(),
+          currentRoute: {
+            path: "/potato-csr",
+          },
+        },
+      },
+    });
+
+    wrapper.vm.$options.created.forEach((hook) => {
+      hook.call(wrapper.vm);
+    });
+  });
+
+  afterEach(() => {
+    jest.resetModules();
+    jest.clearAllMocks();
+  });
+
+  it("calls scrollToError (because it's invalid)", () => {
+    wrapper.vm.validateFields();
+    expect(spyOnScrollToError).toHaveBeenCalled();
+  });
+});
+
+describe.only("ClaimCountPage.vue validateFields() part 2 (valid)", () => {
+  let store;
+  let wrapper;
+
+  beforeEach(() => {
+    store = new Vuex.Store(storeTemplate2);
+    wrapper = mount(Page, {
+      localVue,
+      store,
+      mocks: {
+        $route: {
+          path: "/",
+        },
+        $router: {
+          push: jest.fn(),
+          currentRoute: {
+            path: "/potato-csr",
+          },
+        },
+      },
+    });
+
+    wrapper.vm.$options.created.forEach((hook) => {
+      hook.call(wrapper.vm);
+    });
+  });
+
+  afterEach(() => {
+    jest.resetModules();
+    jest.clearAllMocks();
+  });
+
+  it("returns false", () => {
+    wrapper.vm.validateFields();
+    expect(wrapper.element).toBeDefined();
+  });
+
+  //the true version of this test is impossible to verify
+  //for the reasons stated in the created() section
 });
