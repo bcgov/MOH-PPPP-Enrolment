@@ -38,7 +38,6 @@ console.log(
 );
 
 describe("ClaimCountPage.vue render test", () => {
-  console.log("render test: *****************");
   let store;
   let wrapper;
 
@@ -160,10 +159,59 @@ describe("ClaimCountPage.vue isFirstLoad()", () => {
   });
 
   it("returns false", () => {
-    const result = wrapper.vm.isFirstLoad()
+    const result = wrapper.vm.isFirstLoad();
     expect(result).toEqual(false);
   });
 
   //the true version of this test is impossible to verify
   //for the reasons stated in the created() section
+});
+
+describe("ClaimCountPage.vue handleCaptchaVerified()", () => {
+  let store;
+  let wrapper;
+
+  beforeEach(() => {
+    store = new Vuex.Store(storeTemplate);
+    wrapper = mount(Page, {
+      localVue,
+      store,
+      mocks: {
+        $route: {
+          path: "/",
+        },
+        $router: {
+          push: jest.fn(),
+          currentRoute: {
+            path: "/potato-csr",
+          },
+        },
+      },
+    });
+
+    wrapper.vm.$options.created.forEach((hook) => {
+      hook.call(wrapper.vm);
+    });
+  });
+
+  afterEach(() => {
+    jest.resetModules();
+    jest.clearAllMocks();
+  });
+
+  it("calls dispatch with correct parameters", () => {
+    const spyOnDispatch = jest.spyOn(wrapper.vm.$store, "dispatch");
+    wrapper.vm.handleCaptchaVerified("captchaTokenTest");
+    expect(spyOnDispatch).toHaveBeenCalledWith(
+      `${module2.MODULE_NAME}/${module2.SET_CAPTCHA_TOKEN}`,
+      "captchaTokenTest"
+    );
+  });
+
+  it("assigns value to store such that it can be retrieved later", () => {
+    wrapper.vm.handleCaptchaVerified("captchaTokenTest");
+    expect(wrapper.vm.$store.state.payPatientForm.captchaToken).toEqual(
+      "captchaTokenTest"
+    );
+  });
 });
