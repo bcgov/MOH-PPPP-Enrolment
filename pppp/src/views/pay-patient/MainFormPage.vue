@@ -1354,7 +1354,7 @@ export default {
       if (!serviceDate) {
         return false;
       }
-      return isBefore(serviceDate, past90Days);
+      return isBefore(serviceDate, addDays(past90Days, 1));
     },
   },
   computed: {

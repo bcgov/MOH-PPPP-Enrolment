@@ -1561,7 +1561,7 @@ export default {
       if (!isValid(serviceDate)) {
         return false;
       }
-      return isBefore(serviceDate, past90Days);
+      return isBefore(serviceDate, addDays(past90Days, 1));
     },
     isHospitalVisitSubmissionCodeRequired(index) {
       const past90Days = subDays(startOfToday(), 90);
