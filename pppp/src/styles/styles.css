@@ -10,6 +10,9 @@ body {
   .print-only {
     display: block;
   }
+  .print-hide {
+    display: none;
+  }
 }
 
 body.no-scroll {

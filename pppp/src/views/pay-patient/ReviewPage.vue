@@ -35,7 +35,10 @@ import {
   scrollToError,
   getTopScrollPosition
 } from '../../helpers/scroll';
-import { getConvertedPath } from '@/helpers/url';
+import {
+  getConvertedPath,
+  isCSR,
+} from '@/helpers/url';
 import { isCorrespondenceAttachedAbleToSubmit } from '@/helpers/form-helpers';
 import {
   MODULE_NAME as formModule,
@@ -158,9 +161,13 @@ export default {
     }
   },
   computed: {
+    isCSR() {
+      return isCSR(this.$router.currentRoute.path);
+    },
     isFormAbleToSubmit() {
       const correspondenceAttached = this.$store.state.payPatientForm.medicalServiceClaims.map(x => x.correspondenceAttached);
-      return correspondenceAttached.every(isCorrespondenceAttachedAbleToSubmit);
+      return this.isCSR
+          || correspondenceAttached.every(isCorrespondenceAttachedAbleToSubmit);
     },
     continueButtonLabel() {
       if (this.isFormAbleToSubmit) {

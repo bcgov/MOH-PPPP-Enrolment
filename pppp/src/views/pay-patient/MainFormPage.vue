@@ -247,7 +247,8 @@
                   maxlength='5'
                   :isRequiredAsteriskShown='true'
                   :inputStyle='smallStyles'
-                  @blur='handleBlurField($v.medicalServiceClaims.$each[index].feeItem)' />
+                  @blur='handleBlurField($v.medicalServiceClaims.$each[index].feeItem)'
+                  @input='handleInputServiceFeeItem(index)' />
             <div class="text-danger"
                 v-if="v.feeItem.$dirty && !v.feeItem.required"
                 aria-live="assertive">Fee Item is required.</div>
@@ -434,7 +435,8 @@
                 maxlength='35'
                 :inputStyle='mediumStyles'
                 :isRequiredAsteriskShown='true'
-                @blur='handleBlurField($v.practitionerLastName)' />
+                @blur='handleBlurField($v.practitionerLastName)'
+                @input='handleInputPractitioner()' />
           <div class="text-danger"
               v-if="$v.practitionerLastName.$dirty && !$v.practitionerLastName.required"
               aria-live="assertive">Practitioner Last Name is required.</div>
@@ -451,7 +453,8 @@
                 class='mt-3'
                 :inputStyle='mediumStyles'
                 :isRequiredAsteriskShown='true'
-                @blur='handleBlurField($v.practitionerFirstName)' />
+                @blur='handleBlurField($v.practitionerFirstName)'
+                @input='handleInputPractitioner()' />
           <div class="text-danger"
               v-if="$v.practitionerFirstName.$dirty && !$v.practitionerFirstName.required"
               aria-live="assertive">Practitioner First Name is required.</div>
@@ -481,7 +484,8 @@
                 v-model='practitionerPractitionerNumber'
                 :isRequiredAsteriskShown='true'
                 :inputStyle='smallStyles'
-                @blur='handleBlurField($v.practitionerPractitionerNumber)'/>
+                @blur='handleBlurField($v.practitionerPractitionerNumber)'
+                @input='handleInputPractitioner()'/>
           <div class="text-danger"
               v-if="$v.practitionerPractitionerNumber.$dirty && !$v.practitionerPractitionerNumber.required"
               aria-live="assertive">Practitioner number is required.</div>
@@ -1135,6 +1139,12 @@ export default {
         validation.$touch();
       }
     },
+    handleInputPractitioner() {
+      this.isPractitionerErrorShown = false;
+    },
+    handleInputServiceFeeItem(index) {
+      this.medicalServiceClaimsFeeItemValidationError[index] = false;
+    },
     handleProcessBirthDate(data) {
       this.birthDateData = data;
     },
@@ -1231,6 +1241,7 @@ export default {
               || responseData.practitionerLastName === 'N'
               || responseData.practitionerNumber === 'N') {
               this.isPractitionerErrorShown = true;
+              containsErrors = true;
             }
             for (let i=0; i<MAX_MEDICAL_SERVICE_CLAIMS; i++) {
               if (responseData['serviceFeeItem' + (i+1)] === 'N') {
