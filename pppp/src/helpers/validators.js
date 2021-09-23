@@ -3,9 +3,11 @@ import {
   isValidISODateString,
 } from 'common-lib-vue';
 import {
+  isAfter,
   isBefore,
   startOfToday,
   subDays,
+  parseISO,
 } from 'date-fns';
 import { selectOptionsSpecialtyCode } from '@/constants/select-options';
 
@@ -77,3 +79,19 @@ export const specialtyCodeValidator = (value) => {
   const index = selectOptionsSpecialtyCode.findIndex((item) => item.value === value);
   return index > -1;
 };
+
+export const serviceLocationCodeValidator = (value, vm) => {
+  const serviceDate = vm.serviceDate;
+  if (value === 'A' && serviceDate && isAfter(serviceDate, subDays(parseISO('2021-10-01'), 1))) {
+    return false;
+  }
+  return true;
+};
+
+export const serviceDateCutOffValidator = (value, vm) => {
+  const locationOfService = vm.locationOfService;
+  if (locationOfService === 'A' && value && isAfter(value, subDays(parseISO('2021-10-01'), 1))) {
+    return false;
+  }
+  return true;
+}

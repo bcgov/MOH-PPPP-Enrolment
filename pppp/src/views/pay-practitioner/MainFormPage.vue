@@ -199,6 +199,11 @@
                   && v.serviceDate.required
                   && !v.serviceDate.distantPastValidator"
                 aria-live="assertive">Service Date is too far in the past.</div>
+            <div class="text-danger"
+                v-if="v.serviceDate.$dirty
+                  && v.serviceDate.required
+                  && !v.serviceDate.serviceDateCutOffValidator"
+                aria-live="assertive">Service Date is invalid for the Service Location Code.</div>
             <DigitInput label='Number of Services:'
                   :id='"msc-number-of-services-" + index'
                   class='mt-3'
@@ -309,10 +314,20 @@
                   :options='serviceLocationOptions'
                   :isRequiredAsteriskShown='true'
                   :inputStyle='extraLargeStyles'
-                  @blur='handleBlurField($v.medicalServiceClaims.$each[index].locationOfService)' />
+                  @blur='handleBlurField($v.medicalServiceClaims.$each[index].locationOfService)'>
+              <template v-slot:description>
+                <p class="input-description">MSP Claims submitted with Service Location Code (<b>A</b>) for dates of service on or after October 1, 2021, will not be accepted.</p>
+              </template>
+            </Select>
             <div class="text-danger"
-                v-if="v.locationOfService.$dirty && !v.locationOfService.required"
+                v-if="v.locationOfService.$dirty
+                  && !v.locationOfService.required"
                 aria-live="assertive">Service location code is required.</div>
+            <div class="text-danger"
+                v-if="v.locationOfService.$dirty
+                  && v.locationOfService.required
+                  && !v.locationOfService.serviceLocationCodeValidator"
+                aria-live="assertive">Service Location Code is invalid for the Service Date.</div>
             <Select label='Correspondence Attached:'
                 :id='"msc-correspondence-attached-" + index'
                 class='mt-3'
@@ -813,6 +828,8 @@ import {
   clarificationCodeValidator,
   diagnosticCodeValidator,
   serviceDateValidator,
+  serviceDateCutOffValidator,
+  serviceLocationCodeValidator,
   specialtyCodeValidator,
   submissionCodeValidator,
 } from '@/helpers/validators';
@@ -1213,6 +1230,7 @@ export default {
             serviceDateValidator,
             serviceDateFutureValidator,
             distantPastValidator,
+            serviceDateCutOffValidator,
           },
           numberOfServices: {
             required,
@@ -1243,6 +1261,7 @@ export default {
           },
           locationOfService: {
             required,
+            serviceLocationCodeValidator,
           },
           serviceClarificationCode: {
             clarificationCodeValidator: optionalValidator(clarificationCodeValidator),

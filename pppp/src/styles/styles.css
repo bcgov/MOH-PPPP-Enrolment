@@ -10,6 +10,9 @@ body {
   .print-only {
     display: block;
   }
+  .print-hide {
+    display: none;
+  }
 }
 
 body.no-scroll {
@@ -25,4 +28,9 @@ body.no-scroll {
 .form-control {
   color: #606060;
   border: 1px solid #606060;
+}
+
+.input-description {
+  color: rgb(73, 73, 73);
+  font-size: 13.33px;
 }

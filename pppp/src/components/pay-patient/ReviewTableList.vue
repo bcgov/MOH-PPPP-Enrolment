@@ -5,7 +5,7 @@
         class="row align-items-end mt-3">
       <div class="col-9"></div>
       <div v-if='showEditButtons'
-          class="col-3 text-right">
+          class="col-3 text-right print-hide">
         <a href="javascript:void(0)"
            @click="navigateToMainFormPage('plan-reference-number')">Edit 
           <font-awesome-icon icon="pencil-alt" />
@@ -21,7 +21,7 @@
         <h2 class="mb-2">Patient Information</h2>
       </div>
       <div v-if='showEditButtons'
-          class="col-3 text-right">
+          class="col-3 text-right print-hide">
         <a href="javascript:void(0)"
            @click="navigateToMainFormPage('patient')">Edit 
           <font-awesome-icon icon="pencil-alt" />
@@ -34,7 +34,7 @@
     <div class="row align-items-end mt-3">
       <div class="col-9"></div>
       <div v-if='showEditButtons'
-          class="col-3 text-right">
+          class="col-3 text-right print-hide">
         <a href="javascript:void(0)"
            @click="navigateToMainFormPage('vehicle-accident')">Edit 
           <font-awesome-icon icon="pencil-alt" />
@@ -47,7 +47,7 @@
     <div class="row align-items-end mt-3">
       <div class="col-9"></div>
       <div v-if='showEditButtons'
-          class="col-3 text-right">
+          class="col-3 text-right print-hide">
         <a href="javascript:void(0)"
            @click="navigateToMainFormPage('claim-info')">Edit 
           <font-awesome-icon icon="pencil-alt" />
@@ -64,7 +64,7 @@
           <h2 class="mb-2">{{getMedicalServiceClaimTitle(index)}}</h2>
         </div>
         <div v-if='showEditButtons'
-            class="col-3 text-right">
+            class="col-3 text-right print-hide">
           <a href="javascript:void(0)"
             @click="navigateToMainFormPage(`medical-service-claim-${index}`)">Edit 
             <font-awesome-icon icon="pencil-alt" />
@@ -80,7 +80,7 @@
         <h2 class="mb-2">Payment Mailing Address</h2>
       </div>
       <div v-if='showEditButtons'
-          class="col-3 text-right">
+          class="col-3 text-right print-hide">
         <a href="javascript:void(0)"
            @click="navigateToMainFormPage('mailing-address')">Edit 
           <font-awesome-icon icon="pencil-alt" />
@@ -95,7 +95,7 @@
         <h2 class="mb-2">Practitioner Information</h2>
       </div>
       <div v-if='showEditButtons'
-          class="col-3 text-right">
+          class="col-3 text-right print-hide">
         <a href="javascript:void(0)"
            @click="navigateToMainFormPage('practitioner')">Edit 
           <font-awesome-icon icon="pencil-alt" />
@@ -110,7 +110,7 @@
         <h2 class="mb-2">Referred By</h2>
       </div>
       <div v-if='showEditButtons'
-          class="col-3 text-right">
+          class="col-3 text-right print-hide">
         <a href="javascript:void(0)"
            @click="navigateToMainFormPage('referred-by')">Edit 
           <font-awesome-icon icon="pencil-alt" />
@@ -125,7 +125,7 @@
         <h2 class="mb-2">Referred To</h2>
       </div>
       <div v-if='showEditButtons'
-          class="col-3 text-right">
+          class="col-3 text-right print-hide">
         <a href="javascript:void(0)"
            @click="navigateToMainFormPage('referred-to')">Edit 
           <font-awesome-icon icon="pencil-alt" />

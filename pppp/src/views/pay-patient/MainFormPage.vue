@@ -200,6 +200,11 @@
                   && v.serviceDate.serviceDateFutureValidator
                   && !v.serviceDate.distantPastValidator"
                 aria-live="assertive">Service Date is too far in the past.</div>
+            <div class="text-danger"
+                v-if="v.serviceDate.$dirty
+                  && v.serviceDate.required
+                  && !v.serviceDate.serviceDateCutOffValidator"
+                aria-live="assertive">Service Date is invalid for the Service Location Code.</div>
             <DigitInput label='Number of Services:'
                   :id='"number-of-services-" + index'
                   class='mt-3'
@@ -242,7 +247,8 @@
                   maxlength='5'
                   :isRequiredAsteriskShown='true'
                   :inputStyle='smallStyles'
-                  @blur='handleBlurField($v.medicalServiceClaims.$each[index].feeItem)' />
+                  @blur='handleBlurField($v.medicalServiceClaims.$each[index].feeItem)'
+                  @input='handleInputServiceFeeItem(index)' />
             <div class="text-danger"
                 v-if="v.feeItem.$dirty && !v.feeItem.required"
                 aria-live="assertive">Fee Item is required.</div>
@@ -252,6 +258,10 @@
             <div class="text-danger"
                 v-if="v.feeItem.$dirty && v.feeItem.required && !v.feeItem.positiveNumberValidator"
                 aria-live="assertive">Fee Item must be a positive number.</div>
+            <div class="text-danger"
+                v-if="medicalServiceClaimsFeeItemValidationError[index]"
+                aria-live="assertive">Fee Item does not match our records.</div>
+                
             <NumberInput label='Amount Billed:'
                   :id='"amount-billed-" + index'
                   class='mt-3'
@@ -311,10 +321,20 @@
                   :options='serviceLocationOptions'
                   :isRequiredAsteriskShown='true'
                   :inputStyle='extraLargeStyles'
-                  @blur='handleBlurField($v.medicalServiceClaims.$each[index].locationOfService)' />
+                  @blur='handleBlurField($v.medicalServiceClaims.$each[index].locationOfService)'>
+              <template v-slot:description>
+                <p class="input-description">MSP Claims submitted with Service Location Code (<b>A</b>) for dates of service on or after October 1, 2021, will not be accepted.</p>
+              </template>
+            </Select>
             <div class="text-danger"
-                v-if="v.locationOfService.$dirty && !v.locationOfService.required"
-                aria-live="assertive">Service location code is required.</div>
+                v-if="v.locationOfService.$dirty
+                  && !v.locationOfService.required"
+                aria-live="assertive">Service Location Code is required.</div>
+            <div class="text-danger"
+                v-if="v.locationOfService.$dirty
+                  && v.locationOfService.required
+                  && !v.locationOfService.serviceLocationCodeValidator"
+                aria-live="assertive">Service Location Code is invalid for the Service Date.</div>
             <Select label='Correspondence Attached:'
                 :id='"correspondence-attached-" + index'
                 class='mt-3'
@@ -415,13 +435,17 @@
                 maxlength='35'
                 :inputStyle='mediumStyles'
                 :isRequiredAsteriskShown='true'
-                @blur='handleBlurField($v.practitionerLastName)' />
+                @blur='handleBlurField($v.practitionerLastName)'
+                @input='handleInputPractitioner()' />
           <div class="text-danger"
               v-if="$v.practitionerLastName.$dirty && !$v.practitionerLastName.required"
               aria-live="assertive">Practitioner Last Name is required.</div>
           <div class="text-danger"
               v-if="$v.practitionerLastName.$dirty && $v.practitionerLastName.required && !$v.practitionerLastName.nameValidator"
               aria-live="assertive">Practitioner Last Name must begin with a letter and cannot include special characters except hyphens, periods, apostrophes and blank characters.</div>
+          <div class="text-danger"
+              v-if="isPractitionerErrorShown"
+              aria-live="assertive">Practitioner information does not match our records.</div>
           <Input label='Practitioner First Name:'
                 id='practitioner-first-name'
                 v-model='practitionerFirstName'
@@ -429,13 +453,17 @@
                 class='mt-3'
                 :inputStyle='mediumStyles'
                 :isRequiredAsteriskShown='true'
-                @blur='handleBlurField($v.practitionerFirstName)' />
+                @blur='handleBlurField($v.practitionerFirstName)'
+                @input='handleInputPractitioner()' />
           <div class="text-danger"
               v-if="$v.practitionerFirstName.$dirty && !$v.practitionerFirstName.required"
               aria-live="assertive">Practitioner First Name is required.</div>
           <div class="text-danger"
               v-if="$v.practitionerFirstName.$dirty && $v.practitionerFirstName.required && !$v.practitionerFirstName.nameValidator"
               aria-live="assertive">Practitioner First Name must begin with a letter and cannot include special characters except hyphens, periods, apostrophes and blank characters.</div>
+          <div class="text-danger"
+              v-if="isPractitionerErrorShown"
+              aria-live="assertive">Practitioner information does not match our records.</div>
           <!-- Using PractitionerNumberInput because payment number has the same format as a practitioner number -->
           <PractitionerNumberInput label='Payment Number:'
                 id='payment-number'
@@ -456,13 +484,17 @@
                 v-model='practitionerPractitionerNumber'
                 :isRequiredAsteriskShown='true'
                 :inputStyle='smallStyles'
-                @blur='handleBlurField($v.practitionerPractitionerNumber)'/>
+                @blur='handleBlurField($v.practitionerPractitionerNumber)'
+                @input='handleInputPractitioner()'/>
           <div class="text-danger"
               v-if="$v.practitionerPractitionerNumber.$dirty && !$v.practitionerPractitionerNumber.required"
               aria-live="assertive">Practitioner number is required.</div>
           <div class="text-danger"
               v-if="$v.practitionerPractitionerNumber.$dirty && $v.practitionerPractitionerNumber.required && !$v.practitionerPractitionerNumber.minLength"
               aria-live="assertive">Practitioner number must not be less than 5 characters.</div>
+          <div class="text-danger"
+              v-if="isPractitionerErrorShown"
+              aria-live="assertive">Practitioner information does not match our records.</div>
           <Input label='Specialty Code:'
                 id='specialty-code'
                 class='mt-3'
@@ -584,6 +616,8 @@
               v-if="$v.referredToFirstNameInitial.$dirty && !$v.referredToFirstNameInitial.alphaValidator"
               aria-live="assertive">First Name Initial must only be an alphabetic character.</div>
         </div>
+        <div v-if="isSystemUnavailable"
+            class="text-danger my-4">Unable to continue, system unavailable. Please try again later.</div>
       </div>
     </PageContent>
     <PromptModal v-if='isValidationModalShown'
@@ -624,6 +658,8 @@ import {
   clarificationCodeValidator,
   diagnosticCodeValidator,
   serviceDateValidator,
+  serviceDateCutOffValidator,
+  serviceLocationCodeValidator,
   specialtyCodeValidator,
   submissionCodeValidator,
 } from '@/helpers/validators';
@@ -771,6 +807,8 @@ const partialTimeValidator = (value) => {
   return true;
 };
 
+const MAX_MEDICAL_SERVICE_CLAIMS = 4;
+
 export default {
   name: 'MainFormPage',
   components: {
@@ -796,6 +834,9 @@ export default {
       isPageLoaded: false,
       isValidating: false,
       isValidationModalShown: false,
+      isSystemUnavailable: false,
+      isPractitionerErrorShown: false,
+      medicalServiceClaimsFeeItemValidationError: [],
       addressOwnerOptions: [
         {
           id: 'address-owner-practitioner',
@@ -910,6 +951,10 @@ export default {
     this.referredToLastName = this.$store.state.payPatientForm.referredToLastName;
     this.referredToPractitionerNumber = this.$store.state.payPatientForm.referredToPractitionerNumber;
 
+    for (let i=0; i<MAX_MEDICAL_SERVICE_CLAIMS; i++) {
+      this.medicalServiceClaimsFeeItemValidationError.push(false);
+    }
+
     setTimeout(() => {
       this.isPageLoaded = true;
     }, 0);
@@ -978,6 +1023,7 @@ export default {
             serviceDateValidator,
             serviceDateFutureValidator,
             distantPastValidator,
+            serviceDateCutOffValidator,
           },
           numberOfServices: {
             required,
@@ -1008,6 +1054,7 @@ export default {
           },
           locationOfService: {
             required,
+            serviceLocationCodeValidator,
           },
           serviceClarificationCode: {
             clarificationCodeValidator: optionalValidator(clarificationCodeValidator),
@@ -1092,6 +1139,12 @@ export default {
         validation.$touch();
       }
     },
+    handleInputPractitioner() {
+      this.isPractitionerErrorShown = false;
+    },
+    handleInputServiceFeeItem(index) {
+      this.medicalServiceClaimsFeeItemValidationError[index] = false;
+    },
     handleProcessBirthDate(data) {
       this.birthDateData = data;
     },
@@ -1144,6 +1197,11 @@ export default {
       }
 
       this.isValidating = true;
+      this.isSystemUnavailable = false;
+      this.isPractitionerErrorShown = false;
+      for (let i=0; i<this.medicalServiceClaimsFeeItemValidationError.length; i++) {
+        this.medicalServiceClaimsFeeItemValidationError[i] = false;
+      }
 
       const token = this.$store.state.payPatientForm.captchaToken;
       const applicationUuid = this.$store.state.payPatientForm.applicationUuid;
@@ -1167,12 +1225,45 @@ export default {
         hospitalLocationCode1: '',
         hospitalLocationCode2: ''
       }).then((response) => {
-        console.log('Response:', response);
+        const responseData = response.data;
+        const returnCode = response.data.returnCode;
+        let containsErrors = false;
+        let containsWarnings = false;
+
         this.isValidating = false;
-        this.isValidationModalShown = true;
+
+        switch (returnCode) {
+          case '0': // Valid payload data.
+            this.navigateToNextPage();
+            break;
+          case '1': // Invalid payload data.
+            if ( responseData.practitionerFirstName === 'N'
+              || responseData.practitionerLastName === 'N'
+              || responseData.practitionerNumber === 'N') {
+              this.isPractitionerErrorShown = true;
+              containsErrors = true;
+            }
+            for (let i=0; i<MAX_MEDICAL_SERVICE_CLAIMS; i++) {
+              if (responseData['serviceFeeItem' + (i+1)] === 'N') {
+                this.medicalServiceClaimsFeeItemValidationError[i] = true;
+                containsErrors = true;
+              }
+            }
+            if (containsErrors) {
+              scrollToError();
+            } else if (containsWarnings) {
+              this.isValidationModalShown = true;
+            }
+            break;
+          default: // An error occurred.
+            this.isSystemUnavailable = true;
+            scrollToError();
+            break;
+        }
       }).catch(() => {
         this.isValidating = false;
-        this.isValidationModalShown = true;
+        this.isSystemUnavailable = true;
+        scrollToError();
       });
       // this.isValidationModalShown = true;
 
