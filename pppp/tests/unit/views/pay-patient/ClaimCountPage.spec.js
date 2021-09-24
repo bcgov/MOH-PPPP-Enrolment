@@ -135,6 +135,7 @@ describe("ClaimCountPage.vue created()", () => {
   });
 
   it("calls logService", () => {
+    expect(wrapper.element).toBeDefined();
     expect(spyOnLogService).toHaveBeenCalled();
   });
 
@@ -470,8 +471,6 @@ describe("ClaimCountPage.vue beforeRouteLeave(to, from, next)", () => {
   let wrapper;
   let $route;
   let $router;
-  let spyOnRouter;
-  let spyOnDispatch;
 
   beforeEach(() => {
     store = new Vuex.Store(storeTemplate2);
@@ -491,11 +490,6 @@ describe("ClaimCountPage.vue beforeRouteLeave(to, from, next)", () => {
         $router,
       },
     });
-    spyOnDispatch = jest.spyOn(wrapper.vm.$store, "dispatch");
-
-    spyOnRouter = jest
-      .spyOn($router, "push")
-      .mockImplementation(() => Promise.resolve("pushed"));
   });
 
   afterEach(() => {
