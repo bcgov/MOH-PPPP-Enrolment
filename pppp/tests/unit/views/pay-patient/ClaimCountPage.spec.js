@@ -55,9 +55,7 @@ const scrollHelper = require("@/helpers/scroll");
 const spyOnScrollTo = jest.spyOn(scrollHelper, "scrollTo");
 const spyOnScrollToError = jest.spyOn(scrollHelper, "scrollToError");
 
-jest
-  .spyOn(window, "scrollTo")
-  .mockImplementation(jest.fn);
+jest.spyOn(window, "scrollTo").mockImplementation(jest.fn);
 
 const spyOnGetTopScrollPosition = jest
   .spyOn(scrollHelper, "getTopScrollPosition")
@@ -71,7 +69,7 @@ const spyOnSetPageComplete = jest
   .spyOn(pageStateService, "setPageComplete")
   .mockImplementation(() => Promise.resolve("set"));
 
-  const spyOnSetPageIncomplete = jest
+const spyOnSetPageIncomplete = jest
   .spyOn(pageStateService, "setPageIncomplete")
   .mockImplementation(() => Promise.resolve("set"));
 

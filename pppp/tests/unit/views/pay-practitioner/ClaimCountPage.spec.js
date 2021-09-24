@@ -453,9 +453,7 @@ describe("ClaimCountPage.vue validateFields() part 2 (valid)", () => {
 
   it("does call spyOnDispatch() with hospital service claims", () => {
     wrapper.vm.validateFields();
-    expect(
-      spyOnDispatch
-    ).toHaveBeenCalledWith(
+    expect(spyOnDispatch).toHaveBeenCalledWith(
       `${module3.MODULE_NAME}/${module3.SET_HOSPITAL_VISIT_CLAIMS}`,
       [
         {
