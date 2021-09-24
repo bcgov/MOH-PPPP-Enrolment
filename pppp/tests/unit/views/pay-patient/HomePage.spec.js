@@ -8,6 +8,11 @@ import * as module1 from "../../../../src/store/modules/app";
 import * as module2 from "../../../../src/store/modules/pay-patient-form";
 import * as module3 from "../../../../src/store/modules/pay-practitioner-form";
 import * as dummyDataValid from "../../../../src/store/states/pay-patient-form-dummy-data";
+import spaEnvService from "@/services/spa-env-service";
+import logService from "@/services/log-service";
+import pageStateService from "@/services/page-state-service";
+import { getConvertedPath } from "@/helpers/url";
+import { payPatientRoutes, payPatientRouteStepOrder } from "@/router/routes";
 
 const localVue = createLocalVue();
 localVue.use(Vuex);
@@ -23,6 +28,27 @@ const storeTemplate = {
 
 const patientState = cloneDeep(dummyDataValid.default);
 storeTemplate.modules.payPatientForm.state = cloneDeep(patientState);
+
+const scrollHelper = require("@/helpers/scroll");
+
+const spyOnScrollTo = jest.spyOn(scrollHelper, "scrollTo");
+const spyOnScrollToError = jest.spyOn(scrollHelper, "scrollToError");
+
+const spyOnVisitPage = jest
+  .spyOn(pageStateService, "visitPage")
+  .mockImplementation(() => Promise.resolve("visited"));
+
+const spyOnSetPageComplete = jest
+  .spyOn(pageStateService, "setPageComplete")
+  .mockImplementation(() => Promise.resolve("set"));
+
+const spyOnSetPageIncomplete = jest
+  .spyOn(pageStateService, "setPageIncomplete")
+  .mockImplementation(() => Promise.resolve("set"));
+
+jest.spyOn(window, "scrollTo").mockImplementation(jest.fn);
+
+console.log("****************************************************************");
 
 describe("HomePage.vue pay patient", () => {
   let state;
@@ -62,6 +88,8 @@ describe("HomePage.vue pay patient created()", () => {
   let $router;
   let spyOnRouter;
   let spyOnDispatch;
+  let spyOnSpaEnvs;
+  let spyOnLogService;
 
   beforeEach(() => {
     store = new Vuex.Store(storeTemplate);
@@ -83,9 +111,17 @@ describe("HomePage.vue pay patient created()", () => {
     });
     spyOnDispatch = jest.spyOn(wrapper.vm.$store, "dispatch");
 
+    spyOnSpaEnvs = jest
+      .spyOn(spaEnvService, "loadEnvs")
+      .mockImplementation(() => Promise.resolve("loaded"));
+
     spyOnRouter = jest
       .spyOn($router, "push")
       .mockImplementation(() => Promise.resolve("pushed"));
+
+    spyOnLogService = jest
+      .spyOn(logService, "logNavigation")
+      .mockImplementation(() => Promise.resolve("logged"));
 
     wrapper.vm.$options.created.forEach((hook) => {
       hook.call(wrapper.vm);
@@ -102,5 +138,90 @@ describe("HomePage.vue pay patient created()", () => {
       `${module2.MODULE_NAME}/${module2.SET_APPLICATION_UUID}`,
       wrapper.vm.applicationUuid
     );
+  });
+
+  it("calls spaEnvs", () => {
+    expect(spyOnSpaEnvs).toHaveBeenCalled();
+  });
+
+  it("calls logService", async () => {
+    expect(spyOnLogService).toHaveBeenCalled();
+  });
+});
+
+describe("HomePage.vue pay patient nextPage()", () => {
+  let store;
+  let wrapper;
+  let $route;
+  let $router;
+  let spyOnRouter;
+  let spyOnDispatch;
+  let spyOnSpaEnvs;
+  let spyOnLogService;
+
+  beforeEach(() => {
+    store = new Vuex.Store(storeTemplate);
+    $route = {
+      path: "/potato-csr",
+    };
+    $router = {
+      $route,
+      currentRoute: $route,
+      push: jest.fn(),
+    };
+    wrapper = mount(Page, {
+      localVue,
+      store,
+      mocks: {
+        $route,
+        $router,
+      },
+    });
+    spyOnDispatch = jest.spyOn(wrapper.vm.$store, "dispatch");
+
+    spyOnSpaEnvs = jest
+      .spyOn(spaEnvService, "loadEnvs")
+      .mockImplementation(() => Promise.resolve("loaded"));
+
+    spyOnRouter = jest
+      .spyOn($router, "push")
+      .mockImplementation(() => Promise.resolve("pushed"));
+
+    spyOnLogService = jest
+      .spyOn(logService, "logNavigation")
+      .mockImplementation(() => Promise.resolve("logged"));
+
+    wrapper.vm.$options.created.forEach((hook) => {
+      hook.call(wrapper.vm);
+    });
+  });
+
+  afterEach(() => {
+    jest.resetModules();
+    jest.clearAllMocks();
+  });
+
+  it("pushes to router",  () => {
+    wrapper.vm.nextPage();
+
+    expect(spyOnRouter).toHaveBeenCalledWith(
+      getConvertedPath(
+        $router.currentRoute.path,
+        payPatientRoutes.CLAIM_COUNT_PAGE.path
+      )
+    );
+  });
+
+  it("calls scrollTo with the parameter 0", () => {
+    wrapper.vm.nextPage();
+
+    expect(spyOnScrollTo).toHaveBeenCalledWith(0);
+  });
+
+  it("calls pageStateService", () => {
+    wrapper.vm.nextPage();
+
+    expect(pageStateService.setPageComplete).toHaveBeenCalled();
+    expect(pageStateService.visitPage).toHaveBeenCalled();
   });
 });
