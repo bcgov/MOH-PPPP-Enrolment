@@ -261,7 +261,6 @@
             <div class="text-danger"
                 v-if="medicalServiceClaimsFeeItemValidationError[index]"
                 aria-live="assertive">Fee Item does not match our records.</div>
-                
             <NumberInput label='Amount Billed:'
                   :id='"amount-billed-" + index'
                   class='mt-3'
@@ -1216,10 +1215,10 @@ export default {
         serviceFeeItem2: this.medicalServiceClaims[1] && this.medicalServiceClaims[1].feeItem ? this.medicalServiceClaims[1].feeItem : '',
         serviceFeeItem3: this.medicalServiceClaims[2] && this.medicalServiceClaims[2].feeItem ? this.medicalServiceClaims[2].feeItem : '',
         serviceFeeItem4: this.medicalServiceClaims[3] && this.medicalServiceClaims[3].feeItem ? this.medicalServiceClaims[3].feeItem : '',
-        serviceLocationCode1: this.medicalServiceClaims[0] && this.medicalServiceClaims[0].locationOfService ? this.medicalServiceClaims[0].locationOfService : '',
-        serviceLocationCode2: this.medicalServiceClaims[1] && this.medicalServiceClaims[1].locationOfService ? this.medicalServiceClaims[1].locationOfService : '',
-        serviceLocationCode3: this.medicalServiceClaims[2] && this.medicalServiceClaims[2].locationOfService ? this.medicalServiceClaims[2].locationOfService : '',
-        serviceLocationCode4: this.medicalServiceClaims[3] && this.medicalServiceClaims[3].locationOfService ? this.medicalServiceClaims[3].locationOfService : '',
+        serviceLocationCode1: '',
+        serviceLocationCode2: '',
+        serviceLocationCode3: '',
+        serviceLocationCode4: '',
         hospitalFeeItem1: '',
         hospitalFeeItem2: '',
         hospitalLocationCode1: '',
