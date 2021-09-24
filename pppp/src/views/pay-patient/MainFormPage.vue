@@ -429,6 +429,16 @@
         <a name='practitioner'></a>
         <h2 class="mt-5">Practitioner Information</h2>
         <div class="section-container p-3">
+          <div class="tip-box-container float-md-right mb-3 border">
+            <TipBox>
+              <p>To confirm that the Medical Practitioner is active, the following fields will automatically be validated against Medical Services Plan records:</p>
+              <ul>
+                <li>First name</li>
+                <li>Last name</li>
+                <li>Medical Services Plan Practitioner Number</li>
+              </ul>
+            </TipBox>
+          </div>
           <Input label='Practitioner Last Name:'
                 id='practitioner-last-name'
                 v-model='practitionerLastName'
@@ -677,6 +687,7 @@ import {
 } from '@/constants/input-styles';
 import ContinueBar from '@/components/ContinueBar.vue';
 import PageContent from '@/components/PageContent.vue';
+import TipBox from '@/components/TipBox.vue';
 import {
   MODULE_NAME as formModule,
   SET_PLAN_REFERENCE_NUMBER,
@@ -828,6 +839,7 @@ export default {
     Select,
     Textarea,
     TimeInput,
+    TipBox,
   },
   data: () => {
     return {
@@ -1342,7 +1354,7 @@ export default {
       if (!serviceDate) {
         return false;
       }
-      return isBefore(serviceDate, past90Days);
+      return isBefore(serviceDate, addDays(past90Days, 1));
     },
   },
   computed: {
@@ -1404,5 +1416,10 @@ export default {
 }
 .section-container {
   background-color: #EEE;
+}
+@media only screen and (min-width: 768px) {
+  .tip-box-container {
+    max-width: 300px;
+  }
 }
 </style>

@@ -8,6 +8,7 @@ import {
   startOfToday,
   subDays,
   parseISO,
+  addDays,
 } from 'date-fns';
 import { selectOptionsSpecialtyCode } from '@/constants/select-options';
 
@@ -69,7 +70,7 @@ export const submissionCodeValidator = (value, vm) => {
   if (!serviceDate) {
     return true;
   }
-  if (isBefore(serviceDate, past90Days)) {
+  if (isBefore(serviceDate, addDays(past90Days, 1))) {
     return !!value;
   }
   return true;
