@@ -37,13 +37,11 @@ const spyOnGetTopScrollPosition = jest
   .spyOn(scrollHelper, "getTopScrollPosition")
   .mockImplementation(() => Promise.resolve("top scroll position returned"));
 
-const spyOnVisitPage = jest
-  .spyOn(pageStateService, "visitPage")
-  // .mockImplementation(() => Promise.resolve("visited"));
+const spyOnVisitPage = jest.spyOn(pageStateService, "visitPage");
+// .mockImplementation(() => Promise.resolve("visited"));
 
-const spyOnSetPageComplete = jest
-  .spyOn(pageStateService, "setPageComplete")
-  // .mockImplementation(() => Promise.resolve("set"));
+const spyOnSetPageComplete = jest.spyOn(pageStateService, "setPageComplete");
+// .mockImplementation(() => Promise.resolve("set"));
 
 const spyOnSetPageIncomplete = jest
   .spyOn(pageStateService, "setPageIncomplete")
@@ -207,8 +205,8 @@ describe("HomePage.vue pay patient nextPage()", () => {
   it("calls pageStateService", () => {
     wrapper.vm.nextPage();
 
-    expect(pageStateService.setPageComplete).toHaveBeenCalled();
-    expect(pageStateService.visitPage).toHaveBeenCalled();
+    expect(spyOnSetPageComplete).toHaveBeenCalled();
+    expect(spyOnVisitPage).toHaveBeenCalled();
   });
 });
 
