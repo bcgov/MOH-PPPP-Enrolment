@@ -1,15 +1,18 @@
 import { mount, createLocalVue } from "@vue/test-utils";
 import Vuex from "vuex";
 import Vuelidate from "vuelidate";
-import Page from "@/views/pay-patient/ClaimCountPage.vue";
+import Page from "@/views/pay-practitioner/ClaimCountPage.vue";
 import { cloneDeep } from "lodash";
 import * as module1 from "../../../../src/store/modules/app";
 import * as module2 from "../../../../src/store/modules/pay-patient-form";
 import * as module3 from "../../../../src/store/modules/pay-practitioner-form";
-import * as dummyDataValid from "../../../../src/store/states/pay-patient-form-dummy-data";
+import * as dummyDataValid from "../../../../src/store/states/pay-practitioner-form-dummy-data";
 import logService from "@/services/log-service";
 import pageStateService from "@/services/page-state-service";
-import { payPatientRoutes, payPatientRouteStepOrder } from "@/router/routes";
+import {
+  payPractitionerRoutes,
+  payPractitionerRouteStepOrder,
+} from "@/router/routes";
 import { getConvertedPath } from "@/helpers/url";
 
 const localVue = createLocalVue();
@@ -35,16 +38,18 @@ const storeTemplate2 = {
   },
 };
 
-const patientState = {
+const practitionerState = {
   isInfoCollectionNoticeOpen: true,
   applicationUuid: null,
 };
 
-const patientState2 = cloneDeep(dummyDataValid.default);
-patientState2.medicalServiceClaims[0].serviceDate = testDate;
+const practitionerState2 = cloneDeep(dummyDataValid.default);
+practitionerState2.medicalServiceClaims[0].serviceDate = testDate;
 
-storeTemplate.modules.payPatientForm.state = cloneDeep(patientState);
-storeTemplate2.modules.payPatientForm.state = cloneDeep(patientState2);
+storeTemplate.modules.payPractitionerForm.state = cloneDeep(practitionerState);
+storeTemplate2.modules.payPractitionerForm.state = cloneDeep(
+  practitionerState2
+);
 
 const spyOnLogService = jest
   .spyOn(logService, "logNavigation")
@@ -55,9 +60,7 @@ const scrollHelper = require("@/helpers/scroll");
 const spyOnScrollTo = jest.spyOn(scrollHelper, "scrollTo");
 const spyOnScrollToError = jest.spyOn(scrollHelper, "scrollToError");
 
-jest
-  .spyOn(window, "scrollTo")
-  .mockImplementation(jest.fn);
+jest.spyOn(window, "scrollTo").mockImplementation(jest.fn);
 
 const spyOnGetTopScrollPosition = jest
   .spyOn(scrollHelper, "getTopScrollPosition")
@@ -71,9 +74,13 @@ const spyOnSetPageComplete = jest
   .spyOn(pageStateService, "setPageComplete")
   .mockImplementation(() => Promise.resolve("set"));
 
-  const spyOnSetPageIncomplete = jest
+const spyOnSetPageIncomplete = jest
   .spyOn(pageStateService, "setPageIncomplete")
   .mockImplementation(() => Promise.resolve("set"));
+
+console.log(
+  "******************************************************************************************************************************************"
+);
 
 describe("ClaimCountPage.vue render test", () => {
   let store;
@@ -229,14 +236,14 @@ describe("ClaimCountPage.vue handleCaptchaVerified()", () => {
     const spyOnDispatch = jest.spyOn(wrapper.vm.$store, "dispatch");
     wrapper.vm.handleCaptchaVerified("captchaTokenTest");
     expect(spyOnDispatch).toHaveBeenCalledWith(
-      `${module2.MODULE_NAME}/${module2.SET_CAPTCHA_TOKEN}`,
+      `${module3.MODULE_NAME}/${module3.SET_CAPTCHA_TOKEN}`,
       "captchaTokenTest"
     );
   });
 
   it("assigns value to store such that it can be retrieved later", () => {
     wrapper.vm.handleCaptchaVerified("captchaTokenTest");
-    expect(wrapper.vm.$store.state.payPatientForm.captchaToken).toEqual(
+    expect(wrapper.vm.$store.state.payPractitionerForm.captchaToken).toEqual(
       "captchaTokenTest"
     );
   });
@@ -274,7 +281,7 @@ describe("ClaimCountPage.vue handleCloseConsentModal()", () => {
     const spyOnDispatch = jest.spyOn(wrapper.vm.$store, "dispatch");
     wrapper.vm.handleCloseConsentModal();
     expect(spyOnDispatch).toHaveBeenCalledWith(
-      `${module2.MODULE_NAME}/${module2.SET_IS_INFO_COLLECTION_NOTICE_OPEN}`,
+      `${module3.MODULE_NAME}/${module3.SET_IS_INFO_COLLECTION_NOTICE_OPEN}`,
       false
     );
   });
@@ -282,7 +289,7 @@ describe("ClaimCountPage.vue handleCloseConsentModal()", () => {
   it("assigns value to store such that it can be retrieved later", () => {
     wrapper.vm.handleCloseConsentModal();
     expect(
-      wrapper.vm.$store.state.payPatientForm.isInfoCollectionNoticeOpen
+      wrapper.vm.$store.state.payPractitionerForm.isInfoCollectionNoticeOpen
     ).toEqual(false);
   });
 });
@@ -404,33 +411,67 @@ describe("ClaimCountPage.vue validateFields() part 2 (valid)", () => {
     expect(spyOnDispatch).toHaveBeenCalled();
   });
 
-  it("does call spyOnDispatch() with claim count", () => {
+  it("does call spyOnDispatch() with medical services claim count", () => {
     wrapper.vm.validateFields();
     expect(spyOnDispatch).toHaveBeenCalledWith(
-      `${module2.MODULE_NAME}/${module2.SET_CLAIM_COUNT}`,
-      wrapper.vm.claimCount
+      `${module3.MODULE_NAME}/${module3.SET_MEDICAL_SERVICE_CLAIMS_COUNT}`,
+      wrapper.vm.medicalServiceClaimsCount
+    );
+  });
+
+  it("does call spyOnDispatch() with hospital services claim count", () => {
+    wrapper.vm.validateFields();
+    expect(spyOnDispatch).toHaveBeenCalledWith(
+      `${module3.MODULE_NAME}/${module3.SET_HOSPITAL_VISIT_CLAIMS_COUNT}`,
+      wrapper.vm.hospitalVisitClaimsCount
     );
   });
 
   it("does call spyOnDispatch() with medical service claims", () => {
     wrapper.vm.validateFields();
     expect(spyOnDispatch).toHaveBeenCalledWith(
-      `${module2.MODULE_NAME}/${module2.SET_MEDICAL_SERVICE_CLAIMS}`,
+      `${module3.MODULE_NAME}/${module3.SET_MEDICAL_SERVICE_CLAIMS}`,
       [
         {
-          amountBilled: "1.00",
-          calledStartTime: { hour: "08", minute: "01" },
+          amountBilled: "0.00",
+          calledStartTime: { hour: "08", minute: "08" },
           correspondenceAttached: null,
           diagnosticCode: "001",
-          feeItem: "12345",
+          feeItem: "03333",
           locationOfService: "A",
           notes: "Notes here.",
           numberOfServices: "1",
-          renderedFinishTime: { hour: "16", minute: "05" },
+          renderedFinishTime: { hour: "16", minute: "06" },
           serviceClarificationCode: "A1",
           serviceDate: testDate,
           serviceDateData: null,
           submissionCode: "I",
+        },
+      ]
+    );
+  });
+
+  it("does call spyOnDispatch() with hospital service claims", () => {
+    wrapper.vm.validateFields();
+    expect(
+      spyOnDispatch
+    ).toHaveBeenCalledWith(
+      `${module3.MODULE_NAME}/${module3.SET_HOSPITAL_VISIT_CLAIMS}`,
+      [
+        {
+          amountBilled: "0.00",
+          correspondenceAttached: null,
+          dayFrom: "24",
+          dayTo: "26",
+          diagnosticCode: "001",
+          feeItem: "03333",
+          locationOfService: "A",
+          month: "12",
+          notes: "Notes here.",
+          numberOfServices: "1",
+          serviceClarificationCode: "A1",
+          submissionCode: "I",
+          year: "2020",
         },
       ]
     );
@@ -461,7 +502,7 @@ describe("ClaimCountPage.vue validateFields() part 2 (valid)", () => {
     expect(spyOnRouter).toHaveBeenCalledWith(
       getConvertedPath(
         wrapper.vm.$router.currentRoute.path,
-        payPatientRoutes.MAIN_FORM_PAGE.path
+        payPractitionerRoutes.MAIN_FORM_PAGE.path
       )
     );
   });
@@ -510,8 +551,8 @@ describe("ClaimCountPage.vue beforeRouteLeave(to, from, next)", () => {
     jest.useFakeTimers();
     Page.beforeRouteLeave.call(
       wrapper.vm,
-      payPatientRouteStepOrder[1],
-      payPatientRouteStepOrder[0],
+      payPractitionerRouteStepOrder[1],
+      payPractitionerRouteStepOrder[0],
       next
     );
     jest.advanceTimersByTime(5);
@@ -525,15 +566,15 @@ describe("ClaimCountPage.vue beforeRouteLeave(to, from, next)", () => {
     jest.useFakeTimers();
     Page.beforeRouteLeave.call(
       wrapper.vm,
-      payPatientRouteStepOrder[1],
-      payPatientRouteStepOrder[0],
+      payPractitionerRouteStepOrder[1],
+      payPractitionerRouteStepOrder[0],
       next
     );
     jest.advanceTimersByTime(5);
     await wrapper.vm.$nextTick;
     const testPath = getConvertedPath(
       wrapper.vm.$router.currentRoute.path,
-      payPatientRoutes.CLAIM_COUNT_PAGE.path
+      payPractitionerRoutes.CLAIM_COUNT_PAGE.path
     );
     expect(next).toHaveBeenCalledWith({
       path: testPath,
@@ -546,8 +587,8 @@ describe("ClaimCountPage.vue beforeRouteLeave(to, from, next)", () => {
     jest.useFakeTimers();
     Page.beforeRouteLeave.call(
       wrapper.vm,
-      payPatientRouteStepOrder[0],
-      payPatientRouteStepOrder[1],
+      payPractitionerRouteStepOrder[0],
+      payPractitionerRouteStepOrder[1],
       next
     );
     jest.advanceTimersByTime(5);
@@ -562,8 +603,8 @@ describe("ClaimCountPage.vue beforeRouteLeave(to, from, next)", () => {
     jest.useFakeTimers();
     Page.beforeRouteLeave.call(
       wrapper.vm,
-      payPatientRouteStepOrder[0],
-      payPatientRouteStepOrder[1],
+      payPractitionerRouteStepOrder[0],
+      payPractitionerRouteStepOrder[1],
       next
     );
     jest.advanceTimersByTime(5);
@@ -576,8 +617,8 @@ describe("ClaimCountPage.vue beforeRouteLeave(to, from, next)", () => {
     jest.useFakeTimers();
     Page.beforeRouteLeave.call(
       wrapper.vm,
-      payPatientRouteStepOrder[1],
-      payPatientRouteStepOrder[0],
+      payPractitionerRouteStepOrder[1],
+      payPractitionerRouteStepOrder[0],
       next
     );
     jest.advanceTimersByTime(5);
