@@ -31,17 +31,14 @@ storeTemplate.modules.payPatientForm.state = cloneDeep(patientState);
 const scrollHelper = require("@/helpers/scroll");
 
 const spyOnScrollTo = jest.spyOn(scrollHelper, "scrollTo");
-// const spyOnScrollToError = jest.spyOn(scrollHelper, "scrollToError");
 
 const spyOnGetTopScrollPosition = jest
   .spyOn(scrollHelper, "getTopScrollPosition")
   .mockImplementation(() => Promise.resolve("top scroll position returned"));
 
 const spyOnVisitPage = jest.spyOn(pageStateService, "visitPage");
-// .mockImplementation(() => Promise.resolve("visited"));
 
 const spyOnSetPageComplete = jest.spyOn(pageStateService, "setPageComplete");
-// .mockImplementation(() => Promise.resolve("set"));
 
 const spyOnSetPageIncomplete = jest
   .spyOn(pageStateService, "setPageIncomplete")

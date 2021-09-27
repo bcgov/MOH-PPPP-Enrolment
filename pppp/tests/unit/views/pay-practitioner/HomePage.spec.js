@@ -1,4 +1,4 @@
-import { shallowMount, mount, createLocalVue } from "@vue/test-utils";
+import { mount, createLocalVue } from "@vue/test-utils";
 import Vuex from "vuex";
 import { cloneDeep } from "lodash";
 import Page from "@/views/pay-practitioner/HomePage.vue";
@@ -16,7 +16,6 @@ const next = jest.fn();
 
 const localVue = createLocalVue();
 localVue.use(Vuex);
-// localVue.use(Vuelidate);
 
 const storeTemplate = {
   modules: {
@@ -26,24 +25,21 @@ const storeTemplate = {
   },
 };
 
-// const patientState = cloneDeep(dummyDataValid.default);
-// storeTemplate.modules.payPatientForm.state = cloneDeep(patientState);
+const patientState = cloneDeep(dummyDataValid.default);
+storeTemplate.modules.payPatientForm.state = cloneDeep(patientState);
 
 
 const scrollHelper = require("@/helpers/scroll");
 
 const spyOnScrollTo = jest.spyOn(scrollHelper, "scrollTo");
-// const spyOnScrollToError = jest.spyOn(scrollHelper, "scrollToError");
 
 const spyOnGetTopScrollPosition = jest
   .spyOn(scrollHelper, "getTopScrollPosition")
   .mockImplementation(() => Promise.resolve("top scroll position returned"));
 
 const spyOnVisitPage = jest.spyOn(pageStateService, "visitPage");
-// .mockImplementation(() => Promise.resolve("visited"));
 
 const spyOnSetPageComplete = jest.spyOn(pageStateService, "setPageComplete");
-// .mockImplementation(() => Promise.resolve("set"));
 
 const spyOnSetPageIncomplete = jest
   .spyOn(pageStateService, "setPageIncomplete")
