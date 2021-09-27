@@ -16,6 +16,7 @@ const localVue = createLocalVue();
 localVue.use(Vuex);
 
 const next = jest.fn();
+const testDate = new Date();
 
 const storeTemplateC = {
   modules: {
@@ -40,6 +41,11 @@ patientStateN.medicalServiceClaims[0].correspondenceAttached = "N";
 
 storeTemplateC.modules.payPatientForm.state = cloneDeep(patientStateC);
 storeTemplateN.modules.payPatientForm.state = cloneDeep(patientStateN);
+
+//later versions of Jest use a function called "jest.setSystemTime"
+//but since this project is using Jest 24.x
+//I've instead mocked the function below
+jest.spyOn(global, "Date").mockImplementation(() => testDate);
 
 const scrollHelper = require("@/helpers/scroll");
 
@@ -249,5 +255,55 @@ describe("ReviewPage.vue pay patient isFormAbleToSubmit()", () => {
     });
     wrapper.vm.continueHandler();
     expect(spyOnPrint).toHaveBeenCalled();
+  });
+});
+
+describe("ReviewPage.vue pay patient submitForm()", () => {
+  let store;
+  let wrapper;
+  let $route;
+  let $router;
+  let spyOnDispatch;
+  let spyOnSpaEnvs;
+
+  beforeEach(() => {
+    // jest.useFakeTimers("modern");
+    // jest.setSystemTime(testDate);
+    store = new Vuex.Store(storeTemplateN);
+    $route = {
+      path: "/potato-csr",
+    };
+    $router = {
+      $route,
+      currentRoute: $route,
+      push: jest.fn(),
+    };
+    wrapper = shallowMount(Page, {
+      localVue,
+      store,
+      mocks: {
+        $route,
+        $router,
+      },
+    });
+    spyOnDispatch = jest.spyOn(wrapper.vm.$store, "dispatch");
+
+    spyOnSpaEnvs = jest
+      .spyOn(spaEnvService, "loadEnvs")
+      .mockImplementation(() => Promise.resolve("loaded"));
+
+    wrapper.vm.submitForm();
+  });
+
+  afterEach(() => {
+    jest.resetModules();
+    jest.clearAllMocks();
+  });
+
+  it("calls logService", () => {
+    expect(spyOnDispatch).toHaveBeenCalledWith(
+      `${module2.MODULE_NAME}/${module2.SET_SUBMISSION_DATE}`,
+      testDate
+    );
   });
 });
