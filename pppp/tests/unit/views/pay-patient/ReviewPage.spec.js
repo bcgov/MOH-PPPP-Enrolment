@@ -8,12 +8,95 @@ import * as module3 from "../../../../src/store/modules/pay-practitioner-form";
 import * as dummyDataValid from "../../../../src/store/states/pay-patient-form-dummy-data";
 import spaEnvService from "@/services/spa-env-service";
 import logService from "@/services/log-service";
+import apiService from "@/services/api-service";
 import pageStateService from "@/services/page-state-service";
 import { getConvertedPath } from "@/helpers/url";
 import { payPatientRoutes, payPatientRouteStepOrder } from "@/router/routes";
 
 const localVue = createLocalVue();
 localVue.use(Vuex);
+
+const mockResponse = {
+  data: {
+    applicationUuid: "ed8fcf17-fb1f-4b3d-93aa-1ba5fbfb2898",
+    requestUuid: "d88ecb3b-0ce5-4849-a349-e91fd7b11618",
+    returnCode: "0",
+    returnMessage: "Success",
+    planReferenceNumber: "1270900001",
+  },
+  status: 200,
+  statusText: "OK",
+  headers: {
+    accept: "application/json, text/plain, */*",
+    "accept-encoding": "gzip, deflate, br",
+    "accept-language": "en-US,en;q=0.9",
+    "access-control-allow-credentials": "true",
+    "access-control-allow-headers":
+      "Accept,Authorization,Cache-Control,Content-Type,DNT,If-Modified-Since,Keep-Alive,Origin,User-Agent,X-Requested-With",
+    "access-control-allow-methods": "GET, POST, PUT, DELETE, OPTIONS",
+    "access-control-allow-origin": "https://my.gov.bc.ca",
+    "access-control-expose-headers": "Authorization",
+    authorization: "Basic Z2NwZW1zcGRlOndlbGNvbWUx",
+    breadcrumbid: "ID-vs-dapp041-maximusbchealth-local-1632513873115-0-11",
+    "cache-control": "no-store",
+    connection: "close",
+    "content-security-policy":
+      "default-src * data: blob: filesystem: 'unsafe-inline' 'unsafe-eval'",
+    "content-type": "application/json",
+    date: "Mon, 27 Sep 2021 22:15:41 GMT",
+    forwarded:
+      "for=216.232.32.188;host=pppp-web-0752cb-dev.apps.silver.devops.gov.bc.ca;proto=https",
+    origin: "http://localhost:8080",
+    pragma: "no-cache",
+    referer: "http://localhost:8080/pppp/pay-patient/review",
+    "response-type": "application/json",
+    "sec-ch-ua":
+      '"Google Chrome";v="93", " Not;A Brand";v="99", "Chromium";v="93"',
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": '"Windows"',
+    "sec-fetch-dest": "empty",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-site": "same-origin",
+    server: "nginx",
+    "strict-transport-security": "max-age=86400; includeSubDomains",
+    "transfer-encoding": "chunked",
+    "user-agent":
+      "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.82 Safari/537.36",
+    uuid: "ed8fcf17-fb1f-4b3d-93aa-1ba5fbfb2898",
+    "x-content-type-options": "nosniff",
+    "x-forwarded-for": "127.0.0.1, 216.232.32.188",
+    "x-forwarded-host":
+      "localhost:8080, pppp-web-0752cb-dev.apps.silver.devops.gov.bc.ca",
+    "x-forwarded-port": "8080, 443",
+    "x-forwarded-proto": "http, https",
+    "x-frame-options": "DENY",
+    "x-powered-by": "Servlet/3.1 JSP/2.3",
+    "x-weblogic-request-clusterinfo": "true",
+    "x-xss-protection": "1",
+  },
+  config: {
+    url:
+      "/pppp/api/payformsIntegration/patient/ed8fcf17-fb1f-4b3d-93aa-1ba5fbfb2898",
+    method: "post",
+    data:
+      '{"applicationUuid":"ed8fcf17-fb1f-4b3d-93aa-1ba5fbfb2898","requestUuid":"d88ecb3b-0ce5-4849-a349-e91fd7b11618","submissionDate":"2021-09-27","isCSR":"N","payPatient":{"claimCount":"1","planReferenceNumber":"","phn":"9353166544","dependentNumber":"00","firstName":"a","middleInitial":"","lastName":"a","birthDate":"2021-09-11","addressOwner":"PATIENT","unitNumber":"","streetNumber":"111 Fa","streetName":"Fake Street","city":"Edmonton","postalCode":"V1A1A1","isVehicleAccident":"N","vehicleAccidentClaimNumber":"","planReferenceNumberOfOriginalClaim":"","medicalServiceClaims":[{"serviceDate":"2021-09-18","numberOfServices":"1","serviceClarificationCode":"","feeItem":"00001","amountBilled":"1.00","calledStartTime":"","renderedFinishTime":"","diagnosticCode":"001","locationOfService":"Q","correspondenceAttached":"","submissionCode":"","notes":""}],"practitionerLastName":"a","practitionerFirstName":"a","practitionerPaymentNumber":"23442","practitionerPractitionerNumber":"A2222","practitionerFacilityNumber":"","practitionerSpecialtyCode":"","referredByFirstNameInitial":"","referredByLastName":"","referredByPractitionerNumber":"","referredToFirstNameInitial":"","referredToLastName":"","referredToPractitionerNumber":""}}',
+    headers: {
+      Accept: "application/json, text/plain, */*",
+      "Content-Type": "application/json",
+      "Response-Type": "application/json",
+      "X-Authorization":
+        "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7Im5vbmNlIjoiZWQ4ZmNmMTctZmIxZi00YjNkLTkzYWEtMWJhNWZiZmIyODk4In0sImlhdCI6MTYzMjc4MDgzOCwiZXhwIjoxNjMyNzkxNjM4fQ.cz1Qji529tSFguGjAsZ4cyPv_hetoHWCc02QYyCM-ds",
+    },
+    transformRequest: [null],
+    transformResponse: [null],
+    timeout: 0,
+    xsrfCookieName: "XSRF-TOKEN",
+    xsrfHeaderName: "X-XSRF-TOKEN",
+    maxContentLength: -1,
+    maxBodyLength: -1,
+  },
+  request: {},
+};
 
 const next = jest.fn();
 const testDate = new Date();
@@ -47,6 +130,10 @@ storeTemplateN.modules.payPatientForm.state = cloneDeep(patientStateN);
 //I've instead mocked the function below
 jest.spyOn(global, "Date").mockImplementation(() => testDate);
 
+const spyOnAPIService = jest
+  .spyOn(apiService, "submitPayPatientApplication")
+  .mockImplementation(() => Promise.resolve(mockResponse));
+
 const scrollHelper = require("@/helpers/scroll");
 
 const spyOnScrollTo = jest.spyOn(scrollHelper, "scrollTo");
@@ -66,6 +153,10 @@ const spyOnSetPageIncomplete = jest
 const spyOnLogService = jest
   .spyOn(logService, "logNavigation")
   .mockImplementation(() => Promise.resolve("logged"));
+
+  const spyOnLogServiceSubmission = jest
+  .spyOn(logService, "logSubmission")
+  .mockImplementation(() => Promise.resolve("logged"));  
 
 const spyOnPrint = jest.spyOn(window, "print").mockImplementation(jest.fn);
 
@@ -265,6 +356,7 @@ describe("ReviewPage.vue pay patient submitForm()", () => {
   let $router;
   let spyOnDispatch;
   let spyOnSpaEnvs;
+  let spyOnNavigateToSubmissionPage;
 
   beforeEach(() => {
     // jest.useFakeTimers("modern");
@@ -288,11 +380,14 @@ describe("ReviewPage.vue pay patient submitForm()", () => {
     });
     spyOnDispatch = jest.spyOn(wrapper.vm.$store, "dispatch");
 
+    spyOnNavigateToSubmissionPage = jest.spyOn(
+      wrapper.vm,
+      "navigateToSubmissionPage"
+    );
+
     spyOnSpaEnvs = jest
       .spyOn(spaEnvService, "loadEnvs")
       .mockImplementation(() => Promise.resolve("loaded"));
-
-    wrapper.vm.submitForm();
   });
 
   afterEach(() => {
@@ -300,10 +395,34 @@ describe("ReviewPage.vue pay patient submitForm()", () => {
     jest.clearAllMocks();
   });
 
-  it("calls logService", () => {
+  it("dispatches the submission date", async () => {
+    wrapper.vm.submitForm();
+    await wrapper.vm.$nextTick;
     expect(spyOnDispatch).toHaveBeenCalledWith(
       `${module2.MODULE_NAME}/${module2.SET_SUBMISSION_DATE}`,
       testDate
     );
+  });
+
+  it("dispatches the reference number from the API response", async () => {
+    wrapper.vm.submitForm();
+    await wrapper.vm.$nextTick;
+    expect(spyOnDispatch).toHaveBeenCalledWith(
+      `${module2.MODULE_NAME}/${module2.SET_REFERENCE_NUMBER}`,
+      mockResponse.data.planReferenceNumber
+    );
+  });
+
+  it("calls logService.logSubmission on successful submission", async () => {
+    wrapper.vm.submitForm();
+    await wrapper.vm.$nextTick;
+    expect(spyOnLogServiceSubmission).toHaveBeenCalled();
+  });
+
+  it("calls navigateToSubmissionPage on successful submission", async () => {
+    wrapper.vm.submitForm();
+    await wrapper.vm.$nextTick;
+    // wrapper.vm.navigateToSubmissionPage()
+    expect(spyOnNavigateToSubmissionPage).toHaveBeenCalled();
   });
 });
