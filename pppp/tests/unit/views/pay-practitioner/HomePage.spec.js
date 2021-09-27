@@ -12,6 +12,8 @@ import pageStateService from "@/services/page-state-service";
 import { getConvertedPath } from "@/helpers/url";
 import { payPractitionerRoutes, payPractitionerRouteStepOrder } from "@/router/routes";
 
+const next = jest.fn();
+
 const localVue = createLocalVue();
 localVue.use(Vuex);
 // localVue.use(Vuelidate);
@@ -48,8 +50,6 @@ const spyOnSetPageIncomplete = jest
   .mockImplementation(() => Promise.resolve("set"));
 
 jest.spyOn(window, "scrollTo").mockImplementation(jest.fn);
-
-console.log("****************************************************************");
 
 describe("HomePage.vue pay practitioner", () => {
   let store;
@@ -91,7 +91,7 @@ describe("HomePage.vue pay practitioner", () => {
   });
 });
 
-describe("HomePage.vue pay patient created()", () => {
+describe("HomePage.vue pay practitioner created()", () => {
   let store;
   let wrapper;
   let $route;
@@ -154,7 +154,7 @@ describe("HomePage.vue pay patient created()", () => {
   });
 });
 
-describe("HomePage.vue pay patient nextPage()", () => {
+describe("HomePage.vue pay practitioner nextPage()", () => {
   let store;
   let wrapper;
   let $route;
@@ -216,5 +216,108 @@ describe("HomePage.vue pay patient nextPage()", () => {
 
     expect(spyOnSetPageComplete).toHaveBeenCalled();
     expect(spyOnVisitPage).toHaveBeenCalled();
+  });
+});
+
+describe("HomePage.vue pay practitioner beforeRouteLeave(to, from, next)", () => {
+  let store;
+  let wrapper;
+  let $route;
+  let $router;
+
+  beforeEach(() => {
+    store = new Vuex.Store(storeTemplate);
+    $route = {
+      path: "/potato",
+    };
+    $router = {
+      $route,
+      currentRoute: $route,
+      push: jest.fn(),
+    };
+    wrapper = mount(Page, {
+      localVue,
+      store,
+      mocks: {
+        $route,
+        $router,
+      },
+    });
+  });
+
+  afterEach(() => {
+    jest.resetModules();
+    jest.clearAllMocks();
+  });
+
+  it("calls scrollTo() and getTopScrollPosition() when given invalid route", async () => {
+    //to, from, next
+    jest.useFakeTimers();
+    Page.beforeRouteLeave.call(
+      wrapper.vm,
+      payPractitionerRouteStepOrder[1],
+      payPractitionerRouteStepOrder[0],
+      next
+    );
+    jest.advanceTimersByTime(5);
+    await wrapper.vm.$nextTick;
+    expect(spyOnGetTopScrollPosition).toHaveBeenCalled();
+    expect(spyOnScrollTo).toHaveBeenCalled();
+  });
+
+  it("calls next() with proper arguments when given invalid route", async () => {
+    //to, from, next
+    jest.useFakeTimers();
+    Page.beforeRouteLeave.call(
+      wrapper.vm,
+      payPractitionerRouteStepOrder[1],
+      payPractitionerRouteStepOrder[0],
+      next
+    );
+    jest.advanceTimersByTime(5);
+    await wrapper.vm.$nextTick;
+    const testPath = getConvertedPath(
+      wrapper.vm.$router.currentRoute.path,
+      payPractitionerRoutes.HOME_PAGE.path
+    );
+    expect(next).toHaveBeenCalledWith({
+      path: testPath,
+      replace: true,
+    });
+  });
+
+  it("calls next() when passed a route that has been completed in pageStateService", async () => {
+    //to, from, next
+    jest.useFakeTimers();
+    await pageStateService.importPageRoutes(payPractitionerRouteStepOrder);
+    await wrapper.vm.$nextTick;
+    await pageStateService.setPageComplete(payPractitionerRouteStepOrder[0].path);
+    await wrapper.vm.$nextTick;
+    Page.beforeRouteLeave.call(
+      wrapper.vm,
+      payPractitionerRouteStepOrder[0],
+      payPractitionerRouteStepOrder[1],
+      next
+    );
+    jest.advanceTimersByTime(5);
+    await wrapper.vm.$nextTick;
+    expect(next).toHaveBeenCalled();
+    expect(spyOnSetPageIncomplete).toHaveBeenCalled();
+    expect(spyOnGetTopScrollPosition).not.toHaveBeenCalled();
+    expect(spyOnScrollTo).not.toHaveBeenCalled();
+  });
+
+  it("calls spyOnSetPageIncomplete (valid route)", async () => {
+    //to, from, next
+    jest.useFakeTimers();
+    Page.beforeRouteLeave.call(
+      wrapper.vm,
+      payPractitionerRouteStepOrder[0],
+      payPractitionerRouteStepOrder[1],
+      next
+    );
+    jest.advanceTimersByTime(5);
+    await wrapper.vm.$nextTick;
+    expect(spyOnSetPageIncomplete).toHaveBeenCalled();
   });
 });

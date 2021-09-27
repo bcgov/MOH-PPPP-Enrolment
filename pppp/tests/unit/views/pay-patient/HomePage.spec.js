@@ -49,8 +49,6 @@ const spyOnSetPageIncomplete = jest
 
 jest.spyOn(window, "scrollTo").mockImplementation(jest.fn);
 
-console.log("****************************************************************");
-
 describe("HomePage.vue pay patient", () => {
   let state;
   let store;
@@ -210,7 +208,7 @@ describe("HomePage.vue pay patient nextPage()", () => {
   });
 });
 
-describe("ClaimCountPage.vue beforeRouteLeave(to, from, next)", () => {
+describe("HomePage.vue pay patient beforeRouteLeave(to, from, next)", () => {
   let store;
   let wrapper;
   let $route;
