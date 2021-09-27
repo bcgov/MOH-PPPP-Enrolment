@@ -17,7 +17,7 @@ localVue.use(Vuex);
 
 const next = jest.fn();
 
-const storeTemplate = {
+const storeTemplateC = {
   modules: {
     app: cloneDeep(module1.default),
     payPatientForm: cloneDeep(module2.default),
@@ -25,8 +25,21 @@ const storeTemplate = {
   },
 };
 
-const patientState = cloneDeep(dummyDataValid.default);
-storeTemplate.modules.payPatientForm.state = cloneDeep(patientState);
+const storeTemplateN = {
+  modules: {
+    app: cloneDeep(module1.default),
+    payPatientForm: cloneDeep(module2.default),
+    payPractitionerForm: cloneDeep(module3.default),
+  },
+};
+
+const patientStateC = cloneDeep(dummyDataValid.default);
+const patientStateN = cloneDeep(dummyDataValid.default);
+patientStateC.medicalServiceClaims[0].correspondenceAttached = "C";
+patientStateN.medicalServiceClaims[0].correspondenceAttached = "N";
+
+storeTemplateC.modules.payPatientForm.state = cloneDeep(patientStateC);
+storeTemplateN.modules.payPatientForm.state = cloneDeep(patientStateN);
 
 const scrollHelper = require("@/helpers/scroll");
 
@@ -44,11 +57,19 @@ const spyOnSetPageIncomplete = jest
   .spyOn(pageStateService, "setPageIncomplete")
   .mockImplementation(() => Promise.resolve("set"));
 
+const spyOnLogService = jest
+  .spyOn(logService, "logNavigation")
+  .mockImplementation(() => Promise.resolve("logged"));
+
+const spyOnPrint = jest.spyOn(window, "print").mockImplementation(jest.fn);
+
 jest.spyOn(window, "scrollTo").mockImplementation(jest.fn);
 
-console.log("************************************************************************")
+console.log(
+  "************************************************************************"
+);
 
-describe("ReviewPage.vue pay patient created()", () => {
+describe("ReviewPage.vue pay patient", () => {
   let store;
   let wrapper;
   let $route;
@@ -58,7 +79,7 @@ describe("ReviewPage.vue pay patient created()", () => {
   let spyOnLogService;
 
   beforeEach(() => {
-    store = new Vuex.Store(storeTemplate);
+    store = new Vuex.Store(storeTemplateC);
     $route = {
       path: "/potato-csr",
     };
@@ -97,5 +118,136 @@ describe("ReviewPage.vue pay patient created()", () => {
 
   it("renders", () => {
     expect(wrapper.element).toBeDefined();
+  });
+});
+
+describe("ReviewPage.vue pay patient created()", () => {
+  let store;
+  let wrapper;
+  let $route;
+  let $router;
+  let spyOnDispatch;
+  let spyOnSpaEnvs;
+
+  beforeEach(() => {
+    store = new Vuex.Store(storeTemplateC);
+    $route = {
+      path: "/potato-csr",
+    };
+    $router = {
+      $route,
+      currentRoute: $route,
+      push: jest.fn(),
+    };
+    wrapper = shallowMount(Page, {
+      localVue,
+      store,
+      mocks: {
+        $route,
+        $router,
+      },
+    });
+    spyOnDispatch = jest.spyOn(wrapper.vm.$store, "dispatch");
+
+    spyOnSpaEnvs = jest
+      .spyOn(spaEnvService, "loadEnvs")
+      .mockImplementation(() => Promise.resolve("loaded"));
+
+    wrapper.vm.$options.created.forEach((hook) => {
+      hook.call(wrapper.vm);
+    });
+  });
+
+  afterEach(() => {
+    jest.resetModules();
+    jest.clearAllMocks();
+  });
+
+  it("calls logService", () => {
+    expect(spyOnLogService).toBeDefined();
+  });
+});
+
+describe("ReviewPage.vue pay patient isFormAbleToSubmit()", () => {
+  let store;
+  let wrapper;
+  let $route;
+  let $router;
+  let spyOnDispatch;
+  let spyOnSpaEnvs;
+
+  beforeEach(() => {
+    store = new Vuex.Store(storeTemplateC);
+    $route = {
+      path: "/potato-csr",
+    };
+    $router = {
+      $route,
+      currentRoute: $route,
+      push: jest.fn(),
+    };
+    wrapper = shallowMount(Page, {
+      localVue,
+      store,
+      mocks: {
+        $route,
+        $router,
+      },
+    });
+    spyOnDispatch = jest.spyOn(wrapper.vm.$store, "dispatch");
+
+    spyOnSpaEnvs = jest
+      .spyOn(spaEnvService, "loadEnvs")
+      .mockImplementation(() => Promise.resolve("loaded"));
+  });
+
+  afterEach(() => {
+    jest.resetModules();
+    jest.clearAllMocks();
+  });
+
+  it("calls submitForm if the store has correspondenceAttached = N", () => {
+    store = new Vuex.Store(storeTemplateN);
+    $route = {
+      path: "/potato-csr",
+    };
+    $router = {
+      $route,
+      currentRoute: $route,
+      push: jest.fn(),
+    };
+    wrapper = shallowMount(Page, {
+      localVue,
+      store,
+      mocks: {
+        $route,
+        $router,
+      },
+    });
+    const spyOnSubmitForm = jest.spyOn(wrapper.vm, "submitForm");
+    wrapper.vm.continueHandler();
+    expect(spyOnSubmitForm).toHaveBeenCalled();
+  });
+
+  it("calls window.print if the store has correspondenceAttached = C", () => {
+    store = new Vuex.Store(storeTemplateC);
+    $route = {
+      path: "/potato-csr",
+    };
+    $router = {
+      $route,
+      currentRoute: $route,
+      push: jest.fn(),
+    };
+    wrapper = shallowMount(Page, {
+      localVue,
+      store,
+      mocks: {
+        $route,
+        $router,
+      },
+    });
+    wrapper.vm.continueHandler();
+    expect(spyOnPrint).toHaveBeenCalled();
   });
 });
