@@ -1275,6 +1275,17 @@ export default {
       this.isValidationModalShown = false;
     },
     navigateToNextPage() {
+      // Navigate to next path.
+      const toPath = getConvertedPath(
+        this.$router.currentRoute.path,
+        payPatientRoutes.REVIEW_PAGE.path
+      );
+      pageStateService.setPageComplete(toPath);
+      pageStateService.visitPage(toPath);
+      this.$router.push(toPath);
+      scrollTo(0);
+    },
+    saveData() {
       this.$store.dispatch(formModule + '/' + SET_PLAN_REFERENCE_NUMBER, this.planReferenceNumber);
 
       this.$store.dispatch(formModule + '/' + SET_PHN, this.phn);
@@ -1312,16 +1323,6 @@ export default {
       this.$store.dispatch(formModule + '/' + SET_REFERRED_TO_FIRST_NAME_INITIAL, this.referredToFirstNameInitial);
       this.$store.dispatch(formModule + '/' + SET_REFERRED_TO_LAST_NAME, this.referredToLastName);
       this.$store.dispatch(formModule + '/' + SET_REFERRED_TO_PRACTITIONER_NUMBER, this.referredToPractitionerNumber);
-
-      // Navigate to next path.
-      const toPath = getConvertedPath(
-        this.$router.currentRoute.path,
-        payPatientRoutes.REVIEW_PAGE.path
-      );
-      pageStateService.setPageComplete(toPath);
-      pageStateService.visitPage(toPath);
-      this.$router.push(toPath);
-      scrollTo(0);
     },
     getMedicalServiceClaimTitle(index) {
       if (this.medicalServiceClaims && this.medicalServiceClaims.length > 1) {
@@ -1377,6 +1378,7 @@ export default {
   beforeRouteLeave(to, from, next) {
     pageStateService.setPageIncomplete(from.path);
     if (pageStateService.isPageComplete(to.path) || isPastPath(to.path, from.path)) {
+      this.saveData();
       next();
     } else {
       // Navigate to self.
