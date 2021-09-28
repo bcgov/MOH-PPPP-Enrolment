@@ -11,7 +11,10 @@ import logService from "@/services/log-service";
 import apiService from "@/services/api-service";
 import pageStateService from "@/services/page-state-service";
 import { getConvertedPath } from "@/helpers/url";
-import { payPractitionerRoutes, payPractitionerRouteStepOrder } from "@/router/routes";
+import {
+  payPractitionerRoutes,
+  payPractitionerRouteStepOrder,
+} from "@/router/routes";
 
 const localVue = createLocalVue();
 localVue.use(Vuex);
@@ -125,6 +128,11 @@ const mockResponseMisc = {
 const next = jest.fn();
 const testDate = new Date();
 
+//The following code creates four templates for testing purposes.
+//storeTemplateC has medical claims set to C. storeTemplateN has medical claims set to N.
+//storeTemplateNHospitalC and storeTemplateNHospitalN also have *medical* claims set to N.
+//NHospitalC has *hospital* claims set to C. NHospitalN has *hospital* claims set to N.
+
 const storeTemplateC = {
   modules: {
     app: cloneDeep(module1.default),
@@ -141,13 +149,49 @@ const storeTemplateN = {
   },
 };
 
+const storeTemplateNHospitalC = {
+  modules: {
+    app: cloneDeep(module1.default),
+    payPatientForm: cloneDeep(module2.default),
+    payPractitionerForm: cloneDeep(module3.default),
+  },
+};
+
+const storeTemplateNHospitalN = {
+  modules: {
+    app: cloneDeep(module1.default),
+    payPatientForm: cloneDeep(module2.default),
+    payPractitionerForm: cloneDeep(module3.default),
+  },
+};
+
 const practitionerStateC = cloneDeep(dummyDataValid.default);
 const practitionerStateN = cloneDeep(dummyDataValid.default);
+const practitionerStateNHospitalC = cloneDeep(dummyDataValid.default);
+const practitionerStateNHospitalN = cloneDeep(dummyDataValid.default);
+
 practitionerStateC.medicalServiceClaims[0].correspondenceAttached = "C";
 practitionerStateN.medicalServiceClaims[0].correspondenceAttached = "N";
+practitionerStateNHospitalC.medicalServiceClaims[0].correspondenceAttached =
+  "N";
+practitionerStateNHospitalN.medicalServiceClaims[0].correspondenceAttached =
+  "N";
 
-storeTemplateC.modules.payPractitionerForm.state = cloneDeep(practitionerStateC);
-storeTemplateN.modules.payPractitionerForm.state = cloneDeep(practitionerStateN);
+practitionerStateNHospitalC.hospitalVisitClaims[0].correspondenceAttached = "C";
+practitionerStateNHospitalN.hospitalVisitClaims[0].correspondenceAttached = "N";
+
+storeTemplateC.modules.payPractitionerForm.state = cloneDeep(
+  practitionerStateC
+);
+storeTemplateN.modules.payPractitionerForm.state = cloneDeep(
+  practitionerStateN
+);
+storeTemplateNHospitalC.modules.payPractitionerForm.state = cloneDeep(
+  practitionerStateNHospitalC
+);
+storeTemplateNHospitalN.modules.payPractitionerForm.state = cloneDeep(
+  practitionerStateNHospitalN
+);
 
 //later versions of Jest use a function called "jest.setSystemTime"
 //but since this project is using Jest 24.x
@@ -325,7 +369,7 @@ describe("ReviewPage.vue pay practitioner isFormAbleToSubmit()", () => {
     jest.clearAllMocks();
   });
 
-  it("calls submitForm if the store has correspondenceAttached = N", () => {
+  it("calls submitForm if the store has medical claims correspondenceAttached = N", () => {
     store = new Vuex.Store(storeTemplateN);
     $route = {
       path: "/potato-csr",
@@ -348,8 +392,53 @@ describe("ReviewPage.vue pay practitioner isFormAbleToSubmit()", () => {
     expect(spyOnSubmitForm).toHaveBeenCalled();
   });
 
-  it("calls window.print if the store has correspondenceAttached = C", () => {
+  it("calls window.print if the store has medical claims correspondenceAttached = C", () => {
     store = new Vuex.Store(storeTemplateC);
+    $route = {
+      path: "/potato-csr",
+    };
+    $router = {
+      $route,
+      currentRoute: $route,
+      push: jest.fn(),
+    };
+    wrapper = shallowMount(Page, {
+      localVue,
+      store,
+      mocks: {
+        $route,
+        $router,
+      },
+    });
+    wrapper.vm.continueHandler();
+    expect(spyOnPrint).toHaveBeenCalled();
+  });
+
+  it("calls submitForm if the store has medical claims correspondenceAttached = N and hospital claims = N", () => {
+    store = new Vuex.Store(storeTemplateNHospitalN);
+    $route = {
+      path: "/potato-csr",
+    };
+    $router = {
+      $route,
+      currentRoute: $route,
+      push: jest.fn(),
+    };
+    wrapper = shallowMount(Page, {
+      localVue,
+      store,
+      mocks: {
+        $route,
+        $router,
+      },
+    });
+    const spyOnSubmitForm = jest.spyOn(wrapper.vm, "submitForm");
+    wrapper.vm.continueHandler();
+    expect(spyOnSubmitForm).toHaveBeenCalled();
+  });
+
+  it("calls window.print if the store has medical claims correspondenceAttached = N and hospital claims = C", () => {
+    store = new Vuex.Store(storeTemplateNHospitalC);
     $route = {
       path: "/potato-csr",
     };
