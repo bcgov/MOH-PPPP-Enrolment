@@ -378,6 +378,8 @@ describe("ReviewPage.vue pay patient isFormAbleToSubmit()", () => {
   });
 });
 
+//skipping continueButtonLabel() tests because they would be entirely hardcoded
+
 describe("ReviewPage.vue pay patient submitForm()", () => {
   let store;
   let wrapper;
@@ -633,5 +635,117 @@ describe("ReviewPage.vue pay patient navigateToSubmissionErrorPage()", () => {
 
   it("calls scrollTo", () => {
     expect(spyOnScrollTo).toHaveBeenCalled();
+  });
+});
+
+describe("ReviewPage.vue beforeRouteLeave(to, from, next)", () => {
+  let store;
+  let wrapper;
+  let $route;
+  let $router;
+
+  beforeEach(() => {
+    store = new Vuex.Store(storeTemplateN);
+    $route = {
+      path: "/potato-csr",
+    };
+    $router = {
+      $route,
+      currentRoute: $route,
+      push: jest.fn(),
+    };
+    wrapper = shallowMount(Page, {
+      localVue,
+      store,
+      mocks: {
+        $route,
+        $router,
+      },
+    });
+  });
+
+  afterEach(() => {
+    jest.resetModules();
+    jest.clearAllMocks();
+  });
+
+  it("calls scrollTo() and getTopScrollPosition() when given invalid route", async () => {
+    //to, from, next
+    jest.useFakeTimers();
+    Page.beforeRouteLeave.call(
+      wrapper.vm,
+      payPatientRouteStepOrder[1],
+      payPatientRouteStepOrder[0],
+      next
+    );
+    jest.advanceTimersByTime(5);
+    await wrapper.vm.$nextTick;
+    expect(spyOnGetTopScrollPosition).toHaveBeenCalled();
+    expect(spyOnScrollTo).toHaveBeenCalled();
+  });
+
+  it("calls next() with proper arguments when given invalid route", async () => {
+    //to, from, next
+    jest.useFakeTimers();
+    Page.beforeRouteLeave.call(
+      wrapper.vm,
+      payPatientRouteStepOrder[1],
+      payPatientRouteStepOrder[0],
+      next
+    );
+    jest.advanceTimersByTime(5);
+    await wrapper.vm.$nextTick;
+    const testPath = getConvertedPath(
+      wrapper.vm.$router.currentRoute.path,
+      payPatientRoutes.REVIEW_PAGE.path
+    );
+    expect(next).toHaveBeenCalledWith({
+      path: testPath,
+      replace: true,
+    });
+  });
+
+  it("calls next() with proper arguments when given valid route", async () => {
+    //to, from, next
+    jest.useFakeTimers();
+    Page.beforeRouteLeave.call(
+      wrapper.vm,
+      payPatientRouteStepOrder[0],
+      payPatientRouteStepOrder[1],
+      next
+    );
+    jest.advanceTimersByTime(5);
+    await wrapper.vm.$nextTick;
+    expect(next).toHaveBeenCalled();
+    expect(spyOnGetTopScrollPosition).not.toHaveBeenCalled();
+    expect(spyOnScrollTo).not.toHaveBeenCalled();
+  });
+
+  it("calls spyOnSetPageIncomplete (valid route)", async () => {
+    //to, from, next
+    jest.useFakeTimers();
+    Page.beforeRouteLeave.call(
+      wrapper.vm,
+      payPatientRouteStepOrder[0],
+      payPatientRouteStepOrder[1],
+      next
+    );
+    jest.advanceTimersByTime(5);
+    await wrapper.vm.$nextTick;
+    expect(spyOnSetPageIncomplete).toHaveBeenCalled();
+  });
+
+  it("calls spyOnSetPageIncomplete (invalid route)", async () => {
+    //to, from, next
+    jest.useFakeTimers();
+    Page.beforeRouteLeave.call(
+      wrapper.vm,
+      payPatientRouteStepOrder[1],
+      payPatientRouteStepOrder[0],
+      next
+    );
+    jest.advanceTimersByTime(5);
+    await wrapper.vm.$nextTick;
+    expect(spyOnSetPageIncomplete).toHaveBeenCalled();
   });
 });
