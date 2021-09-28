@@ -17,7 +17,6 @@ localVue.use(Vuex);
 localVue.component("font-awesome-icon", FontAwesomeIcon);
 
 const next = jest.fn();
-const spyOnPrint = jest.spyOn(window, "print").mockImplementation(jest.fn);
 
 const storeTemplate = {
   modules: {
