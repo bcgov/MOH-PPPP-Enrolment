@@ -98,6 +98,30 @@ const mockResponse = {
   request: {},
 };
 
+const mockResponse3 = {
+  data: {
+    applicationUuid: "ed8fcf17-fb1f-4b3d-93aa-1ba5fbfb2898",
+    requestUuid: "d88ecb3b-0ce5-4849-a349-e91fd7b11618",
+    returnCode: "3",
+    returnMessage: "Success",
+    planReferenceNumber: "1270900001",
+  },
+  status: 200,
+  statusText: "OK",
+};
+
+const mockResponseMisc = {
+  data: {
+    applicationUuid: "ed8fcf17-fb1f-4b3d-93aa-1ba5fbfb2898",
+    requestUuid: "d88ecb3b-0ce5-4849-a349-e91fd7b11618",
+    returnCode: "potato",
+    returnMessage: "Success",
+    planReferenceNumber: "1270900001",
+  },
+  status: 200,
+  statusText: "OK",
+};
+
 const next = jest.fn();
 const testDate = new Date();
 
@@ -137,6 +161,7 @@ const spyOnAPIService = jest
 const scrollHelper = require("@/helpers/scroll");
 
 const spyOnScrollTo = jest.spyOn(scrollHelper, "scrollTo");
+const spyOnScrollToError = jest.spyOn(scrollHelper, "scrollToError");
 
 const spyOnGetTopScrollPosition = jest
   .spyOn(scrollHelper, "getTopScrollPosition")
@@ -154,9 +179,13 @@ const spyOnLogService = jest
   .spyOn(logService, "logNavigation")
   .mockImplementation(() => Promise.resolve("logged"));
 
-  const spyOnLogServiceSubmission = jest
+const spyOnLogServiceSubmission = jest
   .spyOn(logService, "logSubmission")
-  .mockImplementation(() => Promise.resolve("logged"));  
+  .mockImplementation(() => Promise.resolve("logged"));
+
+const spyOnLogServiceError = jest
+  .spyOn(logService, "logError")
+  .mockImplementation(() => Promise.resolve("logged"));
 
 const spyOnPrint = jest.spyOn(window, "print").mockImplementation(jest.fn);
 
@@ -357,6 +386,7 @@ describe("ReviewPage.vue pay patient submitForm()", () => {
   let spyOnDispatch;
   let spyOnSpaEnvs;
   let spyOnNavigateToSubmissionPage;
+  let spyOnNavigateToSubmissionErrorPage;
 
   beforeEach(() => {
     // jest.useFakeTimers("modern");
@@ -383,6 +413,11 @@ describe("ReviewPage.vue pay patient submitForm()", () => {
     spyOnNavigateToSubmissionPage = jest.spyOn(
       wrapper.vm,
       "navigateToSubmissionPage"
+    );
+
+    spyOnNavigateToSubmissionErrorPage = jest.spyOn(
+      wrapper.vm,
+      "navigateToSubmissionErrorPage"
     );
 
     spyOnSpaEnvs = jest
@@ -422,7 +457,42 @@ describe("ReviewPage.vue pay patient submitForm()", () => {
   it("calls navigateToSubmissionPage on successful submission", async () => {
     wrapper.vm.submitForm();
     await wrapper.vm.$nextTick;
-    // wrapper.vm.navigateToSubmissionPage()
     expect(spyOnNavigateToSubmissionPage).toHaveBeenCalled();
+  });
+
+  it("calls scrollToError on error code 3", async () => {
+    const spyOnAPIService = jest
+      .spyOn(apiService, "submitPayPatientApplication")
+      .mockImplementationOnce(() => Promise.resolve(mockResponse3));
+    wrapper.vm.submitForm();
+    await wrapper.vm.$nextTick;
+    expect(spyOnScrollToError).toHaveBeenCalled();
+  });
+
+  it("calls logServiceError on error code 3", async () => {
+    const spyOnAPIService = jest
+      .spyOn(apiService, "submitPayPatientApplication")
+      .mockImplementationOnce(() => Promise.resolve(mockResponse3));
+    wrapper.vm.submitForm();
+    await wrapper.vm.$nextTick;
+    expect(spyOnLogServiceError).toHaveBeenCalled();
+  });
+
+  it("calls navigateToSubmissionErrorPage on misc error", async () => {
+    const spyOnAPIService = jest
+      .spyOn(apiService, "submitPayPatientApplication")
+      .mockImplementationOnce(() => Promise.resolve(mockResponseMisc));
+    wrapper.vm.submitForm();
+    await wrapper.vm.$nextTick;
+    expect(spyOnNavigateToSubmissionErrorPage).toHaveBeenCalled();
+  });
+
+  it("calls logServiceError on misc error", async () => {
+    const spyOnAPIService = jest
+      .spyOn(apiService, "submitPayPatientApplication")
+      .mockImplementationOnce(() => Promise.resolve(mockResponseMisc));
+    wrapper.vm.submitForm();
+    await wrapper.vm.$nextTick;
+    expect(spyOnLogServiceError).toHaveBeenCalled();
   });
 });
