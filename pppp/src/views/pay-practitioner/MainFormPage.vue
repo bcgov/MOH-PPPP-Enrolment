@@ -471,10 +471,33 @@
                     && v.dayFrom.required
                     && v.year.required
                     && v.hospitalVisitDateValidator
+                    && v.hospitalVisitDateFutureValidator
+                    && !v.hospitalVisitDateToFutureValidator"
+                aria-live="assertive">Hospital Service Day To cannot be in the future.</div>
+            <div class="text-danger"
+                v-if="v.month.$dirty
+                    && v.dayFrom.$dirty
+                    && v.year.$dirty
+                    && v.month.required
+                    && v.dayFrom.required
+                    && v.year.required
+                    && v.hospitalVisitDateValidator
                     && v.hospitalVisitDatePastValidator
                     && v.hospitalVisitDateFutureValidator
                     && !v.hospitalVisitDateRangeValidator"
                 aria-live="assertive">Hospital Service date range must be valid.</div>
+            <div class="text-danger"
+                v-if="v.month.$dirty
+                  && v.dayFrom.$dirty
+                  && v.year.$dirty
+                  && v.month.required
+                  && v.dayFrom.required
+                  && v.year.required
+                  && v.hospitalVisitDateValidator
+                  && v.hospitalVisitDatePastValidator
+                  && v.hospitalVisitDateFutureValidator
+                  && !v.hospitalVisitDateCutOffValidator"
+                aria-live="assertive">Service Date is invalid for the Service Location Code.</div>
             <DigitInput label='Number of Services:'
                   :id='"hvc-number-of-services-" + index'
                   class='mt-3'
@@ -571,10 +594,20 @@
                   :options='serviceLocationOptions'
                   :isRequiredAsteriskShown='true'
                   :inputStyle='extraLargeStyles'
-                  @blur='handleBlurField($v.hospitalVisitClaims.$each[index].locationOfService)' />
+                  @blur='handleBlurField($v.hospitalVisitClaims.$each[index].locationOfService)'>
+              <template v-slot:description>
+                <p class="input-description">MSP Claims submitted with Service Location Code (<b>A</b>) for dates of service on or after October 1, 2021, will not be accepted.</p>
+              </template>
+            </Select>
             <div class="text-danger"
-                v-if="v.locationOfService.$dirty && !v.locationOfService.required"
-                aria-live="assertive">Service location code is required.</div>
+                v-if="v.locationOfService.$dirty
+                  && !v.locationOfService.required"
+                aria-live="assertive">Service Location Code is required.</div>
+            <div class="text-danger"
+                v-if="v.locationOfService.$dirty
+                  && v.locationOfService.required
+                  && !v.locationOfService.hospitalVisitLocationCodeValidator"
+                aria-live="assertive">Service Location Code is invalid for the Service Date.</div>
             <Select label='Correspondence Attached:'
                   :id='"hvc-correspondence-attached-" + index'
                   class='mt-3'
@@ -1043,6 +1076,56 @@ const hospitalVisitDateFutureValidator = (value) => {
       && isBefore(date, addDays(startOfToday(), 1));
 };
 
+const hospitalVisitDateToFutureValidator = (value) => {
+  const month = value.month;
+  const dayTo = value.dayTo;
+  const year = value.year;
+
+  if (!dayTo) {
+    return true;
+  }
+
+  const isoDateString = getISODateString(year, month, dayTo);
+  const date = parseISO(isoDateString);
+
+  return isValidISODateString(isoDateString)
+      && isValid(date)
+      && isBefore(date, addDays(startOfToday(), 1));
+};
+
+const hospitalVisitLocationCodeValidator = (value, vm) => {
+  const month = vm.month;
+  const dayFrom = vm.dayFrom;
+  const year = vm.year;
+  const isoDateString = getISODateString(year, month, dayFrom);
+  const date = parseISO(isoDateString);
+  
+  if (value === 'A'
+    && isValidISODateString(isoDateString)
+    && isValid(date)
+    && isAfter(date, subDays(parseISO('2021-10-01'), 1))) {
+    return false;
+  }
+  return true;
+};
+
+const hospitalVisitDateCutOffValidator = (value) => {
+  const month = value.month;
+  const dayFrom = value.dayFrom;
+  const year = value.year;
+  const locationOfService = value.locationOfService;
+  const isoDateString = getISODateString(year, month, dayFrom);
+  const date = parseISO(isoDateString);
+
+  if (locationOfService === 'A'
+    && isValidISODateString(isoDateString)
+    && isValid(date)
+    && isAfter(date, subDays(parseISO('2021-10-01'), 1))) {
+    return false;
+  }
+  return true;
+};
+
 const hospitalVisitDateRangeValidator = (value) => {
   const month = value.month;
   const dayFrom = value.dayFrom;
@@ -1331,7 +1414,9 @@ export default {
           hospitalVisitDateValidator,
           hospitalVisitDatePastValidator,
           hospitalVisitDateFutureValidator,
+          hospitalVisitDateToFutureValidator,
           hospitalVisitDateRangeValidator,
+          hospitalVisitDateCutOffValidator,
           month: {
             required,
             positiveNumberValidator,
@@ -1374,6 +1459,7 @@ export default {
           },
           locationOfService: {
             required,
+            hospitalVisitLocationCodeValidator,
           },
           serviceClarificationCode: {
             clarificationCodeValidator: optionalValidator(clarificationCodeValidator),
@@ -1616,6 +1702,17 @@ export default {
       this.isValidationModalShown = false;
     },
     navigateToNextPage() {
+      // Navigate to next path.
+      const toPath = getConvertedPath(
+        this.$router.currentRoute.path,
+        payPractitionerRoutes.REVIEW_PAGE.path
+      );
+      pageStateService.setPageComplete(toPath);
+      pageStateService.visitPage(toPath);
+      this.$router.push(toPath);
+      scrollTo(0);
+    },
+    saveData() {
       this.$store.dispatch(formModule + '/' + SET_PLAN_REFERENCE_NUMBER, this.planReferenceNumber);
 
       this.$store.dispatch(formModule + '/' + SET_PHN, this.phn);
@@ -1648,16 +1745,6 @@ export default {
       this.$store.dispatch(formModule + '/' + SET_REFERRED_TO_LAST_NAME, this.referredToLastName);
       this.$store.dispatch(formModule + '/' + SET_REFERRED_TO_FIRST_NAME_INITIAL, this.referredToFirstNameInitial);
       this.$store.dispatch(formModule + '/' + SET_REFERRED_TO_PRACTITIONER_NUMBER, this.referredToPractitionerNumber);
-      
-      // Navigate to next path.
-      const toPath = getConvertedPath(
-        this.$router.currentRoute.path,
-        payPractitionerRoutes.REVIEW_PAGE.path
-      );
-      pageStateService.setPageComplete(toPath);
-      pageStateService.visitPage(toPath);
-      this.$router.push(toPath);
-      scrollTo(0);
     },
     getMedicalServiceClaimTitle(index) {
       if (this.medicalServiceClaims && this.medicalServiceClaims.length > 1) {
@@ -1738,6 +1825,7 @@ export default {
   beforeRouteLeave(to, from, next) {
     pageStateService.setPageIncomplete(from.path);
     if ((pageStateService.isPageComplete(to.path)) || isPastPath(to.path, from.path)) {
+      this.saveData();
       next();
     } else {
       // Navigate to self.

@@ -34,7 +34,6 @@ export default {
   flex-direction: column;
   /* background-color: #EEE; */
   border-top: 1px solid rgba(0,0,0,0.3);
-  page-break-inside: avoid;
 }
 
 .bcgov-row {
