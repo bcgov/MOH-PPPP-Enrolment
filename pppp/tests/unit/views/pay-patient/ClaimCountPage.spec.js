@@ -349,7 +349,7 @@ describe("ClaimCountPage.vue validateFields() part 1 (invalid)", () => {
     expect(spyOnScrollTo).not.toHaveBeenCalled();
   });
 
-  it("does call router.push", () => {
+  it("does not call router.push", () => {
     wrapper.vm.validateFields();
     expect(spyOnRouter).not.toHaveBeenCalled();
   });
