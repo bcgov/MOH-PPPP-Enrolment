@@ -90,6 +90,10 @@ export const selectOptionsServiceLocation = [
     label: '(L) Longitudinal Primary Care Practice (e.g., GP family practice or PCN clinic)'
   },
   {
+    value: 'M',
+    label: '(M) Mental Health Centre'
+  },
+  {
     value: 'N',
     label: '(N) Health Care Practitioner Office (non-physician)'
   },
@@ -120,10 +124,6 @@ export const selectOptionsServiceLocation = [
   {
     value: 'W',
     label: '(W) Walk-In Clinic'
-  },
-  {
-    value: 'M',
-    label: '(M) Mental Health Centre'
   },
   {
     value: 'Z',

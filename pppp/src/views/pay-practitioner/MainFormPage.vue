@@ -245,7 +245,8 @@
                   v-model='claim.feeItem'
                   :isRequiredAsteriskShown='true'
                   :inputStyle='smallStyles'
-                  @blur='handleBlurField($v.medicalServiceClaims.$each[index].feeItem)' />
+                  @blur='handleBlurField($v.medicalServiceClaims.$each[index].feeItem)'
+                  @input='handleInputServiceFeeItem(index)' />
             <div class="text-danger"
                 v-if="v.feeItem.$dirty && !v.feeItem.required"
                 aria-live="assertive">Fee Item is required.</div>
@@ -255,6 +256,9 @@
             <div class="text-danger"
                 v-if="v.feeItem.$dirty && v.feeItem.required && !v.feeItem.positiveNumberValidator"
                 aria-live="assertive">Fee Item must be a positive number.</div>
+            <div class="text-danger"
+                v-if="medicalServiceClaimsFeeItemValidationError[index]"
+                aria-live="assertive">Fee Item does not match our records.</div>
             <NumberInput label='Amount Billed:'
                   :id='"msc-amount-billed-" + index'
                   class='mt-3'
@@ -512,7 +516,8 @@
                   v-model='claim.feeItem'
                   :isRequiredAsteriskShown='true'
                   :inputStyle='smallStyles'
-                  @blur='handleBlurField($v.hospitalVisitClaims.$each[index].feeItem)' />
+                  @blur='handleBlurField($v.hospitalVisitClaims.$each[index].feeItem)'
+                  @input='handleInputHospitalVisitFeeItem(index)' />
             <div class="text-danger"
                 v-if="v.feeItem.$dirty && !v.feeItem.required"
                 aria-live="assertive">Fee Item is required.</div>
@@ -522,6 +527,9 @@
             <div class="text-danger"
                 v-if="v.feeItem.$dirty && v.feeItem.required && !v.feeItem.positiveNumberValidator"
                 aria-live="assertive">Fee Item must be a positive number.</div>
+            <div class="text-danger"
+                v-if="hospitalVisitClaimsFeeItemValidationError[index]"
+                aria-live="assertive">Fee Item does not match our records.</div>
             <NumberInput label='Amount Billed:'
                   :id='"hvc-amount-billed-" + index'
                   class='mt-3'
@@ -615,13 +623,17 @@
                 v-model='practitionerLastName'
                 :inputStyle='mediumStyles'
                 :isRequiredAsteriskShown='true'
-                @blur='handleBlurField($v.practitionerLastName)' />
+                @blur='handleBlurField($v.practitionerLastName)'
+                @input='handleInputPractitioner()' />
           <div class="text-danger"
               v-if="$v.practitionerLastName.$dirty && !$v.practitionerLastName.required"
               aria-live="assertive">Practitioner Last Name is required.</div>
           <div class="text-danger"
               v-if="$v.practitionerLastName.$dirty && $v.practitionerLastName.required && !$v.practitionerLastName.nameValidator"
               aria-live="assertive">Practitioner Last Name must begin with a letter and cannot include special characters except hyphens, periods, apostrophes and blank characters.</div>
+          <div class="text-danger"
+              v-if="isPractitionerErrorShown"
+              aria-live="assertive">Practitioner information does not match our records.</div>
           <Input label='Practitioner First Name:'
                 id='practitioner-first-name'
                 maxlength="15"
@@ -629,13 +641,17 @@
                 v-model='practitionerFirstName'
                 :inputStyle='mediumStyles'
                 :isRequiredAsteriskShown='true'
-                @blur='handleBlurField($v.practitionerFirstName)'/>
+                @blur='handleBlurField($v.practitionerFirstName)'
+                @input='handleInputPractitioner()'/>
           <div class="text-danger"
               v-if="$v.practitionerFirstName.$dirty && !$v.practitionerFirstName.required"
               aria-live="assertive">Practitioner First Name is required.</div>
           <div class="text-danger"
               v-if="$v.practitionerFirstName.$dirty && $v.practitionerFirstName.required && !$v.practitionerFirstName.nameValidator"
               aria-live="assertive">Practitioner First Name must begin with a letter and cannot include special characters except hyphens, periods, apostrophes and blank characters.</div>
+          <div class="text-danger"
+              v-if="isPractitionerErrorShown"
+              aria-live="assertive">Practitioner information does not match our records.</div>
           <!-- Using PractitionerNumberInput because it has the same character format. -->
           <PractitionerNumberInput label='Payment Number:'
                 id='payment-number'
@@ -656,13 +672,17 @@
                 v-model='practitionerPractitionerNumber'
                 :isRequiredAsteriskShown='true'
                 :inputStyle='smallStyles'
-                @blur='handleBlurField($v.practitionerPractitionerNumber)' />
+                @blur='handleBlurField($v.practitionerPractitionerNumber)'
+                @input='handleInputPractitioner()'/>
           <div class="text-danger"
               v-if="$v.practitionerPractitionerNumber.$dirty && !$v.practitionerPractitionerNumber.required"
               aria-live="assertive">Practitioner number is required.</div>
           <div class="text-danger"
               v-if="$v.practitionerPractitionerNumber.$dirty && $v.practitionerPractitionerNumber.required && !$v.practitionerPractitionerNumber.minLength"
               aria-live="assertive">Practitioner number must not be less than 5 characters.</div>
+          <div class="text-danger"
+              v-if="isPractitionerErrorShown"
+              aria-live="assertive">Practitioner information does not match our records.</div>
           <Input label='Specialty Code:'
                 id='specialty-code'
                 class='mt-3'
@@ -800,6 +820,8 @@
               v-if="$v.referredToFirstNameInitial.$dirty && !$v.referredToFirstNameInitial.alphaValidator"
               aria-live="assertive">First Name Initial must only contain an alphabetic character.</div>
         </div>
+        <div v-if="isSystemUnavailable"
+            class="text-danger my-4">Unable to continue, system unavailable. Please try again later.</div>
       </div>
     </PageContent>
     <PromptModal v-if='isValidationModalShown'
@@ -814,12 +836,14 @@
       </ul>
       <p>Do you wish to continue?</p>
     </PromptModal>
-    <ContinueBar @continue="validateFields()" />
+    <ContinueBar @continue="validateFields()"
+                :hasLoader='isValidating'/>
   </div>
 </template>
 
 <script>
 import pageStateService from '@/services/page-state-service';
+import apiService from '@/services/api-service';
 import {
   payPractitionerRoutes,
   isPastPath,
@@ -1057,6 +1081,9 @@ const hospitalVisitSubmissionCodeValidator = (value, vm) => {
   return true;
 }
 
+const MAX_MEDICAL_SERVICE_CLAIMS = 4;
+const MAX_HOSPITAL_VISIT_CLAIMS = 2;
+
 export default {
   name: 'MainFormPage',
   components: {
@@ -1081,6 +1108,12 @@ export default {
     return {
       isPageLoaded: false,
       isValidationModalShown: false,
+
+      isValidating: false,
+      isSystemUnavailable: false,
+      isPractitionerErrorShown: false,
+      medicalServiceClaimsFeeItemValidationError: [],
+      hospitalVisitClaimsFeeItemValidationError: [],
       addressOwnerOptions: [
         {
           id: 'address-owner-practitioner',
@@ -1187,6 +1220,13 @@ export default {
     this.referredToFirstNameInitial = this.$store.state.payPractitionerForm.referredToFirstNameInitial;
     this.referredToPractitionerNumber = this.$store.state.payPractitionerForm.referredToPractitionerNumber;
 
+    for (let i=0; i<MAX_MEDICAL_SERVICE_CLAIMS; i++) {
+      this.medicalServiceClaimsFeeItemValidationError.push(false);
+    }
+    for (let i=0; i<MAX_HOSPITAL_VISIT_CLAIMS; i++) {
+      this.hospitalVisitClaimsFeeItemValidationError.push(false);
+    }
+    
     setTimeout(() => {
       this.isPageLoaded = true;
     }, 0);
@@ -1429,6 +1469,15 @@ export default {
     handleProcessServiceDate(data, claimIndex) {
       this.medicalServiceClaims[claimIndex].serviceDateData = data;
     },
+    handleInputPractitioner() {
+      this.isPractitionerErrorShown = false;
+    },
+    handleInputServiceFeeItem(index) {
+      this.medicalServiceClaimsFeeItemValidationError[index] = false;
+    },
+    handleInputHospitalVisitFeeItem(index) {
+      this.hospitalVisitClaimsFeeItemValidationError[index] = false;
+    },
     validateFields() {
       // If no dependent number is given, then default to "00".
       if (!this.dependentNumber) {
@@ -1481,8 +1530,82 @@ export default {
         return;
       }
 
+      this.isValidating = true;
+      this.isSystemUnavailable = false;
+      this.isPractitionerErrorShown = false;
+      for (let i=0; i<this.medicalServiceClaimsFeeItemValidationError.length; i++) {
+        this.medicalServiceClaimsFeeItemValidationError[i] = false;
+      }
+
+      const token = this.$store.state.payPractitionerForm.captchaToken;
+      const applicationUuid = this.$store.state.payPractitionerForm.applicationUuid;
+      
       // Do server-side validation.
-      this.isValidationModalShown = true;
+      apiService.validateApplication(token, {
+        applicationUuid: applicationUuid,
+        practitionerFirstName: this.practitionerFirstName || '',
+        practitionerLastName: this.practitionerLastName || '',
+        practitionerNumber: this.practitionerPractitionerNumber || '',
+        serviceFeeItem1: this.medicalServiceClaims[0] && this.medicalServiceClaims[0].feeItem ? this.medicalServiceClaims[0].feeItem : '',
+        serviceFeeItem2: this.medicalServiceClaims[1] && this.medicalServiceClaims[1].feeItem ? this.medicalServiceClaims[1].feeItem : '',
+        serviceFeeItem3: this.medicalServiceClaims[2] && this.medicalServiceClaims[2].feeItem ? this.medicalServiceClaims[2].feeItem : '',
+        serviceFeeItem4: this.medicalServiceClaims[3] && this.medicalServiceClaims[3].feeItem ? this.medicalServiceClaims[3].feeItem : '',
+        serviceLocationCode1: '',
+        serviceLocationCode2: '',
+        serviceLocationCode3: '',
+        serviceLocationCode4: '',
+        hospitalFeeItem1: this.hospitalVisitClaims[0] && this.hospitalVisitClaims[0].feeItem ? this.hospitalVisitClaims[0].feeItem : '',
+        hospitalFeeItem2: this.hospitalVisitClaims[1] && this.hospitalVisitClaims[1].feeItem ? this.hospitalVisitClaims[1].feeItem : '',
+        hospitalLocationCode1: '',
+        hospitalLocationCode2: ''
+      }).then((response) => {
+        const responseData = response.data;
+        const returnCode = response.data.returnCode;
+        let containsErrors = false;
+        let containsWarnings = false;
+
+        this.isValidating = false;
+
+        switch (returnCode) {
+          case '0': // Valid payload data.
+            this.navigateToNextPage();
+            break;
+          case '1': // Invalid payload data.
+            if ( responseData.practitionerFirstName === 'N'
+              || responseData.practitionerLastName === 'N'
+              || responseData.practitionerNumber === 'N') {
+              this.isPractitionerErrorShown = true;
+              containsErrors = true;
+            }
+            for (let i=0; i<MAX_MEDICAL_SERVICE_CLAIMS; i++) {
+              if (responseData['serviceFeeItem' + (i+1)] === 'N') {
+                this.medicalServiceClaimsFeeItemValidationError[i] = true;
+                containsErrors = true;
+              }
+            }
+            for (let i=0; i<MAX_HOSPITAL_VISIT_CLAIMS; i++) {
+              if (responseData['hospitalFeeItem' + (i+1)] === 'N') {
+                this.hospitalVisitClaimsFeeItemValidationError[i] = true;
+                containsErrors = true;
+              }
+            }
+            if (containsErrors) {
+              scrollToError();
+            } else if (containsWarnings) {
+              this.isValidationModalShown = true;
+            }
+            break;
+          default: // An error occurred.
+            this.isSystemUnavailable = true;
+            scrollToError();
+            break;
+        }
+      }).catch(() => {
+        this.isValidating = false;
+        this.isSystemUnavailable = true;
+        scrollToError();
+      });
+      //this.isValidationModalShown = true;
 
       // this.navigateToNextPage();
     },
