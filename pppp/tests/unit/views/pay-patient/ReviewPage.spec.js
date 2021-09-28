@@ -154,7 +154,7 @@ storeTemplateN.modules.payPatientForm.state = cloneDeep(patientStateN);
 //I've instead mocked the function below
 jest.spyOn(global, "Date").mockImplementation(() => testDate);
 
-const spyOnAPIService = jest
+jest
   .spyOn(apiService, "submitPayPatientApplication")
   .mockImplementation(() => Promise.resolve(mockResponse));
 
@@ -200,9 +200,6 @@ describe("ReviewPage.vue pay patient", () => {
   let wrapper;
   let $route;
   let $router;
-  let spyOnDispatch;
-  let spyOnSpaEnvs;
-  let spyOnLogService;
 
   beforeEach(() => {
     store = new Vuex.Store(storeTemplateC);
@@ -222,13 +219,13 @@ describe("ReviewPage.vue pay patient", () => {
         $router,
       },
     });
-    spyOnDispatch = jest.spyOn(wrapper.vm.$store, "dispatch");
+    jest.spyOn(wrapper.vm.$store, "dispatch");
 
-    spyOnSpaEnvs = jest
+    jest
       .spyOn(spaEnvService, "loadEnvs")
       .mockImplementation(() => Promise.resolve("loaded"));
 
-    spyOnLogService = jest
+    jest
       .spyOn(logService, "logNavigation")
       .mockImplementation(() => Promise.resolve("logged"));
 
@@ -252,8 +249,6 @@ describe("ReviewPage.vue pay patient created()", () => {
   let wrapper;
   let $route;
   let $router;
-  let spyOnDispatch;
-  let spyOnSpaEnvs;
 
   beforeEach(() => {
     store = new Vuex.Store(storeTemplateC);
@@ -273,9 +268,9 @@ describe("ReviewPage.vue pay patient created()", () => {
         $router,
       },
     });
-    spyOnDispatch = jest.spyOn(wrapper.vm.$store, "dispatch");
+    jest.spyOn(wrapper.vm.$store, "dispatch");
 
-    spyOnSpaEnvs = jest
+    jest
       .spyOn(spaEnvService, "loadEnvs")
       .mockImplementation(() => Promise.resolve("loaded"));
 
@@ -299,8 +294,6 @@ describe("ReviewPage.vue pay patient isFormAbleToSubmit()", () => {
   let wrapper;
   let $route;
   let $router;
-  let spyOnDispatch;
-  let spyOnSpaEnvs;
 
   beforeEach(() => {
     store = new Vuex.Store(storeTemplateC);
@@ -320,9 +313,9 @@ describe("ReviewPage.vue pay patient isFormAbleToSubmit()", () => {
         $router,
       },
     });
-    spyOnDispatch = jest.spyOn(wrapper.vm.$store, "dispatch");
+    jest.spyOn(wrapper.vm.$store, "dispatch");
 
-    spyOnSpaEnvs = jest
+    jest
       .spyOn(spaEnvService, "loadEnvs")
       .mockImplementation(() => Promise.resolve("loaded"));
   });
@@ -386,7 +379,6 @@ describe("ReviewPage.vue pay patient submitForm()", () => {
   let $route;
   let $router;
   let spyOnDispatch;
-  let spyOnSpaEnvs;
   let spyOnNavigateToSubmissionPage;
   let spyOnNavigateToSubmissionErrorPage;
 
@@ -422,7 +414,7 @@ describe("ReviewPage.vue pay patient submitForm()", () => {
       "navigateToSubmissionErrorPage"
     );
 
-    spyOnSpaEnvs = jest
+    jest
       .spyOn(spaEnvService, "loadEnvs")
       .mockImplementation(() => Promise.resolve("loaded"));
   });
@@ -463,7 +455,7 @@ describe("ReviewPage.vue pay patient submitForm()", () => {
   });
 
   it("calls scrollToError on error code 3", async () => {
-    const spyOnAPIService = jest
+    jest
       .spyOn(apiService, "submitPayPatientApplication")
       .mockImplementationOnce(() => Promise.resolve(mockResponse3));
     wrapper.vm.submitForm();
@@ -472,7 +464,7 @@ describe("ReviewPage.vue pay patient submitForm()", () => {
   });
 
   it("calls logServiceError on error code 3", async () => {
-    const spyOnAPIService = jest
+    jest
       .spyOn(apiService, "submitPayPatientApplication")
       .mockImplementationOnce(() => Promise.resolve(mockResponse3));
     wrapper.vm.submitForm();
@@ -481,7 +473,7 @@ describe("ReviewPage.vue pay patient submitForm()", () => {
   });
 
   it("calls navigateToSubmissionErrorPage on misc error", async () => {
-    const spyOnAPIService = jest
+    jest
       .spyOn(apiService, "submitPayPatientApplication")
       .mockImplementationOnce(() => Promise.resolve(mockResponseMisc));
     wrapper.vm.submitForm();
@@ -490,7 +482,7 @@ describe("ReviewPage.vue pay patient submitForm()", () => {
   });
 
   it("calls logServiceError on misc error", async () => {
-    const spyOnAPIService = jest
+    jest
       .spyOn(apiService, "submitPayPatientApplication")
       .mockImplementationOnce(() => Promise.resolve(mockResponseMisc));
     wrapper.vm.submitForm();
@@ -507,8 +499,6 @@ describe("ReviewPage.vue pay patient navigateToSubmissionPage()", () => {
   let wrapper;
   let $route;
   let $router;
-  let spyOnDispatch;
-  let spyOnSpaEnvs;
   let spyOnRouter;
   let toPath;
 
@@ -530,9 +520,9 @@ describe("ReviewPage.vue pay patient navigateToSubmissionPage()", () => {
         $router,
       },
     });
-    spyOnDispatch = jest.spyOn(wrapper.vm.$store, "dispatch");
+    jest.spyOn(wrapper.vm.$store, "dispatch");
 
-    spyOnSpaEnvs = jest
+    jest
       .spyOn(spaEnvService, "loadEnvs")
       .mockImplementation(() => Promise.resolve("loaded"));
 
@@ -543,7 +533,7 @@ describe("ReviewPage.vue pay patient navigateToSubmissionPage()", () => {
     toPath = getConvertedPath(
       wrapper.vm.$router.currentRoute.path,
       payPatientRoutes.SUBMISSION_PAGE.path
-    )
+    );
 
     wrapper.vm.navigateToSubmissionPage();
   });
@@ -575,8 +565,6 @@ describe("ReviewPage.vue pay patient navigateToSubmissionErrorPage()", () => {
   let wrapper;
   let $route;
   let $router;
-  let spyOnDispatch;
-  let spyOnSpaEnvs;
   let spyOnRouter;
   let toPath;
 
@@ -598,9 +586,9 @@ describe("ReviewPage.vue pay patient navigateToSubmissionErrorPage()", () => {
         $router,
       },
     });
-    spyOnDispatch = jest.spyOn(wrapper.vm.$store, "dispatch");
+    jest.spyOn(wrapper.vm.$store, "dispatch");
 
-    spyOnSpaEnvs = jest
+    jest
       .spyOn(spaEnvService, "loadEnvs")
       .mockImplementation(() => Promise.resolve("loaded"));
 
@@ -611,7 +599,7 @@ describe("ReviewPage.vue pay patient navigateToSubmissionErrorPage()", () => {
     toPath = getConvertedPath(
       wrapper.vm.$router.currentRoute.path,
       payPatientRoutes.SUBMISSION_ERROR_PAGE.path
-    )
+    );
 
     wrapper.vm.navigateToSubmissionErrorPage();
   });
