@@ -5,11 +5,9 @@ import Page from "@/views/pay-patient/SubmissionPage.vue";
 import * as module1 from "../../../../src/store/modules/app";
 import * as module2 from "../../../../src/store/modules/pay-patient-form";
 import * as module3 from "../../../../src/store/modules/pay-practitioner-form";
-import * as dummyDataValid from "../../../../src/store/states/pay-patient-form-dummy-data";
 import spaEnvService from "@/services/spa-env-service";
 import logService from "@/services/log-service";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
-import apiService from "@/services/api-service";
 import pageStateService from "@/services/page-state-service";
 import { getConvertedPath } from "@/helpers/url";
 import { payPatientRoutes, payPatientRouteStepOrder } from "@/router/routes";
@@ -32,23 +30,10 @@ const storeTemplate = {
 const scrollHelper = require("@/helpers/scroll");
 
 const spyOnScrollTo = jest.spyOn(scrollHelper, "scrollTo");
-const spyOnScrollToError = jest.spyOn(scrollHelper, "scrollToError");
 
 const spyOnLogNavigation = jest
   .spyOn(logService, "logNavigation")
   .mockImplementation(() => Promise.resolve("logged"));
-
-const spyOnGetTopScrollPosition = jest
-  .spyOn(scrollHelper, "getTopScrollPosition")
-  .mockImplementation(() => Promise.resolve("top scroll position returned"));
-
-const spyOnVisitPage = jest
-  .spyOn(pageStateService, "visitPage")
-  .mockImplementation(() => Promise.resolve("visited"));
-
-const spyOnSetPageComplete = jest
-  .spyOn(pageStateService, "setPageComplete")
-  .mockImplementation(() => Promise.resolve("set"));
 
 const spyOnSetPageIncomplete = jest
   .spyOn(pageStateService, "setPageIncomplete")
