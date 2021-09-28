@@ -495,4 +495,77 @@ describe("ReviewPage.vue pay patient submitForm()", () => {
     await wrapper.vm.$nextTick;
     expect(spyOnLogServiceError).toHaveBeenCalled();
   });
+
+  //had difficulty replicating the conditions for an http error
+  //coworkers said not to worry about it, but future state could include those tests
+});
+
+describe("ReviewPage.vue pay patient navigateToSubmissionPage()", () => {
+  let store;
+  let wrapper;
+  let $route;
+  let $router;
+  let spyOnDispatch;
+  let spyOnSpaEnvs;
+  let spyOnRouter;
+  let toPath;
+
+  beforeEach(() => {
+    store = new Vuex.Store(storeTemplateC);
+    $route = {
+      path: "/potato-csr",
+    };
+    $router = {
+      $route,
+      currentRoute: $route,
+      push: jest.fn(),
+    };
+    wrapper = shallowMount(Page, {
+      localVue,
+      store,
+      mocks: {
+        $route,
+        $router,
+      },
+    });
+    spyOnDispatch = jest.spyOn(wrapper.vm.$store, "dispatch");
+
+    spyOnSpaEnvs = jest
+      .spyOn(spaEnvService, "loadEnvs")
+      .mockImplementation(() => Promise.resolve("loaded"));
+
+    spyOnRouter = jest
+      .spyOn($router, "push")
+      .mockImplementation(() => Promise.resolve("pushed"));
+
+    toPath = getConvertedPath(
+      wrapper.vm.$router.currentRoute.path,
+      payPatientRoutes.SUBMISSION_PAGE.path
+    )
+  });
+
+  afterEach(() => {
+    jest.resetModules();
+    jest.clearAllMocks();
+  });
+
+  it("pushes to the router with correct argument", () => {
+    wrapper.vm.navigateToSubmissionPage();
+    expect(spyOnRouter).toHaveBeenCalledWith(toPath);
+  });
+
+  it("calls pageStateService visitPage with correct argument", () => {
+    wrapper.vm.navigateToSubmissionPage();
+    expect(spyOnVisitPage).toHaveBeenCalledWith(toPath);
+  });
+
+  it("calls pageStateService setPageComplete with correct argument", () => {
+    wrapper.vm.navigateToSubmissionPage();
+    expect(spyOnSetPageComplete).toHaveBeenCalledWith(toPath);
+  });
+
+  it("calls scrollTo", () => {
+    wrapper.vm.navigateToSubmissionPage();
+    expect(spyOnScrollTo).toHaveBeenCalled();
+  });
 });
