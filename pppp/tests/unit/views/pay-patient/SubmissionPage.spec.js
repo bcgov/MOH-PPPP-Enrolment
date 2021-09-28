@@ -18,6 +18,7 @@ const localVue = createLocalVue();
 localVue.use(Vuex);
 localVue.component("font-awesome-icon", FontAwesomeIcon);
 
+const next = jest.fn();
 const spyOnPrint = jest.spyOn(window, "print").mockImplementation(jest.fn);
 
 const storeTemplate = {
@@ -28,9 +29,32 @@ const storeTemplate = {
   },
 };
 
+const scrollHelper = require("@/helpers/scroll");
+
+const spyOnScrollTo = jest.spyOn(scrollHelper, "scrollTo");
+const spyOnScrollToError = jest.spyOn(scrollHelper, "scrollToError");
+
 const spyOnLogNavigation = jest
   .spyOn(logService, "logNavigation")
   .mockImplementation(() => Promise.resolve("logged"));
+
+const spyOnGetTopScrollPosition = jest
+  .spyOn(scrollHelper, "getTopScrollPosition")
+  .mockImplementation(() => Promise.resolve("top scroll position returned"));
+
+const spyOnVisitPage = jest
+  .spyOn(pageStateService, "visitPage")
+  .mockImplementation(() => Promise.resolve("visited"));
+
+const spyOnSetPageComplete = jest
+  .spyOn(pageStateService, "setPageComplete")
+  .mockImplementation(() => Promise.resolve("set"));
+
+const spyOnSetPageIncomplete = jest
+  .spyOn(pageStateService, "setPageIncomplete")
+  .mockImplementation(() => Promise.resolve("set"));
+
+jest.spyOn(window, "scrollTo").mockImplementation(jest.fn);
 
 describe("SubmissionPage.vue pay patient", () => {
   let store;
@@ -165,5 +189,113 @@ describe("SubmissionPage.vue pay patient printPage()", () => {
   it("calls window.print()", () => {
     wrapper.vm.printPage();
     expect(spyOnPrint).toHaveBeenCalled();
+  });
+});
+
+describe("SubmissionPage.vue beforeRouteLeave(to, from, next)", () => {
+  let store;
+  let wrapper;
+  let $route;
+  let $router;
+
+  beforeEach(() => {
+    store = new Vuex.Store(storeTemplate);
+    $route = {
+      path: "/potato-csr",
+    };
+    $router = {
+      $route,
+      currentRoute: $route,
+      push: jest.fn(),
+    };
+    wrapper = shallowMount(Page, {
+      localVue,
+      store,
+      mocks: {
+        $route,
+        $router,
+      },
+    });
+  });
+
+  afterEach(() => {
+    jest.resetModules();
+    jest.clearAllMocks();
+  });
+
+  it("calls scrollTo()", async () => {
+    //to, from, next
+    jest.useFakeTimers();
+    Page.beforeRouteLeave.call(
+      wrapper.vm,
+      payPatientRouteStepOrder[1],
+      payPatientRouteStepOrder[0],
+      next
+    );
+    jest.advanceTimersByTime(5);
+    await wrapper.vm.$nextTick;
+    expect(spyOnScrollTo).toHaveBeenCalled();
+  });
+
+  it("calls next() with proper arguments when passed route other than Home", async () => {
+    //to, from, next
+    jest.useFakeTimers();
+    Page.beforeRouteLeave.call(
+      wrapper.vm,
+      payPatientRoutes.REVIEW_PAGE,
+      payPatientRouteStepOrder[0],
+      next
+    );
+    jest.advanceTimersByTime(5);
+    await wrapper.vm.$nextTick;
+    const testPath = getConvertedPath(
+      wrapper.vm.$router.currentRoute.path,
+      payPatientRoutes.HOME_PAGE.path
+    );
+    expect(next).toHaveBeenCalledWith({
+      path: testPath,
+    });
+  });
+
+  it("calls next() with proper arguments when given to route of Home", async () => {
+    //to, from, next
+    jest.useFakeTimers();
+    Page.beforeRouteLeave.call(
+      wrapper.vm,
+      payPatientRoutes.HOME_PAGE,
+      payPatientRouteStepOrder[1],
+      next
+    );
+    jest.advanceTimersByTime(5);
+    await wrapper.vm.$nextTick;
+    expect(next).toHaveBeenCalled();
+  });
+
+  it("calls spyOnSetPageIncomplete (valid route)", async () => {
+    //to, from, next
+    jest.useFakeTimers();
+    Page.beforeRouteLeave.call(
+      wrapper.vm,
+      payPatientRouteStepOrder[0],
+      payPatientRouteStepOrder[1],
+      next
+    );
+    jest.advanceTimersByTime(5);
+    await wrapper.vm.$nextTick;
+    expect(spyOnSetPageIncomplete).toHaveBeenCalled();
+  });
+
+  it("calls spyOnSetPageIncomplete (invalid route)", async () => {
+    //to, from, next
+    jest.useFakeTimers();
+    Page.beforeRouteLeave.call(
+      wrapper.vm,
+      payPatientRouteStepOrder[1],
+      payPatientRouteStepOrder[0],
+      next
+    );
+    jest.advanceTimersByTime(5);
+    await wrapper.vm.$nextTick;
+    expect(spyOnSetPageIncomplete).toHaveBeenCalled();
   });
 });
