@@ -10,7 +10,10 @@ import logService from "@/services/log-service";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import pageStateService from "@/services/page-state-service";
 import { getConvertedPath } from "@/helpers/url";
-import { payPractitionerRoutes, payPractitionerRouteStepOrder } from "@/router/routes";
+import {
+  payPractitionerRoutes,
+  payPractitionerRouteStepOrder,
+} from "@/router/routes";
 
 const localVue = createLocalVue();
 localVue.use(Vuex);
