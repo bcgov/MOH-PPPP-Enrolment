@@ -13,6 +13,10 @@ body {
   .print-hide {
     display: none;
   }
+  .print-group {
+    page-break-inside: avoid; /* IE rule. */
+    break-inside: avoid;
+  }
 }
 
 body.no-scroll {

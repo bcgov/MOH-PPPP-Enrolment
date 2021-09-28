@@ -1,64 +1,73 @@
 <template>
   <div :class="className">
 
-    <div v-if='isCSR'
-        class="row align-items-end mt-3">
-      <div class="col-9"></div>
-      <div v-if='showEditButtons'
-          class="col-3 text-right print-hide">
-        <a href="javascript:void(0)"
-           @click="navigateToMainFormPage('plan-reference-number')">Edit 
-          <font-awesome-icon icon="pencil-alt" />
-        </a>
+    <div class="print-group">
+      <div v-if='isCSR'
+          class="row align-items-end mt-3">
+        <div class="col-9"></div>
+        <div v-if='showEditButtons'
+            class="col-3 text-right print-hide">
+          <a href="javascript:void(0)"
+            @click="navigateToMainFormPage('plan-reference-number')">Edit 
+            <font-awesome-icon icon="pencil-alt" />
+          </a>
+        </div>
       </div>
+      <ReviewTable v-if='isCSR'
+                  :elements='planReferenceNumberData'
+                  :backgroundColor='tableBackgroundColor'/>
     </div>
-    <ReviewTable v-if='isCSR'
-                :elements='planReferenceNumberData'
-                :backgroundColor='tableBackgroundColor'/>
     
-    <div class="row align-items-end mt-3">
-      <div class="col-9">
-        <h2 class="mb-2">Patient Information</h2>
+    <div class="print-group">
+      <div class="row align-items-end mt-3">
+        <div class="col-9">
+          <h2 class="mb-2">Patient Information</h2>
+        </div>
+        <div v-if='showEditButtons'
+            class="col-3 text-right print-hide">
+          <a href="javascript:void(0)"
+              @click="navigateToMainFormPage('patient')">Edit 
+            <font-awesome-icon icon="pencil-alt" />
+          </a>
+        </div>
       </div>
-      <div v-if='showEditButtons'
-          class="col-3 text-right print-hide">
-        <a href="javascript:void(0)"
-           @click="navigateToMainFormPage('patient')">Edit 
-          <font-awesome-icon icon="pencil-alt" />
-        </a>
-      </div>
+      <ReviewTable :elements='patientData'
+                  :backgroundColor='tableBackgroundColor'/>
     </div>
-    <ReviewTable :elements='patientData'
-                :backgroundColor='tableBackgroundColor'/>
     
-    <div class="row align-items-end mt-3">
-      <div class="col-9"></div>
-      <div v-if='showEditButtons'
-          class="col-3 text-right print-hide">
-        <a href="javascript:void(0)"
-           @click="navigateToMainFormPage('vehicle-accident')">Edit 
-          <font-awesome-icon icon="pencil-alt" />
-        </a>
+    <div class="print-group">
+      <div class="row align-items-end mt-3">
+        <div class="col-9"></div>
+        <div v-if='showEditButtons'
+            class="col-3 text-right print-hide">
+          <a href="javascript:void(0)"
+            @click="navigateToMainFormPage('vehicle-accident')">Edit 
+            <font-awesome-icon icon="pencil-alt" />
+          </a>
+        </div>
       </div>
+      <ReviewTable :elements='vehicleAccidentData'
+                  :backgroundColor='tableBackgroundColor'/>
     </div>
-    <ReviewTable :elements='vehicleAccidentData'
-                :backgroundColor='tableBackgroundColor'/>
 
-    <div class="row align-items-end mt-3">
-      <div class="col-9"></div>
-      <div v-if='showEditButtons'
-          class="col-3 text-right print-hide">
-        <a href="javascript:void(0)"
-           @click="navigateToMainFormPage('claim-info')">Edit 
-          <font-awesome-icon icon="pencil-alt" />
-        </a>
+    <div class="print-group">
+      <div class="row align-items-end mt-3">
+        <div class="col-9"></div>
+        <div v-if='showEditButtons'
+            class="col-3 text-right print-hide">
+          <a href="javascript:void(0)"
+            @click="navigateToMainFormPage('claim-info')">Edit 
+            <font-awesome-icon icon="pencil-alt" />
+          </a>
+        </div>
       </div>
+      <ReviewTable :elements='claimInfoData'
+                  :backgroundColor='tableBackgroundColor'/>
     </div>
-    <ReviewTable :elements='claimInfoData'
-                :backgroundColor='tableBackgroundColor'/>
 
     <div v-for="(claimData, index) in medicalServiceClaims"
-        :key="index">
+        :key="index"
+        class="print-group">
       <div class="row align-items-end mt-3">
         <div class="col-9">
           <h2 class="mb-2">{{getMedicalServiceClaimTitle(index)}}</h2>
@@ -75,65 +84,73 @@
                   :backgroundColor='tableBackgroundColor'/>
     </div>
 
-    <div class="row align-items-end mt-3">
-      <div class="col-9">
-        <h2 class="mb-2">Payment Mailing Address</h2>
+    <div class="print-group">
+      <div class="row align-items-end mt-3">
+        <div class="col-9">
+          <h2 class="mb-2">Payment Mailing Address</h2>
+        </div>
+        <div v-if='showEditButtons'
+            class="col-3 text-right print-hide">
+          <a href="javascript:void(0)"
+            @click="navigateToMainFormPage('mailing-address')">Edit 
+            <font-awesome-icon icon="pencil-alt" />
+          </a>
+        </div>
       </div>
-      <div v-if='showEditButtons'
-          class="col-3 text-right print-hide">
-        <a href="javascript:void(0)"
-           @click="navigateToMainFormPage('mailing-address')">Edit 
-          <font-awesome-icon icon="pencil-alt" />
-        </a>
-      </div>
+      <ReviewTable :elements='paymentMailAddressData'
+                  :backgroundColor='tableBackgroundColor'/>
     </div>
-    <ReviewTable :elements='paymentMailAddressData'
-                :backgroundColor='tableBackgroundColor'/>
     
-    <div class="row align-items-end mt-3">
-      <div class="col-9">
-        <h2 class="mb-2">Practitioner Information</h2>
+    <div class="print-group">
+      <div class="row align-items-end mt-3">
+        <div class="col-9">
+          <h2 class="mb-2">Practitioner Information</h2>
+        </div>
+        <div v-if='showEditButtons'
+            class="col-3 text-right print-hide">
+          <a href="javascript:void(0)"
+            @click="navigateToMainFormPage('practitioner')">Edit 
+            <font-awesome-icon icon="pencil-alt" />
+          </a>
+        </div>
       </div>
-      <div v-if='showEditButtons'
-          class="col-3 text-right print-hide">
-        <a href="javascript:void(0)"
-           @click="navigateToMainFormPage('practitioner')">Edit 
-          <font-awesome-icon icon="pencil-alt" />
-        </a>
-      </div>
+      <ReviewTable :elements='practitionerData'
+                  :backgroundColor='tableBackgroundColor'/>
     </div>
-    <ReviewTable :elements='practitionerData'
-                :backgroundColor='tableBackgroundColor'/>
 
-    <div class="row align-items-end mt-3">
-      <div class="col-9">
-        <h2 class="mb-2">Referred By</h2>
+    <div class="print-group">
+      <div class="row align-items-end mt-3">
+        <div class="col-9">
+          <h2 class="mb-2">Referred By</h2>
+        </div>
+        <div v-if='showEditButtons'
+            class="col-3 text-right print-hide">
+          <a href="javascript:void(0)"
+            @click="navigateToMainFormPage('referred-by')">Edit 
+            <font-awesome-icon icon="pencil-alt" />
+          </a>
+        </div>
       </div>
-      <div v-if='showEditButtons'
-          class="col-3 text-right print-hide">
-        <a href="javascript:void(0)"
-           @click="navigateToMainFormPage('referred-by')">Edit 
-          <font-awesome-icon icon="pencil-alt" />
-        </a>
-      </div>
+      <ReviewTable :elements='referredByData'
+                  :backgroundColor='tableBackgroundColor'/>
     </div>
-    <ReviewTable :elements='referredByData'
-                :backgroundColor='tableBackgroundColor'/>
     
-    <div class="row align-items-end mt-3">
-      <div class="col-9">
-        <h2 class="mb-2">Referred To</h2>
+    <div class="print-group">
+      <div class="row align-items-end mt-3">
+        <div class="col-9">
+          <h2 class="mb-2">Referred To</h2>
+        </div>
+        <div v-if='showEditButtons'
+            class="col-3 text-right print-hide">
+          <a href="javascript:void(0)"
+            @click="navigateToMainFormPage('referred-to')">Edit 
+            <font-awesome-icon icon="pencil-alt" />
+          </a>
+        </div>
       </div>
-      <div v-if='showEditButtons'
-          class="col-3 text-right print-hide">
-        <a href="javascript:void(0)"
-           @click="navigateToMainFormPage('referred-to')">Edit 
-          <font-awesome-icon icon="pencil-alt" />
-        </a>
-      </div>
+      <ReviewTable :elements='referredToData'
+                  :backgroundColor='tableBackgroundColor'/>
     </div>
-    <ReviewTable :elements='referredToData'
-                :backgroundColor='tableBackgroundColor'/>
 
   </div>
 </template>
