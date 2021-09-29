@@ -1,13 +1,11 @@
 import { shallowMount, createLocalVue } from "@vue/test-utils";
 import Vuex from "vuex";
-import Vue from "vue";
 import Vuelidate from "vuelidate";
 import Page from "@/App.vue";
 
 import * as module1 from "@/store/modules/app";
 import * as module2 from "@/store/modules/pay-patient-form";
 import * as module3 from "@/store/modules/pay-practitioner-form";
-import * as dummyDataValid from "@/store/states/pay-patient-form-dummy-data";
 import { cloneDeep } from "lodash";
 import {
   payPatientStepRoutes,
