@@ -8,9 +8,6 @@ const spyOnWindowScrollTo = jest
 const spyOnScrollToElement = jest.spyOn(scroll, "scrollToElement");
 const spyOnScrollTo = jest.spyOn(scroll, "scrollTo");
 
-const spyOnKumquat = jest.spyOn(scroll, "kumquatFunction")
-const spyOnPeach = jest.spyOn(scroll, "peachFunction")
-
 describe("Helper scroll.js scrollTo()", () => {
   afterEach(() => {
     jest.resetModules();
@@ -23,9 +20,9 @@ describe("Helper scroll.js scrollTo()", () => {
   });
 });
 
-//unfortunately, due to the nested function calls, 
+//unfortunately, due to the nested function calls,
 //further testing is not possible without refactoring the source code
-//more details available in this SO link: 
+//more details available in this SO link:
 //https://stackoverflow.com/questions/51269431/jest-mock-inner-function/55193363#55193363
 //I've left the half-finished tests skipped below in case somebody gets them working later
 
@@ -35,12 +32,12 @@ describe.skip("Helper scroll.js scrollToError()", () => {
     jest.clearAllMocks();
   });
 
-  it.only("calls scrollToElement() when scrollToError() is called", async () => {
+  it("calls scrollToElement() when scrollToError() is called", async () => {
     jest.useFakeTimers();
     scroll.scrollToError();
     // scroll.scrollToElement();
     jest.advanceTimersByTime(5);
-    await nextTick()
+    await nextTick();
     expect(spyOnScrollToElement).toHaveBeenCalled();
   });
 });
@@ -66,20 +63,9 @@ describe.skip("Helper scroll.js scrollToElement()", () => {
   it("calls spyOnScrollTo when called with an argument", async () => {
     jest.useFakeTimers();
     // scroll.scrollToElement(fakeElement);
-    scroll.scrollTo()
+    scroll.scrollTo();
     jest.advanceTimersByTime(5);
     await nextTick();
     expect(spyOnScrollTo).toHaveBeenCalled();
-  });
-
-  it.only("sanity test1 (calling peach also calls kumquat)", () => {
-    expect(scroll.peachFunction()).toEqual("kumquat")
-    expect(spyOnPeach).toHaveBeenCalled();
-    expect(spyOnKumquat).toHaveBeenCalled();
-  });
-
-  it.only("sanity test2 (spy isn't broken)", () => {
-    scroll.kumquatFunction()
-    expect(spyOnKumquat).toHaveBeenCalled();
   });
 });
