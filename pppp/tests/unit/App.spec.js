@@ -145,3 +145,46 @@ describe("App.vue stepRoutes()", () => {
     expect(wrapper.vm.stepRoutes).toEqual(payPractitionerCSRStepRoutes);
   });
 });
+
+describe("App.vue pageTitle()", () => {
+  const wrapper = payPatientTemplate;
+  const wrapper2 = payPatientCSRTemplate;
+  const wrapper3 = payPractitionerTemplate;
+  const wrapper4 = payPractitionerCSRTemplate;
+
+  afterEach(() => {
+    jest.resetModules();
+    jest.clearAllMocks();
+  });
+
+  it("returns a string", () => {
+    expect(typeof wrapper.vm.pageTitle === "string").toBe(true);
+    expect(typeof wrapper2.vm.pageTitle === "string").toBe(true);
+    expect(typeof wrapper3.vm.pageTitle === "string").toBe(true);
+    expect(typeof wrapper4.vm.pageTitle === "string").toBe(true);
+  });
+
+  it("returns different outputs for each wrapper", () => {
+    //create four constants with the four page titles
+    //then create four arrays, each missing one of the results
+    //the expect clause checks that the array does not contain the missing result
+    //in other words, it checks that the text of result1 is not the same as result2, 3, or 4
+    //if the text of the results matched, 
+    //eg. if result1 and result2 had the same text, the test would fail
+    //this allows future states to change the text of the page title without breaking the test
+    //just as long as they're all different from each other
+
+    const result1 = wrapper.vm.pageTitle
+    const result2 = wrapper2.vm.pageTitle
+    const result3 = wrapper3.vm.pageTitle
+    const result4 = wrapper4.vm.pageTitle
+    let testArray1 = [result2, result3, result4];
+    let testArray2 = [result1, result3, result4];
+    let testArray3 = [result1, result2, result4];    
+    let testArray4 = [result1, result2, result3];
+    expect(testArray1).not.toContain(result1)
+    expect(testArray2).not.toContain(result2)
+    expect(testArray3).not.toContain(result3)
+    expect(testArray4).not.toContain(result4)
+  });
+});
