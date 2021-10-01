@@ -106,7 +106,7 @@ describe("validators.js diagnosticCodeValidator()", () => {
   });
 });
 
-describe.only("validators.js birthDateValidator()", () => {
+describe("validators.js birthDateValidator()", () => {
   afterEach(() => {
     jest.resetModules();
   });
@@ -191,13 +191,87 @@ describe.only("validators.js birthDateValidator()", () => {
   });
 });
 
-describe.skip("validators.js serviceDateValidator()", () => {
+describe("validators.js serviceDateValidator()", () => {
   afterEach(() => {
     jest.resetModules();
   });
 
-  it("returns false if given an empty value", () => {
-    const result = serviceDateValidator();
+  it("returns true if given an empty value", () => {
+    const result = serviceDateValidator("", "");
+    expect(result).toEqual(true);
+  });
+
+  it("returns true if data contains null year, month, and day", () => {
+    const testDate1 = {
+      serviceDateData: {
+        year: null,
+        month: null,
+        day: null,
+      },
+    };
+    const result = serviceDateValidator("", testDate1);
+    expect(result).toEqual(true);
+  });
+
+  it("returns false if some data not present (year)", () => {
+    const testDate1 = {
+      serviceDateData: {
+        year: null,
+        month: 12,
+        day: 1,
+      },
+    };
+    const result = serviceDateValidator("", testDate1);
+    expect(result).toEqual(false);
+  });
+
+  it("returns false if some data not present (day)", () => {
+    const testDate1 = {
+      serviceDateData: {
+        year: 1990,
+        month: 12,
+        day: null,
+      },
+    };
+    const result = serviceDateValidator("", testDate1);
+    expect(result).toEqual(false);
+  });
+
+  it("returns false if month is not a number", () => {
+    const testDate1 = {
+      serviceDateData: {
+        year: 1990,
+        month: "potato",
+        day: 1,
+      },
+    };
+    const result = serviceDateValidator("", testDate1);
+    expect(result).toEqual(false);
+  });
+
+  it("returns true on valid date", () => {
+    const testDate1 = {
+      serviceDateData: {
+        year: 1990,
+        month: 10,
+        day: 11,
+      },
+    };
+    const result = serviceDateValidator("", testDate1);
+    // expect(result).toEqual(false);
+    expect(result).toEqual(true);
+  });
+
+  it("returns false on invalid date", () => {
+    const testDate1 = {
+      serviceDateData: {
+        year: 3.14,
+        month: 3.14,
+        day: 3.14,
+      },
+    };
+    const result = serviceDateValidator("", testDate1);
+    // expect(result).toEqual(false);
     expect(result).toEqual(false);
   });
 });
