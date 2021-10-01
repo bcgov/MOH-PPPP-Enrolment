@@ -6,12 +6,6 @@ import {
   birthDateValidator,
   serviceDateValidator,
 } from "@/helpers/validators.js";
-import * as commonLibRaw from "common-lib-vue";
-
-const commonLib = { ...commonLibRaw}
-
-const spyOnGetISO = jest.spyOn(commonLib, "getISODateString");
-const spyOnIsValidISO = jest.spyOn(commonLib, "isValidISODateString");
 
 describe("validators.js bcPostalCodeValidator()", () => {
   afterEach(() => {
@@ -170,17 +164,30 @@ describe.only("validators.js birthDateValidator()", () => {
     expect(result).toEqual(false);
   });
 
-  it.only("calls getISODateString on valid date", () => {
+  it("returns true on valid date", () => {
     const testDate1 = {
       birthDateData: {
         year: 1990,
-        month: 12,
-        day: 1,
+        month: 10,
+        day: 11,
       },
     };
     const result = birthDateValidator("", testDate1);
     // expect(result).toEqual(false);
-    expect(spyOnGetISO).toHaveBeenCalled();
+    expect(result).toEqual(true);
+  });
+
+  it("returns false on invalid date", () => {
+    const testDate1 = {
+      birthDateData: {
+        year: 3.14,
+        month: 3.14,
+        day: 3.14,
+      },
+    };
+    const result = birthDateValidator("", testDate1);
+    // expect(result).toEqual(false);
+    expect(result).toEqual(false);
   });
 });
 
