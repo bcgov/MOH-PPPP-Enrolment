@@ -1,9 +1,17 @@
-import { bcPostalCodeValidator,
+import {
+  bcPostalCodeValidator,
   clinicNameValidator,
   clarificationCodeValidator,
   diagnosticCodeValidator,
   birthDateValidator,
-  serviceDateValidator, } from "@/helpers/validators.js";
+  serviceDateValidator,
+} from "@/helpers/validators.js";
+import * as commonLibRaw from "common-lib-vue";
+
+const commonLib = { ...commonLibRaw}
+
+const spyOnGetISO = jest.spyOn(commonLib, "getISODateString");
+const spyOnIsValidISO = jest.spyOn(commonLib, "isValidISODateString");
 
 describe("validators.js bcPostalCodeValidator()", () => {
   afterEach(() => {
@@ -104,14 +112,75 @@ describe("validators.js diagnosticCodeValidator()", () => {
   });
 });
 
-describe.skip("validators.js birthDateValidator()", () => {
+describe.only("validators.js birthDateValidator()", () => {
   afterEach(() => {
     jest.resetModules();
   });
 
-  it("returns false if given an empty value", () => {
-    const result = birthDateValidator();
+  it("returns true if given an empty value", () => {
+    const result = birthDateValidator("", "");
+    expect(result).toEqual(true);
+  });
+
+  it("returns true if data contains null year, month, and day", () => {
+    const testDate1 = {
+      birthDateData: {
+        year: null,
+        month: null,
+        day: null,
+      },
+    };
+    const result = birthDateValidator("", testDate1);
+    expect(result).toEqual(true);
+  });
+
+  it("returns false if some data not present (year)", () => {
+    const testDate1 = {
+      birthDateData: {
+        year: null,
+        month: 12,
+        day: 1,
+      },
+    };
+    const result = birthDateValidator("", testDate1);
     expect(result).toEqual(false);
+  });
+
+  it("returns false if some data not present (day)", () => {
+    const testDate1 = {
+      birthDateData: {
+        year: 1990,
+        month: 12,
+        day: null,
+      },
+    };
+    const result = birthDateValidator("", testDate1);
+    expect(result).toEqual(false);
+  });
+
+  it("returns false if month is not a number", () => {
+    const testDate1 = {
+      birthDateData: {
+        year: 1990,
+        month: "potato",
+        day: 1,
+      },
+    };
+    const result = birthDateValidator("", testDate1);
+    expect(result).toEqual(false);
+  });
+
+  it.only("calls getISODateString on valid date", () => {
+    const testDate1 = {
+      birthDateData: {
+        year: 1990,
+        month: 12,
+        day: 1,
+      },
+    };
+    const result = birthDateValidator("", testDate1);
+    // expect(result).toEqual(false);
+    expect(spyOnGetISO).toHaveBeenCalled();
   });
 });
 
