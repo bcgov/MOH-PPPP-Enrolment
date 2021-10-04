@@ -4,8 +4,11 @@
             imagePath='/pppp/images/' />
     <main>
       <div class="container stepper">
-        <ProgressBar :currentPath='$router.currentRoute.path'
-                    :routes='stepRoutes'/>
+        <PageStepper :currentPath='$router.currentRoute.path'
+                    :routes='stepRoutes'
+                    @toggleShowMobileDetails='handleToggleShowMobileStepperDetails($event)'
+                    :isMobileStepperOpen='isMobileStepperOpen'
+                    @onClickLink='handleClickStepperLink($event)'/>
       </div>
       <router-view/>
     </main>
@@ -21,9 +24,9 @@ import './styles/styles.css';
 import project from '../package.json';
 import {
   Header,
-  Footer
+  Footer,
+  PageStepper,
 } from 'common-lib-vue';
-import ProgressBar from '@/components/ProgressBar.vue';
 import {
   payPatientStepRoutes,
   payPractitionerStepRoutes,
@@ -35,13 +38,19 @@ import {
   PAY_PRACTITIONER_BASE_URL,
 } from '@/router/routes';
 import { isCSR } from '@/helpers/url';
+import {
+  MODULE_NAME as appModule,
+  SET_SHOW_MOBILE_STEPPER_DETAILS,
+} from '@/store/modules/app';
+import pageStateService from '@/services/page-state-service';
+import { scrollTo } from '@/helpers/scroll';
 
 export default {
   name: 'App',
   components: {
-    Header: Header,
-    Footer: Footer,
-    ProgressBar: ProgressBar
+    Header,
+    Footer,
+    PageStepper,
   },
   data: () => {
     return {
@@ -69,6 +78,21 @@ export default {
         return isCSR(currentPath) ? 'Pay Practitioner Claim - CSR' : 'Pay Practitioner Claim';
       }
       return '';
+    },
+    isMobileStepperOpen() {
+      return this.$store.state.app.showMobileStepperDetails;
+    },
+  },
+  methods: {
+    handleToggleShowMobileStepperDetails(isDetailsShown) {
+      this.$store.dispatch(appModule + '/' + SET_SHOW_MOBILE_STEPPER_DETAILS, isDetailsShown);
+    },
+    handleClickStepperLink(path) {
+      pageStateService.setPageIncomplete(this.$router.currentRoute.path);
+      pageStateService.setPageComplete(path);
+      this.$router.push(path);
+      scrollTo(0);
+      console.log('Clicked link:', path);
     }
   }
 }
