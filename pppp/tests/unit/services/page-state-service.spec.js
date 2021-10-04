@@ -1,5 +1,6 @@
 import pageStateService from "@/services/page-state-service";
 import { payPatientRoutes } from "@/router/routes";
+import { cloneDeep } from "lodash";
 
 const payPatientStepRoutes = [
   { ...payPatientRoutes.CLAIM_COUNT_PAGE },
@@ -7,7 +8,9 @@ const payPatientStepRoutes = [
   { ...payPatientRoutes.REVIEW_PAGE },
 ];
 
+//only use for passing. for assertions, use pages[] path
 const testRoute = payPatientStepRoutes[0];
+const testPath = payPatientStepRoutes[0].path;
 
 describe("pageStateService test", () => {
   afterEach(() => {
@@ -28,23 +31,60 @@ describe("pageStateService importPageRoutes()", () => {
 
   it("sets pages array in service to routes", () => {
     expect(pageStateService.pages).toEqual([]);
-    pageStateService.importPageRoutes(payPatientStepRoutes);
-    expect(pageStateService.pages).toEqual(payPatientStepRoutes);
+    pageStateService.importPageRoutes(cloneDeep(payPatientStepRoutes));
+    expect(pageStateService.pages).not.toEqual([]);
   });
 });
 
-describe("setPageIncomplete(path)", () => {
+describe("setPageIncomplete()", () => {
   afterEach(() => {
     jest.resetModules();
     jest.clearAllMocks();
   });
 
   it("sets to incomplete", () => {
-    expect(pageStateService.pages[0].isComplete).toEqual(true);
-    pageStateService.importPageRoutes(payPatientStepRoutes);
-    pageStateService.setPageIncomplete(testRoute);
+    pageStateService.pages = [];
+    pageStateService.importPageRoutes(cloneDeep(payPatientStepRoutes));
+    expect(pageStateService.pages[0].isComplete).toBeUndefined();
+    pageStateService.setPageIncomplete(testPath);
     expect(pageStateService.pages[0].isComplete).toEqual(false);
   });
 });
 
-payPatientStepRoutes[0];
+describe("setPageComplete()", () => {
+  afterEach(() => {
+    jest.resetModules();
+    jest.clearAllMocks();
+  });
+
+  it("sets to complete", () => {
+    pageStateService.pages = [];
+    pageStateService.importPageRoutes(cloneDeep(payPatientStepRoutes));
+    expect(pageStateService.pages[0].isComplete).toBeUndefined();
+    pageStateService.setPageComplete(testPath);
+    expect(pageStateService.pages[0].isComplete).toEqual(true);
+  });
+});
+
+describe("isPageComplete()", () => {
+  afterEach(() => {
+    jest.resetModules();
+    jest.clearAllMocks();
+  });
+
+  it("returns true if isComplete equals true", () => {
+    pageStateService.pages = [];
+    pageStateService.importPageRoutes(cloneDeep(payPatientStepRoutes));
+    pageStateService.pages[0].isComplete = true;
+    const result = pageStateService.isPageComplete(testPath);
+    expect(result).toEqual(true);
+  });
+
+  it("returns false if isComplete equals true", () => {
+    pageStateService.pages = [];
+    pageStateService.importPageRoutes(cloneDeep(payPatientStepRoutes));
+    pageStateService.pages[0].isComplete = false;
+    const result = pageStateService.isPageComplete(testPath);
+    expect(result).toEqual(false);
+  });
+});
