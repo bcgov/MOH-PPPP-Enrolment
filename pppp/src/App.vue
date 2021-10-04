@@ -3,14 +3,14 @@
     <div :aria-hidden="[isConsentModalOpen]">
       <Header :title='pageTitle'
               imagePath='/pppp/images/' />
+      <div class="container stepper">
+        <PageStepper :currentPath='$router.currentRoute.path'
+                    :routes='stepRoutes'
+                    @toggleShowMobileDetails='handleToggleShowMobileStepperDetails($event)'
+                    :isMobileStepperOpen='isMobileStepperOpen'
+                    @onClickLink='handleClickStepperLink($event)'/>
+      </div>
       <main>
-        <div class="container stepper">
-          <PageStepper :currentPath='$router.currentRoute.path'
-                      :routes='stepRoutes'
-                      @toggleShowMobileDetails='handleToggleShowMobileStepperDetails($event)'
-                      :isMobileStepperOpen='isMobileStepperOpen'
-                      @onClickLink='handleClickStepperLink($event)'/>
-        </div>
         <router-view/>
       </main>
       <Footer :version='version' />
