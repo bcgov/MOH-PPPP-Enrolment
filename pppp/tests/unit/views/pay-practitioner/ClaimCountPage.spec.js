@@ -113,11 +113,10 @@ describe("ClaimCountPage.vue render test", () => {
 
 describe("ClaimCountPage.vue created()", () => {
   let store;
-  let wrapper;
 
   beforeEach(() => {
     store = new Vuex.Store(storeTemplate);
-    wrapper = mount(Page, {
+    mount(Page, {
       localVue,
       store,
       mocks: {
@@ -507,8 +506,6 @@ describe("ClaimCountPage.vue beforeRouteLeave(to, from, next)", () => {
   let wrapper;
   let $route;
   let $router;
-  let spyOnRouter;
-  let spyOnDispatch;
 
   beforeEach(() => {
     store = new Vuex.Store(storeTemplate2);
@@ -528,9 +525,9 @@ describe("ClaimCountPage.vue beforeRouteLeave(to, from, next)", () => {
         $router,
       },
     });
-    spyOnDispatch = jest.spyOn(wrapper.vm.$store, "dispatch");
+    jest.spyOn(wrapper.vm.$store, "dispatch");
 
-    spyOnRouter = jest
+    jest
       .spyOn($router, "push")
       .mockImplementation(() => Promise.resolve("pushed"));
   });
