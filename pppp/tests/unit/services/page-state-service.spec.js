@@ -9,7 +9,6 @@ const payPatientStepRoutes = [
 ];
 
 //only use for passing. for assertions, use pages[] path
-const testRoute = payPatientStepRoutes[0];
 const testPath = payPatientStepRoutes[0].path;
 
 describe("pageStateService test", () => {
