@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div :aria-hidden="[isModalOpen]">
     <Header :title='pageTitle'
             imagePath='/pppp/images/' />
     <main>
@@ -69,6 +69,9 @@ export default {
         return isCSR(currentPath) ? 'Pay Practitioner Claim - CSR' : 'Pay Practitioner Claim';
       }
       return '';
+    },
+    isModalOpen() {
+      return this.$store.state.app.isModalOpen;
     }
   }
 }
