@@ -235,10 +235,6 @@ const spyOnPrint = jest.spyOn(window, "print").mockImplementation(jest.fn);
 
 jest.spyOn(window, "scrollTo").mockImplementation(jest.fn);
 
-console.log(
-  "************************************************************************"
-);
-
 describe("ReviewPage.vue pay practitioner", () => {
   let store;
   let wrapper;

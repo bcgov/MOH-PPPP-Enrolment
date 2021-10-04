@@ -313,9 +313,7 @@ jest.mock("axios", () => ({
   }),
 }));
 
-window.HTMLMediaElement.prototype.play = () => {
-  console.log("HTML Media Element prototype play");
-};
+window.HTMLMediaElement.prototype.play = () => {};
 
 const localVue = createLocalVue();
 

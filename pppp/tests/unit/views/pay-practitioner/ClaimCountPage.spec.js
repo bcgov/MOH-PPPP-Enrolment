@@ -78,10 +78,6 @@ const spyOnSetPageIncomplete = jest
   .spyOn(pageStateService, "setPageIncomplete")
   .mockImplementation(() => Promise.resolve("set"));
 
-console.log(
-  "******************************************************************************************************************************************"
-);
-
 describe("ClaimCountPage.vue render test", () => {
   let store;
   let wrapper;
