@@ -26,7 +26,7 @@
               <font-awesome-icon icon="check-circle" size="3x" />
             </div>
             <div class="col-md-10 pt-2 pb-2">
-              <p>Your application has been submitted.</p>
+              <p>Your submission has been received.</p>
               <div class="row mb-3 mb-sm-0">
                 <div class="info-box-label-cell">Date of Submission:</div>
                 <div class="info-box-value-cell"><b>{{ submissionDate }}</b></div>
@@ -43,7 +43,7 @@
         <hr/>
         <ul>
           <li>Please <a href="javascript:void(0)" @click="printPage()" class="print-link">print</a> this page for your records.</li>
-          <li>Health Insurance BC will send you a letter following cancellation of MSP coverage.</li>
+          <li>Do not mail in a printed version of this form to Health Insurance BC.</li>
           <li>Please contact <a href="https://www2.gov.bc.ca/gov/content/health/practitioner-professional-resources/msp/contact-us" target="_blank">Health Insurance BC</a> if you have any questions.</li>
         </ul>
 

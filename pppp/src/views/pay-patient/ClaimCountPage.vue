@@ -50,6 +50,10 @@ import {
   SET_CLAIM_COUNT,
   SET_MEDICAL_SERVICE_CLAIMS,
 } from '@/store/modules/pay-patient-form';
+import {
+  MODULE_NAME as appModule,
+  SET_IS_MODAL_OPEN,
+} from '@/store/modules/app';
 import logService from '@/services/log-service';
 import { required } from 'vuelidate/lib/validators';
 import {
@@ -80,6 +84,7 @@ export default {
     if (this.isFirstLoad()) {
       this.applicationUuid = uuidv4();
       this.$store.dispatch(formModule + '/' + SET_APPLICATION_UUID, this.applicationUuid);
+      this.$store.dispatch(appModule + '/' + SET_IS_MODAL_OPEN, true);
 
       // Load environment variables, and route to maintenance page.
       spaEnvService.loadEnvs()
@@ -133,6 +138,7 @@ export default {
     },
     handleCloseConsentModal() {
       this.$store.dispatch(formModule + '/' + SET_IS_INFO_COLLECTION_NOTICE_OPEN, false);
+      this.$store.dispatch(appModule + '/' + SET_IS_MODAL_OPEN, false);
     },
     validateFields() {
       this.$v.$touch()

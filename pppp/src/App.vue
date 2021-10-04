@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div :aria-hidden="[isModalOpen]">
     <Header :title='pageTitle'
             imagePath='/pppp/images/' />
     <main>
@@ -82,6 +82,9 @@ export default {
     isMobileStepperOpen() {
       return this.$store.state.app.showMobileStepperDetails;
     },
+    isModalOpen() {
+      return this.$store.state.app.isModalOpen;
+    },
   },
   methods: {
     handleToggleShowMobileStepperDetails(isDetailsShown) {
@@ -92,7 +95,6 @@ export default {
       pageStateService.setPageComplete(path);
       this.$router.push(path);
       scrollTo(0);
-      console.log('Clicked link:', path);
     }
   }
 }
