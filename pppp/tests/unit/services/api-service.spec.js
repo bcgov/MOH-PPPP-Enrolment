@@ -173,34 +173,20 @@ describe("APIService", () => {
   });
 });
 
-describe.skip("APIService _sendPostRequest", () => {
+describe("APIService _sendPostRequest", () => {
   afterEach(() => {
     jest.resetModules();
     jest.clearAllMocks();
   });
 
-  it("calls axios", () => {
-    logService.logSubmission("1", "2", "3");
-    expect(spyOnAxiosPost).toHaveBeenCalled();
-  });
-});
-
-describe("APIService _getHeaders()", () => {
-  afterEach(() => {
-    jest.resetModules();
-    jest.clearAllMocks();
-  });
-
-  it("returns object", () => {
-    const result = APIService._getHeaders("1");
-    expect(typeof result).toEqual("object");
-    expect(result).not.toBeNull();
-    expect(Array.isArray(result)).toEqual(false);
-  });
-
-  it("contains token", () => {
-    const fakeToken = "faketoken";
-    const result = APIService._getHeaders(fakeToken);
-    expect(result["X-Authorization"]).toContain(fakeToken);
+  it("calls axios with correct arguments", () => {
+    APIService._sendPostRequest("argument1", "argument2", "argument3");
+    expect(spyOnAxiosPost).toHaveBeenCalledWith("argument1", "argument3", {
+      headers: {
+        "Content-Type": "application/json",
+        "Response-Type": "application/json",
+        "X-Authorization": "Bearer argument2",
+      },
+    });
   });
 });
