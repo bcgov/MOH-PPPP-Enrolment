@@ -13,6 +13,11 @@ const testRoute = payPatientStepRoutes[0];
 const testPath = payPatientStepRoutes[0].path;
 
 describe("pageStateService test", () => {
+  beforeEach(() => {
+    pageStateService.pages = [];
+    pageStateService.importPageRoutes(cloneDeep(payPatientStepRoutes));
+  });
+
   afterEach(() => {
     jest.resetModules();
     jest.clearAllMocks();
@@ -24,27 +29,37 @@ describe("pageStateService test", () => {
 });
 
 describe("pageStateService importPageRoutes()", () => {
+  beforeEach(() => {
+    pageStateService.pages = [];
+    pageStateService.importPageRoutes(cloneDeep(payPatientStepRoutes));
+  });
+
   afterEach(() => {
     jest.resetModules();
     jest.clearAllMocks();
   });
 
-  it("sets pages array in service to routes", () => {
-    expect(pageStateService.pages).toEqual([]);
-    pageStateService.importPageRoutes(cloneDeep(payPatientStepRoutes));
+  it("sets PageStateService pages array to routes", () => {
     expect(pageStateService.pages).not.toEqual([]);
+  });
+
+  it("sets isVisited to false for all routes", () => {
+    expect(pageStateService.pages[0].isVisited).toEqual(false);
   });
 });
 
 describe("setPageIncomplete()", () => {
+  beforeEach(() => {
+    pageStateService.pages = [];
+    pageStateService.importPageRoutes(cloneDeep(payPatientStepRoutes));
+  });
+
   afterEach(() => {
     jest.resetModules();
     jest.clearAllMocks();
   });
 
   it("sets to incomplete", () => {
-    pageStateService.pages = [];
-    pageStateService.importPageRoutes(cloneDeep(payPatientStepRoutes));
     expect(pageStateService.pages[0].isComplete).toBeUndefined();
     pageStateService.setPageIncomplete(testPath);
     expect(pageStateService.pages[0].isComplete).toEqual(false);
@@ -52,14 +67,17 @@ describe("setPageIncomplete()", () => {
 });
 
 describe("setPageComplete()", () => {
+  beforeEach(() => {
+    pageStateService.pages = [];
+    pageStateService.importPageRoutes(cloneDeep(payPatientStepRoutes));
+  });
+
   afterEach(() => {
     jest.resetModules();
     jest.clearAllMocks();
   });
 
   it("sets to complete", () => {
-    pageStateService.pages = [];
-    pageStateService.importPageRoutes(cloneDeep(payPatientStepRoutes));
     expect(pageStateService.pages[0].isComplete).toBeUndefined();
     pageStateService.setPageComplete(testPath);
     expect(pageStateService.pages[0].isComplete).toEqual(true);
@@ -67,24 +85,77 @@ describe("setPageComplete()", () => {
 });
 
 describe("isPageComplete()", () => {
+  beforeEach(() => {
+    pageStateService.pages = [];
+    pageStateService.importPageRoutes(cloneDeep(payPatientStepRoutes));
+  });
+
   afterEach(() => {
     jest.resetModules();
     jest.clearAllMocks();
   });
 
   it("returns true if isComplete equals true", () => {
-    pageStateService.pages = [];
-    pageStateService.importPageRoutes(cloneDeep(payPatientStepRoutes));
     pageStateService.pages[0].isComplete = true;
     const result = pageStateService.isPageComplete(testPath);
     expect(result).toEqual(true);
   });
 
-  it("returns false if isComplete equals true", () => {
-    pageStateService.pages = [];
-    pageStateService.importPageRoutes(cloneDeep(payPatientStepRoutes));
+  it("returns false if isComplete equals false", () => {
     pageStateService.pages[0].isComplete = false;
     const result = pageStateService.isPageComplete(testPath);
     expect(result).toEqual(false);
+  });
+});
+
+describe("visitPage()", () => {
+  beforeEach(() => {
+    pageStateService.pages = [];
+    pageStateService.importPageRoutes(cloneDeep(payPatientStepRoutes));
+  });
+
+  afterEach(() => {
+    jest.resetModules();
+    jest.clearAllMocks();
+  });
+
+  it("sets isVisited to true for path passed", () => {
+    expect(pageStateService.pages[0].isVisited).toEqual(false);
+    pageStateService.visitPage(testPath);
+    expect(pageStateService.pages[0].isVisited).toEqual(true);
+  });
+
+  it("doesn't break if path not found", () => {
+    expect(pageStateService.pages[0].isVisited).toEqual(false);
+    pageStateService.visitPage("potato");
+    expect(pageStateService.pages[0].isVisited).toEqual(false);
+  });
+});
+
+describe("isPageVisited()", () => {
+  beforeEach(() => {
+    pageStateService.pages = [];
+    pageStateService.importPageRoutes(cloneDeep(payPatientStepRoutes));
+  });
+
+  afterEach(() => {
+    jest.resetModules();
+    jest.clearAllMocks();
+  });
+
+  it("returns false when isVisited is false", () => {
+    const result = pageStateService.isPageVisited(testPath);
+    expect(result).toEqual(false);
+  });
+
+  it("returns true when isVisited is true", () => {
+    pageStateService.pages[0].isVisited = true;
+    const result = pageStateService.isPageVisited(testPath);
+    expect(result).toEqual(true);
+  });
+
+  it("returns undefined when passed a path that doesn't exist", () => {
+    const result = pageStateService.isPageVisited("potato");
+    expect(result).toBeUndefined();
   });
 });
