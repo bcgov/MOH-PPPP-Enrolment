@@ -1,18 +1,24 @@
 <template>
-  <div :aria-hidden="[isModalOpen]">
-    <Header :title='pageTitle'
-            imagePath='/pppp/images/' />
-    <main>
-      <div class="container stepper">
-        <PageStepper :currentPath='$router.currentRoute.path'
-                    :routes='stepRoutes'
-                    @toggleShowMobileDetails='handleToggleShowMobileStepperDetails($event)'
-                    :isMobileStepperOpen='isMobileStepperOpen'
-                    @onClickLink='handleClickStepperLink($event)'/>
-      </div>
-      <router-view/>
-    </main>
-    <Footer :version='version' />
+  <div>
+    <div :aria-hidden="[isConsentModalOpen]">
+      <Header :title='pageTitle'
+              imagePath='/pppp/images/' />
+      <main>
+        <div class="container stepper">
+          <PageStepper :currentPath='$router.currentRoute.path'
+                      :routes='stepRoutes'
+                      @toggleShowMobileDetails='handleToggleShowMobileStepperDetails($event)'
+                      :isMobileStepperOpen='isMobileStepperOpen'
+                      @onClickLink='handleClickStepperLink($event)'/>
+        </div>
+        <router-view/>
+      </main>
+      <Footer :version='version' />
+    </div>
+    <ConsentModal v-if="isConsentModalOpen"
+                  :applicationUuid="applicationUuid"
+                  @close="handleCloseConsentModal"
+                  @captchaVerified="handleCaptchaVerified" />
   </div>
 </template>
 
@@ -21,6 +27,7 @@ import "@bcgov/bootstrap-theme/dist/css/bootstrap-theme.min.css";
 import 'common-lib-vue/dist/common-lib-vue.css';
 import './styles/styles.css';
 
+import { v4 as uuidv4 } from 'uuid';
 import project from '../package.json';
 import {
   Header,
@@ -42,23 +49,43 @@ import {
   MODULE_NAME as appModule,
   SET_SHOW_MOBILE_STEPPER_DETAILS,
 } from '@/store/modules/app';
+import {
+  MODULE_NAME as payPatientModule,
+  SET_APPLICATION_UUID,
+  SET_CAPTCHA_TOKEN,
+  SET_IS_INFO_COLLECTION_NOTICE_OPEN,
+} from '@/store/modules/pay-patient-form';
+import {
+  MODULE_NAME as payPractitionerModule,
+} from '@/store/modules/pay-practitioner-form';
 import pageStateService from '@/services/page-state-service';
 import { scrollTo } from '@/helpers/scroll';
+import ConsentModal from '@/components/ConsentModal.vue';
 
 export default {
   name: 'App',
   components: {
-    Header,
+    ConsentModal,
     Footer,
+    Header,
     PageStepper,
   },
   data: () => {
     return {
       version: project.version,
+      applicationUuid: null,
     };
   },
   created() {
     document.title = this.pageTitle;
+
+    this.applicationUuid = uuidv4();
+    const currentPath = this.$router.currentRoute.path;
+    if (currentPath.includes(PAY_PATIENT_BASE_URL)) {
+      this.$store.dispatch(payPatientModule + '/' + SET_APPLICATION_UUID, this.applicationUuid);
+    } else if (currentPath.includes(PAY_PRACTITIONER_BASE_URL)) {
+      this.$store.dispatch(payPractitionerModule + '/' + SET_APPLICATION_UUID, this.applicationUuid);
+    }
   },
   computed: {
     stepRoutes() {
@@ -82,8 +109,14 @@ export default {
     isMobileStepperOpen() {
       return this.$store.state.app.showMobileStepperDetails;
     },
-    isModalOpen() {
-      return this.$store.state.app.isModalOpen;
+    isConsentModalOpen() {
+      const currentPath = this.$router.currentRoute.path;
+      if (currentPath.includes(PAY_PATIENT_BASE_URL)) {
+        return this.$store.state.payPatientForm.isInfoCollectionNoticeOpen;
+      } else if (currentPath.includes(PAY_PRACTITIONER_BASE_URL)) {
+        return this.$store.state.payPractitionerForm.isInfoCollectionNoticeOpen;
+      }
+      return true;
     },
   },
   methods: {
@@ -95,7 +128,23 @@ export default {
       pageStateService.setPageComplete(path);
       this.$router.push(path);
       scrollTo(0);
-    }
+    },
+    handleCaptchaVerified(captchaToken) {
+      const currentPath = this.$router.currentRoute.path;
+      if (currentPath.includes(PAY_PATIENT_BASE_URL)) {
+        this.$store.dispatch(payPatientModule + '/' + SET_CAPTCHA_TOKEN, captchaToken);
+      } else if (currentPath.includes(PAY_PRACTITIONER_BASE_URL)) {
+        this.$store.dispatch(payPractitionerModule + '/' + SET_CAPTCHA_TOKEN, captchaToken);
+      }
+    },
+    handleCloseConsentModal() {
+      const currentPath = this.$router.currentRoute.path;
+      if (currentPath.includes(PAY_PATIENT_BASE_URL)) {
+        this.$store.dispatch(payPatientModule + '/' + SET_IS_INFO_COLLECTION_NOTICE_OPEN, false);
+      } else if (currentPath.includes(PAY_PRACTITIONER_BASE_URL)) {
+        this.$store.dispatch(payPractitionerModule + '/' + SET_IS_INFO_COLLECTION_NOTICE_OPEN, false);
+      }
+    },
   }
 }
 </script>

@@ -1,6 +1,5 @@
 <template>
-  <div ref="modal"
-      aria-hidden="false">
+  <div ref="modal">
     <div class="modal fade show"
         id="exampleModal"
         tabindex="-1"
