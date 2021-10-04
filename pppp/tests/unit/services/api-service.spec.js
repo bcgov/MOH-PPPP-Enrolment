@@ -1,6 +1,5 @@
 import APIService from "@/services/api-service";
 import { v4 as uuidv4 } from "uuid";
-import * as uuid from "uuid";
 import axios from "axios";
 import * as dummyDataPatient from "@/store/states/pay-patient-form-dummy-data";
 import * as dummyDataPractitioner from "@/store/states/pay-practitioner-form-dummy-data";
