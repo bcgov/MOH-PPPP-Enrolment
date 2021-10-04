@@ -1,9 +1,5 @@
 <template>
   <div>
-    <ConsentModal v-if="isConsentModalOpen"
-                  :applicationUuid="applicationUuid"
-                  @close="handleCloseConsentModal"
-                  @captchaVerified="handleCaptchaVerified" />
     <PageContent>
       <div class="container pt-3 pt-sm-5 mb-3">
         <h1>Pay Patient Claim</h1>
@@ -26,7 +22,6 @@
 </template>
 
 <script>
-import { v4 as uuidv4 } from 'uuid';
 import pageStateService from '@/services/page-state-service';
 import spaEnvService from '@/services/spa-env-service';
 import {
@@ -41,12 +36,8 @@ import {
 import { getConvertedPath } from '@/helpers/url';
 import ContinueBar from '@/components/ContinueBar.vue';
 import PageContent from '@/components/PageContent.vue';
-import ConsentModal from '@/components/ConsentModal.vue';
 import {
   MODULE_NAME as formModule,
-  SET_APPLICATION_UUID,
-  SET_CAPTCHA_TOKEN,
-  SET_IS_INFO_COLLECTION_NOTICE_OPEN,
   SET_CLAIM_COUNT,
   SET_MEDICAL_SERVICE_CLAIMS,
 } from '@/store/modules/pay-patient-form';
@@ -58,9 +49,8 @@ import {
 } from 'common-lib-vue';
 
 export default {
-  name: 'EmptyPage',
+  name: 'ClaimCountPage',
   components: {
-    ConsentModal,
     ContinueBar,
     NumberSelect,
     PageContent,
@@ -78,9 +68,6 @@ export default {
   },
   created() {
     if (this.isFirstLoad()) {
-      this.applicationUuid = uuidv4();
-      this.$store.dispatch(formModule + '/' + SET_APPLICATION_UUID, this.applicationUuid);
-
       // Load environment variables, and route to maintenance page.
       spaEnvService.loadEnvs()
         .then(() => {
@@ -119,20 +106,9 @@ export default {
     };
     return validations;
   },
-  computed: {
-    isConsentModalOpen() {
-      return this.$store.state.payPatientForm.isInfoCollectionNoticeOpen;
-    },
-  },
   methods: {
     isFirstLoad() {
       return !this.$store.state.payPatientForm.applicationUuid;
-    },
-    handleCaptchaVerified(captchaToken) {
-      this.$store.dispatch(formModule + '/' + SET_CAPTCHA_TOKEN, captchaToken);
-    },
-    handleCloseConsentModal() {
-      this.$store.dispatch(formModule + '/' + SET_IS_INFO_COLLECTION_NOTICE_OPEN, false);
     },
     validateFields() {
       this.$v.$touch()

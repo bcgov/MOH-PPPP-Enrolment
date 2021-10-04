@@ -1,9 +1,5 @@
 <template>
   <div>
-    <ConsentModal v-if="isConsentModalOpen"
-                  :applicationUuid="applicationUuid"
-                  @close="handleCloseConsentModal"
-                  @captchaVerified="handleCaptchaVerified" />
     <PageContent>
       <div class="container pt-3 pt-sm-5 mb-3">
         <h1>Pay Practitioner Claim</h1>
@@ -44,7 +40,6 @@
 </template>
 
 <script>
-import { v4 as uuidv4 } from 'uuid';
 import pageStateService from '@/services/page-state-service';
 import spaEnvService from '@/services/spa-env-service';
 import {
@@ -59,16 +54,12 @@ import {
 } from '@/helpers/scroll';
 import ContinueBar from '@/components/ContinueBar.vue';
 import PageContent from '@/components/PageContent.vue';
-import ConsentModal from '@/components/ConsentModal.vue';
 import {
   NumberSelect,
   cloneDeep,
 } from 'common-lib-vue';
 import {
   MODULE_NAME as formModule,
-  SET_APPLICATION_UUID,
-  SET_CAPTCHA_TOKEN,
-  SET_IS_INFO_COLLECTION_NOTICE_OPEN,
   SET_MEDICAL_SERVICE_CLAIMS,
   SET_HOSPITAL_VISIT_CLAIMS,
   SET_MEDICAL_SERVICE_CLAIMS_COUNT, 
@@ -94,7 +85,6 @@ const atLeastOneClaimValidator = (vm) => {
 export default {
   name: 'ClaimCountPage',
   components: {
-    ConsentModal,
     ContinueBar,
     PageContent,
     NumberSelect
@@ -113,9 +103,6 @@ export default {
   },
   created() {
     if (this.isFirstLoad()) {
-      this.applicationUuid = uuidv4();
-      this.$store.dispatch(formModule + '/' + SET_APPLICATION_UUID, this.applicationUuid);
-
       // Load environment variables, and route to maintenance page.
       spaEnvService.loadEnvs()
         .then(() => {
@@ -159,20 +146,9 @@ export default {
     };
     return validations;
   },
-  computed: {
-    isConsentModalOpen() {
-      return this.$store.state.payPractitionerForm.isInfoCollectionNoticeOpen;
-    },
-  },
   methods: {
     isFirstLoad() {
       return !this.$store.state.payPractitionerForm.applicationUuid;
-    },
-    handleCaptchaVerified(captchaToken) {
-      this.$store.dispatch(formModule + '/' + SET_CAPTCHA_TOKEN, captchaToken);
-    },
-    handleCloseConsentModal() {
-      this.$store.dispatch(formModule + '/' + SET_IS_INFO_COLLECTION_NOTICE_OPEN, false);
     },
     validateFields() {
       this.$v.$touch()

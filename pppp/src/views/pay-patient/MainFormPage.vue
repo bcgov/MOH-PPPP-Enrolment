@@ -2,14 +2,7 @@
   <div>
     <PageContent>
       <div class="container pt-3 pt-sm-5 mb-3">
-        <div class="row align-items-end">
-          <div class="col-md-7">
-            <h1>Pay Patient Claim</h1>
-          </div>
-          <div class="col-md-5">
-            <p class="text-right"><span class="required-asterisk">*</span> Required Information</p>
-          </div>
-        </div>
+        <h1>Pay Patient Claim</h1>
         <hr class="mt-0"/>
 
         <div v-if='isCSR'
@@ -19,7 +12,6 @@
                 id='plan-reference-number'
                 v-model='planReferenceNumber'
                 maxlength='10'
-                :isRequiredAsteriskShown='true'
                 :inputStyle='smallStyles'
                 @blur='handleBlurField($v.planReferenceNumber)' />
           <div class="text-danger"
@@ -42,7 +34,6 @@
           <PhnInput label='Personal Health Number (PHN):'
                 id='phn'
                 v-model='phn'
-                :isRequiredAsteriskShown='true'
                 :inputStyle='smallStyles'
                 @blur='handleBlurField($v.phn)' />
           <div class="text-danger"
@@ -51,7 +42,7 @@
           <div class="text-danger"
               v-if="$v.phn.$dirty && $v.phn.required && !$v.phn.phnValidator"
               aria-live="assertive">Personal Health Number (PHN) must be valid.</div>
-          <DigitInput label='Dependant:'
+          <DigitInput label='Dependant (optional):'
                 id='dependent-number'
                 className='mt-3'
                 v-model='dependentNumber'
@@ -72,7 +63,6 @@
                 className='mt-3'
                 v-model='firstName'
                 maxlength='12'
-                :isRequiredAsteriskShown='true'
                 :inputStyle='mediumStyles'
                 @blur='handleBlurField($v.firstName)' />
           <div class="text-danger"
@@ -81,7 +71,7 @@
           <div class="text-danger"
               v-if="$v.firstName.$dirty && $v.firstName.required && !$v.firstName.nameValidator"
               aria-live="assertive">Patient Legal First Name must begin with a letter and cannot include special characters except hyphens, periods, apostrophes and blank characters.</div>
-          <Input label='Second Name Initial:'
+          <Input label='Second Name Initial (optional):'
                 id='middle-initial'
                 className='mt-3'
                 v-model='middleInitial'
@@ -96,7 +86,6 @@
                 className='mt-3'
                 v-model='lastName'
                 maxlength='18'
-                :isRequiredAsteriskShown='true'
                 :inputStyle='mediumStyles'
                 @blur='handleBlurField($v.lastName)' />
           <div class="text-danger"
@@ -105,11 +94,10 @@
           <div class="text-danger"
               v-if="$v.lastName.$dirty && $v.lastName.required && !$v.lastName.nameValidator"
               aria-live="assertive">Patient Legal Last Name must begin with a letter and cannot include special characters except hyphens, periods, apostrophes and blank characters.</div>
-          <DateInput label='Patient Birth Date:'
+          <DateInput :label='"Patient Birth Date" + (dependentNumber === "66" ? " (optional)" : "") + ":"'
                 id='birth-date'
                 className='mt-3'
                 v-model='birthDate'
-                :isRequiredAsteriskShown="dependentNumber !== '66'"
                 @blur='handleBlurField($v.birthDate)'
                 @processDate='handleProcessBirthDate($event)' />
           <div class="text-danger"
@@ -136,13 +124,12 @@
           <Radio label='Is this claim related to a motor vehicle accident?'
                 v-model='isVehicleAccident'
                 :items='isVehicleAccidentOptions'
-                :isRequiredAsteriskShown='true'
                 @blur='handleBlurField($v.isVehicleAccident)' />
           <div class="text-danger"
               v-if="$v.isVehicleAccident.$dirty && !$v.isVehicleAccident.required"
               aria-live="assertive">This field is required.</div>
           <MotorVehicleAccidentClaimNumberInput
-                label='Motor Vehicle Accident Claim Number:'
+                label='Motor Vehicle Accident Claim Number (optional):'
                 id='vehicle-accident-claim-number'
                 class='mt-3'
                 v-model='vehicleAccidentClaimNumber'
@@ -155,7 +142,7 @@
 
         <a name='claim-info'></a>
         <div class="section-container p-3 mt-5">
-          <DigitInput label='Plan Reference Number of Original Claim:'
+          <DigitInput label='Plan Reference Number of Original Claim (optional):'
                 id='plan-reference-number-of-original-claim'
                 v-model='planReferenceNumberOfOriginalClaim'
                 maxlength='10'
@@ -178,7 +165,6 @@
             <DateInput label='Service Date:'
                       :id="'service-date' + index"
                       v-model='claim.serviceDate'
-                      :isRequiredAsteriskShown='true'
                       @blur='handleBlurField($v.medicalServiceClaims.$each[index].serviceDate)'
                       @processDate='handleProcessServiceDate($event, index)' />
             <div class="text-danger"
@@ -210,7 +196,6 @@
                   class='mt-3'
                   v-model='claim.numberOfServices'
                   maxlength='2'
-                  :isRequiredAsteriskShown='true'
                   :inputStyle='extraSmallStyles'
                   @blur='handleBlurField($v.medicalServiceClaims.$each[index].numberOfServices)' />
             <div class="text-danger"
@@ -229,7 +214,7 @@
                   && !v.numberOfServices.nonZeroNumberValidator"
                 aria-live="assertive">Number of Services must be greater than 0.</div>
                  
-            <Input label='Service Clarification Code:'
+            <Input label='Service Clarification Code (optional):'
                   :id='"service-clarification-code-" + index'
                   class='mt-3'
                   v-model='claim.serviceClarificationCode'
@@ -245,7 +230,6 @@
                   class='mt-3'
                   v-model='claim.feeItem'
                   maxlength='5'
-                  :isRequiredAsteriskShown='true'
                   :inputStyle='smallStyles'
                   @blur='handleBlurField($v.medicalServiceClaims.$each[index].feeItem)'
                   @input='handleInputServiceFeeItem(index)' />
@@ -266,7 +250,6 @@
                   class='mt-3'
                   v-model='claim.amountBilled'
                   maxlength='7'
-                  :isRequiredAsteriskShown='true'
                   :inputStyle='smallStyles'
                   @blur='handleBlurField($v.medicalServiceClaims.$each[index].amountBilled)' />
             <div class="text-danger"
@@ -281,7 +264,7 @@
             <div class="text-danger"
                 v-if="v.amountBilled.$dirty && v.amountBilled.required && !v.amountBilled.amountBilledZeroValidator"
                 aria-live="assertive">Amount billed must be zero if Fee item is '03333'.</div>
-            <TimeInput label='Called Start Time:'
+            <TimeInput label='Called Start Time (optional):'
                       :id='"called-start-time-" + index'
                       className='mt-3'
                       v-model='claim.calledStartTime'
@@ -290,7 +273,7 @@
             <div class="text-danger"
                 v-if="v.calledStartTime.$dirty && !v.calledStartTime.partialTimeValidator"
                 aria-live="assertive">Called start time must be an exact value.</div>
-            <TimeInput label='Rendered Finish Time:'
+            <TimeInput label='Rendered Finish Time (optional):'
                       :id='"rendered-finish-time-" + index'
                       className='mt-3'
                       v-model='claim.renderedFinishTime'
@@ -304,7 +287,6 @@
                   class='mt-3'
                   v-model='claim.diagnosticCode'
                   maxlength='5'
-                  :isRequiredAsteriskShown='true'
                   :inputStyle='smallStyles'
                   @blur='handleBlurField($v.medicalServiceClaims.$each[index].diagnosticCode)' />
             <div class="text-danger"
@@ -318,7 +300,6 @@
                   class='mt-3'
                   v-model='claim.locationOfService'
                   :options='serviceLocationOptions'
-                  :isRequiredAsteriskShown='true'
                   :inputStyle='extraLargeStyles'
                   @blur='handleBlurField($v.medicalServiceClaims.$each[index].locationOfService)'>
               <template v-slot:description>
@@ -334,26 +315,25 @@
                   && v.locationOfService.required
                   && !v.locationOfService.serviceLocationCodeValidator"
                 aria-live="assertive">Service Location Code is invalid for the Service Date.</div>
-            <Select label='Correspondence Attached:'
+            <Select label='Correspondence Attached (optional):'
                 :id='"correspondence-attached-" + index'
                 class='mt-3'
                 v-model='claim.correspondenceAttached'
                 :options='correspondenceAttachedOptions'
                 defaultOptionLabel='None'
                 :inputStyle='largeStyles' />
-            <Select label='Submission Code:'
+            <Select :label='"Submission Code" + (isSubmissionCodeRequired(index) ? "" : " (optional)") + ":"'
                 :id='"submission-code-" + index'
                 class='mt-3'
                 v-model='claim.submissionCode'
                 defaultOptionLabel='None'
                 :options='submissionCodeOptions'
-                :isRequiredAsteriskShown='isSubmissionCodeRequired(index)'
                 :inputStyle='largeStyles'
                 @blur='handleBlurField($v.medicalServiceClaims.$each[index].submissionCode)' />
             <div class="text-danger"
                 v-if="v.submissionCode.$dirty && isSubmissionCodeRequired(index) && !v.submissionCode.submissionCodeValidator"
                 aria-live="assertive">Submission code is required.</div>
-            <Textarea label='Notes/Additional Information:'
+            <Textarea label='Notes/Additional Information (optional):'
                   :id='"notes-" + index'
                   class='mt-3'
                   v-model='claim.notes'
@@ -369,18 +349,17 @@
           <Radio label='Whose address is this?'
                 v-model='addressOwner'
                 :items='addressOwnerOptions'
-                :isRequiredAsteriskShown='true'
                 @blur='handleBlurField($v.addressOwner)' />
           <div class="text-danger"
               v-if="$v.addressOwner.$dirty && !$v.addressOwner.required"
               aria-live="assertive">This field is required.</div>
-          <Input label='Apartment / Unit:'
+          <Input label='Apartment / Unit (optional):'
                 id='unit-number'
                 className='mt-3'
                 v-model='unitNumber'
                 maxlength='6'
                 :inputStyle='smallStyles' />
-          <Input label='Street Number:'
+          <Input label='Street Number (optional):'
                 id='street-number'
                 className='mt-3'
                 v-model='streetNumber'
@@ -391,7 +370,6 @@
                 className='mt-3'
                 v-model='streetName'
                 maxlength='24'
-                :isRequiredAsteriskShown='true'
                 :inputStyle='mediumStyles'
                 @blur='handleBlurField($v.streetName)' />
           <div class="text-danger"
@@ -402,7 +380,6 @@
                 className='mt-3'
                 v-model='city'
                 maxlength='22'
-                :isRequiredAsteriskShown='true'
                 :inputStyle='mediumStyles'
                 @blur='handleBlurField($v.city)' />
           <div class="text-danger"
@@ -414,7 +391,6 @@
                 id='postal-code'
                 className='mt-3'
                 v-model='postalCode'
-                :isRequiredAsteriskShown='true'
                 :inputStyle='smallStyles'
                 @blur='handleBlurField($v.postalCode)' />
           <div class="text-danger"
@@ -443,7 +419,6 @@
                 v-model='practitionerLastName'
                 maxlength='35'
                 :inputStyle='mediumStyles'
-                :isRequiredAsteriskShown='true'
                 @blur='handleBlurField($v.practitionerLastName)'
                 @input='handleInputPractitioner()' />
           <div class="text-danger"
@@ -461,7 +436,6 @@
                 maxlength='15'
                 class='mt-3'
                 :inputStyle='mediumStyles'
-                :isRequiredAsteriskShown='true'
                 @blur='handleBlurField($v.practitionerFirstName)'
                 @input='handleInputPractitioner()' />
           <div class="text-danger"
@@ -478,7 +452,6 @@
                 id='payment-number'
                 class='mt-3'
                 v-model='practitionerPaymentNumber'
-                :isRequiredAsteriskShown='true'
                 :inputStyle='smallStyles'
                 @blur='handleBlurField($v.practitionerPaymentNumber)'/>
           <div class="text-danger"
@@ -491,7 +464,6 @@
                 id='practitioner-number'
                 class='mt-3'
                 v-model='practitionerPractitionerNumber'
-                :isRequiredAsteriskShown='true'
                 :inputStyle='smallStyles'
                 @blur='handleBlurField($v.practitionerPractitionerNumber)'
                 @input='handleInputPractitioner()'/>
@@ -504,7 +476,7 @@
           <div class="text-danger"
               v-if="isPractitionerErrorShown"
               aria-live="assertive">Practitioner information does not match our records.</div>
-          <Input label='Specialty Code:'
+          <Input label='Specialty Code (optional):'
                 id='specialty-code'
                 class='mt-3'
                 v-model='practitionerSpecialtyCode'
@@ -525,7 +497,7 @@
                 && $v.practitionerSpecialtyCode.alphanumericValidator
                 && !$v.practitionerSpecialtyCode.specialtyCodeValidator"
               aria-live="assertive">Specialty Code is invalid.</div>
-          <FacilityNumberInput label='Facility Number:'
+          <FacilityNumberInput label='Facility Number (optional):'
                 id='facility-number'
                 class='mt-3'
                 v-model='practitionerFacilityNumber'
@@ -539,10 +511,9 @@
         <a name='referred-by'></a>
         <h2 class="mt-5">Referred By</h2>
         <div class="section-container p-3">
-          <PractitionerNumberInput label='Referred By Practitioner Number:'
+          <PractitionerNumberInput :label='"Referred By Practitioner Number" + (isReferredByRequired ? "" : " (optional)") + ":"'
                 id='referred-by-practitioner-number'
                 v-model='referredByPractitionerNumber'
-                :isRequiredAsteriskShown='isReferredByRequired'
                 :inputStyle='smallStyles'
                 @blur='handleBlurField($v.referredByPractitionerNumber)'/>
           <div class="text-danger"
@@ -551,12 +522,11 @@
           <div class="text-danger"
               v-if="$v.referredByPractitionerNumber.$dirty && !$v.referredByPractitionerNumber.minLength"
               aria-live="assertive">Practitioner number must not be less than 5 characters.</div>
-          <Input label='Referred By Practitioner Last Name:'
+          <Input :label='"Referred By Practitioner Last Name" + (isReferredByRequired ? "" : " (optional)") + ":"'
                 id='referred-by-last-name'
                 v-model='referredByLastName'
                 maxlength='18'
                 class='mt-3'
-                :isRequiredAsteriskShown='isReferredByRequired'
                 :inputStyle='mediumStyles'
                 @blur='handleBlurField($v.referredByLastName)'/>
           <div class="text-danger"
@@ -565,12 +535,11 @@
           <div class="text-danger"
               v-if="$v.referredByLastName.$dirty && !$v.referredByLastName.nameValidator"
               aria-live="assertive">Last name must begin with a letter and cannot include special characters except hyphens, periods, apostrophes and blank characters.</div>
-          <Input label='Referred By Practitioner First Name Initial:'
+          <Input :label='"Referred By Practitioner First Name Initial" + (isReferredByRequired ? "" : " (optional)") + ":"'
                 id='referred-by-first-name-initial'
                 v-model='referredByFirstNameInitial'
                 maxlength='1'
                 class='mt-3'
-                :isRequiredAsteriskShown='isReferredByRequired'
                 :inputStyle='extraSmallStyles'
                 @blur='handleBlurField($v.referredByFirstNameInitial)'/>
           <div class="text-danger"
@@ -584,10 +553,9 @@
         <a name='referred-to'></a>
         <h2 class="mt-5">Referred To</h2>
         <div class="section-container p-3">
-          <PractitionerNumberInput label='Referred To Practitioner Number:'
+          <PractitionerNumberInput :label='"Referred To Practitioner Number" + (isReferredToRequired ? "" : " (optional)") + ":"'
                 id='referred-to-practitioner-number'
                 v-model='referredToPractitionerNumber'
-                :isRequiredAsteriskShown='isReferredToRequired'
                 :inputStyle='smallStyles'
                 @blur='handleBlurField($v.referredToPractitionerNumber)'/>
           <div class="text-danger"
@@ -596,12 +564,11 @@
           <div class="text-danger"
               v-if="$v.referredToPractitionerNumber.$dirty && !$v.referredToPractitionerNumber.minLength"
               aria-live="assertive">Practitioner number must not be less than 5 characters.</div>
-          <Input label='Referred To Practitioner Last Name:'
+          <Input :label='"Referred To Practitioner Last Name" + (isReferredToRequired ? "" : " (optional)") + ":"'
                 id='referred-to-last-name'
                 v-model='referredToLastName'
                 maxlength='18'
                 class='mt-3'
-                :isRequiredAsteriskShown='isReferredToRequired'
                 :inputStyle='mediumStyles'
                 @blur='handleBlurField($v.referredToLastName)'/>
           <div class="text-danger"
@@ -610,12 +577,11 @@
           <div class="text-danger"
               v-if="$v.referredToLastName.$dirty && !$v.referredToLastName.nameValidator"
               aria-live="assertive">Last name must begin with a letter and cannot include special characters except hyphens, periods, apostrophes and blank characters.</div>
-          <Input label='Referred To Practitioner First Name Initial:'
+          <Input :label='"Referred To Practitioner First Name Initial" + (isReferredToRequired ? "" : " (optional)") + ":"'
                 id='referred-to-first-name-initial'
                 v-model='referredToFirstNameInitial'
                 maxlength='1'
                 class='mt-3'
-                :isRequiredAsteriskShown='isReferredToRequired'
                 :inputStyle='extraSmallStyles'
                 @blur='handleBlurField($v.referredToFirstNameInitial)'/>
           <div class="text-danger"
