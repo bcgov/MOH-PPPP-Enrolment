@@ -285,7 +285,7 @@ describe("ReviewPage.vue pay patient created()", () => {
   });
 });
 
-describe("ReviewPage.vue pay patient isFormAbleToSubmit()", () => {
+describe("ReviewPage.vue pay patient continueHandler()", () => {
   let store;
   let wrapper;
   let $route;
@@ -324,6 +324,29 @@ describe("ReviewPage.vue pay patient isFormAbleToSubmit()", () => {
   it("calls submitForm if the store has correspondenceAttached = N", () => {
     store = new Vuex.Store(storeTemplateN);
     $route = {
+      path: "/potato",
+    };
+    $router = {
+      $route,
+      currentRoute: $route,
+      push: jest.fn(),
+    };
+    wrapper = shallowMount(Page, {
+      localVue,
+      store,
+      mocks: {
+        $route,
+        $router,
+      },
+    });
+    const spyOnSubmitForm = jest.spyOn(wrapper.vm, "submitForm");
+    wrapper.vm.continueHandler();
+    expect(spyOnSubmitForm).toHaveBeenCalled();
+  });
+
+  it("calls submit if the store has correspondenceAttached = C and the route ends in -csr", () => {
+    store = new Vuex.Store(storeTemplateC);
+    $route = {
       path: "/potato-csr",
     };
     $router = {
@@ -347,7 +370,7 @@ describe("ReviewPage.vue pay patient isFormAbleToSubmit()", () => {
   it("calls window.print if the store has correspondenceAttached = C", () => {
     store = new Vuex.Store(storeTemplateC);
     $route = {
-      path: "/potato-csr",
+      path: "/potato",
     };
     $router = {
       $route,
