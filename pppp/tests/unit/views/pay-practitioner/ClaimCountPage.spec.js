@@ -19,6 +19,13 @@ const localVue = createLocalVue();
 localVue.use(Vuex);
 localVue.use(Vuelidate);
 
+jest.mock("axios", () => ({
+  get: jest.fn(),
+  post: jest.fn(() => {
+    return Promise.resolve();
+  }),
+}));
+
 const testDate = new Date().getFullYear() - 1;
 const next = jest.fn();
 
