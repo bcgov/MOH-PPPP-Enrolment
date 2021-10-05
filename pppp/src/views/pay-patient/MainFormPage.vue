@@ -2,24 +2,16 @@
   <div>
     <PageContent>
       <div class="container pt-3 pt-sm-5 mb-3">
-        <div class="row align-items-end">
-          <div class="col-md-7">
-            <h1>Pay Patient Claim</h1>
-          </div>
-          <div class="col-md-5">
-            <p class="text-right"><span class="required-asterisk">*</span> Required Information</p>
-          </div>
-        </div>
+        <h1>Pay Patient Claim</h1>
         <hr class="mt-0"/>
 
         <div v-if='isCSR'
             class="section-container p-3 mb-5">
           <a name='plan-reference-number'></a>
-          <NumberInput label='Plan Reference Number:'
+          <DigitInput label='Plan Reference Number:'
                 id='plan-reference-number'
                 v-model='planReferenceNumber'
                 maxlength='10'
-                :isRequiredAsteriskShown='true'
                 :inputStyle='smallStyles'
                 @blur='handleBlurField($v.planReferenceNumber)' />
           <div class="text-danger"
@@ -42,7 +34,6 @@
           <PhnInput label='Personal Health Number (PHN):'
                 id='phn'
                 v-model='phn'
-                :isRequiredAsteriskShown='true'
                 :inputStyle='smallStyles'
                 @blur='handleBlurField($v.phn)' />
           <div class="text-danger"
@@ -51,7 +42,7 @@
           <div class="text-danger"
               v-if="$v.phn.$dirty && $v.phn.required && !$v.phn.phnValidator"
               aria-live="assertive">Personal Health Number (PHN) must be valid.</div>
-          <NumberInput label='Dependant:'
+          <DigitInput label='Dependant (optional):'
                 id='dependent-number'
                 className='mt-3'
                 v-model='dependentNumber'
@@ -72,7 +63,6 @@
                 className='mt-3'
                 v-model='firstName'
                 maxlength='12'
-                :isRequiredAsteriskShown='true'
                 :inputStyle='mediumStyles'
                 @blur='handleBlurField($v.firstName)' />
           <div class="text-danger"
@@ -81,7 +71,7 @@
           <div class="text-danger"
               v-if="$v.firstName.$dirty && $v.firstName.required && !$v.firstName.nameValidator"
               aria-live="assertive">Patient Legal First Name must begin with a letter and cannot include special characters except hyphens, periods, apostrophes and blank characters.</div>
-          <Input label='Second Name Initial:'
+          <Input label='Second Name Initial (optional):'
                 id='middle-initial'
                 className='mt-3'
                 v-model='middleInitial'
@@ -96,7 +86,6 @@
                 className='mt-3'
                 v-model='lastName'
                 maxlength='18'
-                :isRequiredAsteriskShown='true'
                 :inputStyle='mediumStyles'
                 @blur='handleBlurField($v.lastName)' />
           <div class="text-danger"
@@ -105,11 +94,10 @@
           <div class="text-danger"
               v-if="$v.lastName.$dirty && $v.lastName.required && !$v.lastName.nameValidator"
               aria-live="assertive">Patient Legal Last Name must begin with a letter and cannot include special characters except hyphens, periods, apostrophes and blank characters.</div>
-          <DateInput label='Patient Birth Date:'
+          <DateInput :label='"Patient Birth Date" + (dependentNumber === "66" ? " (optional)" : "") + ":"'
                 id='birth-date'
                 className='mt-3'
                 v-model='birthDate'
-                :isRequiredAsteriskShown="dependentNumber !== '66'"
                 @blur='handleBlurField($v.birthDate)'
                 @processDate='handleProcessBirthDate($event)' />
           <div class="text-danger"
@@ -136,13 +124,12 @@
           <Radio label='Is this claim related to a motor vehicle accident?'
                 v-model='isVehicleAccident'
                 :items='isVehicleAccidentOptions'
-                :isRequiredAsteriskShown='true'
                 @blur='handleBlurField($v.isVehicleAccident)' />
           <div class="text-danger"
               v-if="$v.isVehicleAccident.$dirty && !$v.isVehicleAccident.required"
               aria-live="assertive">This field is required.</div>
           <MotorVehicleAccidentClaimNumberInput
-                label='Motor Vehicle Accident Claim Number:'
+                label='Motor Vehicle Accident Claim Number (optional):'
                 id='vehicle-accident-claim-number'
                 class='mt-3'
                 v-model='vehicleAccidentClaimNumber'
@@ -155,7 +142,7 @@
 
         <a name='claim-info'></a>
         <div class="section-container p-3 mt-5">
-          <NumberInput label='Plan Reference Number of Original Claim:'
+          <DigitInput label='Plan Reference Number of Original Claim (optional):'
                 id='plan-reference-number-of-original-claim'
                 v-model='planReferenceNumberOfOriginalClaim'
                 maxlength='10'
@@ -178,7 +165,6 @@
             <DateInput label='Service Date:'
                       :id="'service-date' + index"
                       v-model='claim.serviceDate'
-                      :isRequiredAsteriskShown='true'
                       @blur='handleBlurField($v.medicalServiceClaims.$each[index].serviceDate)'
                       @processDate='handleProcessServiceDate($event, index)' />
             <div class="text-danger"
@@ -200,12 +186,16 @@
                   && v.serviceDate.serviceDateFutureValidator
                   && !v.serviceDate.distantPastValidator"
                 aria-live="assertive">Service Date is too far in the past.</div>
-            <NumberInput label='Number of Services:'
+            <div class="text-danger"
+                v-if="v.serviceDate.$dirty
+                  && v.serviceDate.required
+                  && !v.serviceDate.serviceDateCutOffValidator"
+                aria-live="assertive">Service Date is invalid for the Service Location Code.</div>
+            <DigitInput label='Number of Services:'
                   :id='"number-of-services-" + index'
                   class='mt-3'
                   v-model='claim.numberOfServices'
                   maxlength='2'
-                  :isRequiredAsteriskShown='true'
                   :inputStyle='extraSmallStyles'
                   @blur='handleBlurField($v.medicalServiceClaims.$each[index].numberOfServices)' />
             <div class="text-danger"
@@ -224,7 +214,7 @@
                   && !v.numberOfServices.nonZeroNumberValidator"
                 aria-live="assertive">Number of Services must be greater than 0.</div>
                  
-            <Input label='Service Clarification Code:'
+            <Input label='Service Clarification Code (optional):'
                   :id='"service-clarification-code-" + index'
                   class='mt-3'
                   v-model='claim.serviceClarificationCode'
@@ -235,14 +225,14 @@
             <div class="text-danger"
                 v-if="v.serviceClarificationCode.$dirty && !v.serviceClarificationCode.clarificationCodeValidator"
                 aria-live="assertive">Service Clarification Code is invalid.</div>  
-            <NumberInput label='Fee Item:'
+            <DigitInput label='Fee Item:'
                   :id='"fee-item-" + index'
                   class='mt-3'
                   v-model='claim.feeItem'
                   maxlength='5'
-                  :isRequiredAsteriskShown='true'
                   :inputStyle='smallStyles'
-                  @blur='handleBlurField($v.medicalServiceClaims.$each[index].feeItem)' />
+                  @blur='handleBlurField($v.medicalServiceClaims.$each[index].feeItem)'
+                  @input='handleInputServiceFeeItem(index)' />
             <div class="text-danger"
                 v-if="v.feeItem.$dirty && !v.feeItem.required"
                 aria-live="assertive">Fee Item is required.</div>
@@ -252,12 +242,14 @@
             <div class="text-danger"
                 v-if="v.feeItem.$dirty && v.feeItem.required && !v.feeItem.positiveNumberValidator"
                 aria-live="assertive">Fee Item must be a positive number.</div>
+            <div class="text-danger"
+                v-if="medicalServiceClaimsFeeItemValidationError[index]"
+                aria-live="assertive">Fee Item does not match our records.</div>
             <NumberInput label='Amount Billed:'
                   :id='"amount-billed-" + index'
                   class='mt-3'
                   v-model='claim.amountBilled'
                   maxlength='7'
-                  :isRequiredAsteriskShown='true'
                   :inputStyle='smallStyles'
                   @blur='handleBlurField($v.medicalServiceClaims.$each[index].amountBilled)' />
             <div class="text-danger"
@@ -272,7 +264,7 @@
             <div class="text-danger"
                 v-if="v.amountBilled.$dirty && v.amountBilled.required && !v.amountBilled.amountBilledZeroValidator"
                 aria-live="assertive">Amount billed must be zero if Fee item is '03333'.</div>
-            <TimeInput label='Called Start Time:'
+            <TimeInput label='Called Start Time (optional):'
                       :id='"called-start-time-" + index'
                       className='mt-3'
                       v-model='claim.calledStartTime'
@@ -281,7 +273,7 @@
             <div class="text-danger"
                 v-if="v.calledStartTime.$dirty && !v.calledStartTime.partialTimeValidator"
                 aria-live="assertive">Called start time must be an exact value.</div>
-            <TimeInput label='Rendered Finish Time:'
+            <TimeInput label='Rendered Finish Time (optional):'
                       :id='"rendered-finish-time-" + index'
                       className='mt-3'
                       v-model='claim.renderedFinishTime'
@@ -295,7 +287,6 @@
                   class='mt-3'
                   v-model='claim.diagnosticCode'
                   maxlength='5'
-                  :isRequiredAsteriskShown='true'
                   :inputStyle='smallStyles'
                   @blur='handleBlurField($v.medicalServiceClaims.$each[index].diagnosticCode)' />
             <div class="text-danger"
@@ -309,32 +300,40 @@
                   class='mt-3'
                   v-model='claim.locationOfService'
                   :options='serviceLocationOptions'
-                  :isRequiredAsteriskShown='true'
                   :inputStyle='extraLargeStyles'
-                  @blur='handleBlurField($v.medicalServiceClaims.$each[index].locationOfService)' />
+                  @blur='handleBlurField($v.medicalServiceClaims.$each[index].locationOfService)'>
+              <template v-slot:description>
+                <p class="input-description">MSP Claims submitted with Service Location Code (<b>A</b>) for dates of service on or after October 1, 2021, will not be accepted.</p>
+              </template>
+            </Select>
             <div class="text-danger"
-                v-if="v.locationOfService.$dirty && !v.locationOfService.required"
-                aria-live="assertive">Service location code is required.</div>
-            <Select label='Correspondence Attached:'
+                v-if="v.locationOfService.$dirty
+                  && !v.locationOfService.required"
+                aria-live="assertive">Service Location Code is required.</div>
+            <div class="text-danger"
+                v-if="v.locationOfService.$dirty
+                  && v.locationOfService.required
+                  && !v.locationOfService.serviceLocationCodeValidator"
+                aria-live="assertive">Service Location Code is invalid for the Service Date.</div>
+            <Select label='Correspondence Attached (optional):'
                 :id='"correspondence-attached-" + index'
                 class='mt-3'
                 v-model='claim.correspondenceAttached'
                 :options='correspondenceAttachedOptions'
                 defaultOptionLabel='None'
                 :inputStyle='largeStyles' />
-            <Select label='Submission Code:'
+            <Select :label='"Submission Code" + (isSubmissionCodeRequired(index) ? "" : " (optional)") + ":"'
                 :id='"submission-code-" + index'
                 class='mt-3'
                 v-model='claim.submissionCode'
                 defaultOptionLabel='None'
                 :options='submissionCodeOptions'
-                :isRequiredAsteriskShown='isSubmissionCodeRequired'
                 :inputStyle='largeStyles'
                 @blur='handleBlurField($v.medicalServiceClaims.$each[index].submissionCode)' />
             <div class="text-danger"
-                v-if="v.submissionCode.$dirty && isSubmissionCodeRequired && !v.submissionCode.required"
+                v-if="v.submissionCode.$dirty && isSubmissionCodeRequired(index) && !v.submissionCode.submissionCodeValidator"
                 aria-live="assertive">Submission code is required.</div>
-            <Textarea label='Notes/Additional Information:'
+            <Textarea label='Notes/Additional Information (optional):'
                   :id='"notes-" + index'
                   class='mt-3'
                   v-model='claim.notes'
@@ -350,18 +349,17 @@
           <Radio label='Whose address is this?'
                 v-model='addressOwner'
                 :items='addressOwnerOptions'
-                :isRequiredAsteriskShown='true'
                 @blur='handleBlurField($v.addressOwner)' />
           <div class="text-danger"
               v-if="$v.addressOwner.$dirty && !$v.addressOwner.required"
               aria-live="assertive">This field is required.</div>
-          <Input label='Apartment / Unit:'
+          <Input label='Apartment / Unit (optional):'
                 id='unit-number'
                 className='mt-3'
                 v-model='unitNumber'
                 maxlength='6'
                 :inputStyle='smallStyles' />
-          <Input label='Street Number:'
+          <Input label='Street Number (optional):'
                 id='street-number'
                 className='mt-3'
                 v-model='streetNumber'
@@ -372,7 +370,6 @@
                 className='mt-3'
                 v-model='streetName'
                 maxlength='24'
-                :isRequiredAsteriskShown='true'
                 :inputStyle='mediumStyles'
                 @blur='handleBlurField($v.streetName)' />
           <div class="text-danger"
@@ -383,7 +380,6 @@
                 className='mt-3'
                 v-model='city'
                 maxlength='22'
-                :isRequiredAsteriskShown='true'
                 :inputStyle='mediumStyles'
                 @blur='handleBlurField($v.city)' />
           <div class="text-danger"
@@ -395,7 +391,6 @@
                 id='postal-code'
                 className='mt-3'
                 v-model='postalCode'
-                :isRequiredAsteriskShown='true'
                 :inputStyle='smallStyles'
                 @blur='handleBlurField($v.postalCode)' />
           <div class="text-danger"
@@ -409,39 +404,54 @@
         <a name='practitioner'></a>
         <h2 class="mt-5">Practitioner Information</h2>
         <div class="section-container p-3">
+          <div class="tip-box-container float-md-right mb-3 border">
+            <TipBox>
+              <p>To confirm that the Medical Practitioner is active, the following fields will automatically be validated against Medical Services Plan records:</p>
+              <ul>
+                <li>First name</li>
+                <li>Last name</li>
+                <li>Medical Services Plan Practitioner Number</li>
+              </ul>
+            </TipBox>
+          </div>
           <Input label='Practitioner Last Name:'
                 id='practitioner-last-name'
                 v-model='practitionerLastName'
                 maxlength='35'
                 :inputStyle='mediumStyles'
-                :isRequiredAsteriskShown='true'
-                @blur='handleBlurField($v.practitionerLastName)' />
+                @blur='handleBlurField($v.practitionerLastName)'
+                @input='handleInputPractitioner()' />
           <div class="text-danger"
               v-if="$v.practitionerLastName.$dirty && !$v.practitionerLastName.required"
               aria-live="assertive">Practitioner Last Name is required.</div>
           <div class="text-danger"
               v-if="$v.practitionerLastName.$dirty && $v.practitionerLastName.required && !$v.practitionerLastName.nameValidator"
               aria-live="assertive">Practitioner Last Name must begin with a letter and cannot include special characters except hyphens, periods, apostrophes and blank characters.</div>
+          <div class="text-danger"
+              v-if="isPractitionerErrorShown"
+              aria-live="assertive">Practitioner information does not match our records.</div>
           <Input label='Practitioner First Name:'
                 id='practitioner-first-name'
                 v-model='practitionerFirstName'
                 maxlength='15'
                 class='mt-3'
                 :inputStyle='mediumStyles'
-                :isRequiredAsteriskShown='true'
-                @blur='handleBlurField($v.practitionerFirstName)' />
+                @blur='handleBlurField($v.practitionerFirstName)'
+                @input='handleInputPractitioner()' />
           <div class="text-danger"
               v-if="$v.practitionerFirstName.$dirty && !$v.practitionerFirstName.required"
               aria-live="assertive">Practitioner First Name is required.</div>
           <div class="text-danger"
               v-if="$v.practitionerFirstName.$dirty && $v.practitionerFirstName.required && !$v.practitionerFirstName.nameValidator"
               aria-live="assertive">Practitioner First Name must begin with a letter and cannot include special characters except hyphens, periods, apostrophes and blank characters.</div>
+          <div class="text-danger"
+              v-if="isPractitionerErrorShown"
+              aria-live="assertive">Practitioner information does not match our records.</div>
           <!-- Using PractitionerNumberInput because payment number has the same format as a practitioner number -->
           <PractitionerNumberInput label='Payment Number:'
                 id='payment-number'
                 class='mt-3'
                 v-model='practitionerPaymentNumber'
-                :isRequiredAsteriskShown='true'
                 :inputStyle='smallStyles'
                 @blur='handleBlurField($v.practitionerPaymentNumber)'/>
           <div class="text-danger"
@@ -454,16 +464,19 @@
                 id='practitioner-number'
                 class='mt-3'
                 v-model='practitionerPractitionerNumber'
-                :isRequiredAsteriskShown='true'
                 :inputStyle='smallStyles'
-                @blur='handleBlurField($v.practitionerPractitionerNumber)'/>
+                @blur='handleBlurField($v.practitionerPractitionerNumber)'
+                @input='handleInputPractitioner()'/>
           <div class="text-danger"
               v-if="$v.practitionerPractitionerNumber.$dirty && !$v.practitionerPractitionerNumber.required"
               aria-live="assertive">Practitioner number is required.</div>
           <div class="text-danger"
               v-if="$v.practitionerPractitionerNumber.$dirty && $v.practitionerPractitionerNumber.required && !$v.practitionerPractitionerNumber.minLength"
               aria-live="assertive">Practitioner number must not be less than 5 characters.</div>
-          <Input label='Specialty Code:'
+          <div class="text-danger"
+              v-if="isPractitionerErrorShown"
+              aria-live="assertive">Practitioner information does not match our records.</div>
+          <Input label='Specialty Code (optional):'
                 id='specialty-code'
                 class='mt-3'
                 v-model='practitionerSpecialtyCode'
@@ -471,9 +484,20 @@
                 :inputStyle='extraSmallStyles'
                 @blur='handleBlurField($v.practitionerSpecialtyCode)'/>
           <div class="text-danger"
-              v-if="$v.practitionerSpecialtyCode.$dirty && !$v.practitionerSpecialtyCode.alphanumericValidator"
-              aria-live="assertive">Specialty code must be alphanumeric.</div>
-          <FacilityNumberInput label='Facility Number:'
+              v-if="$v.practitionerSpecialtyCode.$dirty
+                && !$v.practitionerSpecialtyCode.alphanumericValidator"
+              aria-live="assertive">Specialty Code must be alphanumeric.</div>
+          <div class="text-danger"
+              v-if="$v.practitionerSpecialtyCode.$dirty
+                && !$v.practitionerSpecialtyCode.minLength"
+              aria-live="assertive">Specialty Code cannot be less than 2 characters.</div>
+          <div class="text-danger"
+              v-if="$v.practitionerSpecialtyCode.$dirty
+                && $v.practitionerSpecialtyCode.minLength
+                && $v.practitionerSpecialtyCode.alphanumericValidator
+                && !$v.practitionerSpecialtyCode.specialtyCodeValidator"
+              aria-live="assertive">Specialty Code is invalid.</div>
+          <FacilityNumberInput label='Facility Number (optional):'
                 id='facility-number'
                 class='mt-3'
                 v-model='practitionerFacilityNumber'
@@ -487,10 +511,9 @@
         <a name='referred-by'></a>
         <h2 class="mt-5">Referred By</h2>
         <div class="section-container p-3">
-          <PractitionerNumberInput label='Referred By Practitioner Number:'
+          <PractitionerNumberInput :label='"Referred By Practitioner Number" + (isReferredByRequired ? "" : " (optional)") + ":"'
                 id='referred-by-practitioner-number'
                 v-model='referredByPractitionerNumber'
-                :isRequiredAsteriskShown='isReferredByRequired'
                 :inputStyle='smallStyles'
                 @blur='handleBlurField($v.referredByPractitionerNumber)'/>
           <div class="text-danger"
@@ -499,12 +522,11 @@
           <div class="text-danger"
               v-if="$v.referredByPractitionerNumber.$dirty && !$v.referredByPractitionerNumber.minLength"
               aria-live="assertive">Practitioner number must not be less than 5 characters.</div>
-          <Input label='Referred By Practitioner Last Name:'
+          <Input :label='"Referred By Practitioner Last Name" + (isReferredByRequired ? "" : " (optional)") + ":"'
                 id='referred-by-last-name'
                 v-model='referredByLastName'
                 maxlength='18'
                 class='mt-3'
-                :isRequiredAsteriskShown='isReferredByRequired'
                 :inputStyle='mediumStyles'
                 @blur='handleBlurField($v.referredByLastName)'/>
           <div class="text-danger"
@@ -513,12 +535,11 @@
           <div class="text-danger"
               v-if="$v.referredByLastName.$dirty && !$v.referredByLastName.nameValidator"
               aria-live="assertive">Last name must begin with a letter and cannot include special characters except hyphens, periods, apostrophes and blank characters.</div>
-          <Input label='Referred By Practitioner First Name Initial:'
+          <Input :label='"Referred By Practitioner First Name Initial" + (isReferredByRequired ? "" : " (optional)") + ":"'
                 id='referred-by-first-name-initial'
                 v-model='referredByFirstNameInitial'
                 maxlength='1'
                 class='mt-3'
-                :isRequiredAsteriskShown='isReferredByRequired'
                 :inputStyle='extraSmallStyles'
                 @blur='handleBlurField($v.referredByFirstNameInitial)'/>
           <div class="text-danger"
@@ -532,10 +553,9 @@
         <a name='referred-to'></a>
         <h2 class="mt-5">Referred To</h2>
         <div class="section-container p-3">
-          <PractitionerNumberInput label='Referred To Practitioner Number:'
+          <PractitionerNumberInput :label='"Referred To Practitioner Number" + (isReferredToRequired ? "" : " (optional)") + ":"'
                 id='referred-to-practitioner-number'
                 v-model='referredToPractitionerNumber'
-                :isRequiredAsteriskShown='isReferredToRequired'
                 :inputStyle='smallStyles'
                 @blur='handleBlurField($v.referredToPractitionerNumber)'/>
           <div class="text-danger"
@@ -544,12 +564,11 @@
           <div class="text-danger"
               v-if="$v.referredToPractitionerNumber.$dirty && !$v.referredToPractitionerNumber.minLength"
               aria-live="assertive">Practitioner number must not be less than 5 characters.</div>
-          <Input label='Referred To Practitioner Last Name:'
+          <Input :label='"Referred To Practitioner Last Name" + (isReferredToRequired ? "" : " (optional)") + ":"'
                 id='referred-to-last-name'
                 v-model='referredToLastName'
                 maxlength='18'
                 class='mt-3'
-                :isRequiredAsteriskShown='isReferredToRequired'
                 :inputStyle='mediumStyles'
                 @blur='handleBlurField($v.referredToLastName)'/>
           <div class="text-danger"
@@ -558,12 +577,11 @@
           <div class="text-danger"
               v-if="$v.referredToLastName.$dirty && !$v.referredToLastName.nameValidator"
               aria-live="assertive">Last name must begin with a letter and cannot include special characters except hyphens, periods, apostrophes and blank characters.</div>
-          <Input label='Referred To Practitioner First Name Initial:'
+          <Input :label='"Referred To Practitioner First Name Initial" + (isReferredToRequired ? "" : " (optional)") + ":"'
                 id='referred-to-first-name-initial'
                 v-model='referredToFirstNameInitial'
                 maxlength='1'
                 class='mt-3'
-                :isRequiredAsteriskShown='isReferredToRequired'
                 :inputStyle='extraSmallStyles'
                 @blur='handleBlurField($v.referredToFirstNameInitial)'/>
           <div class="text-danger"
@@ -573,6 +591,8 @@
               v-if="$v.referredToFirstNameInitial.$dirty && !$v.referredToFirstNameInitial.alphaValidator"
               aria-live="assertive">First Name Initial must only be an alphabetic character.</div>
         </div>
+        <div v-if="isSystemUnavailable"
+            class="text-danger my-4">Unable to continue, system unavailable. Please try again later.</div>
       </div>
     </PageContent>
     <PromptModal v-if='isValidationModalShown'
@@ -587,12 +607,14 @@
       </ul>
       <p>Do you wish to continue?</p>
     </PromptModal>
-    <ContinueBar @continue="validateFields()" />
+    <ContinueBar @continue="validateFields()"
+                :hasLoader="isValidating" />
   </div>
 </template>
 
 <script>
 import pageStateService from '@/services/page-state-service';
+import apiService from '@/services/api-service';
 import {
   payPatientRoutes,
   isPastPath,
@@ -611,6 +633,10 @@ import {
   clarificationCodeValidator,
   diagnosticCodeValidator,
   serviceDateValidator,
+  serviceDateCutOffValidator,
+  serviceLocationCodeValidator,
+  specialtyCodeValidator,
+  submissionCodeValidator,
 } from '@/helpers/validators';
 import {
   selectOptionsSubmissionCode,
@@ -626,6 +652,7 @@ import {
 } from '@/constants/input-styles';
 import ContinueBar from '@/components/ContinueBar.vue';
 import PageContent from '@/components/PageContent.vue';
+import TipBox from '@/components/TipBox.vue';
 import {
   MODULE_NAME as formModule,
   SET_PLAN_REFERENCE_NUMBER,
@@ -662,6 +689,7 @@ import logService from '@/services/log-service';
 import { required, maxLength, minLength } from 'vuelidate/lib/validators';
 import {
   DateInput,
+  DigitInput,
   FacilityNumberInput,
   Input,
   MotorVehicleAccidentClaimNumberInput,
@@ -741,7 +769,7 @@ const serviceDateFutureValidator = (value, vm) => {
     return false;
   }
   if (feeItem === '03333') {
-    const future90Days = addDays(startOfToday(), 90);
+    const future90Days = addDays(startOfToday(), 91); // Add 1 day to include today's date.
     return isBefore(value, future90Days);
   }
   return isBefore(value, addDays(startOfToday(), 1)); // Add 1 day to include today's date.
@@ -755,11 +783,14 @@ const partialTimeValidator = (value) => {
   return true;
 };
 
+const MAX_MEDICAL_SERVICE_CLAIMS = 4;
+
 export default {
   name: 'MainFormPage',
   components: {
     ContinueBar,
     DateInput,
+    DigitInput,
     FacilityNumberInput,
     Input,
     MotorVehicleAccidentClaimNumberInput,
@@ -773,11 +804,16 @@ export default {
     Select,
     Textarea,
     TimeInput,
+    TipBox,
   },
   data: () => {
     return {
       isPageLoaded: false,
+      isValidating: false,
       isValidationModalShown: false,
+      isSystemUnavailable: false,
+      isPractitionerErrorShown: false,
+      medicalServiceClaimsFeeItemValidationError: [],
       addressOwnerOptions: [
         {
           id: 'address-owner-practitioner',
@@ -892,6 +928,10 @@ export default {
     this.referredToLastName = this.$store.state.payPatientForm.referredToLastName;
     this.referredToPractitionerNumber = this.$store.state.payPatientForm.referredToPractitionerNumber;
 
+    for (let i=0; i<MAX_MEDICAL_SERVICE_CLAIMS; i++) {
+      this.medicalServiceClaimsFeeItemValidationError.push(false);
+    }
+
     setTimeout(() => {
       this.isPageLoaded = true;
     }, 0);
@@ -960,6 +1000,7 @@ export default {
             serviceDateValidator,
             serviceDateFutureValidator,
             distantPastValidator,
+            serviceDateCutOffValidator,
           },
           numberOfServices: {
             required,
@@ -990,11 +1031,14 @@ export default {
           },
           locationOfService: {
             required,
+            serviceLocationCodeValidator,
           },
           serviceClarificationCode: {
             clarificationCodeValidator: optionalValidator(clarificationCodeValidator),
           },
-          submissionCode: {},
+          submissionCode: {
+            submissionCodeValidator,
+          },
           notes: {
             maxLength: maxLength(400),
           },
@@ -1021,6 +1065,8 @@ export default {
       },
       practitionerSpecialtyCode: {
         alphanumericValidator: optionalValidator(alphanumericValidator),
+        minLength: optionalValidator(minLength(2)),
+        specialtyCodeValidator: optionalValidator(specialtyCodeValidator),
       },
       referredByFirstNameInitial: {
         alphaValidator: optionalValidator(alphaValidator),
@@ -1054,9 +1100,6 @@ export default {
       validations.referredToLastName.required = required;
       validations.referredToPractitionerNumber.required = required;
     }
-    if (this.isSubmissionCodeRequired) {
-      validations.medicalServiceClaims.$each.submissionCode.required = required; 
-    }
     if (this.isCSR) {
       validations.planReferenceNumber = {
         required,
@@ -1073,6 +1116,12 @@ export default {
         validation.$touch();
       }
     },
+    handleInputPractitioner() {
+      this.isPractitionerErrorShown = false;
+    },
+    handleInputServiceFeeItem(index) {
+      this.medicalServiceClaimsFeeItemValidationError[index] = false;
+    },
     handleProcessBirthDate(data) {
       this.birthDateData = data;
     },
@@ -1084,10 +1133,37 @@ export default {
       if (!this.dependentNumber) {
         this.dependentNumber = '00';
       }
-      // Pad Fee Items with leading zeros.
+      
       for (let i=0; i<this.medicalServiceClaims.length; i++) {
+        // Pad Fee Items with leading zeros.
         if (this.medicalServiceClaims[i].feeItem) {
           this.medicalServiceClaims[i].feeItem = padLeadingZeros(this.medicalServiceClaims[i].feeItem, 5);
+        }
+        // Set default "calledStartTime" to "00:00".
+        if (!this.medicalServiceClaims[i].calledStartTime
+          || (
+            !this.medicalServiceClaims[i].calledStartTime.hour &&
+            !this.medicalServiceClaims[i].calledStartTime.minute
+          )
+        ) {
+          this.medicalServiceClaims[i].calledStartTime = {
+            hour: '00',
+            minute: '00',
+            time: '00:00'
+          };
+        }
+        // Set default "renderedFinishTime" to "00:00".
+        if (!this.medicalServiceClaims[i].renderedFinishTime
+          || (
+            !this.medicalServiceClaims[i].renderedFinishTime.hour &&
+            !this.medicalServiceClaims[i].renderedFinishTime.minute
+          )
+        ) {
+          this.medicalServiceClaims[i].renderedFinishTime = {
+            hour: '00',
+            minute: '00',
+            time: '00:00'
+          };
         }
       }
 
@@ -1097,8 +1173,76 @@ export default {
         return;
       }
 
+      this.isValidating = true;
+      this.isSystemUnavailable = false;
+      this.isPractitionerErrorShown = false;
+      for (let i=0; i<this.medicalServiceClaimsFeeItemValidationError.length; i++) {
+        this.medicalServiceClaimsFeeItemValidationError[i] = false;
+      }
+
+      const token = this.$store.state.payPatientForm.captchaToken;
+      const applicationUuid = this.$store.state.payPatientForm.applicationUuid;
+      
       // Do server-side validation.
-      this.isValidationModalShown = true;
+      apiService.validateApplication(token, {
+        applicationUuid: applicationUuid,
+        practitionerFirstName: this.practitionerFirstName || '',
+        practitionerLastName: this.practitionerLastName || '',
+        practitionerNumber: this.practitionerPractitionerNumber || '',
+        serviceFeeItem1: this.medicalServiceClaims[0] && this.medicalServiceClaims[0].feeItem ? this.medicalServiceClaims[0].feeItem : '',
+        serviceFeeItem2: this.medicalServiceClaims[1] && this.medicalServiceClaims[1].feeItem ? this.medicalServiceClaims[1].feeItem : '',
+        serviceFeeItem3: this.medicalServiceClaims[2] && this.medicalServiceClaims[2].feeItem ? this.medicalServiceClaims[2].feeItem : '',
+        serviceFeeItem4: this.medicalServiceClaims[3] && this.medicalServiceClaims[3].feeItem ? this.medicalServiceClaims[3].feeItem : '',
+        serviceLocationCode1: '',
+        serviceLocationCode2: '',
+        serviceLocationCode3: '',
+        serviceLocationCode4: '',
+        hospitalFeeItem1: '',
+        hospitalFeeItem2: '',
+        hospitalLocationCode1: '',
+        hospitalLocationCode2: ''
+      }).then((response) => {
+        const responseData = response.data;
+        const returnCode = response.data.returnCode;
+        let containsErrors = false;
+        let containsWarnings = false;
+
+        this.isValidating = false;
+
+        switch (returnCode) {
+          case '0': // Valid payload data.
+            this.navigateToNextPage();
+            break;
+          case '1': // Invalid payload data.
+            if ( responseData.practitionerFirstName === 'N'
+              || responseData.practitionerLastName === 'N'
+              || responseData.practitionerNumber === 'N') {
+              this.isPractitionerErrorShown = true;
+              containsErrors = true;
+            }
+            for (let i=0; i<MAX_MEDICAL_SERVICE_CLAIMS; i++) {
+              if (responseData['serviceFeeItem' + (i+1)] === 'N') {
+                this.medicalServiceClaimsFeeItemValidationError[i] = true;
+                containsErrors = true;
+              }
+            }
+            if (containsErrors) {
+              scrollToError();
+            } else if (containsWarnings) {
+              this.isValidationModalShown = true;
+            }
+            break;
+          default: // An error occurred.
+            this.isSystemUnavailable = true;
+            scrollToError();
+            break;
+        }
+      }).catch(() => {
+        this.isValidating = false;
+        this.isSystemUnavailable = true;
+        scrollToError();
+      });
+      // this.isValidationModalShown = true;
 
       // this.navigateToNextPage();
     },
@@ -1109,6 +1253,17 @@ export default {
       this.isValidationModalShown = false;
     },
     navigateToNextPage() {
+      // Navigate to next path.
+      const toPath = getConvertedPath(
+        this.$router.currentRoute.path,
+        payPatientRoutes.REVIEW_PAGE.path
+      );
+      pageStateService.setPageComplete(toPath);
+      pageStateService.visitPage(toPath);
+      this.$router.push(toPath);
+      scrollTo(0);
+    },
+    saveData() {
       this.$store.dispatch(formModule + '/' + SET_PLAN_REFERENCE_NUMBER, this.planReferenceNumber);
 
       this.$store.dispatch(formModule + '/' + SET_PHN, this.phn);
@@ -1146,16 +1301,6 @@ export default {
       this.$store.dispatch(formModule + '/' + SET_REFERRED_TO_FIRST_NAME_INITIAL, this.referredToFirstNameInitial);
       this.$store.dispatch(formModule + '/' + SET_REFERRED_TO_LAST_NAME, this.referredToLastName);
       this.$store.dispatch(formModule + '/' + SET_REFERRED_TO_PRACTITIONER_NUMBER, this.referredToPractitionerNumber);
-
-      // Navigate to next path.
-      const toPath = getConvertedPath(
-        this.$router.currentRoute.path,
-        payPatientRoutes.REVIEW_PAGE.path
-      );
-      pageStateService.setPageComplete(toPath);
-      pageStateService.visitPage(toPath);
-      this.$router.push(toPath);
-      scrollTo(0);
     },
     getMedicalServiceClaimTitle(index) {
       if (this.medicalServiceClaims && this.medicalServiceClaims.length > 1) {
@@ -1168,6 +1313,14 @@ export default {
         return 'Service date cannot be more than 90 days in the future.';
       }
       return 'Service date cannot be in the future.';
+    },
+    isSubmissionCodeRequired(index) {
+      const past90Days = subDays(startOfToday(), 90);
+      let serviceDate = this.medicalServiceClaims[index].serviceDate;
+      if (!serviceDate) {
+        return false;
+      }
+      return isBefore(serviceDate, addDays(past90Days, 1));
     },
   },
   computed: {
@@ -1190,25 +1343,6 @@ export default {
       }
       return false;
     },
-    isSubmissionCodeRequired() {
-      const past90Days = subDays(startOfToday(), 90);
-      let furthestServiceDate;
-
-      for (let i=0; i<this.medicalServiceClaims.length; i++) {
-        if (furthestServiceDate) {
-          if (this.medicalServiceClaims[i].serviceDate
-            && isBefore(this.medicalServiceClaims[i].serviceDate, furthestServiceDate)) {
-            furthestServiceDate = this.medicalServiceClaims[i].serviceDate;
-          }
-        } else {
-          furthestServiceDate = this.medicalServiceClaims[i].serviceDate;
-        }
-      }
-      if (!furthestServiceDate) {
-        return false;
-      }
-      return isBefore(furthestServiceDate, past90Days);
-    },
     isCSR() {
       return isCSR(this.$router.currentRoute.path);
     },
@@ -1222,6 +1356,7 @@ export default {
   beforeRouteLeave(to, from, next) {
     pageStateService.setPageIncomplete(from.path);
     if (pageStateService.isPageComplete(to.path) || isPastPath(to.path, from.path)) {
+      this.saveData();
       next();
     } else {
       // Navigate to self.
@@ -1248,5 +1383,10 @@ export default {
 }
 .section-container {
   background-color: #EEE;
+}
+@media only screen and (min-width: 768px) {
+  .tip-box-container {
+    max-width: 300px;
+  }
 }
 </style>

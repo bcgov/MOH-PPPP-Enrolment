@@ -2,6 +2,15 @@ import {
   getISODateString,
   isValidISODateString,
 } from 'common-lib-vue';
+import {
+  isAfter,
+  isBefore,
+  startOfToday,
+  subDays,
+  parseISO,
+  addDays,
+} from 'date-fns';
+import { selectOptionsSpecialtyCode } from '@/constants/select-options';
 
 export const bcPostalCodeValidator = (value) => {
   const criteria = RegExp('^[Vv]\\d[A-Za-z][ ]?\\d[A-Za-z]\\d$');
@@ -54,3 +63,36 @@ export const serviceDateValidator = (_, vm) => {
   const isoDateString = getISODateString(year, month + 1, day);
   return isValidISODateString(isoDateString);
 };
+
+export const submissionCodeValidator = (value, vm) => {
+  const past90Days = subDays(startOfToday(), 90);
+  const serviceDate = vm.serviceDate;
+  if (!serviceDate) {
+    return true;
+  }
+  if (isBefore(serviceDate, addDays(past90Days, 1))) {
+    return !!value;
+  }
+  return true;
+};
+
+export const specialtyCodeValidator = (value) => {
+  const index = selectOptionsSpecialtyCode.findIndex((item) => item.value === value);
+  return index > -1;
+};
+
+export const serviceLocationCodeValidator = (value, vm) => {
+  const serviceDate = vm.serviceDate;
+  if (value === 'A' && serviceDate && isAfter(serviceDate, subDays(parseISO('2021-10-01'), 1))) {
+    return false;
+  }
+  return true;
+};
+
+export const serviceDateCutOffValidator = (value, vm) => {
+  const locationOfService = vm.locationOfService;
+  if (locationOfService === 'A' && value && isAfter(value, subDays(parseISO('2021-10-01'), 1))) {
+    return false;
+  }
+  return true;
+}

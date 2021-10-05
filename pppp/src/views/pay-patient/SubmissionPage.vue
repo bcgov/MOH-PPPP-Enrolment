@@ -26,14 +26,14 @@
               <font-awesome-icon icon="check-circle" size="3x" />
             </div>
             <div class="col-md-10 pt-2 pb-2">
-              <p>Your application has been submitted.</p>
-              <div class="row">
-                <div class="col-md-4 col-lg-3">Date of Submission:</div>
-                <div class="col-md-8 col-lg-9"><b>{{ submissionDate }}</b></div>
+              <p>Your submission has been received.</p>
+              <div class="row mb-3 mb-sm-0">
+                <div class="info-box-label-cell">Date of Submission:</div>
+                <div class="info-box-value-cell"><b>{{ submissionDate }}</b></div>
               </div>
               <div class="row">
-                <div class="col-md-4 col-lg-3">Reference Number:</div>
-                <div class="col-md-8 col-lg-9"><b>{{referenceNumber}}</b></div>
+                <div class="info-box-label-cell">Plan Reference Number:</div>
+                <div class="info-box-value-cell"><b>{{referenceNumber}}</b></div>
               </div>
             </div>
           </div>
@@ -43,8 +43,8 @@
         <hr/>
         <ul>
           <li>Please <a href="javascript:void(0)" @click="printPage()" class="print-link">print</a> this page for your records.</li>
-          <li>Health Insurance BC will send you a letter following cancellation of MSP coverage.</li>
-          <li>Please contact <a href="https://www2.gov.bc.ca/gov/content/health/about-bc-s-health-care-system/partners/health-insurance-bc" target="_blank">Health Insurance BC</a> if you have any questions.</li>
+          <li>Do not mail in a printed version of this form to Health Insurance BC.</li>
+          <li>Please contact <a href="https://www2.gov.bc.ca/gov/content/health/practitioner-professional-resources/msp/contact-us" target="_blank">Health Insurance BC</a> if you have any questions.</li>
         </ul>
 
         <ReviewTableList className='mt-5 mb-5' />
@@ -171,5 +171,14 @@ export default {
 .status-icon {
   font-size: 32px;
 }
-
+.info-box-label-cell {
+  min-width: 230px;
+  padding-left: 15px;
+}
+@media only screen and (max-width: 575px) {
+  .info-box-value-cell {
+    width: 100%;
+    padding-left: 15px;
+  }
+}
 </style>
