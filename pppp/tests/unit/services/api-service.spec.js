@@ -1,9 +1,6 @@
 import APIService from "@/services/api-service";
 import { v4 as uuidv4 } from "uuid";
 import axios from "axios";
-import * as dummyDataPatient from "@/store/states/pay-patient-form-dummy-data";
-import * as dummyDataPractitioner from "@/store/states/pay-practitioner-form-dummy-data";
-import { cloneDeep } from "lodash";
 
 jest.mock("axios", () => ({
   get: jest.fn(),
@@ -17,7 +14,7 @@ uuidv4.mockImplementation(() => {
   return "uuid-123";
 });
 
-const testDate = new Date("2000-01-01").toDateString();
+const testDate = new Date("2000-01-01T03:24:00").toDateString();
 
 const spyOnSendPostRequest = jest.spyOn(APIService, "_sendPostRequest");
 
@@ -48,10 +45,70 @@ describe("APIService", () => {
   });
 
   it("submitPayPatientApplication() calls axios with correct arguments", () => {
-    const fakeArgument = cloneDeep(dummyDataPatient.default);
-    fakeArgument.applicationUuid = "fakeApplicationUuid";
-    fakeArgument.birthDate = testDate;
-    fakeArgument.medicalServiceClaims[0].serviceDate = testDate;
+    const fakeArgument = {
+      applicationUuid: "fakeApplicationUuid",
+      claimCount: "1",
+
+      planReferenceNumber: "1234567890",
+
+      phn: "9999 999 998",
+      dependentNumber: "66",
+      firstName: "Bob",
+      middleInitial: "H",
+      lastName: "Smith",
+      birthDate: testDate,
+
+      addressOwner: "PATIENT",
+      unitNumber: "123",
+      streetNumber: "321",
+      streetName: "Fake St.",
+      city: "Victoria",
+      postalCode: "V8V 8V8",
+
+      isVehicleAccident: "Y",
+      vehicleAccidentClaimNumber: "A0000001",
+
+      planReferenceNumberOfOriginalClaim: "321",
+
+      medicalServiceClaims: [
+        {
+          serviceDate: testDate,
+          numberOfServices: "1",
+          serviceClarificationCode: "A1",
+          feeItem: "00010",
+          amountBilled: "0.00",
+          calledStartTime: {
+            hour: "08",
+            minute: "01",
+          },
+          renderedFinishTime: {
+            hour: "16",
+            minute: "05",
+          },
+          diagnosticCode: "001",
+          locationOfService: "A",
+          correspondenceAttached: null,
+          submissionCode: "I",
+          notes: "Notes here.",
+        },
+      ],
+
+      practitionerLastName: "GOTTNER",
+      practitionerFirstName: "MICHAEL",
+      practitionerPaymentNumber: "00001",
+      practitionerPractitionerNumber: "00001",
+      practitionerFacilityNumber: "12345",
+      practitionerSpecialtyCode: "99",
+
+      referredByFirstNameInitial: "R",
+      referredByLastName: "McDonald",
+      referredByPractitionerNumber: "22271",
+
+      referredToFirstNameInitial: "C",
+      referredToLastName: "Lee",
+      referredToPractitionerNumber: "22272",
+    };
+
     APIService.submitPayPatientApplication("fakeToken", fakeArgument);
     expect(spyOnSendPostRequest).toHaveBeenCalledWith(
       "/pppp/api/payformsIntegration/patient/fakeApplicationUuid",
@@ -61,7 +118,7 @@ describe("APIService", () => {
         isCSR: "N",
         payPatient: {
           addressOwner: "PATIENT",
-          birthDate: testDate,
+          birthDate: "Sat Jan 01 2000",
           city: "Victoria",
           claimCount: "1",
           dependentNumber: "66",
@@ -70,17 +127,17 @@ describe("APIService", () => {
           lastName: "Smith",
           medicalServiceClaims: [
             {
-              amountBilled: "1.00",
+              amountBilled: "0.00",
               calledStartTime: "",
               correspondenceAttached: "",
               diagnosticCode: "001",
-              feeItem: "12345",
+              feeItem: "00010",
               locationOfService: "A",
               notes: "Notes here.",
               numberOfServices: "1",
               renderedFinishTime: "",
               serviceClarificationCode: "A1",
-              serviceDate: testDate,
+              serviceDate: "Sat Jan 01 2000",
               submissionCode: "I",
             },
           ],
@@ -90,11 +147,11 @@ describe("APIService", () => {
           planReferenceNumberOfOriginalClaim: "321",
           postalCode: "V8V8V8",
           practitionerFacilityNumber: "12345",
-          practitionerFirstName: "J",
-          practitionerLastName: "Doe",
-          practitionerPaymentNumber: "A0001",
-          practitionerPractitionerNumber: "22274",
-          practitionerSpecialtyCode: "A1",
+          practitionerFirstName: "MICHAEL",
+          practitionerLastName: "GOTTNER",
+          practitionerPaymentNumber: "00001",
+          practitionerPractitionerNumber: "00001",
+          practitionerSpecialtyCode: "99",
           referredByFirstNameInitial: "R",
           referredByLastName: "McDonald",
           referredByPractitionerNumber: "22271",
@@ -113,10 +170,82 @@ describe("APIService", () => {
   });
 
   it("submitPayPractitionerApplication() calls axios with correct arguments", () => {
-    const fakeArgument = cloneDeep(dummyDataPractitioner.default);
-    fakeArgument.applicationUuid = "fakeApplicationUuid";
-    fakeArgument.birthDate = testDate;
-    fakeArgument.medicalServiceClaims[0].serviceDate = testDate;
+    const fakeArgument = {
+      applicationUuid: "fakeApplicationUuid",
+      medicalServiceClaimsCount: '1',
+      hospitalVisitClaimsCount: '1',
+    
+      planReferenceNumber: '1234567890',
+    
+      phn: '9999 999 998',
+      dependentNumber: '66',
+      firstName: 'Bob',
+      middleInitial: 'H',
+      lastName: 'Smith',
+      birthDate: testDate,
+    
+      isVehicleAccident: 'Y',
+      vehicleAccidentClaimNumber: 'A0000001',
+    
+      planReferenceNumberOfOriginalClaim: '321',
+      
+      medicalServiceClaims: [
+        {
+          serviceDate: testDate,
+          numberOfServices: '1',
+          serviceClarificationCode: 'A1',
+          feeItem: '03333',
+          amountBilled: '0.00',
+          calledStartTime: {
+            hour: '08',
+            minute: '08'
+          },
+          renderedFinishTime: {
+            hour: '16',
+            minute: '06'
+          },
+          diagnosticCode: '001',
+          locationOfService: 'A',
+          correspondenceAttached: null,
+          submissionCode: 'I',
+          notes: 'Notes here.',
+        }
+      ],
+      
+      hospitalVisitClaims: [
+        {
+          month: '12',
+          dayFrom: '24',
+          dayTo: '26',
+          year: '2020',
+          numberOfServices: '1',
+          serviceClarificationCode: 'A1',
+          feeItem: '03333',
+          amountBilled: '0.00',
+          diagnosticCode: '001',
+          locationOfService: 'A',
+          correspondenceAttached: null,
+          submissionCode: 'I',
+          notes: 'Notes here.',
+        }
+      ],
+    
+      practitionerLastName: 'GOTTNER',
+      practitionerFirstName: 'MICHAEL',
+      practitionerPaymentNumber: 'A1234',
+      practitionerPractitionerNumber: '00001',
+      practitionerFacilityNumber: '12345',
+      practitionerSpecialtyCode: '99',
+      coveragePreAuthNumber: '2222',
+    
+      referredByFirstNameInitial: 'R',
+      referredByLastName: 'McDonald',
+      referredByPractitionerNumber: '22271',
+    
+      referredToFirstNameInitial: 'C',
+      referredToLastName: 'Lee',
+      referredToPractitionerNumber: '22272',
+    };
     APIService.submitPayPatientApplication("fakeToken", fakeArgument);
     expect(spyOnSendPostRequest).toHaveBeenCalledWith(
       "/pppp/api/payformsIntegration/patient/fakeApplicationUuid",
@@ -155,11 +284,11 @@ describe("APIService", () => {
           planReferenceNumberOfOriginalClaim: "321",
           postalCode: "",
           practitionerFacilityNumber: "12345",
-          practitionerFirstName: "J",
-          practitionerLastName: "Doe",
+          practitionerFirstName: "MICHAEL",
+          practitionerLastName: "GOTTNER",
           practitionerPaymentNumber: "A1234",
-          practitionerPractitionerNumber: "22274",
-          practitionerSpecialtyCode: "A1",
+          practitionerPractitionerNumber: "00001",
+          practitionerSpecialtyCode: "99",
           referredByFirstNameInitial: "R",
           referredByLastName: "McDonald",
           referredByPractitionerNumber: "22271",
