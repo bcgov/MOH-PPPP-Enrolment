@@ -80,12 +80,8 @@ export default {
     document.title = this.pageTitle;
 
     this.applicationUuid = uuidv4();
-    const currentPath = this.$router.currentRoute.path;
-    if (currentPath.includes(PAY_PATIENT_BASE_URL)) {
-      this.$store.dispatch(payPatientModule + '/' + SET_APPLICATION_UUID, this.applicationUuid);
-    } else if (currentPath.includes(PAY_PRACTITIONER_BASE_URL)) {
-      this.$store.dispatch(payPractitionerModule + '/' + SET_APPLICATION_UUID, this.applicationUuid);
-    }
+    this.$store.dispatch(payPatientModule + '/' + SET_APPLICATION_UUID, this.applicationUuid);
+    this.$store.dispatch(payPractitionerModule + '/' + SET_APPLICATION_UUID, this.applicationUuid);
   },
   computed: {
     stepRoutes() {
@@ -116,7 +112,7 @@ export default {
       } else if (currentPath.includes(PAY_PRACTITIONER_BASE_URL)) {
         return this.$store.state.payPractitionerForm.isInfoCollectionNoticeOpen;
       }
-      return true;
+      return false;
     },
   },
   methods: {
@@ -130,20 +126,12 @@ export default {
       scrollTo(0);
     },
     handleCaptchaVerified(captchaToken) {
-      const currentPath = this.$router.currentRoute.path;
-      if (currentPath.includes(PAY_PATIENT_BASE_URL)) {
-        this.$store.dispatch(payPatientModule + '/' + SET_CAPTCHA_TOKEN, captchaToken);
-      } else if (currentPath.includes(PAY_PRACTITIONER_BASE_URL)) {
-        this.$store.dispatch(payPractitionerModule + '/' + SET_CAPTCHA_TOKEN, captchaToken);
-      }
+      this.$store.dispatch(payPatientModule + '/' + SET_CAPTCHA_TOKEN, captchaToken);
+      this.$store.dispatch(payPractitionerModule + '/' + SET_CAPTCHA_TOKEN, captchaToken);
     },
     handleCloseConsentModal() {
-      const currentPath = this.$router.currentRoute.path;
-      if (currentPath.includes(PAY_PATIENT_BASE_URL)) {
-        this.$store.dispatch(payPatientModule + '/' + SET_IS_INFO_COLLECTION_NOTICE_OPEN, false);
-      } else if (currentPath.includes(PAY_PRACTITIONER_BASE_URL)) {
-        this.$store.dispatch(payPractitionerModule + '/' + SET_IS_INFO_COLLECTION_NOTICE_OPEN, false);
-      }
+      this.$store.dispatch(payPatientModule + '/' + SET_IS_INFO_COLLECTION_NOTICE_OPEN, false);
+      this.$store.dispatch(payPractitionerModule + '/' + SET_IS_INFO_COLLECTION_NOTICE_OPEN, false);
     },
   }
 }
