@@ -38,6 +38,17 @@ describe("MainFormPage.vue pay patient", () => {
     const wrapper = shallowMount(Page, {
       store,
       localVue,
+      mocks: {
+        $route: {
+          path: "/",
+        },
+        $router: {
+          push: jest.fn(),
+          currentRoute: {
+            path: "/potato-csr",
+          },
+        },
+      },
     });
     expect(wrapper.element).toBeDefined();
   });
