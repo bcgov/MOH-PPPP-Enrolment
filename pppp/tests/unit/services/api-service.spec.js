@@ -17,6 +17,8 @@ uuidv4.mockImplementation(() => {
   return "uuid-123";
 });
 
+const testDate = new Date("2000-01-01").toDateString();
+
 const spyOnSendPostRequest = jest.spyOn(APIService, "_sendPostRequest");
 
 const mockResponse = {};
@@ -48,6 +50,8 @@ describe("APIService", () => {
   it("submitPayPatientApplication() calls axios with correct arguments", () => {
     const fakeArgument = cloneDeep(dummyDataPatient.default);
     fakeArgument.applicationUuid = "fakeApplicationUuid";
+    fakeArgument.birthDate = testDate;
+    fakeArgument.medicalServiceClaims[0].serviceDate = testDate;
     APIService.submitPayPatientApplication("fakeToken", fakeArgument);
     expect(spyOnSendPostRequest).toHaveBeenCalledWith(
       "/pppp/api/payformsIntegration/patient/fakeApplicationUuid",
@@ -57,7 +61,7 @@ describe("APIService", () => {
         isCSR: "N",
         payPatient: {
           addressOwner: "PATIENT",
-          birthDate: "1999-12-31",
+          birthDate: testDate,
           city: "Victoria",
           claimCount: "1",
           dependentNumber: "66",
@@ -76,7 +80,7 @@ describe("APIService", () => {
               numberOfServices: "1",
               renderedFinishTime: "",
               serviceClarificationCode: "A1",
-              serviceDate: "2021-10-04",
+              serviceDate: testDate,
               submissionCode: "I",
             },
           ],
@@ -111,6 +115,8 @@ describe("APIService", () => {
   it("submitPayPractitionerApplication() calls axios with correct arguments", () => {
     const fakeArgument = cloneDeep(dummyDataPractitioner.default);
     fakeArgument.applicationUuid = "fakeApplicationUuid";
+    fakeArgument.birthDate = testDate;
+    fakeArgument.medicalServiceClaims[0].serviceDate = testDate;
     APIService.submitPayPatientApplication("fakeToken", fakeArgument);
     expect(spyOnSendPostRequest).toHaveBeenCalledWith(
       "/pppp/api/payformsIntegration/patient/fakeApplicationUuid",
@@ -120,7 +126,7 @@ describe("APIService", () => {
         isCSR: "N",
         payPatient: {
           addressOwner: "",
-          birthDate: "2021-10-04",
+          birthDate: testDate,
           city: "",
           claimCount: undefined,
           dependentNumber: "66",
@@ -139,7 +145,7 @@ describe("APIService", () => {
               numberOfServices: "1",
               renderedFinishTime: "",
               serviceClarificationCode: "A1",
-              serviceDate: "2021-10-04",
+              serviceDate: testDate,
               submissionCode: "I",
             },
           ],
