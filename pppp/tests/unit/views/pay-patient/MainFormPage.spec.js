@@ -22,7 +22,6 @@ const storeTemplate = {
 const patientState = cloneDeep(dummyDataValid.default);
 storeTemplate.modules.payPatientForm.state = cloneDeep(patientState);
 
-
 describe("MainFormPage.vue pay patient", () => {
   let state;
   let store;

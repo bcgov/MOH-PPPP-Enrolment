@@ -82,7 +82,7 @@ describe("SpaEnvService loadEnvs()", () => {
   });
 
   it("returns an object", async () => {
-    const result = await expect(spaEnvService.loadEnvs())
+    const result = await expect(spaEnvService.loadEnvs());
     expect(result).toBeDefined();
     expect(result).not.toBeNull();
     expect(typeof result).toEqual("object");

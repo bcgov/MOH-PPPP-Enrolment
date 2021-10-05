@@ -10,7 +10,10 @@ import spaEnvService from "@/services/spa-env-service";
 import logService from "@/services/log-service";
 import pageStateService from "@/services/page-state-service";
 import { getConvertedPath } from "@/helpers/url";
-import { payPractitionerRoutes, payPractitionerRouteStepOrder } from "@/router/routes";
+import {
+  payPractitionerRoutes,
+  payPractitionerRouteStepOrder,
+} from "@/router/routes";
 
 const next = jest.fn();
 
@@ -27,7 +30,6 @@ const storeTemplate = {
 
 const patientState = cloneDeep(dummyDataValid.default);
 storeTemplate.modules.payPatientForm.state = cloneDeep(patientState);
-
 
 const scrollHelper = require("@/helpers/scroll");
 
@@ -287,7 +289,9 @@ describe("HomePage.vue pay practitioner beforeRouteLeave(to, from, next)", () =>
     jest.useFakeTimers();
     await pageStateService.importPageRoutes(payPractitionerRouteStepOrder);
     await wrapper.vm.$nextTick;
-    await pageStateService.setPageComplete(payPractitionerRouteStepOrder[0].path);
+    await pageStateService.setPageComplete(
+      payPractitionerRouteStepOrder[0].path
+    );
     await wrapper.vm.$nextTick;
     Page.beforeRouteLeave.call(
       wrapper.vm,

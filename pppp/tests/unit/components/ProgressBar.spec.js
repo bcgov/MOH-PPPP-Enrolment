@@ -190,14 +190,18 @@ describe("ProgressBar.vue openDropdown() and closeDropdown()", () => {
   });
 
   it("dispatches with true when openDropdown() is called", async () => {
-    const spyOnDispatch = jest.spyOn(wrapper.vm.$store, "dispatch").mockImplementation(jest.fn());
+    const spyOnDispatch = jest
+      .spyOn(wrapper.vm.$store, "dispatch")
+      .mockImplementation(jest.fn());
     await wrapper.vm.openDropdown();
     await wrapper.vm.$nextTick();
     expect(spyOnDispatch).toHaveBeenCalledWith(stringCall, true);
   });
 
   it("dispatches with false when closeDropdown() is called", async () => {
-    const spyOnDispatch = jest.spyOn(wrapper.vm.$store, "dispatch").mockImplementation(jest.fn());
+    const spyOnDispatch = jest
+      .spyOn(wrapper.vm.$store, "dispatch")
+      .mockImplementation(jest.fn());
     await wrapper.vm.closeDropdown();
     await wrapper.vm.$nextTick();
     expect(spyOnDispatch).toHaveBeenCalledWith(stringCall, false);

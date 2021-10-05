@@ -22,7 +22,10 @@ describe("Helper routes.js isPastPath", () => {
   });
 
   it("returns true if first argument is before the second argument in step order", () => {
-    const result = isPastPath(payPatientRouteStepOrder[0].path, payPatientRouteStepOrder[1].path);
+    const result = isPastPath(
+      payPatientRouteStepOrder[0].path,
+      payPatientRouteStepOrder[1].path
+    );
 
     expect(result).toEqual(true);
   });
@@ -37,7 +40,10 @@ describe("Helper routes.js isPastPath", () => {
   });
 
   it("returns false if second argument is before the first argument in step order", () => {
-    const result = isPastPath(payPatientRouteStepOrder[1].path, payPatientRouteStepOrder[0].path);
+    const result = isPastPath(
+      payPatientRouteStepOrder[1].path,
+      payPatientRouteStepOrder[0].path
+    );
 
     expect(result).toEqual(false);
   });
