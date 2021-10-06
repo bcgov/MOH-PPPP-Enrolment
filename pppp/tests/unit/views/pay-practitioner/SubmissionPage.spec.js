@@ -1,13 +1,13 @@
-import { mount, createLocalVue } from "@vue/test-utils";
+import { shallowMount, createLocalVue } from "@vue/test-utils";
 import Vuex from "vuex";
 import { cloneDeep } from "lodash";
-import Page from "@/views/pay-practitioner/HomePage.vue";
+import Page from "@/views/pay-practitioner/SubmissionPage.vue";
 import * as module1 from "../../../../src/store/modules/app";
 import * as module2 from "../../../../src/store/modules/pay-patient-form";
 import * as module3 from "../../../../src/store/modules/pay-practitioner-form";
-import * as dummyDataValid from "../../../../src/store/states/pay-patient-form-dummy-data";
 import spaEnvService from "@/services/spa-env-service";
 import logService from "@/services/log-service";
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import pageStateService from "@/services/page-state-service";
 import { getConvertedPath } from "@/helpers/url";
 import {
@@ -15,10 +15,12 @@ import {
   payPractitionerRouteStepOrder,
 } from "@/router/routes";
 
-const next = jest.fn();
-
 const localVue = createLocalVue();
 localVue.use(Vuex);
+localVue.component("font-awesome-icon", FontAwesomeIcon);
+
+const next = jest.fn();
+const spyOnPrint = jest.spyOn(window, "print").mockImplementation(jest.fn);
 
 const storeTemplate = {
   modules: {
@@ -28,20 +30,13 @@ const storeTemplate = {
   },
 };
 
-const patientState = cloneDeep(dummyDataValid.default);
-storeTemplate.modules.payPatientForm.state = cloneDeep(patientState);
-
 const scrollHelper = require("@/helpers/scroll");
 
 const spyOnScrollTo = jest.spyOn(scrollHelper, "scrollTo");
 
-const spyOnGetTopScrollPosition = jest
-  .spyOn(scrollHelper, "getTopScrollPosition")
-  .mockImplementation(() => Promise.resolve("top scroll position returned"));
-
-const spyOnVisitPage = jest.spyOn(pageStateService, "visitPage");
-
-const spyOnSetPageComplete = jest.spyOn(pageStateService, "setPageComplete");
+const spyOnLogNavigation = jest
+  .spyOn(logService, "logNavigation")
+  .mockImplementation(() => Promise.resolve("logged"));
 
 const spyOnSetPageIncomplete = jest
   .spyOn(pageStateService, "setPageIncomplete")
@@ -49,7 +44,7 @@ const spyOnSetPageIncomplete = jest
 
 jest.spyOn(window, "scrollTo").mockImplementation(jest.fn);
 
-describe("HomePage.vue pay practitioner", () => {
+describe("SubmissionPage.vue pay practitioner", () => {
   let store;
   let wrapper;
   let $route;
@@ -65,7 +60,7 @@ describe("HomePage.vue pay practitioner", () => {
       currentRoute: $route,
       push: jest.fn(),
     };
-    wrapper = mount(Page, {
+    wrapper = shallowMount(Page, {
       localVue,
       store,
       mocks: {
@@ -73,6 +68,11 @@ describe("HomePage.vue pay practitioner", () => {
         $router,
       },
     });
+    jest.spyOn(wrapper.vm.$store, "dispatch");
+
+    jest
+      .spyOn(spaEnvService, "loadEnvs")
+      .mockImplementation(() => Promise.resolve("loaded"));
 
     wrapper.vm.$options.created.forEach((hook) => {
       hook.call(wrapper.vm);
@@ -89,14 +89,11 @@ describe("HomePage.vue pay practitioner", () => {
   });
 });
 
-describe("HomePage.vue pay practitioner created()", () => {
+describe("SubmissionPage.vue pay practitioner created()", () => {
   let store;
   let wrapper;
   let $route;
   let $router;
-  let spyOnDispatch;
-  let spyOnSpaEnvs;
-  let spyOnLogService;
 
   beforeEach(() => {
     store = new Vuex.Store(storeTemplate);
@@ -108,7 +105,7 @@ describe("HomePage.vue pay practitioner created()", () => {
       currentRoute: $route,
       push: jest.fn(),
     };
-    wrapper = mount(Page, {
+    wrapper = shallowMount(Page, {
       localVue,
       store,
       mocks: {
@@ -116,16 +113,12 @@ describe("HomePage.vue pay practitioner created()", () => {
         $router,
       },
     });
-    spyOnDispatch = jest.spyOn(wrapper.vm.$store, "dispatch");
+    jest.spyOn(wrapper.vm.$store, "dispatch");
 
-    spyOnSpaEnvs = jest
+    jest
       .spyOn(spaEnvService, "loadEnvs")
       .mockImplementation(() => Promise.resolve("loaded"));
 
-    spyOnLogService = jest
-      .spyOn(logService, "logNavigation")
-      .mockImplementation(() => Promise.resolve("logged"));
-
     wrapper.vm.$options.created.forEach((hook) => {
       hook.call(wrapper.vm);
     });
@@ -136,28 +129,16 @@ describe("HomePage.vue pay practitioner created()", () => {
     jest.clearAllMocks();
   });
 
-  it("calls dispatch with correct parameters", () => {
-    expect(spyOnDispatch).toHaveBeenCalledWith(
-      `${module3.MODULE_NAME}/${module3.SET_APPLICATION_UUID}`,
-      wrapper.vm.applicationUuid
-    );
-  });
-
-  it("calls spaEnvs", () => {
-    expect(spyOnSpaEnvs).toHaveBeenCalled();
-  });
-
-  it("calls logService", async () => {
-    expect(spyOnLogService).toHaveBeenCalled();
+  it("calls logNavigation", () => {
+    expect(spyOnLogNavigation).toHaveBeenCalled();
   });
 });
 
-describe("HomePage.vue pay practitioner nextPage()", () => {
+describe("SubmissionPage.vue pay practitioner printPage()", () => {
   let store;
   let wrapper;
   let $route;
   let $router;
-  let spyOnRouter;
 
   beforeEach(() => {
     store = new Vuex.Store(storeTemplate);
@@ -169,7 +150,7 @@ describe("HomePage.vue pay practitioner nextPage()", () => {
       currentRoute: $route,
       push: jest.fn(),
     };
-    wrapper = mount(Page, {
+    wrapper = shallowMount(Page, {
       localVue,
       store,
       mocks: {
@@ -177,10 +158,11 @@ describe("HomePage.vue pay practitioner nextPage()", () => {
         $router,
       },
     });
+    jest.spyOn(wrapper.vm.$store, "dispatch");
 
-    spyOnRouter = jest
-      .spyOn($router, "push")
-      .mockImplementation(() => Promise.resolve("pushed"));
+    jest
+      .spyOn(spaEnvService, "loadEnvs")
+      .mockImplementation(() => Promise.resolve("loaded"));
 
     wrapper.vm.$options.created.forEach((hook) => {
       hook.call(wrapper.vm);
@@ -192,32 +174,13 @@ describe("HomePage.vue pay practitioner nextPage()", () => {
     jest.clearAllMocks();
   });
 
-  it("pushes to router", () => {
-    wrapper.vm.nextPage();
-
-    expect(spyOnRouter).toHaveBeenCalledWith(
-      getConvertedPath(
-        $router.currentRoute.path,
-        payPractitionerRoutes.CLAIM_COUNT_PAGE.path
-      )
-    );
-  });
-
-  it("calls scrollTo with the parameter 0", () => {
-    wrapper.vm.nextPage();
-
-    expect(spyOnScrollTo).toHaveBeenCalledWith(0);
-  });
-
-  it("calls pageStateService", () => {
-    wrapper.vm.nextPage();
-
-    expect(spyOnSetPageComplete).toHaveBeenCalled();
-    expect(spyOnVisitPage).toHaveBeenCalled();
+  it("calls window.print()", () => {
+    wrapper.vm.printPage();
+    expect(spyOnPrint).toHaveBeenCalled();
   });
 });
 
-describe("HomePage.vue pay practitioner beforeRouteLeave(to, from, next)", () => {
+describe("SubmissionPage.vue beforeRouteLeave(to, from, next)", () => {
   let store;
   let wrapper;
   let $route;
@@ -226,14 +189,14 @@ describe("HomePage.vue pay practitioner beforeRouteLeave(to, from, next)", () =>
   beforeEach(() => {
     store = new Vuex.Store(storeTemplate);
     $route = {
-      path: "/potato",
+      path: "/potato-csr",
     };
     $router = {
       $route,
       currentRoute: $route,
       push: jest.fn(),
     };
-    wrapper = mount(Page, {
+    wrapper = shallowMount(Page, {
       localVue,
       store,
       mocks: {
@@ -248,7 +211,7 @@ describe("HomePage.vue pay practitioner beforeRouteLeave(to, from, next)", () =>
     jest.clearAllMocks();
   });
 
-  it("calls scrollTo() and getTopScrollPosition() when given invalid route", async () => {
+  it("calls scrollTo()", async () => {
     //to, from, next
     jest.useFakeTimers();
     Page.beforeRouteLeave.call(
@@ -259,16 +222,15 @@ describe("HomePage.vue pay practitioner beforeRouteLeave(to, from, next)", () =>
     );
     jest.advanceTimersByTime(5);
     await wrapper.vm.$nextTick;
-    expect(spyOnGetTopScrollPosition).toHaveBeenCalled();
     expect(spyOnScrollTo).toHaveBeenCalled();
   });
 
-  it("calls next() with proper arguments when given invalid route", async () => {
+  it("calls next() with proper arguments when passed route other than Home", async () => {
     //to, from, next
     jest.useFakeTimers();
     Page.beforeRouteLeave.call(
       wrapper.vm,
-      payPractitionerRouteStepOrder[1],
+      payPractitionerRoutes.REVIEW_PAGE,
       payPractitionerRouteStepOrder[0],
       next
     );
@@ -280,31 +242,21 @@ describe("HomePage.vue pay practitioner beforeRouteLeave(to, from, next)", () =>
     );
     expect(next).toHaveBeenCalledWith({
       path: testPath,
-      replace: true,
     });
   });
 
-  it("calls next() when passed a route that has been completed in pageStateService", async () => {
+  it("calls next() with proper arguments when given to route of Home", async () => {
     //to, from, next
     jest.useFakeTimers();
-    await pageStateService.importPageRoutes(payPractitionerRouteStepOrder);
-    await wrapper.vm.$nextTick;
-    await pageStateService.setPageComplete(
-      payPractitionerRouteStepOrder[0].path
-    );
-    await wrapper.vm.$nextTick;
     Page.beforeRouteLeave.call(
       wrapper.vm,
-      payPractitionerRouteStepOrder[0],
+      payPractitionerRoutes.HOME_PAGE,
       payPractitionerRouteStepOrder[1],
       next
     );
     jest.advanceTimersByTime(5);
     await wrapper.vm.$nextTick;
     expect(next).toHaveBeenCalled();
-    expect(spyOnSetPageIncomplete).toHaveBeenCalled();
-    expect(spyOnGetTopScrollPosition).not.toHaveBeenCalled();
-    expect(spyOnScrollTo).not.toHaveBeenCalled();
   });
 
   it("calls spyOnSetPageIncomplete (valid route)", async () => {
@@ -314,6 +266,20 @@ describe("HomePage.vue pay practitioner beforeRouteLeave(to, from, next)", () =>
       wrapper.vm,
       payPractitionerRouteStepOrder[0],
       payPractitionerRouteStepOrder[1],
+      next
+    );
+    jest.advanceTimersByTime(5);
+    await wrapper.vm.$nextTick;
+    expect(spyOnSetPageIncomplete).toHaveBeenCalled();
+  });
+
+  it("calls spyOnSetPageIncomplete (invalid route)", async () => {
+    //to, from, next
+    jest.useFakeTimers();
+    Page.beforeRouteLeave.call(
+      wrapper.vm,
+      payPractitionerRouteStepOrder[1],
+      payPractitionerRouteStepOrder[0],
       next
     );
     jest.advanceTimersByTime(5);
