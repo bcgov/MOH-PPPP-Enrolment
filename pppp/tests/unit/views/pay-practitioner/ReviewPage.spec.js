@@ -329,7 +329,7 @@ describe("ReviewPage.vue pay practitioner created()", () => {
   });
 });
 
-describe("ReviewPage.vue pay practitioner isFormAbleToSubmit()", () => {
+describe("ReviewPage.vue pay practitioner continueHandler()", () => {
   let store;
   let wrapper;
   let $route;
@@ -391,7 +391,7 @@ describe("ReviewPage.vue pay practitioner isFormAbleToSubmit()", () => {
   it("calls window.print if the store has medical claims correspondenceAttached = C", () => {
     store = new Vuex.Store(storeTemplateC);
     $route = {
-      path: "/potato-csr",
+      path: "/potato",
     };
     $router = {
       $route,
@@ -408,6 +408,29 @@ describe("ReviewPage.vue pay practitioner isFormAbleToSubmit()", () => {
     });
     wrapper.vm.continueHandler();
     expect(spyOnPrint).toHaveBeenCalled();
+  });
+
+  it("calls submit if the store has medical claims correspondenceAttached = C and -csr route", () => {
+    store = new Vuex.Store(storeTemplateC);
+    $route = {
+      path: "/potato-csr",
+    };
+    $router = {
+      $route,
+      currentRoute: $route,
+      push: jest.fn(),
+    };
+    wrapper = shallowMount(Page, {
+      localVue,
+      store,
+      mocks: {
+        $route,
+        $router,
+      },
+    });
+    const spyOnSubmitForm = jest.spyOn(wrapper.vm, "submitForm");
+    wrapper.vm.continueHandler();
+    expect(spyOnSubmitForm).toHaveBeenCalled();
   });
 
   it("calls submitForm if the store has medical claims correspondenceAttached = N and hospital claims = N", () => {
@@ -436,7 +459,7 @@ describe("ReviewPage.vue pay practitioner isFormAbleToSubmit()", () => {
   it("calls window.print if the store has medical claims correspondenceAttached = N and hospital claims = C", () => {
     store = new Vuex.Store(storeTemplateNHospitalC);
     $route = {
-      path: "/potato-csr",
+      path: "/potato",
     };
     $router = {
       $route,
@@ -453,6 +476,29 @@ describe("ReviewPage.vue pay practitioner isFormAbleToSubmit()", () => {
     });
     wrapper.vm.continueHandler();
     expect(spyOnPrint).toHaveBeenCalled();
+  });
+
+  it("calls submitForm if the store has medical claims correspondenceAttached = N and hospital claims = C and -csr route", () => {
+    store = new Vuex.Store(storeTemplateNHospitalC);
+    $route = {
+      path: "/potato-csr",
+    };
+    $router = {
+      $route,
+      currentRoute: $route,
+      push: jest.fn(),
+    };
+    wrapper = shallowMount(Page, {
+      localVue,
+      store,
+      mocks: {
+        $route,
+        $router,
+      },
+    });
+    const spyOnSubmitForm = jest.spyOn(wrapper.vm, "submitForm");
+    wrapper.vm.continueHandler();
+    expect(spyOnSubmitForm).toHaveBeenCalled();
   });
 });
 
