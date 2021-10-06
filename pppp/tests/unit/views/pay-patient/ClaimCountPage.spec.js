@@ -6,7 +6,7 @@ import { cloneDeep } from "lodash";
 import * as module1 from "../../../../src/store/modules/app";
 import * as module2 from "../../../../src/store/modules/pay-patient-form";
 import * as module3 from "../../../../src/store/modules/pay-practitioner-form";
-import * as dummyDataValid from "../../../../src/store/states/pay-patient-form-dummy-data";
+// import * as dummyDataValid from "../../../../src/store/states/pay-patient-form-dummy-data";
 import logService from "@/services/log-service";
 import pageStateService from "@/services/page-state-service";
 import { payPatientRoutes, payPatientRouteStepOrder } from "@/router/routes";
@@ -25,6 +25,71 @@ jest.mock("axios", () => ({
 
 const testDate = new Date().getFullYear() - 1;
 const next = jest.fn();
+
+const dummyDataValid = {
+  default: {
+    claimCount: "1",
+
+    planReferenceNumber: "1234567890",
+
+    phn: "9999 999 998",
+    dependentNumber: "66",
+    firstName: "Bob",
+    middleInitial: "H",
+    lastName: "Smith",
+    birthDate: new Date("2000-01-01"),
+
+    addressOwner: "PATIENT",
+    unitNumber: "123",
+    streetNumber: "321",
+    streetName: "Fake St.",
+    city: "Victoria",
+    postalCode: "V8V 8V8",
+
+    isVehicleAccident: "Y",
+    vehicleAccidentClaimNumber: "A0000001",
+
+    planReferenceNumberOfOriginalClaim: "321",
+
+    medicalServiceClaims: [
+      {
+        serviceDate: new Date(),
+        numberOfServices: "1",
+        serviceClarificationCode: "A1",
+        feeItem: "00010",
+        amountBilled: "0.00",
+        calledStartTime: {
+          hour: "08",
+          minute: "01",
+        },
+        renderedFinishTime: {
+          hour: "16",
+          minute: "05",
+        },
+        diagnosticCode: "001",
+        locationOfService: "A",
+        correspondenceAttached: null,
+        submissionCode: "I",
+        notes: "Notes here.",
+      },
+    ],
+
+    practitionerLastName: "GOTTNER",
+    practitionerFirstName: "MICHAEL",
+    practitionerPaymentNumber: "00001",
+    practitionerPractitionerNumber: "00001",
+    practitionerFacilityNumber: "12345",
+    practitionerSpecialtyCode: "99",
+
+    referredByFirstNameInitial: "R",
+    referredByLastName: "McDonald",
+    referredByPractitionerNumber: "22271",
+
+    referredToFirstNameInitial: "C",
+    referredToLastName: "Lee",
+    referredToPractitionerNumber: "22272",
+  },
+};
 
 const storeTemplate = {
   modules: {
@@ -156,7 +221,7 @@ describe("ClaimCountPage.vue pay patient isFirstLoad()", () => {
     jest.clearAllMocks();
   });
 
-  it.only("returns true if application uuid present", () => {
+  it("returns true if application uuid present", () => {
     store = new Vuex.Store(storeTemplate);
     wrapper = mount(Page, {
       localVue,
@@ -174,12 +239,15 @@ describe("ClaimCountPage.vue pay patient isFirstLoad()", () => {
       },
     });
 
-    console.log("avocado", wrapper.vm.$store.state.payPatientForm.applicationUuid)
+    console.log(
+      "avocado",
+      wrapper.vm.$store.state.payPatientForm.applicationUuid
+    );
     const result = wrapper.vm.isFirstLoad();
     expect(result).toEqual(true);
   });
 
-  it.only("returns false if application uuid is null", () => {
+  it("returns false if application uuid is null", () => {
     store = new Vuex.Store(storeTemplate2);
     wrapper = mount(Page, {
       localVue,
@@ -197,100 +265,12 @@ describe("ClaimCountPage.vue pay patient isFirstLoad()", () => {
       },
     });
 
-    console.log("avocado", wrapper.vm.$store.state.payPatientForm.applicationUuid)
+    console.log(
+      "avocado",
+      wrapper.vm.$store.state.payPatientForm.applicationUuid
+    );
     const result = wrapper.vm.isFirstLoad();
     expect(result).toEqual(true);
-  });
-
-});
-
-describe("ClaimCountPage.vue pay patient handleCaptchaVerified()", () => {
-  let store;
-  let wrapper;
-
-  beforeEach(() => {
-    store = new Vuex.Store(storeTemplate);
-    wrapper = mount(Page, {
-      localVue,
-      store,
-      mocks: {
-        $route: {
-          path: "/",
-        },
-        $router: {
-          push: jest.fn(),
-          currentRoute: {
-            path: "/potato-csr",
-          },
-        },
-      },
-    });
-  });
-
-  afterEach(() => {
-    jest.resetModules();
-    jest.clearAllMocks();
-  });
-
-  it("calls dispatch with correct parameters", () => {
-    const spyOnDispatch = jest.spyOn(wrapper.vm.$store, "dispatch");
-    wrapper.vm.handleCaptchaVerified("captchaTokenTest");
-    expect(spyOnDispatch).toHaveBeenCalledWith(
-      `${module2.MODULE_NAME}/${module2.SET_CAPTCHA_TOKEN}`,
-      "captchaTokenTest"
-    );
-  });
-
-  it("assigns value to store such that it can be retrieved later", () => {
-    wrapper.vm.handleCaptchaVerified("captchaTokenTest");
-    expect(wrapper.vm.$store.state.payPatientForm.captchaToken).toEqual(
-      "captchaTokenTest"
-    );
-  });
-});
-
-describe("ClaimCountPage.vue pay patient handleCloseConsentModal()", () => {
-  let store;
-  let wrapper;
-
-  beforeEach(() => {
-    store = new Vuex.Store(storeTemplate);
-    wrapper = mount(Page, {
-      localVue,
-      store,
-      mocks: {
-        $route: {
-          path: "/",
-        },
-        $router: {
-          push: jest.fn(),
-          currentRoute: {
-            path: "/potato-csr",
-          },
-        },
-      },
-    });
-  });
-
-  afterEach(() => {
-    jest.resetModules();
-    jest.clearAllMocks();
-  });
-
-  it("calls dispatch with correct parameters", () => {
-    const spyOnDispatch = jest.spyOn(wrapper.vm.$store, "dispatch");
-    wrapper.vm.handleCloseConsentModal();
-    expect(spyOnDispatch).toHaveBeenCalledWith(
-      `${module2.MODULE_NAME}/${module2.SET_IS_INFO_COLLECTION_NOTICE_OPEN}`,
-      false
-    );
-  });
-
-  it("assigns value to store such that it can be retrieved later", () => {
-    wrapper.vm.handleCloseConsentModal();
-    expect(
-      wrapper.vm.$store.state.payPatientForm.isInfoCollectionNoticeOpen
-    ).toEqual(false);
   });
 });
 
@@ -425,11 +405,11 @@ describe("ClaimCountPage.vue pay patient validateFields() part 2 (valid)", () =>
       `${module2.MODULE_NAME}/${module2.SET_MEDICAL_SERVICE_CLAIMS}`,
       [
         {
-          amountBilled: "1.00",
+          amountBilled: "0.00",
           calledStartTime: { hour: "08", minute: "01" },
           correspondenceAttached: null,
           diagnosticCode: "001",
-          feeItem: "12345",
+          feeItem: "00010",
           locationOfService: "A",
           notes: "Notes here.",
           numberOfServices: "1",
