@@ -238,10 +238,6 @@ describe("ClaimCountPage.vue pay patient isFirstLoad()", () => {
       },
     });
 
-    console.log(
-      "avocado",
-      wrapper.vm.$store.state.payPatientForm.applicationUuid
-    );
     const result = wrapper.vm.isFirstLoad();
     expect(result).toEqual(true);
   });
@@ -263,11 +259,6 @@ describe("ClaimCountPage.vue pay patient isFirstLoad()", () => {
         },
       },
     });
-
-    console.log(
-      "avocado",
-      wrapper.vm.$store.state.payPatientForm.applicationUuid
-    );
     const result = wrapper.vm.isFirstLoad();
     expect(result).toEqual(true);
   });
