@@ -80,7 +80,7 @@ const spyOnSetPageIncomplete = jest
   .spyOn(pageStateService, "setPageIncomplete")
   .mockImplementation(() => Promise.resolve("set"));
 
-describe("ClaimCountPage.vue render test", () => {
+describe("ClaimCountPage.vue pay patient render test", () => {
   let store;
   let wrapper;
 
@@ -113,7 +113,7 @@ describe("ClaimCountPage.vue render test", () => {
   });
 });
 
-describe("ClaimCountPage.vue created()", () => {
+describe("ClaimCountPage.vue pay patient created()", () => {
   let store;
   let wrapper;
 
@@ -166,7 +166,7 @@ describe("ClaimCountPage.vue created()", () => {
   */
 });
 
-describe("ClaimCountPage.vue isFirstLoad()", () => {
+describe("ClaimCountPage.vue pay patient isFirstLoad()", () => {
   let store;
   let wrapper;
 
@@ -194,16 +194,19 @@ describe("ClaimCountPage.vue isFirstLoad()", () => {
     jest.clearAllMocks();
   });
 
-  it("returns false", () => {
+  it.only("returns false", () => {
+    console.log("avocado", wrapper.vm.$store.state.payPatientForm.applicationUuid)
     const result = wrapper.vm.isFirstLoad();
-    expect(result).toEqual(false);
+    expect(result).toEqual(true);
+    const result2 = wrapper.vm.isFirstLoad();
+    expect(result2).toEqual(false);
   });
 
   //the true version of this test is impossible to verify
   //for the reasons stated in the created() section
 });
 
-describe("ClaimCountPage.vue handleCaptchaVerified()", () => {
+describe("ClaimCountPage.vue pay patient handleCaptchaVerified()", () => {
   let store;
   let wrapper;
 
@@ -248,7 +251,7 @@ describe("ClaimCountPage.vue handleCaptchaVerified()", () => {
   });
 });
 
-describe("ClaimCountPage.vue handleCloseConsentModal()", () => {
+describe("ClaimCountPage.vue pay patient handleCloseConsentModal()", () => {
   let store;
   let wrapper;
 
@@ -293,7 +296,7 @@ describe("ClaimCountPage.vue handleCloseConsentModal()", () => {
   });
 });
 
-describe("ClaimCountPage.vue validateFields() part 1 (invalid)", () => {
+describe("ClaimCountPage.vue pay patient validateFields() part 1 (invalid)", () => {
   let store;
   let wrapper;
   let $route;
@@ -362,7 +365,7 @@ describe("ClaimCountPage.vue validateFields() part 1 (invalid)", () => {
   });
 });
 
-describe("ClaimCountPage.vue validateFields() part 2 (valid)", () => {
+describe("ClaimCountPage.vue pay patient validateFields() part 2 (valid)", () => {
   let store;
   let wrapper;
   let $route;
@@ -473,7 +476,7 @@ describe("ClaimCountPage.vue validateFields() part 2 (valid)", () => {
   });
 });
 
-describe("ClaimCountPage.vue beforeRouteLeave(to, from, next)", () => {
+describe("ClaimCountPage.vue pay patient beforeRouteLeave(to, from, next)", () => {
   let store;
   let wrapper;
   let $route;
