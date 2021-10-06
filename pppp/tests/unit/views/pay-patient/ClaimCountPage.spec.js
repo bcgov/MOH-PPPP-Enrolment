@@ -6,7 +6,6 @@ import { cloneDeep } from "lodash";
 import * as module1 from "../../../../src/store/modules/app";
 import * as module2 from "../../../../src/store/modules/pay-patient-form";
 import * as module3 from "../../../../src/store/modules/pay-practitioner-form";
-// import * as dummyDataValid from "../../../../src/store/states/pay-patient-form-dummy-data";
 import logService from "@/services/log-service";
 import pageStateService from "@/services/page-state-service";
 import { payPatientRoutes, payPatientRouteStepOrder } from "@/router/routes";
