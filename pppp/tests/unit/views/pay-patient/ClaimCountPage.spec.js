@@ -145,32 +145,18 @@ describe("ClaimCountPage.vue pay patient created()", () => {
     expect(wrapper.element).toBeDefined();
     expect(spyOnLogService).toHaveBeenCalled();
   });
-
-  /* 
-  I spent a number of hours trying to test the code in the if (this.isFirstLoad()) {} block. 
-  I came to the conclusion that it may not be possible to do for lifecycle reasons.
-  The order of operations looks like this:
-  1. Created() test runs
-  2. New Store is created
-  3. The if (this.isFirstLoad()) {} code block recognizes that there isn't a UUID, so it assigns one
-  4. The if block calls all of the other functions inside the if block
-  5. The mounted() method creates any spies to check to see if those functions are called
-  6. If you call the created() hook a second time, the if block sees there's already a UUID
-  So it doesn't call anything in the if block a second time
-  7. The spies don't catch the function calls because they're created after the function is called
-  And it's not really possible to call them a second time without refactoring the code
-
-  If it's essential that these functions be tested, the contents of the if block would need to be moved to a separate function
-  Then that function can be called independently of the if block and tested that way
-  Until then, I leave these comments as an aid to anyone who tries to attempt this in the future
-  */
 });
 
 describe("ClaimCountPage.vue pay patient isFirstLoad()", () => {
   let store;
   let wrapper;
 
-  beforeEach(() => {
+  afterEach(() => {
+    jest.resetModules();
+    jest.clearAllMocks();
+  });
+
+  it.only("returns true if application uuid present", () => {
     store = new Vuex.Store(storeTemplate);
     wrapper = mount(Page, {
       localVue,
@@ -187,23 +173,35 @@ describe("ClaimCountPage.vue pay patient isFirstLoad()", () => {
         },
       },
     });
-  });
 
-  afterEach(() => {
-    jest.resetModules();
-    jest.clearAllMocks();
-  });
-
-  it.only("returns false", () => {
     console.log("avocado", wrapper.vm.$store.state.payPatientForm.applicationUuid)
     const result = wrapper.vm.isFirstLoad();
     expect(result).toEqual(true);
-    const result2 = wrapper.vm.isFirstLoad();
-    expect(result2).toEqual(false);
   });
 
-  //the true version of this test is impossible to verify
-  //for the reasons stated in the created() section
+  it.only("returns false if application uuid is null", () => {
+    store = new Vuex.Store(storeTemplate2);
+    wrapper = mount(Page, {
+      localVue,
+      store,
+      mocks: {
+        $route: {
+          path: "/",
+        },
+        $router: {
+          push: jest.fn(),
+          currentRoute: {
+            path: "/potato-csr",
+          },
+        },
+      },
+    });
+
+    console.log("avocado", wrapper.vm.$store.state.payPatientForm.applicationUuid)
+    const result = wrapper.vm.isFirstLoad();
+    expect(result).toEqual(true);
+  });
+
 });
 
 describe("ClaimCountPage.vue pay patient handleCaptchaVerified()", () => {
