@@ -611,7 +611,7 @@
         <a name='practitioner'></a>
         <h2 class="mt-5">Practitioner Information</h2>
         <div class="section-container p-3">
-          <div class="tip-box-container float-md-right mb-3 border">
+          <div class="mb-3 border">
             <TipBox>
               <p>To confirm that the Medical Practitioner is active, the following fields will automatically be validated against Medical Services Plan records:</p>
               <ul>
@@ -1813,10 +1813,5 @@ export default {
 }
 .section-container {
   background-color: #EEE;
-}
-@media only screen and (min-width: 768px) {
-  .tip-box-container {
-    max-width: 300px;
-  }
 }
 </style>
