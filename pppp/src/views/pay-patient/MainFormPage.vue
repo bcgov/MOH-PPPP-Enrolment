@@ -686,7 +686,7 @@ import {
   SET_REFERRED_TO_PRACTITIONER_NUMBER,
 } from '@/store/modules/pay-patient-form';
 import logService from '@/services/log-service';
-import { required, maxLength, minLength } from 'vuelidate/lib/validators';
+import { required, requiredIf, maxLength, minLength } from 'vuelidate/lib/validators';
 import {
   DateInput,
   DigitInput,
@@ -955,14 +955,14 @@ export default {
         dependentNumberValidator: optionalValidator(dependentNumberValidator),
       },
       firstName: {
-        required,
+        required: requiredIf(() => !isCSR(this.$router.currentRoute.path)),
         nameValidator,
       },
       middleInitial: {
         nameInitialValidator: optionalValidator(nameInitialValidator),
       },
       lastName: {
-        required,
+        required: requiredIf(() => !isCSR(this.$router.currentRoute.path)),
         nameValidator,
       },
       birthDate: {
@@ -971,20 +971,20 @@ export default {
         distantPastValidator: optionalValidator(distantPastValidator),
       },
       addressOwner: {
-        required,
+        required: requiredIf(() => !isCSR(this.$router.currentRoute.path)),
       },
       streetName: {
-        required,
+        required: requiredIf(() => !isCSR(this.$router.currentRoute.path)),
       },
       city: {
-        required,
+        required: requiredIf(() => !isCSR(this.$router.currentRoute.path)),
       },
       postalCode: {
-        required,
+        required: requiredIf(() => !isCSR(this.$router.currentRoute.path)),
         bcPostalCodeValidator,
       },
       isVehicleAccident: {
-        required,
+        required: requiredIf(() => !isCSR(this.$router.currentRoute.path)),
       },
       vehicleAccidentClaimNumber: {
         motorVehicleAccidentClaimNumberValidator: optionalValidator(motorVehicleAccidentClaimNumberValidator),
@@ -996,25 +996,25 @@ export default {
       medicalServiceClaims: {
         $each: {
           serviceDate: {
-            required,
+            required: requiredIf(() => !isCSR(this.$router.currentRoute.path)),
             serviceDateValidator,
             serviceDateFutureValidator,
             distantPastValidator,
             serviceDateCutOffValidator,
           },
           numberOfServices: {
-            required,
+            required: requiredIf(() => !isCSR(this.$router.currentRoute.path)),
             intValidator,
             positiveNumberValidator,
             nonZeroNumberValidator,
           },
           feeItem: {
-            required,
+            required: requiredIf(() => !isCSR(this.$router.currentRoute.path)),
             intValidator,
             positiveNumberValidator,
           },
           amountBilled: {
-            required,
+            required: requiredIf(() => !isCSR(this.$router.currentRoute.path)),
             dollarNumberValidator,
             positiveNumberValidator,
             amountBilledZeroValidator,
@@ -1026,11 +1026,11 @@ export default {
             partialTimeValidator: optionalValidator(partialTimeValidator),
           },
           diagnosticCode: {
-            required,
+            required: requiredIf(() => !isCSR(this.$router.currentRoute.path)),
             diagnosticCodeValidator,
           },
           locationOfService: {
-            required,
+            required: requiredIf(() => !isCSR(this.$router.currentRoute.path)),
             serviceLocationCodeValidator,
           },
           serviceClarificationCode: {
@@ -1045,19 +1045,19 @@ export default {
         }
       },
       practitionerLastName: {
-        required,
+        required: requiredIf(() => !isCSR(this.$router.currentRoute.path)),
         nameValidator,
       },
       practitionerFirstName: {
-        required,
+        required: requiredIf(() => !isCSR(this.$router.currentRoute.path)),
         nameValidator,
       },
       practitionerPaymentNumber: {
-        required,
+        required: requiredIf(() => !isCSR(this.$router.currentRoute.path)),
         minLength: minLength(5),
       },
       practitionerPractitionerNumber: {
-        required,
+        required: requiredIf(() => !isCSR(this.$router.currentRoute.path)),
         minLength: minLength(5),
       },
       practitionerFacilityNumber: {
