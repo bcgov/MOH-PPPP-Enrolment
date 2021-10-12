@@ -1306,8 +1306,9 @@ export default {
         nameValidator,
       },
       birthDate: {
+        required: requiredIf(() => !isCSR(this.$router.currentRoute.path)),
         birthDatePastValidator: optionalValidator(birthDatePastValidator),
-        birthDateValidator,
+        birthDateValidator: optionalValidator(birthDateValidator),
         distantPastValidator: optionalValidator(distantPastValidator),
       },
       isVehicleAccident: {
@@ -1324,27 +1325,27 @@ export default {
         $each: {
           serviceDate: {
             required: requiredIf(() => !isCSR(this.$router.currentRoute.path)),
-            serviceDateValidator,
-            serviceDateFutureValidator,
-            distantPastValidator,
-            serviceDateCutOffValidator,
+            serviceDateValidator: optionalValidator(serviceDateValidator),
+            serviceDateFutureValidator: optionalValidator(serviceDateFutureValidator),
+            distantPastValidator: optionalValidator(distantPastValidator),
+            serviceDateCutOffValidator: optionalValidator(serviceDateCutOffValidator),
           },
           numberOfServices: {
             required: requiredIf(() => !isCSR(this.$router.currentRoute.path)),
-            intValidator,
-            positiveNumberValidator,
-            nonZeroNumberValidator,
+            intValidator: optionalValidator(intValidator),
+            positiveNumberValidator: optionalValidator(positiveNumberValidator),
+            nonZeroNumberValidator: optionalValidator(nonZeroNumberValidator),
           },
           feeItem: {
             required: requiredIf(() => !isCSR(this.$router.currentRoute.path)),
-            intValidator,
-            positiveNumberValidator,
+            intValidator: optionalValidator(intValidator),
+            positiveNumberValidator: optionalValidator(positiveNumberValidator),
           },
           amountBilled: {
             required: requiredIf(() => !isCSR(this.$router.currentRoute.path)),
-            dollarNumberValidator,
-            positiveNumberValidator,
-            amountBilledZeroValidator,
+            dollarNumberValidator: optionalValidator(dollarNumberValidator),
+            positiveNumberValidator: optionalValidator(positiveNumberValidator),
+            amountBilledZeroValidator: optionalValidator(amountBilledZeroValidator),
           },
           calledStartTime: {
             partialTimeValidator: optionalValidator(partialTimeValidator),
@@ -1354,7 +1355,7 @@ export default {
           },
           diagnosticCode: {
             required: requiredIf(() => !isCSR(this.$router.currentRoute.path)),
-            diagnosticCodeValidator,
+            diagnosticCodeValidator: optionalValidator(diagnosticCodeValidator),
           },
           locationOfService: {
             required: requiredIf(() => !isCSR(this.$router.currentRoute.path)),
@@ -1381,13 +1382,13 @@ export default {
           hospitalVisitDateCutOffValidator,
           month: {
             required: requiredIf(() => !isCSR(this.$router.currentRoute.path)),
-            positiveNumberValidator,
-            intValidator,
+            positiveNumberValidator: optionalValidator(positiveNumberValidator),
+            intValidator: optionalValidator(intValidator),
           },
           dayFrom: {
             required: requiredIf(() => !isCSR(this.$router.currentRoute.path)),
-            positiveNumberValidator,
-            intValidator,
+            positiveNumberValidator: optionalValidator(positiveNumberValidator),
+            intValidator: optionalValidator(intValidator),
           },
           dayTo: {
             intValidator: optionalValidator(intValidator),
@@ -1395,29 +1396,29 @@ export default {
           },
           year: {
             required: requiredIf(() => !isCSR(this.$router.currentRoute.path)),
-            positiveNumberValidator,
-            intValidator,
+            positiveNumberValidator: optionalValidator(positiveNumberValidator),
+            intValidator: optionalValidator(intValidator),
           },
           numberOfServices: {
             required: requiredIf(() => !isCSR(this.$router.currentRoute.path)),
-            intValidator,
-            positiveNumberValidator,
-            nonZeroNumberValidator,
+            intValidator: optionalValidator(intValidator),
+            positiveNumberValidator: optionalValidator(positiveNumberValidator),
+            nonZeroNumberValidator: optionalValidator(nonZeroNumberValidator),
           },
           feeItem: {
             required: requiredIf(() => !isCSR(this.$router.currentRoute.path)),
-            intValidator,
-            positiveNumberValidator,
+            intValidator: optionalValidator(intValidator),
+            positiveNumberValidator: optionalValidator(positiveNumberValidator),
           },
           amountBilled: {
             required: requiredIf(() => !isCSR(this.$router.currentRoute.path)),
-            dollarNumberValidator,
-            positiveNumberValidator,
-            amountBilledZeroValidator,
+            dollarNumberValidator: optionalValidator(dollarNumberValidator),
+            positiveNumberValidator: optionalValidator(positiveNumberValidator),
+            amountBilledZeroValidator: optionalValidator(amountBilledZeroValidator),
           },
           diagnosticCode: {
             required: requiredIf(() => !isCSR(this.$router.currentRoute.path)),
-            diagnosticCodeValidator,
+            diagnosticCodeValidator: optionalValidator(diagnosticCodeValidator),
           },
           locationOfService: {
             required: requiredIf(() => !isCSR(this.$router.currentRoute.path)),
@@ -1482,7 +1483,7 @@ export default {
         minLength: optionalValidator(minLength(5)),
       },
     };
-    if (this.dependentNumber !== '66') {
+    if (this.dependentNumber !== '66' && !isCSR(this.$router.currentRoute.path)) {
       validations.birthDate.required = required;
     }
     if (this.isReferredByRequired) {
