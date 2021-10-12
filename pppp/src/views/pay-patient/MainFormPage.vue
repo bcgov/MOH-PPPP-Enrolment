@@ -966,8 +966,9 @@ export default {
         nameValidator,
       },
       birthDate: {
+        required: requiredIf(() => !isCSR(this.$router.currentRoute.path)),
         birthDatePastValidator: optionalValidator(birthDatePastValidator),
-        birthDateValidator,
+        birthDateValidator: optionalValidator(birthDateValidator),
         distantPastValidator: optionalValidator(distantPastValidator),
       },
       addressOwner: {
@@ -997,10 +998,10 @@ export default {
         $each: {
           serviceDate: {
             required: requiredIf(() => !isCSR(this.$router.currentRoute.path)),
-            serviceDateValidator,
-            serviceDateFutureValidator,
-            distantPastValidator,
-            serviceDateCutOffValidator,
+            serviceDateValidator: optionalValidator(serviceDateValidator),
+            serviceDateFutureValidator: optionalValidator(serviceDateFutureValidator),
+            distantPastValidator: optionalValidator(distantPastValidator),
+            serviceDateCutOffValidator: optionalValidator(serviceDateCutOffValidator),
           },
           numberOfServices: {
             required: requiredIf(() => !isCSR(this.$router.currentRoute.path)),
@@ -1087,9 +1088,9 @@ export default {
         minLength: optionalValidator(minLength(5)),
       },
     };
-    if (this.dependentNumber !== '66') {
-      validations.birthDate.required = required;
-    }
+    // if (this.dependentNumber !== '66' && !isCSR(this.$router.currentRoute.path)) {
+    //   validations.birthDate.required = required;
+    // }
     if (this.isReferredByRequired) {
       validations.referredByFirstNameInitial.required = required;
       validations.referredByLastName.required = required;
