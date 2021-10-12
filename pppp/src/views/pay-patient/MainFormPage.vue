@@ -1004,20 +1004,20 @@ export default {
           },
           numberOfServices: {
             required: requiredIf(() => !isCSR(this.$router.currentRoute.path)),
-            intValidator,
-            positiveNumberValidator,
-            nonZeroNumberValidator,
+            intValidator: optionalValidator(intValidator),
+            positiveNumberValidator: optionalValidator(positiveNumberValidator),
+            nonZeroNumberValidator: optionalValidator(nonZeroNumberValidator),
           },
           feeItem: {
             required: requiredIf(() => !isCSR(this.$router.currentRoute.path)),
-            intValidator,
-            positiveNumberValidator,
+            intValidator: optionalValidator(intValidator),
+            positiveNumberValidator: optionalValidator(positiveNumberValidator),
           },
           amountBilled: {
             required: requiredIf(() => !isCSR(this.$router.currentRoute.path)),
-            dollarNumberValidator,
-            positiveNumberValidator,
-            amountBilledZeroValidator,
+            dollarNumberValidator: optionalValidator(dollarNumberValidator),
+            positiveNumberValidator: optionalValidator(positiveNumberValidator),
+            amountBilledZeroValidator: optionalValidator(amountBilledZeroValidator),
           },
           calledStartTime: {
             partialTimeValidator: optionalValidator(partialTimeValidator),
@@ -1027,7 +1027,7 @@ export default {
           },
           diagnosticCode: {
             required: requiredIf(() => !isCSR(this.$router.currentRoute.path)),
-            diagnosticCodeValidator,
+            diagnosticCodeValidator: optionalValidator(diagnosticCodeValidator),
           },
           locationOfService: {
             required: requiredIf(() => !isCSR(this.$router.currentRoute.path)),
