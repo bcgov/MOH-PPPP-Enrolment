@@ -1088,9 +1088,9 @@ export default {
         minLength: optionalValidator(minLength(5)),
       },
     };
-    // if (this.dependentNumber !== '66' && !isCSR(this.$router.currentRoute.path)) {
-    //   validations.birthDate.required = required;
-    // }
+    if (this.dependentNumber !== '66' && !isCSR(this.$router.currentRoute.path)) {
+      validations.birthDate.required = required;
+    }
     if (this.isReferredByRequired) {
       validations.referredByFirstNameInitial.required = required;
       validations.referredByLastName.required = required;
