@@ -999,15 +999,15 @@ const serviceDateFutureValidator = (value, vm) => {
 
 const hospitalVisitDateValidator = (csr) => {
   return (value, vm) => {
-    if (csr) {
-      return true;
-    }
-
     const month = value.month;
     const dayFrom = value.dayFrom;
     const year = value.year;
     const isoDateString = getISODateString(year, month, dayFrom);
     const date = parseISO(isoDateString);
+
+    if (csr && !month && !dayFrom && !year) {
+      return true;
+    }
 
     return (
       !!month &&
