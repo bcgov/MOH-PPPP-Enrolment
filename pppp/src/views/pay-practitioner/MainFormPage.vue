@@ -1022,16 +1022,22 @@ const hospitalVisitDateValidator = (csr) => {
   };
 };
 
-const hospitalVisitDatePastValidator = (value) => {
-  const month = value.month;
-  const dayFrom = value.dayFrom;
-  const year = value.year;
-  const isoDateString = getISODateString(year, month, dayFrom);
-  const date = parseISO(isoDateString);
+const hospitalVisitDatePastValidator = (csr) => {
+  return (value, vm) => {
+    const month = value.month;
+    const dayFrom = value.dayFrom;
+    const year = value.year;
+    const isoDateString = getISODateString(year, month, dayFrom);
+    const date = parseISO(isoDateString);
 
-  return isValidISODateString(isoDateString)
-      && isValid(date)
-      && isAfter(date, subDays(subMonths(startOfToday(), 18), 1));
+    if (csr && !month && !dayFrom && !year) {
+      return true;
+    }
+
+    return isValidISODateString(isoDateString)
+        && isValid(date)
+        && isAfter(date, subDays(subMonths(startOfToday(), 18), 1));
+  }
 };
 
 const hospitalVisitDateFutureValidator = (value) => {
@@ -1383,7 +1389,7 @@ export default {
       hospitalVisitClaims: {
         $each: {
           hospitalVisitDateValidator: hospitalVisitDateValidator(isCSR(this.$router.currentRoute.path)),
-          hospitalVisitDatePastValidator,
+          hospitalVisitDatePastValidator: hospitalVisitDatePastValidator(isCSR(this.$router.currentRoute.path)),
           hospitalVisitDateFutureValidator,
           hospitalVisitDateToFutureValidator,
           hospitalVisitDateRangeValidator,
