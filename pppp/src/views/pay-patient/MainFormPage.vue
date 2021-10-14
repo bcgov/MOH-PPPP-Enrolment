@@ -1183,69 +1183,72 @@ export default {
 
       const token = this.$store.state.payPatientForm.captchaToken;
       const applicationUuid = this.$store.state.payPatientForm.applicationUuid;
-      
-      // Do server-side validation.
-      apiService.validateApplication(token, {
-        applicationUuid: applicationUuid,
-        practitionerFirstName: this.practitionerFirstName || '',
-        practitionerLastName: this.practitionerLastName || '',
-        practitionerNumber: this.practitionerPractitionerNumber || '',
-        serviceFeeItem1: this.medicalServiceClaims[0] && this.medicalServiceClaims[0].feeItem ? this.medicalServiceClaims[0].feeItem : '',
-        serviceFeeItem2: this.medicalServiceClaims[1] && this.medicalServiceClaims[1].feeItem ? this.medicalServiceClaims[1].feeItem : '',
-        serviceFeeItem3: this.medicalServiceClaims[2] && this.medicalServiceClaims[2].feeItem ? this.medicalServiceClaims[2].feeItem : '',
-        serviceFeeItem4: this.medicalServiceClaims[3] && this.medicalServiceClaims[3].feeItem ? this.medicalServiceClaims[3].feeItem : '',
-        serviceLocationCode1: '',
-        serviceLocationCode2: '',
-        serviceLocationCode3: '',
-        serviceLocationCode4: '',
-        hospitalFeeItem1: '',
-        hospitalFeeItem2: '',
-        hospitalLocationCode1: '',
-        hospitalLocationCode2: ''
-      }).then((response) => {
-        const responseData = response.data;
-        const returnCode = response.data.returnCode;
-        let containsErrors = false;
-        let containsWarnings = false;
 
-        this.isValidating = false;
+      if (!isCSR(this.$router.currentRoute.path)) {
+        // Do server-side validation.
+        apiService.validateApplication(token, {
+          applicationUuid: applicationUuid,
+          practitionerFirstName: this.practitionerFirstName || '',
+          practitionerLastName: this.practitionerLastName || '',
+          practitionerNumber: this.practitionerPractitionerNumber || '',
+          serviceFeeItem1: this.medicalServiceClaims[0] && this.medicalServiceClaims[0].feeItem ? this.medicalServiceClaims[0].feeItem : '',
+          serviceFeeItem2: this.medicalServiceClaims[1] && this.medicalServiceClaims[1].feeItem ? this.medicalServiceClaims[1].feeItem : '',
+          serviceFeeItem3: this.medicalServiceClaims[2] && this.medicalServiceClaims[2].feeItem ? this.medicalServiceClaims[2].feeItem : '',
+          serviceFeeItem4: this.medicalServiceClaims[3] && this.medicalServiceClaims[3].feeItem ? this.medicalServiceClaims[3].feeItem : '',
+          serviceLocationCode1: '',
+          serviceLocationCode2: '',
+          serviceLocationCode3: '',
+          serviceLocationCode4: '',
+          hospitalFeeItem1: '',
+          hospitalFeeItem2: '',
+          hospitalLocationCode1: '',
+          hospitalLocationCode2: ''
+        }).then((response) => {
+          const responseData = response.data;
+          const returnCode = response.data.returnCode;
+          let containsErrors = false;
+          let containsWarnings = false;
 
-        switch (returnCode) {
-          case '0': // Valid payload data.
-            this.navigateToNextPage();
-            break;
-          case '1': // Invalid payload data.
-            if ( responseData.practitionerFirstName === 'N'
-              || responseData.practitionerLastName === 'N'
-              || responseData.practitionerNumber === 'N') {
-              this.isPractitionerErrorShown = true;
-              containsErrors = true;
-            }
-            for (let i=0; i<MAX_MEDICAL_SERVICE_CLAIMS; i++) {
-              if (responseData['serviceFeeItem' + (i+1)] === 'N') {
-                this.medicalServiceClaimsFeeItemValidationError[i] = true;
+          this.isValidating = false;
+
+          switch (returnCode) {
+            case '0': // Valid payload data.
+              this.navigateToNextPage();
+              break;
+            case '1': // Invalid payload data.
+              if ( responseData.practitionerFirstName === 'N'
+                || responseData.practitionerLastName === 'N'
+                || responseData.practitionerNumber === 'N') {
+                this.isPractitionerErrorShown = true;
                 containsErrors = true;
               }
-            }
-            if (containsErrors) {
+              for (let i=0; i<MAX_MEDICAL_SERVICE_CLAIMS; i++) {
+                if (responseData['serviceFeeItem' + (i+1)] === 'N') {
+                  this.medicalServiceClaimsFeeItemValidationError[i] = true;
+                  containsErrors = true;
+                }
+              }
+              if (containsErrors) {
+                scrollToError();
+              } else if (containsWarnings) {
+                this.isValidationModalShown = true;
+              }
+              break;
+            default: // An error occurred.
+              this.isSystemUnavailable = true;
               scrollToError();
-            } else if (containsWarnings) {
-              this.isValidationModalShown = true;
-            }
-            break;
-          default: // An error occurred.
-            this.isSystemUnavailable = true;
-            scrollToError();
-            break;
-        }
-      }).catch(() => {
-        this.isValidating = false;
-        this.isSystemUnavailable = true;
-        scrollToError();
-      });
-      // this.isValidationModalShown = true;
+              break;
+          }
+        }).catch(() => {
+          this.isValidating = false;
+          this.isSystemUnavailable = true;
+          scrollToError();
+        });
+      } else {
+      this.isValidationModalShown = true;
 
-      // this.navigateToNextPage();
+      this.navigateToNextPage();
+      }
     },
     validationModalYesHandler() {
       this.navigateToNextPage();
