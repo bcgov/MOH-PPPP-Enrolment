@@ -1246,7 +1246,6 @@ export default {
         });
       } else {
       this.isValidationModalShown = true;
-
       this.navigateToNextPage();
       }
     },
