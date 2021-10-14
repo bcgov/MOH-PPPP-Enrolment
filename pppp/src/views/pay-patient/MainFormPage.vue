@@ -1334,7 +1334,7 @@ export default {
       return !!this.referredToFirstNameInitial
           || !!this.referredToLastName
           || !!this.referredToPractitionerNumber
-          || this.isContainingNoChargeFeeItem;
+          || (this.isContainingNoChargeFeeItem && !isCSR(this.$router.currentRoute.path));
     },
     isContainingNoChargeFeeItem() {
       for (let i=0; i<this.medicalServiceClaims.length; i++) {

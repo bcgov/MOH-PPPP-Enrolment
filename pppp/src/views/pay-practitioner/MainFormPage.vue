@@ -998,7 +998,7 @@ const serviceDateFutureValidator = (value, vm) => {
 };
 
 const hospitalVisitDateValidator = (csr) => {
-  return (value, vm) => {
+  return (value) => {
     const month = value.month;
     const dayFrom = value.dayFrom;
     const year = value.year;
@@ -1023,7 +1023,7 @@ const hospitalVisitDateValidator = (csr) => {
 };
 
 const hospitalVisitDatePastValidator = (csr) => {
-  return (value, vm) => {
+  return (value) => {
     const month = value.month;
     const dayFrom = value.dayFrom;
     const year = value.year;
@@ -1041,7 +1041,7 @@ const hospitalVisitDatePastValidator = (csr) => {
 };
 
 const hospitalVisitDateFutureValidator = (csr) => {
-  return (value, vm) => {
+  return (value) => {
     const month = value.month;
     const dayFrom = value.dayFrom;
     const year = value.year;
@@ -1780,7 +1780,7 @@ export default {
       return !!this.referredToFirstNameInitial
           || !!this.referredToLastName
           || !!this.referredToPractitionerNumber
-          || this.isContainingNoChargeFeeItem;
+          || (this.isContainingNoChargeFeeItem && !isCSR(this.$router.currentRoute.path));
     },
     isContainingNoChargeFeeItem() {
       for (let i=0; i<this.medicalServiceClaims.length; i++) {
