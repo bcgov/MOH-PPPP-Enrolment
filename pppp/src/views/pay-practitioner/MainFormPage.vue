@@ -1609,7 +1609,7 @@ export default {
       const token = this.$store.state.payPractitionerForm.captchaToken;
       const applicationUuid = this.$store.state.payPractitionerForm.applicationUuid;
       
-      // if (!isCSR(this.$router.currentRoute.path)) {
+      if (!isCSR(this.$router.currentRoute.path)) {
         // Do server-side validation.
         apiService.validateApplication(token, {
           applicationUuid: applicationUuid,
@@ -1675,10 +1675,10 @@ export default {
           this.isSystemUnavailable = true;
           scrollToError();
         });
-      // } else {
-      // this.isValidationModalShown = true;
-      // this.navigateToNextPage();
-      // }
+      } else {
+      this.isValidationModalShown = true;
+      this.navigateToNextPage();
+      }
     },
     validationModalYesHandler() {
       this.navigateToNextPage();

@@ -317,7 +317,7 @@ export default {
         const itemData = [];
         const month = this.$store.state.payPractitionerForm.hospitalVisitClaims[i].month;
         const monthIndex = selectOptionsMonths.findIndex((item) => item.value === month);
-        const monthLabel = selectOptionsMonths[monthIndex].label;
+        const monthLabel = selectOptionsMonths[monthIndex] ? selectOptionsMonths[monthIndex].label : "";
         itemData.push({
           label: 'Month:',
           value: monthLabel,
