@@ -3,6 +3,7 @@
     <div class="d-flex flex-row-reverse p-3 container">
       <Button :label='buttonLabel'
               :hasLoader='hasLoader'
+              :data-cy="'continueBar'"
               @click='onContinue()'/>
     </div>
   </div>
