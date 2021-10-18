@@ -11,7 +11,8 @@
               </div>
             </div>
             <div class="col-10 pl-0 py-3">
-              <h1>There was an error processing your request. Please try again. If you continue to receive this message, contact HIBC at (604) 456-6950 (lower mainland) or 1-866-456-6950 (elsewhere in BC).</h1>
+              <h1>There was a technical issue with your submission</h1>
+                <p>There was an error processing your application. Please try again. If you continue to receive this message, contact HIBC at (604) 456-6950 (lower mainland) or 1-866-456-6950 (elsewhere in BC).</p> 
               <div v-if="referenceNumber">
                 <p>Plan Reference Number: <strong>{{referenceNumber}}</strong></p>
               </div>
