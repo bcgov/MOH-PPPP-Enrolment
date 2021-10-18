@@ -531,7 +531,7 @@
             <NumberInput label='Amount Billed:'
                   :id='"hvc-amount-billed-" + index'
                   class='mt-3'
-                  maxlength="7"
+                  maxlength="8"
                   v-model='claim.amountBilled'
                   :inputStyle='smallStyles'
                   @blur='handleBlurField($v.hospitalVisitClaims.$each[index].amountBilled)' />
