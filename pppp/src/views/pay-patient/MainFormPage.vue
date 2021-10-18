@@ -249,7 +249,7 @@
                   :id='"amount-billed-" + index'
                   class='mt-3'
                   v-model='claim.amountBilled'
-                  maxlength='7'
+                  maxlength='8'   
                   :inputStyle='smallStyles'
                   @blur='handleBlurField($v.medicalServiceClaims.$each[index].amountBilled)' />
             <div class="text-danger"
