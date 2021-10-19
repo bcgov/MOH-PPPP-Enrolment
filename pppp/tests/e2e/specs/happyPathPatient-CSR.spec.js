@@ -9,10 +9,10 @@ const backendPractitionerNumber = "00001"
 
 describe('Pay Patient', () => {
   it('follows the happy path on the CSR url', () => {
-    cy.visit('/pay-patient')
+    cy.visit('/pay-patient-csr')
     //Claim Count
     cy.location().should((loc) => {
-      expect(loc.pathname).to.eq("/pppp/pay-patient");
+      expect(loc.pathname).to.eq("/pppp/pay-patient-csr");
     });
 
     cy.get("[data-cy=captchaInput]").type("irobot");
@@ -29,7 +29,7 @@ describe('Pay Patient', () => {
 
     //Main Form
     cy.location().should((loc) => {
-      expect(loc.pathname).to.eq("/pppp/pay-patient/main-form");
+      expect(loc.pathname).to.eq("/pppp/pay-patient-csr/main-form");
     });
 
     cy.get("[data-cy=PHN]").type("9353 166 544");
@@ -85,13 +85,13 @@ describe('Pay Patient', () => {
 
     //Review page
     cy.location().should((loc) => {
-      expect(loc.pathname).to.eq("/pppp/pay-patient/review");
+      expect(loc.pathname).to.eq("/pppp/pay-patient-csr/review");
     });
 
     cy.get("[data-cy=continueBar]").click();
 
     cy.location().should((loc) => {
-      expect(loc.pathname).to.eq("/pppp/pay-patient/submission");
+      expect(loc.pathname).to.eq("/pppp/pay-patient-csr/submission");
     });
   })
 })
