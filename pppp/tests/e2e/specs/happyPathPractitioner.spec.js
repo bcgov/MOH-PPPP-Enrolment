@@ -2,14 +2,14 @@
 /* eslint-disable jest/valid-expect */
 /* eslint-disable jest/valid-expect-in-promise */
 
-const testYear = (new Date().getFullYear()) - 1;
-const backendLastName = "GOTTNER"
-const backendFirstName = "MICHAEL"
-const backendPractitionerNumber = "00001"
+const testYear = new Date().getFullYear() - 1;
+const backendLastName = "GOTTNER";
+const backendFirstName = "MICHAEL";
+const backendPractitionerNumber = "00001";
 
-describe('Pay Practitioner-Public', () => {
-  it('follows the happy path', () => {
-    cy.visit('/pay-practitioner')
+describe("Pay Practitioner-Public", () => {
+  it("follows the happy path", () => {
+    cy.visit("/pay-practitioner");
     //Claim Count
     cy.location().should((loc) => {
       expect(loc.pathname).to.eq("/pppp/pay-practitioner");
@@ -20,26 +20,24 @@ describe('Pay Practitioner-Public', () => {
     cy.get("[data-cy=consentContinue]").click();
 
     cy.get("select")
-    .find("option[data-cy=MedicalClaim1]")
-    .then(($el) => $el.get(0).setAttribute("selected", "selected"))
-    .parent()
-    .trigger("change");
+      .find("option[data-cy=MedicalClaim1]")
+      .then(($el) => $el.get(0).setAttribute("selected", "selected"))
+      .parent()
+      .trigger("change");
 
     cy.get("select")
-    .find("option[data-cy=HospitalClaim1]")
-    .then(($el) => $el.get(0).setAttribute("selected", "selected"))
-    .parent()
-    .trigger("change");
+      .find("option[data-cy=HospitalClaim1]")
+      .then(($el) => $el.get(0).setAttribute("selected", "selected"))
+      .parent()
+      .trigger("change");
 
     cy.get("[data-cy=continueBar]").click();
 
-    
     //Main Form
     cy.location().should((loc) => {
       expect(loc.pathname).to.eq("/pppp/pay-practitioner/main-form");
     });
-    
-    
+
     cy.get("[data-cy=PHN]").type("9353 166 544");
     cy.get("[data-cy=patientFirstName]").type("Firstname");
     cy.get("[data-cy=patientLastName]").type("Lastname");
@@ -52,7 +50,9 @@ describe('Pay Practitioner-Public', () => {
     cy.get("[data-cy=patientBirthDateDay]").type("11");
     cy.get("[data-cy=patientBirthDateYear]").type(testYear);
 
-    cy.get("[data-cy=motorVehicleAccidentis-vehicle-accident-n]").click({force: true}) 
+    cy.get("[data-cy=motorVehicleAccidentis-vehicle-accident-n]").click({
+      force: true,
+    });
 
     cy.get("select")
       .find("option[data-cy=serviceDate0Month0]")
@@ -103,7 +103,6 @@ describe('Pay Practitioner-Public', () => {
       .then(($el) => $el.get(0).setAttribute("selected", "selected"))
       .parent()
       .trigger("change");
-    
 
     cy.get("[data-cy=practitionerLastName]").type(backendLastName);
     cy.get("[data-cy=practitionerFirstName]").type(backendFirstName);
@@ -116,11 +115,11 @@ describe('Pay Practitioner-Public', () => {
     cy.location().should((loc) => {
       expect(loc.pathname).to.eq("/pppp/pay-practitioner/review");
     });
-    
+
     cy.get("[data-cy=continueBar]").click();
 
     cy.location().should((loc) => {
       expect(loc.pathname).to.eq("/pppp/pay-practitioner/submission");
     });
-  })
-})
+  });
+});

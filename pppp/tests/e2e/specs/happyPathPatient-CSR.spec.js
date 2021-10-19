@@ -2,14 +2,14 @@
 /* eslint-disable jest/valid-expect */
 /* eslint-disable jest/valid-expect-in-promise */
 
-const testYear = (new Date().getFullYear()) - 1;
-const backendLastName = "GOTTNER"
-const backendFirstName = "MICHAEL"
-const backendPractitionerNumber = "00001"
+const testYear = new Date().getFullYear() - 1;
+const backendLastName = "GOTTNER";
+const backendFirstName = "MICHAEL";
+const backendPractitionerNumber = "00001";
 
-describe('Pay Patient-CSR', () => {
-  it('follows the happy path', () => {
-    cy.visit('/pay-patient-csr')
+describe("Pay Patient-CSR", () => {
+  it("follows the happy path", () => {
+    cy.visit("/pay-patient-csr");
     //Claim Count
     cy.location().should((loc) => {
       expect(loc.pathname).to.eq("/pppp/pay-patient-csr");
@@ -20,10 +20,10 @@ describe('Pay Patient-CSR', () => {
     cy.get("[data-cy=consentContinue]").click();
 
     cy.get("select")
-    .find("option[data-cy=MedicalClaim1]")
-    .then(($el) => $el.get(0).setAttribute("selected", "selected"))
-    .parent()
-    .trigger("change");
+      .find("option[data-cy=MedicalClaim1]")
+      .then(($el) => $el.get(0).setAttribute("selected", "selected"))
+      .parent()
+      .trigger("change");
 
     cy.get("[data-cy=continueBar]").click();
 
@@ -45,7 +45,9 @@ describe('Pay Patient-CSR', () => {
     cy.get("[data-cy=patientBirthDateDay]").type("11");
     cy.get("[data-cy=patientBirthDateYear]").type(testYear);
 
-    cy.get("[data-cy=motorVehicleAccidentis-vehicle-accident-n]").click({force: true}) 
+    cy.get("[data-cy=motorVehicleAccidentis-vehicle-accident-n]").click({
+      force: true,
+    });
 
     cy.get("select")
       .find("option[data-cy=serviceDate0Month0]")
@@ -71,7 +73,9 @@ describe('Pay Patient-CSR', () => {
       .parent()
       .trigger("change");
 
-    cy.get("[data-cy=addressOwneraddress-owner-patient]").click({force: true});
+    cy.get("[data-cy=addressOwneraddress-owner-patient]").click({
+      force: true,
+    });
 
     cy.get("[data-cy=streetName]").type("Fake street");
     cy.get("[data-cy=cityName]").type("Fakesville");
@@ -94,5 +98,5 @@ describe('Pay Patient-CSR', () => {
     cy.location().should((loc) => {
       expect(loc.pathname).to.eq("/pppp/pay-patient-csr/submission");
     });
-  })
-})
+  });
+});
