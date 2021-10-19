@@ -9,10 +9,10 @@ const backendPractitionerNumber = "00001"
 
 describe('Pay Practitioner', () => {
   it('follows the happy path on the public url', () => {
-    cy.visit('/pay-practitioner')
+    cy.visit('/pay-practitioner-csr')
     //Claim Count
     cy.location().should((loc) => {
-      expect(loc.pathname).to.eq("/pppp/pay-practitioner");
+      expect(loc.pathname).to.eq("/pppp/pay-practitioner-csr");
     });
 
     cy.get("[data-cy=captchaInput]").type("irobot");
@@ -36,10 +36,10 @@ describe('Pay Practitioner', () => {
     
     //Main Form
     cy.location().should((loc) => {
-      expect(loc.pathname).to.eq("/pppp/pay-practitioner/main-form");
+      expect(loc.pathname).to.eq("/pppp/pay-practitioner-csr/main-form");
     });
     
-    
+    cy.get("[data-cy=PRN]").type("1111111111");
     cy.get("[data-cy=PHN]").type("9353 166 544");
     cy.get("[data-cy=patientFirstName]").type("Firstname");
     cy.get("[data-cy=patientLastName]").type("Lastname");
@@ -114,13 +114,13 @@ describe('Pay Practitioner', () => {
 
     //Review page
     cy.location().should((loc) => {
-      expect(loc.pathname).to.eq("/pppp/pay-practitioner/review");
+      expect(loc.pathname).to.eq("/pppp/pay-practitioner-csr/review");
     });
     
     cy.get("[data-cy=continueBar]").click();
 
     cy.location().should((loc) => {
-      expect(loc.pathname).to.eq("/pppp/pay-practitioner/submission");
+      expect(loc.pathname).to.eq("/pppp/pay-practitioner-csr/submission");
     });
   })
 })
