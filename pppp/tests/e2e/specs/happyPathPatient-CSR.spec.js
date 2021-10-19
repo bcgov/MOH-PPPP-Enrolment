@@ -1,4 +1,6 @@
 // https://docs.cypress.io/api/introduction/api.html
+/* eslint-disable jest/valid-expect */
+/* eslint-disable jest/valid-expect-in-promise */
 
 const testYear = (new Date().getFullYear()) - 1;
 const backendLastName = "GOTTNER"
