@@ -32,6 +32,7 @@ describe('Pay Patient', () => {
       expect(loc.pathname).to.eq("/pppp/pay-patient-csr/main-form");
     });
 
+    cy.get("[data-cy=PRN]").type("1111111111");
     cy.get("[data-cy=PHN]").type("9353 166 544");
     cy.get("[data-cy=patientFirstName]").type("Firstname");
     cy.get("[data-cy=patientLastName]").type("Lastname");

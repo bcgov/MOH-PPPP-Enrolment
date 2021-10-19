@@ -10,6 +10,7 @@
           <a name='plan-reference-number'></a>
           <DigitInput label='Plan Reference Number:'
                 id='plan-reference-number'
+                cypressId="PRN"
                 v-model='planReferenceNumber'
                 maxlength='10'
                 :inputStyle='smallStyles'
