@@ -7,8 +7,8 @@ const backendLastName = "GOTTNER"
 const backendFirstName = "MICHAEL"
 const backendPractitionerNumber = "00001"
 
-describe('Pay Practitioner', () => {
-  it('follows the happy path on the public url', () => {
+describe('Pay Practitioner-CSR', () => {
+  it('follows the happy path', () => {
     cy.visit('/pay-practitioner-csr')
     //Claim Count
     cy.location().should((loc) => {
