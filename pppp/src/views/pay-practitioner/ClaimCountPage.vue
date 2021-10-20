@@ -8,6 +8,7 @@
         <h2>Service(s)</h2>
         <NumberSelect label="How many medical service claims for the patient are you including in this submission?"
                 id='services-claim-count'
+                cypressId="MedicalClaim"
                 v-model='medicalServiceClaimsCount'
                 :min='0'
                 :max='4'
@@ -19,6 +20,7 @@
         <h2 class="mt-3">Hospital Visits</h2>
         <NumberSelect label="How many hospital visit claims for the patient are you including in this submission?"
                 id='hospital-claim-count'
+                cypressId="HospitalClaim"
                 v-model='hospitalVisitClaimsCount'
                 :min='0'
                 :max='2'

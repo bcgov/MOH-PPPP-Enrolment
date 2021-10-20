@@ -97,6 +97,7 @@
       <input id="input-answer"
             :class="'form-control input-answer ' + (isInputValid === false ? 'border-danger' : '')"
             v-model="inputAnswer"
+            data-cy="captchaInput"
             :disabled="(inputAnswer && inputAnswer.length === 6 && isLoadingCaptchaVerification) ? true : false"
             @input="handleInputChange($event)"
             maxlength="6"
