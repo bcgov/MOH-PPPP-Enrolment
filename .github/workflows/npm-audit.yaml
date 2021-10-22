@@ -1,5 +1,8 @@
 name: npm audit 
 on: 
+  push:
+    branches: 
+      - npm-audit-action
   workflow_dispatch:
     inputs:
       source_tag:
