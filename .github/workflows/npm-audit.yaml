@@ -9,11 +9,11 @@ on:
         description: 'Source Image Tag'     
         required: true
         default: 'latest'
-  schedule:
-    - cron: '0 0 1 * *'
+  # schedule:
+  #   - cron: '0 0 1 * *'
 defaults:
   run:
-    working-directory: ./
+    working-directory: ../
 jobs:
   scan:
     name: npm audit
