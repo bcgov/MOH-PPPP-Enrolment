@@ -8,16 +8,18 @@ on:
         default: 'latest'
   schedule:
     - cron: '0 0 1 * *'
+
 jobs:
-  audit:
+  scan:
+    name: npm audit
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@main
-      - uses: actions/setup-node@main
-        with:
-          node-version: "12"
-      - name: Install dependencies
+      - uses: actions/checkout@v2
+      - name: install dependencies
         run: npm ci
-      - name: Unit tests
-        run: npm audit
-  build:
+      - uses: oke-py/npm-audit-action@v1.8.2
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          issue_assignees: oke-py
+          issue_labels: vulnerability
+          dedupe_issues: true
