@@ -11,7 +11,9 @@ on:
         default: 'latest'
   schedule:
     - cron: '0 0 1 * *'
-
+defaults:
+  run:
+    working-directory: ./
 jobs:
   scan:
     name: npm audit
