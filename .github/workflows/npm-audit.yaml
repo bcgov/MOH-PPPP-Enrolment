@@ -13,7 +13,7 @@ on:
   #   - cron: '0 0 1 * *'
 defaults:
   run:
-    working-directory: ../pppp/
+    working-directory: ./pppp
 jobs:
   scan:
     name: npm audit
