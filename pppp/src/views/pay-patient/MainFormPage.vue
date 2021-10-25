@@ -1055,7 +1055,7 @@ export default {
             serviceLocationCodeValidator,
           },
           serviceClarificationCode: {
-            clarificationCodeValidator: optionalValidator(clarificationCodeValidator),
+            clarificationCodeValidator: optionalValidator(clarificationCodeValidator(isCSR(this.$router.currentRoute.path))),
           },
           submissionCode: {
             submissionCodeValidator,
