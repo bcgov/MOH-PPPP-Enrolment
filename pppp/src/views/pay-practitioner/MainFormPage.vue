@@ -1332,8 +1332,8 @@ export default {
     const validations = {
       planReferenceNumber: {},
       phn: {
-        required,
-        phnValidator,
+        required: requiredIf(() => !isCSR(this.$router.currentRoute.path)),
+        phnValidator: optionalValidator(phnValidator),
       },
       dependentNumber: {
         intValidator: optionalValidator(intValidator),
