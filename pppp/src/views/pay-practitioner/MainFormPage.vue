@@ -10,6 +10,7 @@
           <a name='plan-reference-number'></a>
           <DigitInput label='Plan Reference Number:'
                 id='plan-reference-number'
+                cypressId="PRN"
                 v-model='planReferenceNumber'
                 maxlength='10'
                 :inputStyle='smallStyles'
@@ -33,6 +34,7 @@
         <div class="section-container p-3">
           <PhnInput label='Personal Health Number (PHN):'
                 id='phn'
+                cypressId="PHN"
                 v-model='phn'
                 :inputStyle='smallStyles'
                 @blur='handleBlurField($v.phn)' />
@@ -60,6 +62,7 @@
               aria-live="assertive">Dependant must be 00 or 66 for this PHN.</div>
           <Input label='Patient Legal First Name:'
                 id='first-name'
+                cypressId="patientFirstName"
                 className='mt-3'
                 maxlength="12"
                 v-model='firstName'
@@ -83,6 +86,7 @@
               aria-live="assertive">Second name initial must be a letter.</div>
           <Input label='Patient Legal Last Name:'
                 id='last-name'
+                cypressId="patientLastName"
                 className='mt-3'
                 maxlength="18"
                 v-model='lastName'
@@ -96,6 +100,7 @@
               aria-live="assertive">Patient Legal Last Name must begin with a letter and cannot include special characters except hyphens, periods, apostrophes and blank characters.</div>
           <DateInput :label='"Patient Birth Date" + (dependentNumber === "66" ? " (optional)" : "") + ":"'
                 id='birth-date'
+                cypressId="patientBirthDate"
                 className='mt-3'
                 v-model='birthDate'
                 @blur='handleBlurField($v.birthDate)'
@@ -123,6 +128,7 @@
         <div class="section-container p-3 mt-5">
           <Radio label='Is this claim related to a motor vehicle accident?'
                 v-model='isVehicleAccident'
+                cypressId="motorVehicleAccident"
                 :items='isVehicleAccidentOptions'
                 @blur='handleBlurField($v.isVehicleAccident)' />
           <div class="text-danger"
@@ -163,6 +169,7 @@
           <h2 class="mt-5">{{getMedicalServiceClaimTitle(index)}}</h2>
           <div class="section-container p-3">
             <DateInput label='Service Date:'
+                      :cypressId="'serviceDate' + index"
                       :id="'msc-service-date-' + index"
                       v-model='claim.serviceDate'
                       @blur='handleBlurField($v.medicalServiceClaims.$each[index].serviceDate)'
@@ -192,6 +199,7 @@
                 aria-live="assertive">Service Date is invalid for the Service Location Code.</div>
             <DigitInput label='Number of Services:'
                   :id='"msc-number-of-services-" + index'
+                  :cypressId="'numberOfServices' + index"
                   class='mt-3'
                   maxlength="2"
                   v-model='claim.numberOfServices'
@@ -225,6 +233,7 @@
                 aria-live="assertive">Service Clarification Code is invalid.</div>
             <DigitInput label='Fee Item:'
                   :id='"msc-fee-item-" + index'
+                  :cypressId="'feeItem' + index"
                   class='mt-3'
                   maxlength="5"
                   v-model='claim.feeItem'
@@ -245,8 +254,9 @@
                 aria-live="assertive">Fee Item does not match our records.</div>
             <NumberInput label='Amount Billed:'
                   :id='"msc-amount-billed-" + index'
+                  :cypressId="'amountBilled' + index"
                   class='mt-3'
-                  maxlength="7"
+                  maxlength="8"   
                   v-model='claim.amountBilled'
                   :inputStyle='smallStyles'
                   @blur='handleBlurField($v.medicalServiceClaims.$each[index].amountBilled)' />
@@ -282,6 +292,7 @@
                 aria-live="assertive">Rendered finish time must be an exact value.</div>
             <Input label='Diagnostic Code:'
                   :id='"msc-diagnostic-code-" + index'
+                  :cypressId="'diagnosticCode' + index"
                   class='mt-3'
                   maxlength="5"
                   v-model='claim.diagnosticCode'
@@ -295,6 +306,7 @@
                 aria-live="assertive">Diagnostic code must be valid.</div>
             <Select label='Service Location Code:'
                   :id='"msc-location-of-service-" + index'
+                  :cypressId="'serviceLocationCode' + index"
                   class='mt-3'
                   v-model='claim.locationOfService'
                   :options='serviceLocationOptions'
@@ -322,6 +334,7 @@
                 :inputStyle='largeStyles' />
             <Select :label='"Submission Code" + (isSubmissionCodeRequired(index) ? "" : " (optional)") + ":"'
                 :id='"msc-submission-code-" + index'
+                :cypressId="'submissionCode' + index"
                 class='mt-3'
                 v-model='claim.submissionCode'
                 defaultOptionLabel='None'
@@ -351,6 +364,7 @@
               <div class="col-md-3">
                 <Select label='Month:'
                       :id="'hvc-month-' + index"
+                      :cypressId="'hospitalClaimMonth' + index"
                       v-model='claim.month'
                       :options='monthOptions'
                       @blur='handleBlurField($v.hospitalVisitClaims.$each[index].month)' />
@@ -358,6 +372,7 @@
               <div class="col-md-3">
                 <DigitInput label='Day From:'
                       :id="'hvc-day-from-' + index"
+                      :cypressId="'hospitalClaimDayFrom' + index"
                       maxlength="2"
                       v-model='claim.dayFrom'
                       @blur='handleBlurField($v.hospitalVisitClaims.$each[index].dayFrom)' />
@@ -372,6 +387,7 @@
               <div class="col-md-3">
                 <DigitInput label='Year:'
                       :id="'hvc-year-' + index"
+                      :cypressId="'hospitalClaimYear' + index"
                       maxlength="4"
                       v-model='claim.year'
                       @blur='handleBlurField($v.hospitalVisitClaims.$each[index].year)' />
@@ -477,6 +493,7 @@
                 aria-live="assertive">Service Date is invalid for the Service Location Code.</div>
             <DigitInput label='Number of Services:'
                   :id='"hvc-number-of-services-" + index'
+                  :cypressId="'hospitalClaimNumberOfServices' + index"
                   class='mt-3'
                   maxlength="2"
                   v-model='claim.numberOfServices'
@@ -510,6 +527,7 @@
                 aria-live="assertive">Service Clarification Code is invalid.</div>
             <DigitInput label='Fee Item:'
                   :id='"hvc-fee-item-" + index'
+                  :cypressId="'hospitalClaimFeeItem' + index"
                   class='mt-3'
                   maxlength="5"
                   v-model='claim.feeItem'
@@ -530,8 +548,9 @@
                 aria-live="assertive">Fee Item does not match our records.</div>
             <NumberInput label='Amount Billed:'
                   :id='"hvc-amount-billed-" + index'
+                  :cypressId="'hospitalClaimAmountBilled' + index"
                   class='mt-3'
-                  maxlength="7"
+                  maxlength="8"
                   v-model='claim.amountBilled'
                   :inputStyle='smallStyles'
                   @blur='handleBlurField($v.hospitalVisitClaims.$each[index].amountBilled)' />
@@ -549,6 +568,7 @@
                 aria-live="assertive">Amount billed must be zero if Fee item is '03333'.</div>
             <Input label='Diagnostic Code:'
                   :id='"hvc-diagnostic-code-" + index'
+                  :cypressId="'hospitalClaimDiagnosticCode' + index"
                   class='mt-3'
                   maxlength="5"
                   v-model='claim.diagnosticCode'
@@ -562,6 +582,7 @@
                 aria-live="assertive">Diagnostic code must be valid.</div>
             <Select label='Service Location Code:'
                   :id='"hvc-location-of-service-" + index'
+                  :cypressId="'hospitalClaimServiceLocation' + index"
                   class='mt-3'
                   v-model='claim.locationOfService'
                   :options='serviceLocationOptions'
@@ -589,6 +610,7 @@
                   :inputStyle='largeStyles' />
             <Select :label='"Submission Code" + (isHospitalVisitSubmissionCodeRequired(index) ? "" : " (optional)") + ":"'
                   :id='"hvc-submission-code-" + index'
+                  :cypressId="'hospitalClaimSubmissionCode' + index"
                   class='mt-3'
                   v-model='claim.submissionCode'
                   defaultOptionLabel='None'
@@ -623,6 +645,7 @@
           </div>
           <Input label='Practitioner Last Name:'
                 id='practitioner-last-name'
+                cypressId="practitionerLastName"
                 maxlength="35"
                 v-model='practitionerLastName'
                 :inputStyle='mediumStyles'
@@ -639,6 +662,7 @@
               aria-live="assertive">Practitioner information does not match our records.</div>
           <Input label='Practitioner First Name:'
                 id='practitioner-first-name'
+                cypressId="practitionerFirstName"
                 maxlength="15"
                 class='mt-3'
                 v-model='practitionerFirstName'
@@ -657,6 +681,7 @@
           <!-- Using PractitionerNumberInput because it has the same character format. -->
           <PractitionerNumberInput label='Payment Number:'
                 id='payment-number'
+                cypressId="paymentNumber"
                 class='mt-3'
                 v-model='practitionerPaymentNumber'
                 :inputStyle='smallStyles'
@@ -669,6 +694,7 @@
               aria-live="assertive">Payment number must not be less than 5 characters.</div>
           <PractitionerNumberInput label='Practitioner Number:'
                 id='practitioner-number'
+                cypressId="practitionerNumber"
                 class='mt-3'
                 v-model='practitionerPractitionerNumber'
                 :inputStyle='smallStyles'

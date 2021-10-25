@@ -8,6 +8,7 @@
         <h2>Service(s)</h2>
         <NumberSelect label="How many medical service claims for the patient are you including in this submission?"
                 id='claim-count'
+                cypressId="MedicalClaim"
                 v-model='claimCount'
                 :min='1'
                 :max='4'
@@ -17,7 +18,10 @@
             aria-live="assertive">Claim count is required.</div>
       </div>
     </PageContent>
-    <ContinueBar @continue="validateFields()" />
+    <ContinueBar 
+    @continue="validateFields()"
+    cypressId="continueBar"
+     />
   </div>
 </template>
 
