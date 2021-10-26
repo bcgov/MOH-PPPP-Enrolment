@@ -1266,7 +1266,6 @@ export default {
           scrollToError();
         });
       } else {
-      this.isValidationModalShown = true;
       this.navigateToNextPage();
       }
     },
