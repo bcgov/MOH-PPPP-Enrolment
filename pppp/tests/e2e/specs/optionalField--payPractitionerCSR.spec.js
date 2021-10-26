@@ -8,7 +8,7 @@ const backendFirstName = "MICHAEL";
 const backendPractitionerNumber = "00001";
 
 describe("Pay Practitioner-CSR", () => {
-  it("follows the happy path", () => {
+  it("submits with optional fields not filled", () => {
     cy.visit("/pay-practitioner-csr");
     //Claim Count
     cy.location().should((loc) => {
