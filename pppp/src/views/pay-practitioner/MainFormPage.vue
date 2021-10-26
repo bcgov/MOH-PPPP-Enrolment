@@ -886,6 +886,7 @@ import {
   serviceLocationCodeValidator,
   specialtyCodeValidator,
   submissionCodeValidator,
+  validateIf
 } from '@/helpers/validators';
 import {
   selectOptionsSubmissionCode,
@@ -1480,8 +1481,8 @@ export default {
       },
       practitionerSpecialtyCode: {
         alphanumericValidator: optionalValidator(alphanumericValidator),
-        minLength: optionalValidator(minLength(2)),
-        specialtyCodeValidator: optionalValidator(specialtyCodeValidator),
+        minLength: validateIf(!isCSR(this.$router.currentRoute.path), minLength(2)),
+        specialtyCodeValidator: validateIf(!isCSR(this.$router.currentRoute.path), specialtyCodeValidator),
       },
       coveragePreAuthNumber: {
         minLength: optionalValidator(minLength(4)),
