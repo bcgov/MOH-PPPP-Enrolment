@@ -13,6 +13,12 @@ import {
 } from 'date-fns';
 import { selectOptionsSpecialtyCode } from '@/constants/select-options';
 import { diagnosticCodes } from '@/constants/diagnostic-codes';
+import { helpers } from 'vuelidate/lib/validators';
+
+export const validateIf = (prop, validator) =>
+helpers.withParams({ type: 'validatedIf', prop }, function(value, parentVm) {
+  return prop ? validator(value) : true
+})
 
 export const bcPostalCodeValidator = (value) => {
   const criteria = RegExp('^[Vv]\\d[A-Za-z][ ]?\\d[A-Za-z]\\d$');
