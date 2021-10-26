@@ -1087,7 +1087,7 @@ export default {
       practitionerSpecialtyCode: {
         alphanumericValidator: optionalValidator(alphanumericValidator),
         minLength: optionalValidator(minLength(2)),
-        specialtyCodeValidator: optionalValidator(specialtyCodeValidator),
+        specialtyCodeValidator: optionalValidator(specialtyCodeValidator(isCSR(this.$router.currentRoute.path))),
       },
       referredByFirstNameInitial: {
         alphaValidator: optionalValidator(alphaValidator),
