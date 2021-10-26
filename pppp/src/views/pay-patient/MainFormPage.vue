@@ -98,7 +98,7 @@
           <div class="text-danger"
               v-if="$v.lastName.$dirty && $v.lastName.required && !$v.lastName.nameValidator"
               aria-live="assertive">Patient Legal Last Name must begin with a letter and cannot include special characters except hyphens, periods, apostrophes and blank characters.</div>
-          <DateInput :label='"Patient Birth Date" + (dependentNumber === "66" ? " (optional)" : "") + ":"'
+          <DateInput :label='"Patient Birth Date" + ((dependentNumber === "66" && !isCSR) ? " (optional)" : "") + ":"'
                 id='birth-date'
                 cypressId="patientBirthDate"
                 className='mt-3'
@@ -989,7 +989,7 @@ export default {
       birthDate: {
         required: requiredIf(() => !isCSR(this.$router.currentRoute.path)),
         birthDatePastValidator: optionalValidator(birthDatePastValidator),
-        birthDateValidator: optionalValidator(birthDateValidator),
+        birthDateValidator,
         distantPastValidator: optionalValidator(distantPastValidator),
       },
       addressOwner: {
