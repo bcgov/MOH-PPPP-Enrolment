@@ -91,7 +91,7 @@ export const submissionCodeValidator = (value, vm) => {
 export const specialtyCodeValidator = (value) => {
   const index = selectOptionsSpecialtyCode.findIndex((item) => item.value === value);
   return index > -1;
-}
+};
 
 export const serviceLocationCodeValidator = (value, vm) => {
   const serviceDate = vm.serviceDate;
