@@ -304,7 +304,7 @@
                 v-if="v.diagnosticCode.$dirty && !v.diagnosticCode.required"
                 aria-live="assertive">Diagnostic code is required.</div>
             <div class="text-danger"
-                v-if="v.diagnosticCode.$dirty && v.diagnosticCode.required && !v.diagnosticCode.diagnosticCodeValidator"
+                v-if="v.diagnosticCode.$dirty && ((v.diagnosticCode.required && !v.diagnosticCode.diagnosticCodeValidator) || !v.diagnosticCode.alphanumericValidator)"
                 aria-live="assertive">Diagnostic code must be valid.</div>
             <Select label='Service Location Code:'
                   :id='"location-of-service-" + index'
@@ -708,7 +708,7 @@ import {
   SET_REFERRED_TO_PRACTITIONER_NUMBER,
 } from '@/store/modules/pay-patient-form';
 import logService from '@/services/log-service';
-import { required, maxLength, minLength } from 'vuelidate/lib/validators';
+import { required, requiredIf, maxLength, minLength } from 'vuelidate/lib/validators';
 import {
   DateInput,
   DigitInput,
@@ -1048,8 +1048,9 @@ export default {
             partialTimeValidator: optionalValidator(partialTimeValidator),
           },
           diagnosticCode: {
-            required,
-            diagnosticCodeValidator,
+            required: requiredIf(() => !isCSR(this.$router.currentRoute.path)),
+            alphanumericValidator: optionalValidator(alphanumericValidator),
+            diagnosticCodeValidator: optionalValidator(validateIf(!isCSR(this.$router.currentRoute.path), diagnosticCodeValidator)),
           },
           locationOfService: {
             required,
