@@ -98,7 +98,7 @@
           <div class="text-danger"
               v-if="$v.lastName.$dirty && $v.lastName.required && !$v.lastName.nameValidator"
               aria-live="assertive">Patient Legal Last Name must begin with a letter and cannot include special characters except hyphens, periods, apostrophes and blank characters.</div>
-          <DateInput :label='"Patient Birth Date" + (dependentNumber === "66" ? " (optional)" : "") + ":"'
+          <DateInput :label='"Patient Birth Date" + ((dependentNumber === "66" && !isCSR) ? " (optional)" : "") + ":"'
                 id='birth-date'
                 cypressId="patientBirthDate"
                 className='mt-3'
@@ -707,7 +707,7 @@ import {
   SET_REFERRED_TO_PRACTITIONER_NUMBER,
 } from '@/store/modules/pay-patient-form';
 import logService from '@/services/log-service';
-import { required, maxLength, minLength } from 'vuelidate/lib/validators';
+import { required, requiredIf, maxLength, minLength } from 'vuelidate/lib/validators';
 import {
   DateInput,
   DigitInput,
@@ -967,8 +967,8 @@ export default {
     const validations = {
       planReferenceNumber: {},
       phn: {
-        required,
-        phnValidator,
+        required: requiredIf(() => !isCSR(this.$router.currentRoute.path)),
+        phnValidator: optionalValidator(phnValidator),
       },
       dependentNumber: {
         intValidator: optionalValidator(intValidator),
@@ -976,36 +976,37 @@ export default {
         dependentNumberValidator: optionalValidator(dependentNumberValidator),
       },
       firstName: {
-        required,
+        required: requiredIf(() => !isCSR(this.$router.currentRoute.path)),
         nameValidator,
       },
       middleInitial: {
         nameInitialValidator: optionalValidator(nameInitialValidator),
       },
       lastName: {
-        required,
+        required: requiredIf(() => !isCSR(this.$router.currentRoute.path)),
         nameValidator,
       },
       birthDate: {
+        required: requiredIf(() => !isCSR(this.$router.currentRoute.path)),
         birthDatePastValidator: optionalValidator(birthDatePastValidator),
         birthDateValidator,
         distantPastValidator: optionalValidator(distantPastValidator),
       },
       addressOwner: {
-        required,
+        required: requiredIf(() => !isCSR(this.$router.currentRoute.path)),
       },
       streetName: {
-        required,
+        required: requiredIf(() => !isCSR(this.$router.currentRoute.path)),
       },
       city: {
-        required,
+        required: requiredIf(() => !isCSR(this.$router.currentRoute.path)),
       },
       postalCode: {
-        required,
+        required: requiredIf(() => !isCSR(this.$router.currentRoute.path)),
         bcPostalCodeValidator,
       },
       isVehicleAccident: {
-        required,
+        required: requiredIf(() => !isCSR(this.$router.currentRoute.path)),
       },
       vehicleAccidentClaimNumber: {
         motorVehicleAccidentClaimNumberValidator: optionalValidator(motorVehicleAccidentClaimNumberValidator),
@@ -1017,28 +1018,28 @@ export default {
       medicalServiceClaims: {
         $each: {
           serviceDate: {
-            required,
-            serviceDateValidator,
-            serviceDateFutureValidator,
-            distantPastValidator,
-            serviceDateCutOffValidator,
+            required: requiredIf(() => !isCSR(this.$router.currentRoute.path)),
+            serviceDateValidator: optionalValidator(serviceDateValidator),
+            serviceDateFutureValidator: optionalValidator(serviceDateFutureValidator),
+            distantPastValidator: optionalValidator(distantPastValidator),
+            serviceDateCutOffValidator: optionalValidator(serviceDateCutOffValidator),
           },
           numberOfServices: {
-            required,
-            intValidator,
-            positiveNumberValidator,
-            nonZeroNumberValidator,
+            required: requiredIf(() => !isCSR(this.$router.currentRoute.path)),
+            intValidator: optionalValidator(intValidator),
+            positiveNumberValidator: optionalValidator(positiveNumberValidator),
+            nonZeroNumberValidator: optionalValidator(nonZeroNumberValidator),
           },
           feeItem: {
-            required,
-            intValidator,
-            positiveNumberValidator,
+            required: requiredIf(() => !isCSR(this.$router.currentRoute.path)),
+            intValidator: optionalValidator(intValidator),
+            positiveNumberValidator: optionalValidator(positiveNumberValidator),
           },
           amountBilled: {
-            required,
-            dollarNumberValidator,
-            positiveNumberValidator,
-            amountBilledZeroValidator,
+            required: requiredIf(() => !isCSR(this.$router.currentRoute.path)),
+            dollarNumberValidator: optionalValidator(dollarNumberValidator),
+            positiveNumberValidator: optionalValidator(positiveNumberValidator),
+            amountBilledZeroValidator: optionalValidator(amountBilledZeroValidator),
           },
           calledStartTime: {
             partialTimeValidator: optionalValidator(partialTimeValidator),
@@ -1047,11 +1048,11 @@ export default {
             partialTimeValidator: optionalValidator(partialTimeValidator),
           },
           diagnosticCode: {
-            required,
-            diagnosticCodeValidator,
+            required: requiredIf(() => !isCSR(this.$router.currentRoute.path)),
+            diagnosticCodeValidator: optionalValidator(diagnosticCodeValidator),
           },
           locationOfService: {
-            required,
+            required: requiredIf(() => !isCSR(this.$router.currentRoute.path)),
             serviceLocationCodeValidator,
           },
           serviceClarificationCode: {
@@ -1066,19 +1067,19 @@ export default {
         }
       },
       practitionerLastName: {
-        required,
+        required: requiredIf(() => !isCSR(this.$router.currentRoute.path)),
         nameValidator,
       },
       practitionerFirstName: {
-        required,
+        required: requiredIf(() => !isCSR(this.$router.currentRoute.path)),
         nameValidator,
       },
       practitionerPaymentNumber: {
-        required,
+        required: requiredIf(() => !isCSR(this.$router.currentRoute.path)),
         minLength: minLength(5),
       },
       practitionerPractitionerNumber: {
-        required,
+        required: requiredIf(() => !isCSR(this.$router.currentRoute.path)),
         minLength: minLength(5),
       },
       practitionerFacilityNumber: {
@@ -1108,7 +1109,7 @@ export default {
         minLength: optionalValidator(minLength(5)),
       },
     };
-    if (this.dependentNumber !== '66') {
+    if (this.dependentNumber !== '66' && !isCSR(this.$router.currentRoute.path)) {
       validations.birthDate.required = required;
     }
     if (this.isReferredByRequired) {
@@ -1203,69 +1204,70 @@ export default {
 
       const token = this.$store.state.payPatientForm.captchaToken;
       const applicationUuid = this.$store.state.payPatientForm.applicationUuid;
-      
-      // Do server-side validation.
-      apiService.validateApplication(token, {
-        applicationUuid: applicationUuid,
-        practitionerFirstName: this.practitionerFirstName || '',
-        practitionerLastName: this.practitionerLastName || '',
-        practitionerNumber: this.practitionerPractitionerNumber || '',
-        serviceFeeItem1: this.medicalServiceClaims[0] && this.medicalServiceClaims[0].feeItem ? this.medicalServiceClaims[0].feeItem : '',
-        serviceFeeItem2: this.medicalServiceClaims[1] && this.medicalServiceClaims[1].feeItem ? this.medicalServiceClaims[1].feeItem : '',
-        serviceFeeItem3: this.medicalServiceClaims[2] && this.medicalServiceClaims[2].feeItem ? this.medicalServiceClaims[2].feeItem : '',
-        serviceFeeItem4: this.medicalServiceClaims[3] && this.medicalServiceClaims[3].feeItem ? this.medicalServiceClaims[3].feeItem : '',
-        serviceLocationCode1: '',
-        serviceLocationCode2: '',
-        serviceLocationCode3: '',
-        serviceLocationCode4: '',
-        hospitalFeeItem1: '',
-        hospitalFeeItem2: '',
-        hospitalLocationCode1: '',
-        hospitalLocationCode2: ''
-      }).then((response) => {
-        const responseData = response.data;
-        const returnCode = response.data.returnCode;
-        let containsErrors = false;
-        let containsWarnings = false;
 
-        this.isValidating = false;
+      if (!isCSR(this.$router.currentRoute.path)) {
+        // Do server-side validation.
+        apiService.validateApplication(token, {
+          applicationUuid: applicationUuid,
+          practitionerFirstName: this.practitionerFirstName || '',
+          practitionerLastName: this.practitionerLastName || '',
+          practitionerNumber: this.practitionerPractitionerNumber || '',
+          serviceFeeItem1: this.medicalServiceClaims[0] && this.medicalServiceClaims[0].feeItem ? this.medicalServiceClaims[0].feeItem : '',
+          serviceFeeItem2: this.medicalServiceClaims[1] && this.medicalServiceClaims[1].feeItem ? this.medicalServiceClaims[1].feeItem : '',
+          serviceFeeItem3: this.medicalServiceClaims[2] && this.medicalServiceClaims[2].feeItem ? this.medicalServiceClaims[2].feeItem : '',
+          serviceFeeItem4: this.medicalServiceClaims[3] && this.medicalServiceClaims[3].feeItem ? this.medicalServiceClaims[3].feeItem : '',
+          serviceLocationCode1: '',
+          serviceLocationCode2: '',
+          serviceLocationCode3: '',
+          serviceLocationCode4: '',
+          hospitalFeeItem1: '',
+          hospitalFeeItem2: '',
+          hospitalLocationCode1: '',
+          hospitalLocationCode2: ''
+        }).then((response) => {
+          const responseData = response.data;
+          const returnCode = response.data.returnCode;
+          let containsErrors = false;
+          let containsWarnings = false;
 
-        switch (returnCode) {
-          case '0': // Valid payload data.
-            this.navigateToNextPage();
-            break;
-          case '1': // Invalid payload data.
-            if ( responseData.practitionerFirstName === 'N'
-              || responseData.practitionerLastName === 'N'
-              || responseData.practitionerNumber === 'N') {
-              this.isPractitionerErrorShown = true;
-              containsErrors = true;
-            }
-            for (let i=0; i<MAX_MEDICAL_SERVICE_CLAIMS; i++) {
-              if (responseData['serviceFeeItem' + (i+1)] === 'N') {
-                this.medicalServiceClaimsFeeItemValidationError[i] = true;
+          this.isValidating = false;
+
+          switch (returnCode) {
+            case '0': // Valid payload data.
+              this.navigateToNextPage();
+              break;
+            case '1': // Invalid payload data.
+              if ( responseData.practitionerFirstName === 'N'
+                || responseData.practitionerLastName === 'N'
+                || responseData.practitionerNumber === 'N') {
+                this.isPractitionerErrorShown = true;
                 containsErrors = true;
               }
-            }
-            if (containsErrors) {
+              for (let i=0; i<MAX_MEDICAL_SERVICE_CLAIMS; i++) {
+                if (responseData['serviceFeeItem' + (i+1)] === 'N') {
+                  this.medicalServiceClaimsFeeItemValidationError[i] = true;
+                  containsErrors = true;
+                }
+              }
+              if (containsErrors) {
+                scrollToError();
+              } else if (containsWarnings) {
+                this.isValidationModalShown = true;
+              }
+              break;
+            default: // An error occurred.
+              this.isSystemUnavailable = true;
               scrollToError();
-            } else if (containsWarnings) {
-              this.isValidationModalShown = true;
-            }
-            break;
-          default: // An error occurred.
-            this.isSystemUnavailable = true;
-            scrollToError();
-            break;
-        }
-      }).catch(() => {
-        this.isValidating = false;
-        this.isSystemUnavailable = true;
-        scrollToError();
-      });
-      // this.isValidationModalShown = true;
-
-      // this.navigateToNextPage();
+              break;
+          }
+        }).catch(() => {
+          this.isValidating = false;
+          this.isSystemUnavailable = true;
+          scrollToError();
+        });
+      } else {
+      this.navigateToNextPage();
+      }
     },
     validationModalYesHandler() {
       this.navigateToNextPage();
@@ -1354,7 +1356,7 @@ export default {
       return !!this.referredToFirstNameInitial
           || !!this.referredToLastName
           || !!this.referredToPractitionerNumber
-          || this.isContainingNoChargeFeeItem;
+          || (this.isContainingNoChargeFeeItem && !isCSR(this.$router.currentRoute.path));
     },
     isContainingNoChargeFeeItem() {
       for (let i=0; i<this.medicalServiceClaims.length; i++) {
