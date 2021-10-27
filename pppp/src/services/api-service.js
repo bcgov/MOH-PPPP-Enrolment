@@ -18,6 +18,20 @@ class ApiService {
     return this._sendPostRequest(`${VALIDATE_APPLICATION_URL}/${applicationUuid}`, token, jsonPayload);
   }
 
+  filterSpecialChar(value) {
+    const criteria = /[0-9a-zA-Z!@#$%&*()-_+={}[\]|:;'<>,.?/~` ]/;
+    let result = [];
+
+    for (let i = 0; i < value.length; i++) {
+      const subResult = criteria.test(value[i]);
+      if (subResult) {
+        result.push (value[i])
+      }
+    }
+    const newResult = result.join('');
+    return newResult;
+  }
+
   submitPayPatientApplication(token, formState) {
     const applicationUuid = formState.applicationUuid;
     const jsonPayload = {
@@ -75,6 +89,7 @@ class ApiService {
         notes: claim.notes || '',
       });
     }
+    // filterSpecialChar(jsonPayload)
     return this._sendPostRequest(`${SUBMIT_PAY_PATIENT_APPLICATION_URL}/${applicationUuid}`, token, jsonPayload);
   }
 

@@ -307,6 +307,26 @@ describe("APIService", () => {
   });
 });
 
+describe.only("APIService filterSpecialChar()", () => {
+  afterEach(() => {
+    jest.resetModules();
+    jest.clearAllMocks();
+  });
+
+  it("returns alphanumeric strings + approved special characters unchanged", () => {
+    const testText = "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz0123456789!@#$%&*()-_+={}[]|:;'<>,.?/~` "
+    const result = APIService.filterSpecialChar(testText);
+    expect(result).toEqual(testText)
+  });
+
+  it("filters out slashes and quotes", () => {
+    const testText = `test text\ ""`
+    const result = APIService.filterSpecialChar(testText);
+    expect(result).toEqual("test text ")
+  });
+});
+
+
 describe("APIService _sendPostRequest", () => {
   afterEach(() => {
     jest.resetModules();
