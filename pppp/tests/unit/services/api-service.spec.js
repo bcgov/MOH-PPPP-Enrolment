@@ -333,6 +333,18 @@ describe("APIService filterSpecialChar()", () => {
     expect(result).toEqual(testText);
   });
 
+  it("returns empty strings without breaking", () => {
+    const testText = "";
+    const result = APIService.filterSpecialChar(testText);
+    expect(result).toEqual(testText);
+  });
+
+  it("returns undefined value without breaking", () => {
+    let testText;
+    const result = APIService.filterSpecialChar(testText);
+    expect(result).toEqual(testText);
+  });
+
   it("filters out slashes and quotes", () => {
     const testText = `test text. should have: // should not have:\ ""`;
     const result = APIService.filterSpecialChar(testText);

@@ -25,6 +25,10 @@ class ApiService {
     const criteria = /[0-9a-zA-Z!@#\$%&\*\(\)\-_\+=\{\}\[\]\|:;'<>,\.\?\/~` ]/;
     let resultArray = [];
 
+    if (!value || !value.length) {
+      return value;
+    }
+
     for (let i = 0; i < value.length; i++) {
       const subResult = criteria.test(value[i]);
       if (subResult) {
@@ -52,10 +56,10 @@ class ApiService {
         lastName: formState.lastName || '',
         birthDate: formatISODate(formState.birthDate) || '',
         addressOwner: formState.addressOwner || '',
-        unitNumber: formState.unitNumber || '',
-        streetNumber: formState.streetNumber || '',
-        streetName: formState.streetName || '',
-        city: formState.city || '',
+        unitNumber: this.filterSpecialChar(formState.unitNumber) || '',
+        streetNumber: this.filterSpecialChar(formState.streetNumber) || '',
+        streetName: this.filterSpecialChar(formState.streetName) || '',
+        city: this.filterSpecialChar(formState.city) || '',
         postalCode: stripSpaces(formState.postalCode) || '',
         isVehicleAccident: formState.isVehicleAccident || '',
         vehicleAccidentClaimNumber: formState.vehicleAccidentClaimNumber || '',
@@ -92,7 +96,6 @@ class ApiService {
         notes: this.filterSpecialChar(claim.notes) || '',
       });
     }
-    // filterSpecialChar(jsonPayload)
     return this._sendPostRequest(`${SUBMIT_PAY_PATIENT_APPLICATION_URL}/${applicationUuid}`, token, jsonPayload);
   }
 
