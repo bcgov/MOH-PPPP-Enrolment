@@ -19,17 +19,20 @@ class ApiService {
   }
 
   filterSpecialChar(value) {
-    const criteria = /[0-9a-zA-Z!@#$%&*()-_+={}[\]|:;'<>,.?/~` ]/;
-    let result = [];
+    // eslint says there are unnecessary escapes a few lines from now. 
+    // this is false. the escapes change the way the regex works and are important
+    // eslint-disable-next-line 
+    const criteria = /[0-9a-zA-Z!@#\$%&\*\(\)\-_\+=\{\}\[\]\|:;'<>,\.\?\/~` ]/;
+    let resultArray = [];
 
     for (let i = 0; i < value.length; i++) {
       const subResult = criteria.test(value[i]);
       if (subResult) {
-        result.push (value[i])
+        resultArray.push (value[i])
       }
     }
-    const newResult = result.join('');
-    return newResult;
+    const resultJoin = resultArray.join('');
+    return resultJoin;
   }
 
   submitPayPatientApplication(token, formState) {
@@ -86,7 +89,7 @@ class ApiService {
         locationOfService: claim.locationOfService || '',
         correspondenceAttached: claim.correspondenceAttached || '',
         submissionCode: claim.submissionCode || '',
-        notes: claim.notes || '',
+        notes: this.filterSpecialChar(claim.notes) || '',
       });
     }
     // filterSpecialChar(jsonPayload)
@@ -144,7 +147,7 @@ class ApiService {
         locationOfService: claim.locationOfService || '',
         correspondenceAttached: claim.correspondenceAttached || '',
         submissionCode: claim.submissionCode || '',
-        notes: claim.notes || '',
+        notes: this.filterSpecialChar(claim.notes) || '',
       });
     }
     for (let i=0; i<formState.hospitalVisitClaims.length; i++) {
@@ -162,7 +165,7 @@ class ApiService {
         locationOfService: claim.locationOfService || '',
         correspondenceAttached: claim.correspondenceAttached || '',
         submissionCode: claim.submissionCode || '',
-        notes: claim.notes || '',
+        notes: this.filterSpecialChar(claim.notes) || '',
       });
     }
     return this._sendPostRequest(`${SUBMIT_PAY_PRACTITIONER_APPLICATION_URL}/${applicationUuid}`, token, jsonPayload);

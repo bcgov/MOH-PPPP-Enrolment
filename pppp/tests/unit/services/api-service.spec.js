@@ -44,8 +44,8 @@ describe("APIService", () => {
     );
   });
 
-  it("submitPayPatientApplication() calls axios with correct arguments", () => {
-    const fakeArgument = {
+  it("submitPayPatientApplication() calls axios with correct arguments, including special character filter", () => {
+    const fakeArgumentPatient = {
       applicationUuid: "fakeApplicationUuid",
       claimCount: "1",
 
@@ -89,7 +89,7 @@ describe("APIService", () => {
           locationOfService: "A",
           correspondenceAttached: null,
           submissionCode: "I",
-          notes: "Notes here.",
+          notes: `Notes here.""\\`,
         },
       ],
 
@@ -109,7 +109,7 @@ describe("APIService", () => {
       referredToPractitionerNumber: "22272",
     };
 
-    APIService.submitPayPatientApplication("fakeToken", fakeArgument);
+    APIService.submitPayPatientApplication("fakeToken", fakeArgumentPatient);
     expect(spyOnSendPostRequest).toHaveBeenCalledWith(
       "/pppp/api/payformsIntegration/patient/fakeApplicationUuid",
       "fakeToken",
@@ -169,97 +169,113 @@ describe("APIService", () => {
     );
   });
 
-  it("submitPayPractitionerApplication() calls axios with correct arguments", () => {
-    const fakeArgument = {
+  it("submitPayPractitionerApplication() calls axios with correct arguments, including special character filter", () => {
+    const fakeArgumentPrac = {
       applicationUuid: "fakeApplicationUuid",
-      medicalServiceClaimsCount: '1',
-      hospitalVisitClaimsCount: '1',
-    
-      planReferenceNumber: '1234567890',
-    
-      phn: '9999 999 998',
-      dependentNumber: '66',
-      firstName: 'Bob',
-      middleInitial: 'H',
-      lastName: 'Smith',
+      medicalServiceClaimsCount: "1",
+      hospitalVisitClaimsCount: "1",
+
+      planReferenceNumber: "1234567890",
+
+      phn: "9999 999 998",
+      dependentNumber: "66",
+      firstName: "Bob",
+      middleInitial: "H",
+      lastName: "Smith",
       birthDate: testDate,
-    
-      isVehicleAccident: 'Y',
-      vehicleAccidentClaimNumber: 'A0000001',
-    
-      planReferenceNumberOfOriginalClaim: '321',
-      
+
+      isVehicleAccident: "Y",
+      vehicleAccidentClaimNumber: "A0000001",
+
+      planReferenceNumberOfOriginalClaim: "321",
+
       medicalServiceClaims: [
         {
           serviceDate: testDate,
-          numberOfServices: '1',
-          serviceClarificationCode: 'A1',
-          feeItem: '03333',
-          amountBilled: '0.00',
+          numberOfServices: "1",
+          serviceClarificationCode: "A1",
+          feeItem: "03333",
+          amountBilled: "0.00",
           calledStartTime: {
-            hour: '08',
-            minute: '08'
+            hour: "08",
+            minute: "08",
           },
           renderedFinishTime: {
-            hour: '16',
-            minute: '06'
+            hour: "16",
+            minute: "06",
           },
-          diagnosticCode: '001',
-          locationOfService: 'A',
+          diagnosticCode: "001",
+          locationOfService: "A",
           correspondenceAttached: null,
-          submissionCode: 'I',
-          notes: 'Notes here.',
-        }
+          submissionCode: "I",
+          notes: `Notes here.""\\`,
+        },
       ],
-      
+
       hospitalVisitClaims: [
         {
-          month: '12',
-          dayFrom: '24',
-          dayTo: '26',
-          year: '2020',
-          numberOfServices: '1',
-          serviceClarificationCode: 'A1',
-          feeItem: '03333',
-          amountBilled: '0.00',
-          diagnosticCode: '001',
-          locationOfService: 'A',
+          month: "12",
+          dayFrom: "24",
+          dayTo: "26",
+          year: "2020",
+          numberOfServices: "1",
+          serviceClarificationCode: "A1",
+          feeItem: "03333",
+          amountBilled: "0.00",
+          diagnosticCode: "001",
+          locationOfService: "A",
           correspondenceAttached: null,
-          submissionCode: 'I',
-          notes: 'Notes here.',
-        }
+          submissionCode: "I",
+          notes: `Notes here.""\\`,
+        },
       ],
-    
-      practitionerLastName: 'GOTTNER',
-      practitionerFirstName: 'MICHAEL',
-      practitionerPaymentNumber: 'A1234',
-      practitionerPractitionerNumber: '00001',
-      practitionerFacilityNumber: '12345',
-      practitionerSpecialtyCode: '99',
-      coveragePreAuthNumber: '2222',
-    
-      referredByFirstNameInitial: 'R',
-      referredByLastName: 'McDonald',
-      referredByPractitionerNumber: '22271',
-    
-      referredToFirstNameInitial: 'C',
-      referredToLastName: 'Lee',
-      referredToPractitionerNumber: '22272',
+
+      practitionerLastName: "GOTTNER",
+      practitionerFirstName: "MICHAEL",
+      practitionerPaymentNumber: "A1234",
+      practitionerPractitionerNumber: "00001",
+      practitionerFacilityNumber: "12345",
+      practitionerSpecialtyCode: "99",
+      coveragePreAuthNumber: "2222",
+
+      referredByFirstNameInitial: "R",
+      referredByLastName: "McDonald",
+      referredByPractitionerNumber: "22271",
+
+      referredToFirstNameInitial: "C",
+      referredToLastName: "Lee",
+      referredToPractitionerNumber: "22272",
     };
-    APIService.submitPayPatientApplication("fakeToken", fakeArgument);
+    APIService.submitPayPractitionerApplication("fakeToken", fakeArgumentPrac);
     expect(spyOnSendPostRequest).toHaveBeenCalledWith(
-      "/pppp/api/payformsIntegration/patient/fakeApplicationUuid",
+      "/pppp/api/payformsIntegration/practitioner/fakeApplicationUuid",
       "fakeToken",
       {
         applicationUuid: "fakeApplicationUuid",
         isCSR: "N",
-        payPatient: {
-          addressOwner: "",
+        payPractitioner: {
           birthDate: testDate,
-          city: "",
-          claimCount: undefined,
+          coveragePreAuthNumber: "2222",
           dependentNumber: "66",
           firstName: "Bob",
+          hospitalVisitClaims: [
+            {
+              amountBilled: "0.00",
+              correspondenceAttached: "",
+              dayFrom: "24",
+              dayTo: "26",
+              diagnosticCode: "001",
+              feeItem: "03333",
+              locationOfService: "A",
+              month: "12",
+              notes: "Notes here.",
+              numberOfServices: "1",
+              serviceClarificationCode: "A1",
+              submissionCode: "I",
+              year: "2020",
+            },
+          ],
+          hospitalVisitClaimsCount: "1",
           isVehicleAccident: "Y",
           lastName: "Smith",
           medicalServiceClaims: [
@@ -274,15 +290,15 @@ describe("APIService", () => {
               numberOfServices: "1",
               renderedFinishTime: "",
               serviceClarificationCode: "A1",
-              serviceDate: testDate,
+              serviceDate: "Sat Jan 01 2000",
               submissionCode: "I",
             },
           ],
+          medicalServiceClaimsCount: "1",
           middleInitial: "H",
           phn: "9999999998",
           planReferenceNumber: "1234567890",
           planReferenceNumberOfOriginalClaim: "321",
-          postalCode: "",
           practitionerFacilityNumber: "12345",
           practitionerFirstName: "MICHAEL",
           practitionerLastName: "GOTTNER",
@@ -295,9 +311,6 @@ describe("APIService", () => {
           referredToFirstNameInitial: "C",
           referredToLastName: "Lee",
           referredToPractitionerNumber: "22272",
-          streetName: "",
-          streetNumber: "",
-          unitNumber: "",
           vehicleAccidentClaimNumber: "A0000001",
         },
         requestUuid: "uuid-123",
@@ -307,25 +320,31 @@ describe("APIService", () => {
   });
 });
 
-describe.only("APIService filterSpecialChar()", () => {
+describe("APIService filterSpecialChar()", () => {
   afterEach(() => {
     jest.resetModules();
     jest.clearAllMocks();
   });
 
   it("returns alphanumeric strings + approved special characters unchanged", () => {
-    const testText = "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz0123456789!@#$%&*()-_+={}[]|:;'<>,.?/~` "
+    const testText =
+      "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz0123456789!@#$%&*()-_+={}[]|:;'<>,.?/~` ";
     const result = APIService.filterSpecialChar(testText);
-    expect(result).toEqual(testText)
+    expect(result).toEqual(testText);
   });
 
   it("filters out slashes and quotes", () => {
-    const testText = `test text\ ""`
+    const testText = `test text. should have: // should not have:\ ""`;
     const result = APIService.filterSpecialChar(testText);
-    expect(result).toEqual("test text ")
+    expect(result).toEqual(`test text. should have: // should not have: `);
+  });
+
+  it("filters out slashes and quotes (2) (the way it appears in the e2e testing)", () => {
+    const testText = `aabb""//\\ `;
+    const result = APIService.filterSpecialChar(testText);
+    expect(result).toEqual(`aabb// `);
   });
 });
-
 
 describe("APIService _sendPostRequest", () => {
   afterEach(() => {
