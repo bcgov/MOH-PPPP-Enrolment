@@ -79,6 +79,8 @@ describe("Pay Practitioner-CSR", () => {
       .parent()
       .trigger("change");
 
+    cy.get("[data-cy=medNotesAttach0]").type(`aabb""//\\ `);
+
     //hospital claim section
     cy.get("select")
       .find("option[data-cy=hospitalClaimMonth010]")
@@ -104,6 +106,8 @@ describe("Pay Practitioner-CSR", () => {
       .then(($el) => $el.get(0).setAttribute("selected", "selected"))
       .parent()
       .trigger("change");
+
+    cy.get("[data-cy=hospitalNotesAttach0]").type(`aabb""//\\ `);
 
     cy.get("[data-cy=practitionerLastName]").type(backendLastName);
     cy.get("[data-cy=practitionerFirstName]").type(backendFirstName);

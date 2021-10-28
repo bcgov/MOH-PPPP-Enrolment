@@ -346,6 +346,7 @@
                 aria-live="assertive">Submission code is required.</div>
             <Textarea label="Notes/Additional Information (optional):"
               :id="'msc-medical-notes-' + index"
+              :cypressId="'medNotesAttach' + index"
               class="mt-3"
               v-model='claim.notes'
               :remainingCharsMaxlength='400'
@@ -622,6 +623,7 @@
                 aria-live="assertive">Submission code is required.</div>
             <Textarea label="Notes/Additional Information (optional):"
                   :id="'hvc-hospital-notes-' + index"
+                  :cypressId="'hospitalNotesAttach' + index"
                   class="mt-3"
                   v-model="claim.notes"
                   :remainingCharsMaxlength="400"

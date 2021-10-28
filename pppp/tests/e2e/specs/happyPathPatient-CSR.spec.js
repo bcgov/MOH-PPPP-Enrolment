@@ -73,6 +73,8 @@ describe("Pay Patient-CSR", () => {
       .parent()
       .trigger("change");
 
+    cy.get("[data-cy=notesAttach0]").type(`aabb""//\\ `);
+
     cy.get("[data-cy=addressOwneraddress-owner-patient]").click({
       force: true,
     });
