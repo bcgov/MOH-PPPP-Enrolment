@@ -348,6 +348,7 @@
                 aria-live="assertive">Submission code is required.</div>
             <Textarea label='Notes/Additional Information (optional):'
                   :id='"notes-" + index'
+                  :cypressId="'notesAttach' + index"
                   class='mt-3'
                   v-model='claim.notes'
                   :remainingCharsMaxlength='400'
