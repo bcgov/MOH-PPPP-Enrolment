@@ -37,7 +37,7 @@ import {
   scrollToError,
   getTopScrollPosition
 } from '@/helpers/scroll';
-import { getConvertedPath } from '@/helpers/url';
+import { getConvertedPath, isCSR } from '@/helpers/url';
 import ContinueBar from '@/components/ContinueBar.vue';
 import PageContent from '@/components/PageContent.vue';
 import {
@@ -71,24 +71,31 @@ export default {
     };
   },
   created() {
-    if (this.isFirstLoad()) {
-      // Load environment variables, and route to maintenance page.
-      spaEnvService.loadEnvs()
-        .then(() => {
+    // Load environment variables, and route to maintenance page.
+    spaEnvService.loadEnvs()
+      .then(() => {
+        if (this.isFirstLoad()) {
           if (spaEnvService.values && spaEnvService.values.SPA_ENV_OOP_MAINTENANCE_FLAG === 'true') {
-            const toPath = payPatientRoutes.MAINTENANCE_PAGE.path;
-            pageStateService.setPageComplete(toPath);
-            pageStateService.visitPage(toPath);
-            this.$router.push(toPath);
-          }
-        })
-        .catch((error) => {
-          logService.logError(this.applicationUuid, {
-            event: 'HTTP error getting values from spa-env-server',
-            status: error.response.status,
-          });
+          const toPath = payPatientRoutes.MAINTENANCE_PAGE.path;
+          pageStateService.setPageComplete(toPath);
+          pageStateService.visitPage(toPath);
+          this.$router.push(toPath);
+          }      
+        }
+
+        if (spaEnvService.values && spaEnvService.values.SPA_ENV_PPPP_IS_CSR_ENABLED === 'false' && isCSR(this.$router.currentRoute.path)) {
+          console.log("CSR flagged, should redirect", "spa values:", spaEnvService.values, "isCSR:", isCSR(this.$router.currentRoute.path))
+        } else {
+          console.log("not CSR flagged, should not redirect", "spa values:", spaEnvService.values, "isCSR:", isCSR(this.$router.currentRoute.path))
+        }
+      })
+      .catch((error) => {
+        logService.logError(this.applicationUuid, {
+          event: 'HTTP error getting values from spa-env-server',
+          status: error.response.status,
         });
-    }
+      });
+
     this.applicationUuid = this.$store.state.payPatientForm.applicationUuid;
     this.claimCount = this.$store.state.payPatientForm.claimCount;
     
