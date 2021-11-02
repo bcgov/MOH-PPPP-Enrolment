@@ -530,7 +530,7 @@ describe("ReviewPage.vue pay patient submitForm()", () => {
     expect(spyOnLogServiceError).toHaveBeenCalled();
   });
 
-  it("calls logServiceError on DB Error PRN Present error", async () => {
+  it("calls spyOnNavigateToSubmissionPage on DB Error PRN Present error", async () => {
     jest
       .spyOn(apiService, "submitPayPatientApplication")
       .mockImplementationOnce(() =>
