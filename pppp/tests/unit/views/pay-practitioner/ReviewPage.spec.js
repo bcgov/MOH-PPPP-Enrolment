@@ -117,8 +117,8 @@ const mockResponseMisc = {
   data: {
     applicationUuid: "ed8fcf17-fb1f-4b3d-93aa-1ba5fbfb2898",
     requestUuid: "d88ecb3b-0ce5-4849-a349-e91fd7b11618",
-    returnCode: "potato",
-    returnMessage: "Success",
+    returnCode: "-1",
+    returnMessage: "Error message",
   },
   status: 200,
   statusText: "OK",
