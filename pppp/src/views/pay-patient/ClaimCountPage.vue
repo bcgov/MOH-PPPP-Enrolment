@@ -72,7 +72,6 @@ export default {
     };
   },
   created() {
-    // Load environment variables, and route to maintenance page.
     if (this.isFirstLoad() || isCSR(this.$router.currentRoute.path)) {
       spaEnvService.loadEnvs()
         .then(() => {
@@ -100,14 +99,6 @@ export default {
             pageStateService.setPageComplete(toPath);
             pageStateService.visitPage(toPath);
             this.$router.push(toPath);
-          } else {
-            console.log(
-              "not CSR flagged, should not redirect",
-              "spa values:",
-              spaEnvService.values,
-              "isCSR:",
-              isCSR(this.$router.currentRoute.path)
-            );
           }
         })
         .catch((error) => {

@@ -79,7 +79,7 @@ export default {
     };
   },
   created() {
-    document.title = this.pageTitle;
+    document.title = this.pageTitle();
 
     this.applicationUuid = uuidv4();
     this.$store.dispatch(payPatientModule + '/' + SET_APPLICATION_UUID, this.applicationUuid);

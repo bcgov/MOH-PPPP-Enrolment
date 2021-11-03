@@ -156,7 +156,6 @@ describe("App.vue pageTitle()", () => {
   });
 
   it("returns a string", () => {
-    console.log("avocado", wrapper.vm.pageTitle)
     expect(typeof wrapper.vm.pageTitle() === "string").toBe(true);
     expect(typeof wrapper2.vm.pageTitle() === "string").toBe(true);
     expect(typeof wrapper3.vm.pageTitle() === "string").toBe(true);
