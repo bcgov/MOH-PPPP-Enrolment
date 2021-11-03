@@ -193,49 +193,37 @@ const router = new VueRouter({
   routes: routeCollection
 });
 
-// router.beforeEach((to, from, next) => {
-//   console.log("beforeEach in index.js reached", 
-//   "to: ", to, 
-//   "from: ", from, 
-//   "next: ", next)
-
-//   if (to.path.includes(commonRoutes.SPECIFIC_PAGE_NOT_FOUND_PAGE.path)) {
-//     console.log("short circuit triggered")
-//     next();
-//   } 
-//   else {
-//     // Home redirects.
-//     if (to.path.includes(PAY_PATIENT_CSR_BASE_URL)
-//       && to.path !== payPatientCSRRoutes.HOME_PAGE.path
-//       && !pageStateService.isPageVisited(to.path)) {
-//       console.log("beforeEach 1")
-//       next({ path: payPatientCSRRoutes.HOME_PAGE.path });
-//     }
-//     else if (to.path.includes(PAY_PRACTITIONER_CSR_BASE_URL)
-//       && to.path !== payPractitionerCSRRoutes.HOME_PAGE.path
-//       && !pageStateService.isPageVisited(to.path)) {
-//       console.log("beforeEach 2")
-//       next({ path: payPractitionerCSRRoutes.HOME_PAGE.path });
-//     }
-//     else if (to.path.includes(PAY_PATIENT_BASE_URL + '/')
-//       && to.path !== payPatientRoutes.HOME_PAGE.path
-//       && !pageStateService.isPageVisited(to.path)) {
-//       console.log("beforeEach 3")
-//       next({ path: payPatientRoutes.HOME_PAGE.path });
-//     }
-//     else if (to.path.includes(PAY_PRACTITIONER_BASE_URL + '/')
-//       && to.path !== payPractitionerRoutes.HOME_PAGE.path
-//       && !pageStateService.isPageVisited(to.path)) {
-//       console.log("beforeEach 4")
-//       next({ path: payPractitionerRoutes.HOME_PAGE.path });
-//     }
-    
-//     // Catch-all (navigation).
-//     else {
-//       console.log("beforeEach 5")
-//       next();
-//     }
-//   }
-// });
+router.beforeEach((to, from, next) => {
+  //if it's supposed to redirect to page not found, don't stop it
+  if (to.path.includes(commonRoutes.SPECIFIC_PAGE_NOT_FOUND_PAGE.path)) {
+    return next();
+  } 
+  // Home redirects.
+  if (to.path.includes(PAY_PATIENT_CSR_BASE_URL)
+    && to.path !== payPatientCSRRoutes.HOME_PAGE.path
+    && !pageStateService.isPageVisited(to.path)) {
+    next({ path: payPatientCSRRoutes.HOME_PAGE.path });
+  }
+  else if (to.path.includes(PAY_PRACTITIONER_CSR_BASE_URL)
+    && to.path !== payPractitionerCSRRoutes.HOME_PAGE.path
+    && !pageStateService.isPageVisited(to.path)) {
+    next({ path: payPractitionerCSRRoutes.HOME_PAGE.path });
+  }
+  else if (to.path.includes(PAY_PATIENT_BASE_URL + '/')
+    && to.path !== payPatientRoutes.HOME_PAGE.path
+    && !pageStateService.isPageVisited(to.path)) {
+    next({ path: payPatientRoutes.HOME_PAGE.path });
+  }
+  else if (to.path.includes(PAY_PRACTITIONER_BASE_URL + '/')
+    && to.path !== payPractitionerRoutes.HOME_PAGE.path
+    && !pageStateService.isPageVisited(to.path)) {
+    next({ path: payPractitionerRoutes.HOME_PAGE.path });
+  }
+  // Catch-all (navigation).
+  else {
+    console.log("beforeEach 5")
+    next();
+  }
+});
 
 export default router;

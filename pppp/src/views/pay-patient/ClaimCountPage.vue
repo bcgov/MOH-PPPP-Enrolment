@@ -72,17 +72,13 @@ export default {
     };
   },
   created() {
-    console.log("created called potato")
     // Load environment variables, and route to maintenance page.
     if (this.isFirstLoad() || isCSR(this.$router.currentRoute.path)) {
-      console.log("if block entered")
       spaEnvService.loadEnvs()
         .then(() => {
-          console.log("then entered");
 
           //if it's the first time the page is loading, check if it needs to redirect to Maintenance
           if (this.isFirstLoad()) {
-            console.log("first load block entered");
             if (
               spaEnvService.values &&
               spaEnvService.values.SPA_ENV_OOP_MAINTENANCE_FLAG === "true"
@@ -100,12 +96,10 @@ export default {
             spaEnvService.values.SPA_ENV_PPPP_IS_CSR_ENABLED === "false" &&
             isCSR(this.$router.currentRoute.path)
           ) {
-            console.log("should redirect")
             const toPath = commonRoutes.SPECIFIC_PAGE_NOT_FOUND_PAGE.path ; //commonRoutes.PAGE_NOT_FOUND_PAGE.path
-            // pageStateService.setPageComplete(toPath);
-            // pageStateService.visitPage(toPath);
-            console.log("reached the router push")
-            this.$router.push(toPath).catch(err => {console.log(err)});
+            pageStateService.setPageComplete(toPath);
+            pageStateService.visitPage(toPath);
+            this.$router.push(toPath);
           } else {
             console.log(
               "not CSR flagged, should not redirect",
@@ -117,19 +111,16 @@ export default {
           }
         })
         .catch((error) => {
-          console.log("error entered")
           logService.logError(this.applicationUuid, {
             event: 'HTTP error getting values from spa-env-server',
             status: error.response.status,
           });
 
-          const toPath = commonRoutes.PAGE_NOT_FOUND_PAGE.path;
+          const toPath = commonRoutes.SPECIFIC_PAGE_NOT_FOUND_PAGE.path;
           pageStateService.setPageComplete(toPath);
           pageStateService.visitPage(toPath);
           this.$router.push(toPath);
         });
-
-      console.log("if block end")
 
       this.applicationUuid = this.$store.state.payPatientForm.applicationUuid;
       this.claimCount = this.$store.state.payPatientForm.claimCount;
