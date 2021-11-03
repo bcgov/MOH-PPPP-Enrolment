@@ -221,7 +221,6 @@ router.beforeEach((to, from, next) => {
   }
   // Catch-all (navigation).
   else {
-    console.log("beforeEach 5")
     next();
   }
 });
