@@ -30,6 +30,7 @@ import pageStateService from '@/services/page-state-service';
 import spaEnvService from '@/services/spa-env-service';
 import {
   payPatientRoutes,
+  commonRoutes,
   isPastPath,
 } from '@/router/routes';
 import {
@@ -71,43 +72,78 @@ export default {
     };
   },
   created() {
+    console.log("created called potato")
     // Load environment variables, and route to maintenance page.
-    spaEnvService.loadEnvs()
-      .then(() => {
-        if (this.isFirstLoad()) {
-          if (spaEnvService.values && spaEnvService.values.SPA_ENV_OOP_MAINTENANCE_FLAG === 'true') {
-          const toPath = payPatientRoutes.MAINTENANCE_PAGE.path;
+    if (this.isFirstLoad() || isCSR(this.$router.currentRoute.path)) {
+      console.log("if block entered")
+      spaEnvService.loadEnvs()
+        .then(() => {
+          console.log("then entered");
+
+          //if it's the first time the page is loading, check if it needs to redirect to Maintenance
+          if (this.isFirstLoad()) {
+            console.log("first load block entered");
+            if (
+              spaEnvService.values &&
+              spaEnvService.values.SPA_ENV_OOP_MAINTENANCE_FLAG === "true"
+            ) {
+              const toPath = payPatientRoutes.MAINTENANCE_PAGE.path;
+              pageStateService.setPageComplete(toPath);
+              pageStateService.visitPage(toPath);
+              this.$router.push(toPath);
+            }
+          }
+
+          //if this is a CSR path, check if it needs to redirect to Page not found
+          if (
+            spaEnvService.values &&
+            spaEnvService.values.SPA_ENV_PPPP_IS_CSR_ENABLED === "false" &&
+            isCSR(this.$router.currentRoute.path)
+          ) {
+            console.log("should redirect")
+            const toPath = commonRoutes.SPECIFIC_PAGE_NOT_FOUND_PAGE.path ; //commonRoutes.PAGE_NOT_FOUND_PAGE.path
+            // pageStateService.setPageComplete(toPath);
+            // pageStateService.visitPage(toPath);
+            console.log("reached the router push")
+            this.$router.push(toPath).catch(err => {console.log(err)});
+          } else {
+            console.log(
+              "not CSR flagged, should not redirect",
+              "spa values:",
+              spaEnvService.values,
+              "isCSR:",
+              isCSR(this.$router.currentRoute.path)
+            );
+          }
+        })
+        .catch((error) => {
+          console.log("error entered")
+          logService.logError(this.applicationUuid, {
+            event: 'HTTP error getting values from spa-env-server',
+            status: error.response.status,
+          });
+
+          const toPath = commonRoutes.PAGE_NOT_FOUND_PAGE.path;
           pageStateService.setPageComplete(toPath);
           pageStateService.visitPage(toPath);
           this.$router.push(toPath);
-          }      
-        }
-
-        if (spaEnvService.values && spaEnvService.values.SPA_ENV_PPPP_IS_CSR_ENABLED === 'false' && isCSR(this.$router.currentRoute.path)) {
-          console.log("CSR flagged, should redirect", "spa values:", spaEnvService.values, "isCSR:", isCSR(this.$router.currentRoute.path))
-        } else {
-          console.log("not CSR flagged, should not redirect", "spa values:", spaEnvService.values, "isCSR:", isCSR(this.$router.currentRoute.path))
-        }
-      })
-      .catch((error) => {
-        logService.logError(this.applicationUuid, {
-          event: 'HTTP error getting values from spa-env-server',
-          status: error.response.status,
         });
-      });
 
-    this.applicationUuid = this.$store.state.payPatientForm.applicationUuid;
-    this.claimCount = this.$store.state.payPatientForm.claimCount;
-    
-    setTimeout(() => {
-      this.isPageLoaded = true;
-    }, 0);
+      console.log("if block end")
 
-    logService.logNavigation(
-      this.$store.state.payPatientForm.applicationUuid,
-      payPatientRoutes.CLAIM_COUNT_PAGE.path,
-      payPatientRoutes.CLAIM_COUNT_PAGE.title
-    );
+      this.applicationUuid = this.$store.state.payPatientForm.applicationUuid;
+      this.claimCount = this.$store.state.payPatientForm.claimCount;
+      
+      setTimeout(() => {
+        this.isPageLoaded = true;
+      }, 0);
+
+      logService.logNavigation(
+        this.$store.state.payPatientForm.applicationUuid,
+        payPatientRoutes.CLAIM_COUNT_PAGE.path,
+        payPatientRoutes.CLAIM_COUNT_PAGE.title
+      );
+    }
   },
   validations() {
     const validations = {
