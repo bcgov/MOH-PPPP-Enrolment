@@ -146,6 +146,11 @@ export const commonRoutes = {
     title: 'Maintenance',
     name: 'MaintenancePage'
   },
+  SPECIFIC_PAGE_NOT_FOUND_PAGE: {
+    path: '/pagenotfound',
+    title: 'Page not found ',
+    name: 'PageNotFoundPage '
+  },
   PAGE_NOT_FOUND_PAGE: {
     path: '*',
     title: 'Page not found',
