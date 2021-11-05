@@ -2,7 +2,6 @@ import router from "@/router";
 import { commonRoutes } from "@/router/routes";
 import * as stepRoutes from "@/router/step-routes";
 import pageStateService from "@/services/page-state-service";
-import { cloneDeep } from "lodash";
 //using jest to mock
 
 const mockPageStateService = jest
