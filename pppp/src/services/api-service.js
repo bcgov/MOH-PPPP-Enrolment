@@ -18,6 +18,27 @@ class ApiService {
     return this._sendPostRequest(`${VALIDATE_APPLICATION_URL}/${applicationUuid}`, token, jsonPayload);
   }
 
+  filterSpecialChar(value) {
+    // eslint says there are unnecessary escapes a few lines from now. 
+    // this is false. the escapes change the way the regex works and are important
+    // eslint-disable-next-line 
+    const criteria = /[0-9a-zA-Z!@#\$%&\*\(\)\-_\+=\{\}\[\]\|:;'<>,\.\?\/~` ]/;
+    let resultArray = [];
+
+    if (!value || !value.length) {
+      return value;
+    }
+
+    for (let i = 0; i < value.length; i++) {
+      const subResult = criteria.test(value[i]);
+      if (subResult) {
+        resultArray.push (value[i])
+      }
+    }
+    const resultJoin = resultArray.join('');
+    return resultJoin;
+  }
+
   submitPayPatientApplication(token, formState) {
     const applicationUuid = formState.applicationUuid;
     const jsonPayload = {
@@ -35,10 +56,10 @@ class ApiService {
         lastName: formState.lastName || '',
         birthDate: formatISODate(formState.birthDate) || '',
         addressOwner: formState.addressOwner || '',
-        unitNumber: formState.unitNumber || '',
-        streetNumber: formState.streetNumber || '',
-        streetName: formState.streetName || '',
-        city: formState.city || '',
+        unitNumber: this.filterSpecialChar(formState.unitNumber) || '',
+        streetNumber: this.filterSpecialChar(formState.streetNumber) || '',
+        streetName: this.filterSpecialChar(formState.streetName) || '',
+        city: this.filterSpecialChar(formState.city) || '',
         postalCode: stripSpaces(formState.postalCode) || '',
         isVehicleAccident: formState.isVehicleAccident || '',
         vehicleAccidentClaimNumber: formState.vehicleAccidentClaimNumber || '',
@@ -72,7 +93,7 @@ class ApiService {
         locationOfService: claim.locationOfService || '',
         correspondenceAttached: claim.correspondenceAttached || '',
         submissionCode: claim.submissionCode || '',
-        notes: claim.notes || '',
+        notes: this.filterSpecialChar(claim.notes) || '',
       });
     }
     return this._sendPostRequest(`${SUBMIT_PAY_PATIENT_APPLICATION_URL}/${applicationUuid}`, token, jsonPayload);
@@ -129,7 +150,7 @@ class ApiService {
         locationOfService: claim.locationOfService || '',
         correspondenceAttached: claim.correspondenceAttached || '',
         submissionCode: claim.submissionCode || '',
-        notes: claim.notes || '',
+        notes: this.filterSpecialChar(claim.notes) || '',
       });
     }
     for (let i=0; i<formState.hospitalVisitClaims.length; i++) {
@@ -147,7 +168,7 @@ class ApiService {
         locationOfService: claim.locationOfService || '',
         correspondenceAttached: claim.correspondenceAttached || '',
         submissionCode: claim.submissionCode || '',
-        notes: claim.notes || '',
+        notes: this.filterSpecialChar(claim.notes) || '',
       });
     }
     return this._sendPostRequest(`${SUBMIT_PAY_PRACTITIONER_APPLICATION_URL}/${applicationUuid}`, token, jsonPayload);

@@ -1,8 +1,9 @@
 <template>
   <div>
     <div :aria-hidden="[isConsentModalOpen]">
-      <Header :title='pageTitle'
-              imagePath='/pppp/images/' />
+      <Header :title='this.pageTitle()'
+              imagePath='/pppp/images/' 
+              :key="$route.fullPath"/>
       <div class="container stepper">
         <PageStepper :currentPath='$router.currentRoute.path'
                     :routes='stepRoutes'
@@ -15,10 +16,11 @@
       </main>
       <Footer :version='version' />
     </div>
-    <ConsentModal v-if="isConsentModalOpen"
+    <ConsentModal v-if="this.isConsentModalOpen()"
                   :applicationUuid="applicationUuid"
                   @close="handleCloseConsentModal"
-                  @captchaVerified="handleCaptchaVerified" />
+                  @captchaVerified="handleCaptchaVerified" 
+                  :key="$route.fullPath"/>
   </div>
 </template>
 
@@ -77,7 +79,7 @@ export default {
     };
   },
   created() {
-    document.title = this.pageTitle;
+    document.title = this.pageTitle();
 
     this.applicationUuid = uuidv4();
     this.$store.dispatch(payPatientModule + '/' + SET_APPLICATION_UUID, this.applicationUuid);
@@ -93,6 +95,11 @@ export default {
       }
       return [];
     },
+    isMobileStepperOpen() {
+      return this.$store.state.app.showMobileStepperDetails;
+    },
+  },
+  methods: {
     pageTitle() {
       const currentPath = this.$router.currentRoute.path;
       if (currentPath.includes(PAY_PATIENT_BASE_URL)) {
@@ -101,9 +108,6 @@ export default {
         return isCSR(currentPath) ? 'Pay Practitioner Claim - CSR' : 'Pay Practitioner Claim';
       }
       return '';
-    },
-    isMobileStepperOpen() {
-      return this.$store.state.app.showMobileStepperDetails;
     },
     isConsentModalOpen() {
       const currentPath = this.$router.currentRoute.path;
@@ -114,8 +118,6 @@ export default {
       }
       return false;
     },
-  },
-  methods: {
     handleToggleShowMobileStepperDetails(isDetailsShown) {
       this.$store.dispatch(appModule + '/' + SET_SHOW_MOBILE_STEPPER_DETAILS, isDetailsShown);
     },

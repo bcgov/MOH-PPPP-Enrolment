@@ -69,7 +69,7 @@ import {
 } from '@/store/modules/pay-practitioner-form';
 import logService from '@/services/log-service';
 import { required } from 'vuelidate/lib/validators';
-import { getConvertedPath } from '@/helpers/url';
+import { getConvertedPath, isCSR } from '@/helpers/url';
 
 const atLeastOneClaimValidator = (vm) => {
   if ( vm.medicalServiceClaimsCount
@@ -104,12 +104,29 @@ export default {
     };
   },
   created() {
-    if (this.isFirstLoad()) {
+    if (this.isFirstLoad() || isCSR(this.$router.currentRoute.path)) {
       // Load environment variables, and route to maintenance page.
       spaEnvService.loadEnvs()
         .then(() => {
-          if (spaEnvService.values && spaEnvService.values.SPA_ENV_OOP_MAINTENANCE_FLAG === 'true') {
-            const toPath = commonRoutes.MAINTENANCE_PAGE.path;
+          //if it's the first time the page is loading, check if it needs to redirect to Maintenance
+          if (this.isFirstLoad()) {
+            if (
+              spaEnvService.values &&
+              spaEnvService.values.SPA_ENV_OOP_MAINTENANCE_FLAG === "true"
+            ) {
+              const toPath = payPractitionerRoutes.MAINTENANCE_PAGE.path;
+              pageStateService.setPageComplete(toPath);
+              pageStateService.visitPage(toPath);
+              this.$router.push(toPath);
+            }
+          }
+          //if this is a CSR path, check if it needs to redirect to Page not found
+          if (
+            spaEnvService.values &&
+            spaEnvService.values.SPA_ENV_PPPP_IS_CSR_ENABLED === "false" &&
+            isCSR(this.$router.currentRoute.path)
+          ) {
+            const toPath = commonRoutes.SPECIFIC_PAGE_NOT_FOUND_PAGE.path ; //commonRoutes.PAGE_NOT_FOUND_PAGE.path
             pageStateService.setPageComplete(toPath);
             pageStateService.visitPage(toPath);
             this.$router.push(toPath);
@@ -120,6 +137,10 @@ export default {
             event: 'HTTP error getting values from spa-env-server',
             status: error.response.status,
           });
+          const toPath = commonRoutes.SPECIFIC_PAGE_NOT_FOUND_PAGE.path;
+          pageStateService.setPageComplete(toPath);
+          pageStateService.visitPage(toPath);
+          this.$router.push(toPath);
         });
     }
     this.applicationUuid = this.$store.state.payPractitionerForm.applicationUuid;

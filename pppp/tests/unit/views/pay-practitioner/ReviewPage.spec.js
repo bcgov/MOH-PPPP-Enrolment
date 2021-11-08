@@ -117,12 +117,21 @@ const mockResponseMisc = {
   data: {
     applicationUuid: "ed8fcf17-fb1f-4b3d-93aa-1ba5fbfb2898",
     requestUuid: "d88ecb3b-0ce5-4849-a349-e91fd7b11618",
-    returnCode: "potato",
-    returnMessage: "Success",
-    planReferenceNumber: "1270900001",
+    returnCode: "-1",
+    returnMessage: "Error message",
   },
   status: 200,
   statusText: "OK",
+};
+
+const mockResponseDBErrorPrnPresent = {
+  data: {
+    applicationUuid: "80b041ce-d638-5961-e881-4b55d32c8cd2",
+    requestUuid: "01b041ce-d638-5961-e891-4b55d32c8cd2",
+    returnCode: "404",
+    returnMessage: "Not Found",
+    planReferenceNumber: "1301900007",
+  },
 };
 
 const next = jest.fn();
@@ -610,6 +619,7 @@ describe("ReviewPage.vue pay practitioner submitForm()", () => {
     wrapper.vm.submitForm();
     await wrapper.vm.$nextTick;
     expect(spyOnNavigateToSubmissionErrorPage).toHaveBeenCalled();
+    expect(spyOnNavigateToSubmissionPage).not.toHaveBeenCalled();
   });
 
   it("calls logServiceError on misc error", async () => {
@@ -619,6 +629,29 @@ describe("ReviewPage.vue pay practitioner submitForm()", () => {
     wrapper.vm.submitForm();
     await wrapper.vm.$nextTick;
     expect(spyOnLogServiceError).toHaveBeenCalled();
+  });
+
+  it("calls logServiceError on DB Error PRN Present error", async () => {
+    jest
+      .spyOn(apiService, "submitPayPractitionerApplication")
+      .mockImplementationOnce(() =>
+        Promise.resolve(mockResponseDBErrorPrnPresent)
+      );
+    wrapper.vm.submitForm();
+    await wrapper.vm.$nextTick;
+    expect(spyOnLogServiceError).toHaveBeenCalled();
+  });
+
+  it("calls spyOnNavigateToSubmissionPage on DB Error PRN Present error", async () => {
+    jest
+      .spyOn(apiService, "submitPayPractitionerApplication")
+      .mockImplementationOnce(() =>
+        Promise.resolve(mockResponseDBErrorPrnPresent)
+      );
+    wrapper.vm.submitForm();
+    await wrapper.vm.$nextTick;
+    expect(spyOnNavigateToSubmissionPage).toHaveBeenCalled();
+    expect(spyOnNavigateToSubmissionErrorPage).not.toHaveBeenCalled();
   });
 
   //had difficulty replicating the conditions for an http error

@@ -48,6 +48,11 @@ const routeCollection = [
     component: MaintenancePage
   },
   {
+    path: commonRoutes.SPECIFIC_PAGE_NOT_FOUND_PAGE.path,
+    name: commonRoutes.SPECIFIC_PAGE_NOT_FOUND_PAGE.name,
+    component: PageNotFoundPage
+  },
+  {
     path: commonRoutes.PAGE_NOT_FOUND_PAGE.path,
     name: commonRoutes.PAGE_NOT_FOUND_PAGE.name,
     component: PageNotFoundPage
@@ -189,6 +194,10 @@ const router = new VueRouter({
 });
 
 router.beforeEach((to, from, next) => {
+  //if it's supposed to redirect to page not found, don't stop it
+  if (to.path.includes(commonRoutes.SPECIFIC_PAGE_NOT_FOUND_PAGE.path)) {
+    return next();
+  } 
   // Home redirects.
   if (to.path.includes(PAY_PATIENT_CSR_BASE_URL)
     && to.path !== payPatientCSRRoutes.HOME_PAGE.path
@@ -210,7 +219,6 @@ router.beforeEach((to, from, next) => {
     && !pageStateService.isPageVisited(to.path)) {
     next({ path: payPractitionerRoutes.HOME_PAGE.path });
   }
-  
   // Catch-all (navigation).
   else {
     next();

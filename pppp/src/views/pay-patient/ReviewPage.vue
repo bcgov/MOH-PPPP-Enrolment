@@ -120,7 +120,11 @@ export default {
                 event: 'submission failure',
                 response: response.data,
               });
-              this.navigateToSubmissionErrorPage();
+              if (planReferenceNumber) {
+                this.navigateToSubmissionPage();
+              } else {
+                this.navigateToSubmissionErrorPage();
+              }              
               break;
           }
         })
