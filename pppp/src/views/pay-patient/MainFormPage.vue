@@ -304,7 +304,7 @@
                 v-if="v.diagnosticCode.$dirty && !v.diagnosticCode.required"
                 aria-live="assertive">Diagnostic code is required.</div>
             <div class="text-danger"
-                v-if="v.diagnosticCode.$dirty && v.diagnosticCode.required && !v.diagnosticCode.diagnosticCodeValidator"
+                v-if="v.diagnosticCode.$dirty && ((v.diagnosticCode.required && !v.diagnosticCode.diagnosticCodeValidator) || !v.diagnosticCode.alphanumericValidator)"
                 aria-live="assertive">Diagnostic code must be valid.</div>
             <Select label='Service Location Code:'
                   :id='"location-of-service-" + index'
@@ -659,6 +659,7 @@ import {
   serviceLocationCodeValidator,
   specialtyCodeValidator,
   submissionCodeValidator,
+  validateIf
 } from '@/helpers/validators';
 import {
   selectOptionsSubmissionCode,
@@ -1050,14 +1051,15 @@ export default {
           },
           diagnosticCode: {
             required: requiredIf(() => !isCSR(this.$router.currentRoute.path)),
-            diagnosticCodeValidator: optionalValidator(diagnosticCodeValidator),
+            alphanumericValidator: optionalValidator(alphanumericValidator),
+            diagnosticCodeValidator: optionalValidator(validateIf(!isCSR(this.$router.currentRoute.path), diagnosticCodeValidator)),
           },
           locationOfService: {
             required: requiredIf(() => !isCSR(this.$router.currentRoute.path)),
             serviceLocationCodeValidator,
           },
           serviceClarificationCode: {
-            clarificationCodeValidator: optionalValidator(clarificationCodeValidator),
+            clarificationCodeValidator: optionalValidator(clarificationCodeValidator(isCSR(this.$router.currentRoute.path))),
           },
           submissionCode: {
             submissionCodeValidator,
@@ -1088,8 +1090,8 @@ export default {
       },
       practitionerSpecialtyCode: {
         alphanumericValidator: optionalValidator(alphanumericValidator),
-        minLength: optionalValidator(minLength(2)),
-        specialtyCodeValidator: optionalValidator(specialtyCodeValidator),
+        minLength: optionalValidator(validateIf(!isCSR(this.$router.currentRoute.path), minLength(2))),
+        specialtyCodeValidator: optionalValidator(validateIf(!isCSR(this.$router.currentRoute.path), specialtyCodeValidator)),
       },
       referredByFirstNameInitial: {
         alphaValidator: optionalValidator(alphaValidator),

@@ -65,23 +65,51 @@ describe("validators.js clinicNameValidator()", () => {
 });
 
 describe("validators.js clarificationCodeValidator()", () => {
+  const isCSRFunction = clarificationCodeValidator(true);
+  const isNotCSRFunction = clarificationCodeValidator(false);
+
   afterEach(() => {
     jest.resetModules();
   });
 
-  it("returns false if given an empty value", () => {
-    const result = clarificationCodeValidator();
+  it("returns false if given an empty value (not CSR)", () => { 
+    const result = isNotCSRFunction("")
     expect(result).toEqual(false);
   });
 
-  it("returns false if given a value that's not on the list", () => {
-    const result = clarificationCodeValidator("potato");
+  it("returns false if given an empty value (CSR)", () => { 
+    const result = isCSRFunction("")
     expect(result).toEqual(false);
   });
 
-  it("returns true if given a value that is on the list", () => {
-    const result = clarificationCodeValidator("AC");
+  it("returns false if given a value that's not on the list (not CSR)", () => {
+    const result = isNotCSRFunction("potato");
+    expect(result).toEqual(false);
+  });
+
+  it("returns true if given an alphanumeric value that's not on the list (CSR)", () => {
+    const result = isCSRFunction("potato");
     expect(result).toEqual(true);
+  });
+
+  it("returns true if given a value that is on the list (not CSR)", () => {
+    const result = isNotCSRFunction("AC");
+    expect(result).toEqual(true);
+  });
+
+  it("returns true if given a value that is on the list (CSR)", () => {
+    const result = isCSRFunction("AC");
+    expect(result).toEqual(true);
+  });
+
+  it("returns false if given a non-alphanumeric value (not CSR)", () => { 
+    const result = isNotCSRFunction("$$")
+    expect(result).toEqual(false);
+  });
+
+  it("returns false if given a non-alphanumeric value (CSR)", () => { 
+    const result = isCSRFunction("$$")
+    expect(result).toEqual(false);
   });
 });
 
