@@ -1453,7 +1453,7 @@ export default {
             hospitalVisitLocationCodeValidator,
           },
           serviceClarificationCode: {
-            clarificationCodeValidator: optionalValidator(clarificationCodeValidator),
+            clarificationCodeValidator: optionalValidator(clarificationCodeValidator(isCSR(this.$router.currentRoute.path))),
           },
           submissionCode: {
             hospitalVisitSubmissionCodeValidator,
