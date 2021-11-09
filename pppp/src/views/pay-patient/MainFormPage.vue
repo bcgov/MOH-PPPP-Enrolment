@@ -1062,7 +1062,7 @@ export default {
             clarificationCodeValidator: optionalValidator(clarificationCodeValidator(isCSR(this.$router.currentRoute.path))),
           },
           submissionCode: {
-            submissionCodeValidator,
+            submissionCodeValidator: validateIf(!isCSR(this.$router.currentRoute.path), submissionCodeValidator),
           },
           notes: {
             maxLength: maxLength(400),
@@ -1343,7 +1343,9 @@ export default {
     isSubmissionCodeRequired(index) {
       const past90Days = subDays(startOfToday(), 90);
       let serviceDate = this.medicalServiceClaims[index].serviceDate;
-      if (!serviceDate) {
+      if (!serviceDate 
+      || isCSR(this.$router.currentRoute.path)
+      ) {
         return false;
       }
       return isBefore(serviceDate, addDays(past90Days, 1));
