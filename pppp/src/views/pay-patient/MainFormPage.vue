@@ -1343,9 +1343,7 @@ export default {
     isSubmissionCodeRequired(index) {
       const past90Days = subDays(startOfToday(), 90);
       let serviceDate = this.medicalServiceClaims[index].serviceDate;
-      if (!serviceDate 
-      || isCSR(this.$router.currentRoute.path)
-      ) {
+      if (!serviceDate || isCSR(this.$router.currentRoute.path)) {
         return false;
       }
       return isBefore(serviceDate, addDays(past90Days, 1));
