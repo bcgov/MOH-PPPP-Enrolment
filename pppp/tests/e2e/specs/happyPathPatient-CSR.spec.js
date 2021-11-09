@@ -100,5 +100,11 @@ describe("Pay Patient-CSR", () => {
     cy.location().should((loc) => {
       expect(loc.pathname).to.eq("/pppp/pay-patient-csr/submission");
     });
+
+    cy.get("[data-cy=newForm]").click();
+
+    cy.location().should((loc) => {
+      expect(loc.pathname).to.eq("/pppp/pay-patient-csr");
+    });
   });
 });

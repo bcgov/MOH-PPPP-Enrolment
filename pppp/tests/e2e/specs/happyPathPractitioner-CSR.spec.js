@@ -126,5 +126,11 @@ describe("Pay Practitioner-CSR", () => {
     cy.location().should((loc) => {
       expect(loc.pathname).to.eq("/pppp/pay-practitioner-csr/submission");
     });
+    
+    cy.get("[data-cy=newForm]").click();
+
+    cy.location().should((loc) => {
+      expect(loc.pathname).to.eq("/pppp/pay-practitioner-csr");
+    });
   });
 });
