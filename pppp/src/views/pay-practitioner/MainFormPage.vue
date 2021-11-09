@@ -1479,7 +1479,7 @@ export default {
             clarificationCodeValidator: optionalValidator(clarificationCodeValidator(isCSR(this.$router.currentRoute.path))),
           },
           submissionCode: {
-            hospitalVisitSubmissionCodeValidator,
+            hospitalVisitSubmissionCodeValidator: validateIf(!isCSR(this.$router.currentRoute.path), hospitalVisitSubmissionCodeValidator),
           },
           notes: {
             maxLength: maxLength(400),
@@ -1789,6 +1789,9 @@ export default {
       return isBefore(serviceDate, addDays(past90Days, 1));
     },
     isHospitalVisitSubmissionCodeRequired(index) {
+      if (isCSR(this.$router.currentRoute.path)) {
+        return false;
+      }
       const past90Days = subDays(startOfToday(), 90);
       const ISODateStr = getISODateString(
         this.hospitalVisitClaims[index].year,
