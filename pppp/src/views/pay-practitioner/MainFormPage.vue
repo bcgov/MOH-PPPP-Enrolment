@@ -313,7 +313,9 @@
                   :inputStyle='extraLargeStyles'
                   @blur='handleBlurField($v.medicalServiceClaims.$each[index].locationOfService)'>
               <template v-slot:description>
-                <p class="input-description">MSP Claims submitted with Service Location Code (<b>A</b>) for dates of service on or after October 1, 2021, will not be accepted.</p>
+                <p class="input-description" v-if="!isCSR">
+                  MSP Claims submitted with Service Location Code (<b>A</b>) for dates of service on or after October 1, 2021, will not be accepted.
+                </p>
               </template>
             </Select>
             <div class="text-danger"
@@ -590,7 +592,9 @@
                   :inputStyle='extraLargeStyles'
                   @blur='handleBlurField($v.hospitalVisitClaims.$each[index].locationOfService)'>
               <template v-slot:description>
-                <p class="input-description">MSP Claims submitted with Service Location Code (<b>A</b>) for dates of service on or after October 1, 2021, will not be accepted.</p>
+                <p class="input-description" v-if="!isCSR">
+                  MSP Claims submitted with Service Location Code (<b>A</b>) for dates of service on or after October 1, 2021, will not be accepted.
+                </p>
               </template>
             </Select>
             <div class="text-danger"
@@ -1377,7 +1381,7 @@ export default {
             serviceDateValidator: optionalValidator(serviceDateValidator),
             serviceDateFutureValidator: optionalValidator(serviceDateFutureValidator),
             distantPastValidator: optionalValidator(distantPastValidator),
-            serviceDateCutOffValidator: optionalValidator(serviceDateCutOffValidator),
+            serviceDateCutOffValidator: optionalValidator(validateIf(!isCSR(this.$router.currentRoute.path), serviceDateCutOffValidator)),
           },
           numberOfServices: {
             required: requiredIf(() => !isCSR(this.$router.currentRoute.path)),
@@ -1409,7 +1413,7 @@ export default {
           },
           locationOfService: {
             required: requiredIf(() => !isCSR(this.$router.currentRoute.path)),
-            serviceLocationCodeValidator,
+            serviceLocationCodeValidator: validateIf(!isCSR(this.$router.currentRoute.path), serviceLocationCodeValidator),
           },
           serviceClarificationCode: {
             clarificationCodeValidator: optionalValidator(clarificationCodeValidator(isCSR(this.$router.currentRoute.path))),
@@ -1429,7 +1433,7 @@ export default {
           hospitalVisitDateFutureValidator: hospitalVisitDateFutureValidator(isCSR(this.$router.currentRoute.path)),
           hospitalVisitDateToFutureValidator,
           hospitalVisitDateRangeValidator,
-          hospitalVisitDateCutOffValidator,
+          hospitalVisitDateCutOffValidator: optionalValidator(validateIf(!isCSR(this.$router.currentRoute.path), hospitalVisitDateCutOffValidator)),
           month: {
             required: requiredIf(() => !isCSR(this.$router.currentRoute.path)),
             positiveNumberValidator: optionalValidator(positiveNumberValidator),
@@ -1473,7 +1477,7 @@ export default {
           },
           locationOfService: {
             required: requiredIf(() => !isCSR(this.$router.currentRoute.path)),
-            hospitalVisitLocationCodeValidator,
+            hospitalVisitLocationCodeValidator: validateIf(!isCSR(this.$router.currentRoute.path), hospitalVisitLocationCodeValidator),
           },
           serviceClarificationCode: {
             clarificationCodeValidator: optionalValidator(clarificationCodeValidator(isCSR(this.$router.currentRoute.path))),
