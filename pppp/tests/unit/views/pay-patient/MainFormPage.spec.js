@@ -192,6 +192,60 @@ describe("MainFormPage.vue handleInputPractitioner()", () => {
   });
 });
 
+describe("MainFormPage.vue handleInputServiceFeeItem()", () => {
+  // eslint-disable-next-line
+  let state;
+  let store;
+  let wrapper;
+
+  beforeEach(() => {
+    state = {
+      applicationUuid: null,
+    };
+    store = new Vuex.Store(storeTemplate);
+
+    wrapper = shallowMount(Page, {
+      store,
+      localVue,
+      mocks: mockRouter,
+    });
+  });
+
+  it("sets fee item validation to false", () => {
+    wrapper.vm.medicalServiceClaimsFeeItemValidationError[0] = true;
+    expect(wrapper.vm.medicalServiceClaimsFeeItemValidationError[0]).toEqual(true);
+    wrapper.vm.handleInputServiceFeeItem(0)
+    expect(wrapper.vm.medicalServiceClaimsFeeItemValidationError[0]).toEqual(false);
+  });
+});
+
+describe("MainFormPage.vue handleProcessBirthDate()", () => {
+  // eslint-disable-next-line
+  let state;
+  let store;
+  let wrapper;
+
+  beforeEach(() => {
+    state = {
+      applicationUuid: null,
+    };
+    store = new Vuex.Store(storeTemplate);
+
+    wrapper = shallowMount(Page, {
+      store,
+      localVue,
+      mocks: mockRouter,
+    });
+  });
+
+  it("sets data to equal value passed", () => {
+    wrapper.vm.birthDateData = "notPotato"
+    expect(wrapper.vm.birthDateData).toEqual("notPotato");
+    wrapper.vm.handleProcessBirthDate("potato")
+    expect(wrapper.vm.birthDateData).toEqual("potato");
+  });
+});
+
 // describe("MainFormPage.vue [[INSERT TITLE HERE]]", () => {
 //   // eslint-disable-next-line
 //   let state;
