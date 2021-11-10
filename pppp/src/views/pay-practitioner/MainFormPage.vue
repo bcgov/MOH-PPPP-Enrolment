@@ -1345,7 +1345,7 @@ export default {
       dependentNumber: {
         intValidator: optionalValidator(intValidator),
         positiveNumberValidator: optionalValidator(positiveNumberValidator),
-        dependentNumberValidator: optionalValidator(dependentNumberValidator),
+        dependentNumberValidator: optionalValidator(validateIf(!isCSR(this.$router.currentRoute.path), dependentNumberValidator)),
       },
       firstName: {
         required: requiredIf(() => !isCSR(this.$router.currentRoute.path)),
@@ -1387,7 +1387,7 @@ export default {
             required: requiredIf(() => !isCSR(this.$router.currentRoute.path)),
             intValidator: optionalValidator(intValidator),
             positiveNumberValidator: optionalValidator(positiveNumberValidator),
-            nonZeroNumberValidator: optionalValidator(nonZeroNumberValidator),
+            nonZeroNumberValidator: optionalValidator(validateIf(!isCSR(this.$router.currentRoute.path), nonZeroNumberValidator)),
           },
           feeItem: {
             required: requiredIf(() => !isCSR(this.$router.currentRoute.path)),
@@ -1457,7 +1457,7 @@ export default {
             required: requiredIf(() => !isCSR(this.$router.currentRoute.path)),
             intValidator: optionalValidator(intValidator),
             positiveNumberValidator: optionalValidator(positiveNumberValidator),
-            nonZeroNumberValidator: optionalValidator(nonZeroNumberValidator),
+            nonZeroNumberValidator: optionalValidator(validateIf(!isCSR(this.$router.currentRoute.path), nonZeroNumberValidator)),
           },
           feeItem: {
             required: requiredIf(() => !isCSR(this.$router.currentRoute.path)),
@@ -1593,6 +1593,12 @@ export default {
         if (this.medicalServiceClaims[i].feeItem) {
           this.medicalServiceClaims[i].feeItem = padLeadingZeros(this.medicalServiceClaims[i].feeItem, 5);
         }
+
+        // Set default "numberOfServices" to 00 
+        if (!this.medicalServiceClaims[i].numberOfServices) {
+          this.medicalServiceClaims[i].numberOfServices = '00';
+        }
+
         // Set default "calledStartTime" to "00:00".
         if (!this.medicalServiceClaims[i].calledStartTime
           || (
@@ -1625,6 +1631,11 @@ export default {
         // Pad Fee Items with leading zeros.
         if (this.hospitalVisitClaims[i].feeItem) {
           this.hospitalVisitClaims[i].feeItem = padLeadingZeros(this.hospitalVisitClaims[i].feeItem, 5);
+        }
+
+        // Set default "numberOfServices" to 00 
+        if (!this.hospitalVisitClaims[i].numberOfServices) {
+          this.hospitalVisitClaims[i].numberOfServices = '00';
         }
       }
       
