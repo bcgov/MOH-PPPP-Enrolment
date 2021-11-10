@@ -46,10 +46,10 @@ const mockRouter = {
       path: "/potato-csr",
     },
   },
-}
+};
 
 describe("MainFormPage.vue pay patient", () => {
-   // eslint-disable-next-line
+  // eslint-disable-next-line
   let state;
   let store;
   let wrapper;
@@ -63,17 +63,17 @@ describe("MainFormPage.vue pay patient", () => {
     wrapper = shallowMount(Page, {
       store,
       localVue,
-      mocks: mockRouter
-    })
+      mocks: mockRouter,
+    });
   });
 
-  it("renders", () => {    
+  it("renders", () => {
     expect(wrapper.element).toBeDefined();
   });
 });
 
 describe("MainFormPage.vue pay patient created()", () => {
-   // eslint-disable-next-line
+  // eslint-disable-next-line
   let state;
   let store;
   let wrapper;
@@ -88,8 +88,8 @@ describe("MainFormPage.vue pay patient created()", () => {
     wrapper = shallowMount(Page, {
       store,
       localVue,
-      mocks: mockRouter
-    })
+      mocks: mockRouter,
+    });
   });
 
   afterEach(() => {
@@ -97,14 +97,26 @@ describe("MainFormPage.vue pay patient created()", () => {
     jest.clearAllMocks();
   });
 
-  it("assigns data the values in the store", () => {    
+  it("assigns data the values in the store", () => {
     //I'm not gonna do all of them, but if these five are here, we're probably good
-    expect(wrapper.vm.planReferenceNumber).toEqual(storeTemplate.modules.payPatientForm.state.planReferenceNumber);
-    expect(wrapper.vm.phn).toEqual(storeTemplate.modules.payPatientForm.state.phn);
-    expect(wrapper.vm.vehicleAccidentClaimNumber).toEqual(storeTemplate.modules.payPatientForm.state.vehicleAccidentClaimNumber);
-    expect(wrapper.vm.practitionerPractitionerNumber).toEqual(storeTemplate.modules.payPatientForm.state.practitionerPractitionerNumber);
-    expect(wrapper.vm.referredToLastName).toEqual(storeTemplate.modules.payPatientForm.state.referredToLastName);
-    expect(wrapper.vm.medicalServiceClaimsFeeItemValidationError).toHaveLength(4);
+    expect(wrapper.vm.planReferenceNumber).toEqual(
+      storeTemplate.modules.payPatientForm.state.planReferenceNumber
+    );
+    expect(wrapper.vm.phn).toEqual(
+      storeTemplate.modules.payPatientForm.state.phn
+    );
+    expect(wrapper.vm.vehicleAccidentClaimNumber).toEqual(
+      storeTemplate.modules.payPatientForm.state.vehicleAccidentClaimNumber
+    );
+    expect(wrapper.vm.practitionerPractitionerNumber).toEqual(
+      storeTemplate.modules.payPatientForm.state.practitionerPractitionerNumber
+    );
+    expect(wrapper.vm.referredToLastName).toEqual(
+      storeTemplate.modules.payPatientForm.state.referredToLastName
+    );
+    expect(wrapper.vm.medicalServiceClaimsFeeItemValidationError).toHaveLength(
+      4
+    );
   });
 
   it("calls logNavigation", () => {
@@ -118,6 +130,61 @@ describe("MainFormPage.vue pay patient created()", () => {
   });
 });
 
-// it("title", () => {
-//   expect().toEqual();
+describe("MainFormPage.vue handleBlurField()", () => {
+  // eslint-disable-next-line
+  let state;
+  let store;
+  let wrapper;
+
+  const fakeTrueValidation = {
+    $touch: jest.fn
+  }
+  const spyOnTrueTouch = jest.spyOn(fakeTrueValidation, "$touch")
+
+  beforeEach(() => {
+    state = {
+      applicationUuid: null,
+    };
+    store = new Vuex.Store(storeTemplate);
+
+    wrapper = shallowMount(Page, {
+      store,
+      localVue,
+      mocks: mockRouter,
+    });
+  });
+
+  it("calls $touch when passed a validation", () => {
+    wrapper.vm.handleBlurField(fakeTrueValidation)
+    expect(spyOnTrueTouch).toHaveBeenCalled();
+  });
+
+  it("doesn't break when not passed a validation", () => {
+    wrapper.vm.handleBlurField()
+    expect(wrapper.element).toBeDefined();
+  });
+});
+
+// describe("MainFormPage.vue [[INSERT TITLE HERE]]", () => {
+//   // eslint-disable-next-line
+//   let state;
+//   let store;
+//   let wrapper;
+
+//   beforeEach(() => {
+//     state = {
+//       applicationUuid: null,
+//     };
+//     store = new Vuex.Store(storeTemplate);
+
+//     wrapper = shallowMount(Page, {
+//       store,
+//       localVue,
+//       mocks: mockRouter,
+//     });
+//   });
+
+//   it("title", () => {
+//     expect().toEqual();
+//   });
 // });
