@@ -137,9 +137,9 @@ describe("MainFormPage.vue handleBlurField()", () => {
   let wrapper;
 
   const fakeTrueValidation = {
-    $touch: jest.fn
-  }
-  const spyOnTrueTouch = jest.spyOn(fakeTrueValidation, "$touch")
+    $touch: jest.fn,
+  };
+  const spyOnTrueTouch = jest.spyOn(fakeTrueValidation, "$touch");
 
   beforeEach(() => {
     state = {
@@ -155,13 +155,40 @@ describe("MainFormPage.vue handleBlurField()", () => {
   });
 
   it("calls $touch when passed a validation", () => {
-    wrapper.vm.handleBlurField(fakeTrueValidation)
+    wrapper.vm.handleBlurField(fakeTrueValidation);
     expect(spyOnTrueTouch).toHaveBeenCalled();
   });
 
   it("doesn't break when not passed a validation", () => {
-    wrapper.vm.handleBlurField()
+    wrapper.vm.handleBlurField();
     expect(wrapper.element).toBeDefined();
+  });
+});
+
+describe("MainFormPage.vue handleInputPractitioner()", () => {
+  // eslint-disable-next-line
+  let state;
+  let store;
+  let wrapper;
+
+  beforeEach(() => {
+    state = {
+      applicationUuid: null,
+    };
+    store = new Vuex.Store(storeTemplate);
+
+    wrapper = shallowMount(Page, {
+      store,
+      localVue,
+      mocks: mockRouter,
+    });
+  });
+
+  it("sets isPractitionerErrorShown to false", () => {
+    wrapper.vm.isPractitionerErrorShown = true;
+    expect(wrapper.vm.isPractitionerErrorShown).toEqual(true);
+    wrapper.vm.handleInputPractitioner();
+    expect(wrapper.vm.isPractitionerErrorShown).toEqual(false);
   });
 });
 
