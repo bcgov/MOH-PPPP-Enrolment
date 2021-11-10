@@ -1345,7 +1345,7 @@ export default {
       dependentNumber: {
         intValidator: optionalValidator(intValidator),
         positiveNumberValidator: optionalValidator(positiveNumberValidator),
-        dependentNumberValidator: optionalValidator(dependentNumberValidator),
+        dependentNumberValidator: optionalValidator(validateIf(!isCSR(this.$router.currentRoute.path), dependentNumberValidator)),
       },
       firstName: {
         required: requiredIf(() => !isCSR(this.$router.currentRoute.path)),
