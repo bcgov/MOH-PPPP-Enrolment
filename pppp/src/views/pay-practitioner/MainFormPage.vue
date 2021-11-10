@@ -1387,7 +1387,7 @@ export default {
             required: requiredIf(() => !isCSR(this.$router.currentRoute.path)),
             intValidator: optionalValidator(intValidator),
             positiveNumberValidator: optionalValidator(positiveNumberValidator),
-            nonZeroNumberValidator: optionalValidator(nonZeroNumberValidator),
+            nonZeroNumberValidator: optionalValidator(validateIf(!isCSR(this.$router.currentRoute.path), nonZeroNumberValidator)),
           },
           feeItem: {
             required: requiredIf(() => !isCSR(this.$router.currentRoute.path)),
@@ -1457,7 +1457,7 @@ export default {
             required: requiredIf(() => !isCSR(this.$router.currentRoute.path)),
             intValidator: optionalValidator(intValidator),
             positiveNumberValidator: optionalValidator(positiveNumberValidator),
-            nonZeroNumberValidator: optionalValidator(nonZeroNumberValidator),
+            nonZeroNumberValidator: optionalValidator(validateIf(!isCSR(this.$router.currentRoute.path), nonZeroNumberValidator)),
           },
           feeItem: {
             required: requiredIf(() => !isCSR(this.$router.currentRoute.path)),
