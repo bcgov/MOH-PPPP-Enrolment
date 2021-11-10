@@ -49,6 +49,7 @@ const mockRouter = {
 }
 
 describe("MainFormPage.vue pay patient", () => {
+   // eslint-disable-next-line
   let state;
   let store;
   let wrapper;
@@ -72,9 +73,11 @@ describe("MainFormPage.vue pay patient", () => {
 });
 
 describe("MainFormPage.vue pay patient created()", () => {
+   // eslint-disable-next-line
   let state;
   let store;
   let wrapper;
+  jest.useFakeTimers();
 
   beforeEach(() => {
     state = {
@@ -106,6 +109,12 @@ describe("MainFormPage.vue pay patient created()", () => {
 
   it("calls logNavigation", () => {
     expect(spyOnLogNavigation).toHaveBeenCalled();
+  });
+
+  it("sets page loaded to true", async () => {
+    jest.advanceTimersByTime(5);
+    await wrapper.vm.$nextTick;
+    expect(wrapper.vm.isPageLoaded).toEqual(true);
   });
 });
 
