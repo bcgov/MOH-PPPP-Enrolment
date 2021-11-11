@@ -1,4 +1,3 @@
-//hold off on tests until Harry gives the all clear
 import { shallowMount, createLocalVue } from "@vue/test-utils";
 import Vuex from "vuex";
 import Vuelidate from "vuelidate";
@@ -154,6 +153,11 @@ describe("MainFormPage.vue handleBlurField()", () => {
     });
   });
 
+  afterEach(() => {
+    jest.resetModules();
+    jest.clearAllMocks();
+  });
+
   it("calls $touch when passed a validation", () => {
     wrapper.vm.handleBlurField(fakeTrueValidation);
     expect(spyOnTrueTouch).toHaveBeenCalled();
@@ -184,6 +188,11 @@ describe("MainFormPage.vue handleInputPractitioner()", () => {
     });
   });
 
+  afterEach(() => {
+    jest.resetModules();
+    jest.clearAllMocks();
+  });
+
   it("sets isPractitionerErrorShown to false", () => {
     wrapper.vm.isPractitionerErrorShown = true;
     expect(wrapper.vm.isPractitionerErrorShown).toEqual(true);
@@ -209,6 +218,11 @@ describe("MainFormPage.vue handleInputServiceFeeItem()", () => {
       localVue,
       mocks: mockRouter,
     });
+  });
+
+  afterEach(() => {
+    jest.resetModules();
+    jest.clearAllMocks();
   });
 
   it("sets fee item validation to false", () => {
@@ -238,11 +252,49 @@ describe("MainFormPage.vue handleProcessBirthDate()", () => {
     });
   });
 
+  afterEach(() => {
+    jest.resetModules();
+    jest.clearAllMocks();
+  });
+
   it("sets data to equal value passed", () => {
     wrapper.vm.birthDateData = "notPotato"
     expect(wrapper.vm.birthDateData).toEqual("notPotato");
     wrapper.vm.handleProcessBirthDate("potato")
     expect(wrapper.vm.birthDateData).toEqual("potato");
+  });
+});
+
+describe("MainFormPage.vue handleProcessServiceDate()", () => {
+  // eslint-disable-next-line
+  let state;
+  let store;
+  let wrapper;
+
+  beforeEach(() => {
+    state = {
+      applicationUuid: null,
+    };
+    store = new Vuex.Store(storeTemplate);
+
+    wrapper = shallowMount(Page, {
+      store,
+      localVue,
+      mocks: mockRouter,
+    });
+  });
+
+  afterEach(() => {
+    jest.resetModules();
+    jest.clearAllMocks();
+  });
+
+  it("sets serviceDateData to value passed", () => {
+    const claimIndex = 0;
+
+    wrapper.vm.medicalServiceClaims[claimIndex].serviceDateData = "notPotato"
+    wrapper.vm.handleProcessServiceDate("potato", claimIndex)
+    expect(wrapper.vm.medicalServiceClaims[claimIndex].serviceDateData).toEqual("potato");
   });
 });
 
@@ -263,6 +315,11 @@ describe("MainFormPage.vue handleProcessBirthDate()", () => {
 //       localVue,
 //       mocks: mockRouter,
 //     });
+//   });
+
+//   afterEach(() => {
+//     jest.resetModules();
+//     jest.clearAllMocks();
 //   });
 
 //   it("title", () => {
