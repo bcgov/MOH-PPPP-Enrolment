@@ -16,6 +16,15 @@ jest.mock("axios", () => ({
   }),
 }));
 
+const scrollHelper = require("@/helpers/scroll");
+
+jest.mock("@/helpers/scroll", () => ({
+  scrollTo: jest.fn(),
+  scrollToError: jest.fn(),
+}));
+
+const spyOnScrollToError = jest.spyOn(scrollHelper, "scrollToError");
+
 const localVue = createLocalVue();
 localVue.use(Vuex);
 localVue.use(Vuelidate);
@@ -227,9 +236,13 @@ describe("MainFormPage.vue handleInputServiceFeeItem()", () => {
 
   it("sets fee item validation to false", () => {
     wrapper.vm.medicalServiceClaimsFeeItemValidationError[0] = true;
-    expect(wrapper.vm.medicalServiceClaimsFeeItemValidationError[0]).toEqual(true);
-    wrapper.vm.handleInputServiceFeeItem(0)
-    expect(wrapper.vm.medicalServiceClaimsFeeItemValidationError[0]).toEqual(false);
+    expect(wrapper.vm.medicalServiceClaimsFeeItemValidationError[0]).toEqual(
+      true
+    );
+    wrapper.vm.handleInputServiceFeeItem(0);
+    expect(wrapper.vm.medicalServiceClaimsFeeItemValidationError[0]).toEqual(
+      false
+    );
   });
 });
 
@@ -258,9 +271,9 @@ describe("MainFormPage.vue handleProcessBirthDate()", () => {
   });
 
   it("sets data to equal value passed", () => {
-    wrapper.vm.birthDateData = "notPotato"
+    wrapper.vm.birthDateData = "notPotato";
     expect(wrapper.vm.birthDateData).toEqual("notPotato");
-    wrapper.vm.handleProcessBirthDate("potato")
+    wrapper.vm.handleProcessBirthDate("potato");
     expect(wrapper.vm.birthDateData).toEqual("potato");
   });
 });
@@ -292,9 +305,106 @@ describe("MainFormPage.vue handleProcessServiceDate()", () => {
   it("sets serviceDateData to value passed", () => {
     const claimIndex = 0;
 
-    wrapper.vm.medicalServiceClaims[claimIndex].serviceDateData = "notPotato"
-    wrapper.vm.handleProcessServiceDate("potato", claimIndex)
-    expect(wrapper.vm.medicalServiceClaims[claimIndex].serviceDateData).toEqual("potato");
+    wrapper.vm.medicalServiceClaims[claimIndex].serviceDateData = "notPotato";
+    wrapper.vm.handleProcessServiceDate("potato", claimIndex);
+    expect(wrapper.vm.medicalServiceClaims[claimIndex].serviceDateData).toEqual(
+      "potato"
+    );
+  });
+});
+
+describe("MainFormPage.vue validateFields()", () => {
+  // eslint-disable-next-line
+  let state;
+  let store;
+  let wrapper;
+
+  const passingData = {
+    phn: "9999 999 998",
+    dependentNumber: "66",
+    firstName: "Bob",
+    middleInitial: "H",
+    lastName: "Smith",
+    birthDate: new Date("2000-01-01"),
+
+    addressOwner: "PATIENT",
+    unitNumber: "123",
+    streetNumber: "321",
+    streetName: "Fake St.",
+    city: "Victoria",
+    postalCode: "V8V 8V8",
+
+    isVehicleAccident: "Y",
+    vehicleAccidentClaimNumber: "A0000001",
+
+    planReferenceNumberOfOriginalClaim: "321",
+
+    medicalServiceClaims: [
+      {
+        serviceDate: new Date(),
+        numberOfServices: "1",
+        serviceClarificationCode: "A1",
+        feeItem: "00010",
+        amountBilled: "0.00",
+        calledStartTime: {
+          hour: "08",
+          minute: "01",
+        },
+        renderedFinishTime: {
+          hour: "16",
+          minute: "05",
+        },
+        diagnosticCode: "001",
+        locationOfService: "A",
+        correspondenceAttached: null,
+        submissionCode: "I",
+        notes: "Notes here.",
+      },
+    ],
+
+    practitionerLastName: "GOTTNER",
+    practitionerFirstName: "MICHAEL",
+    practitionerPaymentNumber: "00001",
+    practitionerPractitionerNumber: "00001",
+    practitionerFacilityNumber: "12345",
+    practitionerSpecialtyCode: "99",
+
+    referredByFirstNameInitial: "R",
+    referredByLastName: "McDonald",
+    referredByPractitionerNumber: "22271",
+
+    referredToFirstNameInitial: "C",
+    referredToLastName: "Lee",
+    referredToPractitionerNumber: "22272",
+  };
+
+  beforeEach(() => {
+    state = {
+      applicationUuid: null,
+    };
+    store = new Vuex.Store(storeTemplate);
+
+    wrapper = shallowMount(Page, {
+      store,
+      localVue,
+      mocks: mockRouter,
+    });
+  });
+
+  afterEach(() => {
+    jest.resetModules();
+    jest.clearAllMocks();
+  });
+
+  it("title", () => {
+    Object.assign(wrapper.vm, passingData);
+    wrapper.vm.validateFields();
+    console.log("avocado", JSON.stringify(wrapper.vm.$v, null, 4));
+    expect(spyOnScrollToError).not.toHaveBeenCalled();
+
+    /* 
+    service date and location of service currently invalid. wrapper.vm.$v shows the whole model if needed
+    */
   });
 });
 
