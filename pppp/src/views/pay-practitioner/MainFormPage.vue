@@ -1360,9 +1360,9 @@ export default {
       },
       birthDate: {
         required: requiredIf(() => !isCSR(this.$router.currentRoute.path)),
-        birthDatePastValidator: optionalValidator(birthDatePastValidator),
+        birthDatePastValidator: optionalValidator(validateIf(!isCSR(this.$router.currentRoute.path), birthDatePastValidator)),
         birthDateValidator,
-        distantPastValidator: optionalValidator(distantPastValidator),
+        distantPastValidator: optionalValidator(validateIf(!isCSR(this.$router.currentRoute.path), distantPastValidator)),
       },
       isVehicleAccident: {
         required: requiredIf(() => !isCSR(this.$router.currentRoute.path)),
