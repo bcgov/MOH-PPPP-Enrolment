@@ -1379,7 +1379,7 @@ export default {
           serviceDate: {
             required: requiredIf(() => !isCSR(this.$router.currentRoute.path)),
             serviceDateValidator: optionalValidator(serviceDateValidator),
-            serviceDateFutureValidator: optionalValidator(serviceDateFutureValidator),
+            serviceDateFutureValidator: optionalValidator(validateIf(!isCSR(this.$router.currentRoute.path), serviceDateFutureValidator)),
             distantPastValidator: optionalValidator(distantPastValidator),
             serviceDateCutOffValidator: optionalValidator(validateIf(!isCSR(this.$router.currentRoute.path), serviceDateCutOffValidator)),
           },
