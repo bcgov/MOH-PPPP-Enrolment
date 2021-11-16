@@ -1360,9 +1360,9 @@ export default {
       },
       birthDate: {
         required: requiredIf(() => !isCSR(this.$router.currentRoute.path)),
-        birthDatePastValidator: optionalValidator(birthDatePastValidator),
+        birthDatePastValidator: optionalValidator(validateIf(!isCSR(this.$router.currentRoute.path), birthDatePastValidator)),
         birthDateValidator,
-        distantPastValidator: optionalValidator(distantPastValidator),
+        distantPastValidator: optionalValidator(validateIf(!isCSR(this.$router.currentRoute.path), distantPastValidator)),
       },
       isVehicleAccident: {
         required: requiredIf(() => !isCSR(this.$router.currentRoute.path)),
@@ -1379,8 +1379,8 @@ export default {
           serviceDate: {
             required: requiredIf(() => !isCSR(this.$router.currentRoute.path)),
             serviceDateValidator: optionalValidator(serviceDateValidator),
-            serviceDateFutureValidator: optionalValidator(serviceDateFutureValidator),
-            distantPastValidator: optionalValidator(distantPastValidator),
+            serviceDateFutureValidator: optionalValidator(validateIf(!isCSR(this.$router.currentRoute.path), serviceDateFutureValidator)),
+            distantPastValidator: optionalValidator(validateIf(!isCSR(this.$router.currentRoute.path), distantPastValidator)),
             serviceDateCutOffValidator: optionalValidator(validateIf(!isCSR(this.$router.currentRoute.path), serviceDateCutOffValidator)),
           },
           numberOfServices: {
