@@ -9,10 +9,106 @@ import * as module2 from "../../../../src/store/modules/pay-patient-form";
 import * as module3 from "../../../../src/store/modules/pay-practitioner-form";
 import * as dummyDataValid from "../../../../src/store/states/pay-patient-form-dummy-data";
 
+const mockBackendValidationResponse = {
+  "data": {
+      "applicationUuid": "9f6b649b-c483-4327-b5a9-f5aa8d3bec13",
+      "requestUuid": "1dc94b87-86f9-4d92-a749-fb8b2fc1edaf",
+      "returnCode": "0",
+      "returnMessage": "Valid",
+      "practitionerFirstName": "Y",
+      "practitionerLastName": "Y",
+      "practitionerNumber": "Y",
+      "serviceFeeItem1": "Y",
+      "serviceFeeItem2": "",
+      "serviceFeeItem3": "",
+      "serviceFeeItem4": "",
+      "serviceLocationCode1": "",
+      "serviceLocationCode2": "",
+      "serviceLocationCode3": "",
+      "serviceLocationCode4": "",
+      "hospitalFeeItem1": "",
+      "hospitalFeeItem2": "",
+      "hospitalLocationCode1": "",
+      "hospitalLocationCode2": ""
+  },
+  "status": 200,
+  "statusText": "OK",
+  "headers": {
+      "accept": "application/json, text/plain, */*",
+      "accept-encoding": "gzip, deflate, br",
+      "accept-language": "en-US,en;q=0.9",
+      "access-control-allow-credentials": "true",
+      "access-control-allow-headers": "Accept,Authorization,Cache-Control,Content-Type,DNT,If-Modified-Since,Keep-Alive,Origin,User-Agent,X-Requested-With",
+      "access-control-allow-methods": "GET, POST, PUT, DELETE, OPTIONS",
+      "access-control-allow-origin": "https://my.gov.bc.ca",
+      "access-control-expose-headers": "Authorization",
+      "authorization": "Basic Z2NwZW1zcGRlOndlbGNvbWUx",
+      "breadcrumbid": "ID-vs-dapp041-maximusbchealth-local-1636494389451-0-269",
+      "cache-control": "no-store",
+      "connection": "close",
+      "content-security-policy": "default-src * data: blob: filesystem: 'unsafe-inline' 'unsafe-eval'",
+      "content-type": "application/json",
+      "date": "Tue, 16 Nov 2021 00:43:38 GMT",
+      "forwarded": "for=216.232.32.188;host=pppp-web-0752cb-dev.apps.silver.devops.gov.bc.ca;proto=https",
+      "origin": "http://localhost:8080",
+      "pragma": "no-cache",
+      "referer": "http://localhost:8080/pppp/pay-patient/main-form",
+      "response-type": "application/json",
+      "sec-ch-ua": "\"Google Chrome\";v=\"95\", \"Chromium\";v=\"95\", \";Not A Brand\";v=\"99\"",
+      "sec-ch-ua-mobile": "?0",
+      "sec-ch-ua-platform": "\"Windows\"",
+      "sec-fetch-dest": "empty",
+      "sec-fetch-mode": "cors",
+      "sec-fetch-site": "same-origin",
+      "server": "nginx",
+      "strict-transport-security": "max-age=86400; includeSubDomains",
+      "transfer-encoding": "chunked",
+      "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.69 Safari/537.36",
+      "uuid": "9f6b649b-c483-4327-b5a9-f5aa8d3bec13",
+      "x-content-type-options": "nosniff",
+      "x-forwarded-for": "127.0.0.1, 216.232.32.188",
+      "x-forwarded-host": "localhost:8080, pppp-web-0752cb-dev.apps.silver.devops.gov.bc.ca",
+      "x-forwarded-port": "8080, 443",
+      "x-forwarded-proto": "http, https",
+      "x-frame-options": "DENY",
+      "x-powered-by": "Servlet/3.1 JSP/2.3",
+      "x-weblogic-request-clusterinfo": "true",
+      "x-xss-protection": "1"
+  },
+  "config": {
+      "url": "/pppp/api/payformsIntegration/validateClaim/9f6b649b-c483-4327-b5a9-f5aa8d3bec13",
+      "method": "post",
+      "data": "{\"applicationUuid\":\"9f6b649b-c483-4327-b5a9-f5aa8d3bec13\",\"practitionerFirstName\":\"MICHAEL\",\"practitionerLastName\":\"GOTTNER\",\"practitionerNumber\":\"00001\",\"serviceFeeItem1\":\"00010\",\"serviceFeeItem2\":\"\",\"serviceFeeItem3\":\"\",\"serviceFeeItem4\":\"\",\"serviceLocationCode1\":\"\",\"serviceLocationCode2\":\"\",\"serviceLocationCode3\":\"\",\"serviceLocationCode4\":\"\",\"hospitalFeeItem1\":\"\",\"hospitalFeeItem2\":\"\",\"hospitalLocationCode1\":\"\",\"hospitalLocationCode2\":\"\",\"requestUuid\":\"1dc94b87-86f9-4d92-a749-fb8b2fc1edaf\"}",
+      "headers": {
+          "Accept": "application/json, text/plain, */*",
+          "Content-Type": "application/json",
+          "Response-Type": "application/json",
+          "X-Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7Im5vbmNlIjoiOWY2YjY0OWItYzQ4My00MzI3LWI1YTktZjVhYThkM2JlYzEzIn0sImlhdCI6MTYzNzAyMzMzOCwiZXhwIjoxNjM3MDM0MTM4fQ.ARc5LYhvmOAj-pCMnwbxNfpKnAk_g3ZTWHkoYWHp7EA"
+      },
+      "transformRequest": [
+          null
+      ],
+      "transformResponse": [
+          null
+      ],
+      "timeout": 0,
+      "xsrfCookieName": "XSRF-TOKEN",
+      "xsrfHeaderName": "X-XSRF-TOKEN",
+      "maxContentLength": -1,
+      "maxBodyLength": -1,
+      "transitional": {
+          "silentJSONParsing": true,
+          "forcedJSONParsing": true,
+          "clarifyTimeoutError": false
+      }
+  },
+  "request": {}
+}
+
 jest.mock("axios", () => ({
   get: jest.fn(),
   post: jest.fn(() => {
-    return Promise.resolve();
+    return Promise.resolve(mockBackendValidationResponse);
   }),
 }));
 
@@ -51,7 +147,8 @@ const mockRouter = {
   $router: {
     push: jest.fn(),
     currentRoute: {
-      path: "/potato-csr",
+      path: "/pay-patient/main-form",
+      // path: "/pay-patient-csr/main-form",
     },
   },
 };
@@ -313,11 +410,12 @@ describe("MainFormPage.vue handleProcessServiceDate()", () => {
   });
 });
 
-describe("MainFormPage.vue validateFields()", () => {
+describe("MainFormPage.vue validateFields() (public)", () => {
   // eslint-disable-next-line
   let state;
   let store;
   let wrapper;
+  let spyOnNavigateToNextPage
 
   const passingData = {
     phn: "9999 999 998",
@@ -355,7 +453,7 @@ describe("MainFormPage.vue validateFields()", () => {
           minute: "05",
         },
         diagnosticCode: "001",
-        locationOfService: "A",
+        locationOfService: "B",
         correspondenceAttached: null,
         submissionCode: "I",
         notes: "Notes here.",
@@ -378,6 +476,65 @@ describe("MainFormPage.vue validateFields()", () => {
     referredToPractitionerNumber: "22272",
   };
 
+  const failingData = {
+    phn: "",
+    dependentNumber: "",
+    firstName: "",
+    middleInitial: "",
+    lastName: "",
+    birthDate: new Date("2000-01-01"),
+
+    addressOwner: "",
+    unitNumber: "",
+    streetNumber: "",
+    streetName: "",
+    city: "",
+    postalCode: "",
+
+    isVehicleAccident: "",
+    vehicleAccidentClaimNumber: "",
+
+    planReferenceNumberOfOriginalClaim: "",
+
+    medicalServiceClaims: [
+      {
+        serviceDate: new Date("2000-01-01"),
+        numberOfServices: "",
+        serviceClarificationCode: "",
+        feeItem: "",
+        amountBilled: "",
+        calledStartTime: {
+          hour: "",
+          minute: "",
+        },
+        renderedFinishTime: {
+          hour: "",
+          minute: "",
+        },
+        diagnosticCode: "",
+        locationOfService: "",
+        correspondenceAttached: null,
+        submissionCode: "",
+        notes: "",
+      },
+    ],
+
+    practitionerLastName: "",
+    practitionerFirstName: "",
+    practitionerPaymentNumber: "",
+    practitionerPractitionerNumber: "",
+    practitionerFacilityNumber: "",
+    practitionerSpecialtyCode: "",
+
+    referredByFirstNameInitial: "",
+    referredByLastName: "",
+    referredByPractitionerNumber: "",
+
+    referredToFirstNameInitial: "",
+    referredToLastName: "",
+    referredToPractitionerNumber: "",
+  };
+
   beforeEach(() => {
     state = {
       applicationUuid: null,
@@ -389,6 +546,8 @@ describe("MainFormPage.vue validateFields()", () => {
       localVue,
       mocks: mockRouter,
     });
+
+    spyOnNavigateToNextPage = jest.spyOn(wrapper.vm, "navigateToNextPage")
   });
 
   afterEach(() => {
@@ -396,15 +555,21 @@ describe("MainFormPage.vue validateFields()", () => {
     jest.clearAllMocks();
   });
 
-  it("title", () => {
+  it.only("navigates successfully when data is good", async () => {
     Object.assign(wrapper.vm, passingData);
-    wrapper.vm.validateFields();
-    console.log("avocado", JSON.stringify(wrapper.vm.$v, null, 4));
+    await wrapper.vm.validateFields();
+    await wrapper.vm.$nextTick;
+    // console.log("avocado", JSON.stringify(wrapper.vm.$v, null, 4));
     expect(spyOnScrollToError).not.toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).toHaveBeenCalled();
+  });
 
-    /* 
-    service date and location of service currently invalid. wrapper.vm.$v shows the whole model if needed
-    */
+  it("does not navigate successfully when data is bad", async () => {
+    Object.assign(wrapper.vm, failingData);
+    await wrapper.vm.validateFields();
+    await wrapper.vm.$nextTick;
+    expect(spyOnScrollToError).toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
   });
 });
 
