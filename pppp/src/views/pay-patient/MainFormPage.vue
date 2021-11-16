@@ -1013,7 +1013,7 @@ export default {
         required: requiredIf(() => !isCSR(this.$router.currentRoute.path)),
       },
       vehicleAccidentClaimNumber: {
-        motorVehicleAccidentClaimNumberValidator: optionalValidator(motorVehicleAccidentClaimNumberValidator),
+        motorVehicleAccidentClaimNumberValidator: optionalValidator(validateIf(!isCSR(this.$router.currentRoute.path), motorVehicleAccidentClaimNumberValidator)),
       },
       planReferenceNumberOfOriginalClaim: {
         intValidator: optionalValidator(intValidator),
