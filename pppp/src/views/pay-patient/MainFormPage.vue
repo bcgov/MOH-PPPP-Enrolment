@@ -1088,7 +1088,7 @@ export default {
         minLength: minLength(5),
       },
       practitionerFacilityNumber: {
-        minLength: optionalValidator(minLength(5)),
+        minLength: optionalValidator(validateIf(!isCSR(this.$router.currentRoute.path), minLength(5))),
       },
       practitionerSpecialtyCode: {
         alphanumericValidator: optionalValidator(alphanumericValidator),
