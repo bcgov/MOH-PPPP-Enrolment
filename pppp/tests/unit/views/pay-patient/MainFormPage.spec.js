@@ -11,6 +11,8 @@ import * as dummyDataValid from "../../../../src/store/states/pay-patient-form-d
 import axios from "axios";
 import apiService from "@/services/api-service";
 
+const testDate = new Date().getFullYear() - 1;
+
 const mockBackendValidationResponse = {
   data: {
     applicationUuid: "9f6b649b-c483-4327-b5a9-f5aa8d3bec13",
@@ -799,8 +801,153 @@ describe("MainFormPage.vue validateFields(), public", () => {
     expect(spyOnScrollToError).toHaveBeenCalled();
     expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
   });
+
+  it("(PHN) flags invalid if not present", async () => {
+    Object.assign(wrapper.vm, passingData);
+    await wrapper.setData({ phn: '' })
+    await wrapper.vm.validateFields();
+    await wrapper.vm.$nextTick;
+    expect(spyOnScrollToError).toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
+  });
+
+  it("(PHN) flags invalid if invalid entry", async () => {
+    Object.assign(wrapper.vm, passingData);
+    await wrapper.setData({ phn: '9999 999 999' })
+    await wrapper.vm.validateFields();
+    await wrapper.vm.$nextTick;
+    expect(spyOnScrollToError).toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
+  });
+
+  it("(dependentNumber) flags invalid if non number", async () => {
+    Object.assign(wrapper.vm, passingData);
+    await wrapper.setData({ dependentNumber: 'a' })
+    await wrapper.vm.validateFields();
+    await wrapper.vm.$nextTick;
+    expect(spyOnScrollToError).toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
+  });
+
+  it("(dependentNumber) flags invalid if negative number", async () => {
+    Object.assign(wrapper.vm, passingData);
+    await wrapper.setData({ dependentNumber: '-2' })
+    await wrapper.vm.validateFields();
+    await wrapper.vm.$nextTick;
+    expect(spyOnScrollToError).toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
+  }); 
+  
+  it("(dependentNumber) flags invalid if not 00 or 66 with a PHN", async () => {
+    Object.assign(wrapper.vm, passingData);
+    await wrapper.setData({ dependentNumber: '55' })
+    await wrapper.vm.validateFields();
+    await wrapper.vm.$nextTick;
+    expect(spyOnScrollToError).toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
+  });
+
+  it("(firstName) flags invalid if not present", async () => {
+    Object.assign(wrapper.vm, passingData);
+    await wrapper.setData({ firstName: '' })
+    await wrapper.vm.validateFields();
+    await wrapper.vm.$nextTick;
+    expect(spyOnScrollToError).toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
+  });
+
+  it("(firstName) flags invalid if contains invalid characters", async () => {
+    Object.assign(wrapper.vm, passingData);
+    await wrapper.setData({ firstName: 'aaa^' })
+    await wrapper.vm.validateFields();
+    await wrapper.vm.$nextTick;
+    expect(spyOnScrollToError).toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
+  });
+
+  it("(firstName) flags valid if contains commas, dashes, or apostrophes and starts with a letter", async () => {
+    Object.assign(wrapper.vm, passingData);
+    await wrapper.setData({ firstName: `a-.' -.' `})
+    await wrapper.vm.validateFields();
+    await wrapper.vm.$nextTick;
+    expect(spyOnScrollToError).not.toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).toHaveBeenCalled();
+  });
+
+  it("(middleInitial) flags invalid if contains non-alphabetic character", async () => {
+    Object.assign(wrapper.vm, passingData);
+    await wrapper.setData({ middleInitial: `1`})
+    await wrapper.vm.validateFields();
+    await wrapper.vm.$nextTick;
+    expect(spyOnScrollToError).toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
+  });
+
+  it("(middleInitial) flags invalid if contains non-alphabetic character (2)", async () => {
+    Object.assign(wrapper.vm, passingData);
+    await wrapper.setData({ middleInitial: `^`})
+    await wrapper.vm.validateFields();
+    await wrapper.vm.$nextTick;
+    expect(spyOnScrollToError).toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
+  });
+
+  it("(middleInitial) flags valid if contains alphabetic character", async () => {
+    Object.assign(wrapper.vm, passingData);
+    await wrapper.setData({ middleInitial: `a`})
+    await wrapper.vm.validateFields();
+    await wrapper.vm.$nextTick;
+    expect(spyOnScrollToError).not.toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).toHaveBeenCalled();
+  });
+
+  it("(lastName) flags invalid if not present", async () => {
+    Object.assign(wrapper.vm, passingData);
+    await wrapper.setData({ lastName: '' })
+    await wrapper.vm.validateFields();
+    await wrapper.vm.$nextTick;
+    expect(spyOnScrollToError).toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
+  });
+
+  it("(lastName) flags invalid if contains invalid characters", async () => {
+    Object.assign(wrapper.vm, passingData);
+    await wrapper.setData({ lastName: 'aaa^' })
+    await wrapper.vm.validateFields();
+    await wrapper.vm.$nextTick;
+    expect(spyOnScrollToError).toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
+  });
+
+  it("(lastName) flags valid if contains commas, dashes, or apostrophes and starts with a letter", async () => {
+    Object.assign(wrapper.vm, passingData);
+    await wrapper.setData({ lastName: `a-.' -.' `})
+    await wrapper.vm.validateFields();
+    await wrapper.vm.$nextTick;
+    expect(spyOnScrollToError).not.toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).toHaveBeenCalled();
+  });
+
+  it("(birthDate) flags invalid if not present", async () => {
+    Object.assign(wrapper.vm, passingData);
+    await wrapper.setData({ birthDate: null})
+    await wrapper.vm.validateFields();
+    await wrapper.vm.$nextTick;
+    expect(spyOnScrollToError).toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
+  });
+
+  it("(birthDate) flags invalid if not present", async () => {
+    Object.assign(wrapper.vm, passingData);
+    await wrapper.setData({ birthDate: null})
+    await wrapper.vm.validateFields();
+    await wrapper.vm.$nextTick;
+    expect(spyOnScrollToError).toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
+  });
 });
 
+testDate
 // describe("MainFormPage.vue [[INSERT TITLE HERE]]", () => {
 //   // eslint-disable-next-line
 //   let state;
