@@ -1022,9 +1022,68 @@ describe("MainFormPage.vue validateFields(), public", () => {
     expect(spyOnScrollToError).not.toHaveBeenCalled();
     expect(spyOnNavigateToNextPage).toHaveBeenCalled();
   });
+
+  it("(isVehicleAccident) flags invalid if not present", async () => {
+    Object.assign(wrapper.vm, passingData);
+    await wrapper.setData({ isVehicleAccident: null });
+    await wrapper.vm.validateFields();
+    await wrapper.vm.$nextTick;
+    expect(spyOnScrollToError).toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
+  });
+
+  it("(vehicleAccidentClaimNumber) flags invalid if not correct format", async () => {
+    Object.assign(wrapper.vm, passingData);
+    await wrapper.setData({ vehicleAccidentClaimNumber: "^^^" });
+    await wrapper.vm.validateFields();
+    await wrapper.vm.$nextTick;
+    expect(spyOnScrollToError).toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
+  });
+
+  it("(vehicleAccidentClaimNumber) flags invalid if not correct format (2)", async () => {
+    Object.assign(wrapper.vm, passingData);
+    await wrapper.setData({ vehicleAccidentClaimNumber: "88888888" });
+    await wrapper.vm.validateFields();
+    await wrapper.vm.$nextTick;
+    expect(spyOnScrollToError).toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
+  });
+
+  it("(vehicleAccidentClaimNumber) flags valid if correct format", async () => {
+    Object.assign(wrapper.vm, passingData);
+    await wrapper.setData({ vehicleAccidentClaimNumber: "AA111111" });
+    await wrapper.vm.validateFields();
+    await wrapper.vm.$nextTick;
+    expect(spyOnScrollToError).not.toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).toHaveBeenCalled();
+  });
+
+  it("(planReferenceNumberOfOriginalClaim) flags invalid if not integer", async () => {
+    Object.assign(wrapper.vm, passingData);
+    await wrapper.setData({ planReferenceNumberOfOriginalClaim: "a" });
+    await wrapper.vm.validateFields();
+    await wrapper.vm.$nextTick;
+    expect(spyOnScrollToError).toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
+  });
+
+  it("(planReferenceNumberOfOriginalClaim) flags invalid if not positive", async () => {
+    Object.assign(wrapper.vm, passingData);
+    await wrapper.setData({ planReferenceNumberOfOriginalClaim: "-2" });
+    await wrapper.vm.validateFields();
+    await wrapper.vm.$nextTick;
+    expect(spyOnScrollToError).toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
+  });
+
+
+
+
+
+
 });
 
-// new Date().getFullYear() - 1;
 
 // describe("MainFormPage.vue [[INSERT TITLE HERE]]", () => {
 //   // eslint-disable-next-line
