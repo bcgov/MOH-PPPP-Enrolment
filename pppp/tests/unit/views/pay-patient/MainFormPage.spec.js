@@ -1418,6 +1418,345 @@ describe("MainFormPage.vue validateFields(), public", () => {
     expect(spyOnScrollToError).toHaveBeenCalled();
     expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
   });
+
+  //end of medical services tests
+
+  it("(practitionerLastName) flags invalid if not present", async () => {
+    Object.assign(wrapper.vm, cloneDeep(passingData));
+    await wrapper.setData({ practitionerLastName: "" });
+    await wrapper.vm.validateFields();
+    await wrapper.vm.$nextTick;
+    expect(spyOnScrollToError).toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
+  });
+
+  it("(practitionerLastName) flags invalid if contains invalid characters", async () => {
+    Object.assign(wrapper.vm, cloneDeep(passingData));
+    await wrapper.setData({ practitionerLastName: "aaa^" });
+    await wrapper.vm.validateFields();
+    await wrapper.vm.$nextTick;
+    expect(spyOnScrollToError).toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
+  });
+
+  it("(practitionerLastName) flags valid if contains commas, dashes, or apostrophes and starts with a letter", async () => {
+    Object.assign(wrapper.vm, cloneDeep(passingData));
+    await wrapper.setData({ practitionerLastName: `a-.' -.' ` });
+    await wrapper.vm.validateFields();
+    await wrapper.vm.$nextTick;
+    expect(spyOnScrollToError).not.toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).toHaveBeenCalled();
+  });
+
+  it("(practitionerFirstName) flags invalid if not present", async () => {
+    Object.assign(wrapper.vm, cloneDeep(passingData));
+    await wrapper.setData({ practitionerFirstName: "" });
+    await wrapper.vm.validateFields();
+    await wrapper.vm.$nextTick;
+    expect(spyOnScrollToError).toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
+  });
+
+  it("(practitionerFirstName) flags invalid if contains invalid characters", async () => {
+    Object.assign(wrapper.vm, cloneDeep(passingData));
+    await wrapper.setData({ practitionerFirstName: "aaa^" });
+    await wrapper.vm.validateFields();
+    await wrapper.vm.$nextTick;
+    expect(spyOnScrollToError).toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
+  });
+
+  it("(practitionerFirstName) flags valid if contains commas, dashes, or apostrophes and starts with a letter", async () => {
+    Object.assign(wrapper.vm, cloneDeep(passingData));
+    await wrapper.setData({ practitionerFirstName: `a-.' -.' ` });
+    await wrapper.vm.validateFields();
+    await wrapper.vm.$nextTick;
+    expect(spyOnScrollToError).not.toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).toHaveBeenCalled();
+  });
+
+  it("(practitionerPaymentNumber) flags invalid if not present", async () => {
+    Object.assign(wrapper.vm, cloneDeep(passingData));
+    await wrapper.setData({ practitionerPaymentNumber: "" });
+    await wrapper.vm.validateFields();
+    await wrapper.vm.$nextTick;
+    expect(spyOnScrollToError).toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
+  });
+
+  it("(practitionerPaymentNumber) flags invalid if less than five digits", async () => {
+    Object.assign(wrapper.vm, cloneDeep(passingData));
+    await wrapper.setData({ practitionerPaymentNumber: "A1A1" });
+    await wrapper.vm.validateFields();
+    await wrapper.vm.$nextTick;
+    expect(spyOnScrollToError).toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
+  });
+
+  it("(practitionerPractitionerNumber) flags invalid if not present", async () => {
+    Object.assign(wrapper.vm, cloneDeep(passingData));
+    await wrapper.setData({ practitionerPractitionerNumber: "" });
+    await wrapper.vm.validateFields();
+    await wrapper.vm.$nextTick;
+    expect(spyOnScrollToError).toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
+  });
+
+  it("(practitionerPractitionerNumber) flags invalid if less than five digits", async () => {
+    Object.assign(wrapper.vm, cloneDeep(passingData));
+    await wrapper.setData({ practitionerPractitionerNumber: "A1A1" });
+    await wrapper.vm.validateFields();
+    await wrapper.vm.$nextTick;
+    expect(spyOnScrollToError).toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
+  });
+
+  it("(practitionerFacilityNumber) flags valid if not present", async () => {
+    Object.assign(wrapper.vm, cloneDeep(passingData));
+    await wrapper.setData({ practitionerFacilityNumber: "" });
+    await wrapper.vm.validateFields();
+    await wrapper.vm.$nextTick;
+    expect(spyOnScrollToError).not.toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).toHaveBeenCalled();
+  });
+
+  it("(practitionerFacilityNumber) flags invalid if less than five digits", async () => {
+    Object.assign(wrapper.vm, cloneDeep(passingData));
+    await wrapper.setData({ practitionerFacilityNumber: "A1A1" });
+    await wrapper.vm.validateFields();
+    await wrapper.vm.$nextTick;
+    expect(spyOnScrollToError).toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
+  });
+
+  it("(practitionerSpecialtyCode) flags valid if not present", async () => {
+    Object.assign(wrapper.vm, cloneDeep(passingData));
+    await wrapper.setData({ practitionerSpecialtyCode: "" });
+    await wrapper.vm.validateFields();
+    await wrapper.vm.$nextTick;
+    expect(spyOnScrollToError).not.toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).toHaveBeenCalled();
+  });
+
+  it("(practitionerSpecialtyCode) flags invalid if less than five digits", async () => {
+    Object.assign(wrapper.vm, cloneDeep(passingData));
+    await wrapper.setData({ practitionerSpecialtyCode: "A1A1" });
+    await wrapper.vm.validateFields();
+    await wrapper.vm.$nextTick;
+    expect(spyOnScrollToError).toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
+  });
+
+  it("(practitionerSpecialtyCode) flags invalid if not alphanumeric", async () => {
+    Object.assign(wrapper.vm, cloneDeep(passingData));
+    await wrapper.setData({ practitionerSpecialtyCode: "a^^^" });
+    await wrapper.vm.validateFields();
+    await wrapper.vm.$nextTick;
+    expect(spyOnScrollToError).toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
+  });
+
+  it("(practitionerSpecialtyCode) flags invalid if not the minimum length", async () => {
+    Object.assign(wrapper.vm, cloneDeep(passingData));
+    await wrapper.setData({ practitionerSpecialtyCode: "0" });
+    await wrapper.vm.validateFields();
+    await wrapper.vm.$nextTick;
+    expect(spyOnScrollToError).toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
+  });
+
+  it("(practitionerSpecialtyCode) flags invalid if not on the list", async () => {
+    Object.assign(wrapper.vm, cloneDeep(passingData));
+    await wrapper.setData({ practitionerSpecialtyCode: "98" });
+    await wrapper.vm.validateFields();
+    await wrapper.vm.$nextTick;
+    expect(spyOnScrollToError).toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
+  });
+
+  it("(referredByFirstNameInitial) flags invalid if not alphabetic", async () => {
+    Object.assign(wrapper.vm, cloneDeep(passingData));
+    await wrapper.setData({ referredByFirstNameInitial: "1" });
+    await wrapper.vm.validateFields();
+    await wrapper.vm.$nextTick;
+    expect(spyOnScrollToError).toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
+  });
+
+  it("(referredByLastName) flags invalid if contains invalid characters", async () => {
+    Object.assign(wrapper.vm, cloneDeep(passingData));
+    await wrapper.setData({ referredByLastName: "aaa^" });
+    await wrapper.vm.validateFields();
+    await wrapper.vm.$nextTick;
+    expect(spyOnScrollToError).toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
+  });
+
+  it("(referredByLastName) flags valid if contains commas, dashes, or apostrophes and starts with a letter", async () => {
+    Object.assign(wrapper.vm, cloneDeep(passingData));
+    await wrapper.setData({ referredByLastName: `a-.' -.' ` });
+    await wrapper.vm.validateFields();
+    await wrapper.vm.$nextTick;
+    expect(spyOnScrollToError).not.toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).toHaveBeenCalled();
+  });
+
+  it("(referredByPractitionerNumber) flags invalid if not minimum length", async () => {
+    Object.assign(wrapper.vm, cloneDeep(passingData));
+    await wrapper.setData({ referredByPractitionerNumber: `1111` });
+    await wrapper.vm.validateFields();
+    await wrapper.vm.$nextTick;
+    expect(spyOnScrollToError).toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
+  });
+
+  it("(referredToFirstNameInitial) flags invalid if not alphabetic", async () => {
+    Object.assign(wrapper.vm, cloneDeep(passingData));
+    await wrapper.setData({ referredToFirstNameInitial: "1" });
+    await wrapper.vm.validateFields();
+    await wrapper.vm.$nextTick;
+    expect(spyOnScrollToError).toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
+  });
+
+  it("(referredToLastName) flags invalid if contains invalid characters", async () => {
+    Object.assign(wrapper.vm, cloneDeep(passingData));
+    await wrapper.setData({ referredToLastName: "aaa^" });
+    await wrapper.vm.validateFields();
+    await wrapper.vm.$nextTick;
+    expect(spyOnScrollToError).toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
+  });
+
+  it("(referredToLastName) flags valid if contains commas, dashes, or apostrophes and starts with a letter", async () => {
+    Object.assign(wrapper.vm, cloneDeep(passingData));
+    await wrapper.setData({ referredToLastName: `a-.' -.' ` });
+    await wrapper.vm.validateFields();
+    await wrapper.vm.$nextTick;
+    expect(spyOnScrollToError).not.toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).toHaveBeenCalled();
+  });
+
+  it("(referredToPractitionerNumber) flags invalid if not minimum length", async () => {
+    Object.assign(wrapper.vm, cloneDeep(passingData));
+    await wrapper.setData({ referredToPractitionerNumber: `1111` });
+    await wrapper.vm.validateFields();
+    await wrapper.vm.$nextTick;
+    expect(spyOnScrollToError).toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
+  });
+
+  //miscellaneous conditions
+
+  it("flags invalid if dependentNumber not 66 and birthdate not present", async () => {
+    Object.assign(wrapper.vm, cloneDeep(passingData));
+    await wrapper.setData({ dependentNumber: `00` });
+    await wrapper.setData({ birthDate: null });
+    await wrapper.vm.validateFields();
+    await wrapper.vm.$nextTick;
+    expect(spyOnScrollToError).toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
+  });
+
+  it("flags invalid if referredBy first name initial present but not last name or prac number", async () => {
+    Object.assign(wrapper.vm, cloneDeep(passingData));
+    await wrapper.setData({ referredByFirstNameInitial: `Q` });
+    await wrapper.setData({ referredByLastName: null });
+    await wrapper.setData({ referredByPractitionerNumber: null });
+    await wrapper.vm.validateFields();
+    await wrapper.vm.$nextTick;
+    expect(spyOnScrollToError).toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
+  });
+
+  it("flags invalid if referredBy last name present but not first name initial or prac number", async () => {
+    Object.assign(wrapper.vm, cloneDeep(passingData));
+    await wrapper.setData({ referredByFirstNameInitial: null });
+    await wrapper.setData({ referredByLastName: "Surname" });
+    await wrapper.setData({ referredByPractitionerNumber: null });
+    await wrapper.vm.validateFields();
+    await wrapper.vm.$nextTick;
+    expect(spyOnScrollToError).toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
+  });
+
+  it("flags invalid if referredBy prac number present but not first name initial or last name", async () => {
+    Object.assign(wrapper.vm, cloneDeep(passingData));
+    await wrapper.setData({ referredByFirstNameInitial: null });
+    await wrapper.setData({ referredByLastName: null });
+    await wrapper.setData({ referredByPractitionerNumber: "11111" });
+    await wrapper.vm.validateFields();
+    await wrapper.vm.$nextTick;
+    expect(spyOnScrollToError).toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
+  });
+
+  it("flags valid if all three are null", async () => {
+    Object.assign(wrapper.vm, cloneDeep(passingData));
+    await wrapper.setData({ referredByFirstNameInitial: null });
+    await wrapper.setData({ referredByLastName: null });
+    await wrapper.setData({ referredByPractitionerNumber: null });
+    await wrapper.vm.validateFields();
+    await wrapper.vm.$nextTick;
+    expect(spyOnScrollToError).not.toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).toHaveBeenCalled();
+  });
+
+  it("flags invalid if referredTo first name initial present but not last name or prac number", async () => {
+    Object.assign(wrapper.vm, cloneDeep(passingData));
+    await wrapper.setData({ referredToFirstNameInitial: `Q` });
+    await wrapper.setData({ referredToLastName: null });
+    await wrapper.setData({ referredToPractitionerNumber: null });
+    await wrapper.vm.validateFields();
+    await wrapper.vm.$nextTick;
+    expect(spyOnScrollToError).toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
+  });
+
+  it("flags invalid if referredTo last name present but not first name initial or prac number", async () => {
+    Object.assign(wrapper.vm, cloneDeep(passingData));
+    await wrapper.setData({ referredToFirstNameInitial: null });
+    await wrapper.setData({ referredToLastName: "Surname" });
+    await wrapper.setData({ referredToPractitionerNumber: null });
+    await wrapper.vm.validateFields();
+    await wrapper.vm.$nextTick;
+    expect(spyOnScrollToError).toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
+  });
+
+  it("flags invalid if referredTo prac number present but not first name initial or last name", async () => {
+    Object.assign(wrapper.vm, cloneDeep(passingData));
+    await wrapper.setData({ referredToFirstNameInitial: null });
+    await wrapper.setData({ referredToLastName: null });
+    await wrapper.setData({ referredToPractitionerNumber: "11111" });
+    await wrapper.vm.validateFields();
+    await wrapper.vm.$nextTick;
+    expect(spyOnScrollToError).toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
+  });
+
+  it("flags valid if all three are null", async () => {
+    Object.assign(wrapper.vm, cloneDeep(passingData));
+    await wrapper.setData({ referredToFirstNameInitial: null });
+    await wrapper.setData({ referredToLastName: null });
+    await wrapper.setData({ referredToPractitionerNumber: null });
+    await wrapper.vm.validateFields();
+    await wrapper.vm.$nextTick;
+    expect(spyOnScrollToError).not.toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).toHaveBeenCalled();
+  });
+
+  it("flags valid if planReferenceNumber is null", async () => {
+    Object.assign(wrapper.vm, cloneDeep(passingData));
+    await wrapper.setData({ planReferenceNumber: null });
+    await wrapper.vm.validateFields();
+    await wrapper.vm.$nextTick;
+    expect(spyOnScrollToError).not.toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).toHaveBeenCalled();
+  });
+
+
+  
 });
 
 // wrapper.vm.medicalServiceClaims[0].serviceDate = new Date(1595, 11, 17);
