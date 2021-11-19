@@ -4,6 +4,7 @@ import Vuelidate from "vuelidate";
 import { cloneDeep } from "lodash";
 import Page from "@/views/pay-patient/MainFormPage.vue";
 import logService from "@/services/log-service";
+import pageStateService from "@/services/page-state-service";
 import * as module1 from "../../../../src/store/modules/app";
 import * as module2 from "../../../../src/store/modules/pay-patient-form";
 import * as module3 from "../../../../src/store/modules/pay-practitioner-form";
@@ -443,6 +444,14 @@ jest.mock("@/helpers/scroll", () => ({
 }));
 
 const spyOnScrollToError = jest.spyOn(scrollHelper, "scrollToError");
+const spyOnScrollTo = jest.spyOn(scrollHelper, "scrollTo");
+
+const spyOnSetPageComplete = jest
+  .spyOn(pageStateService, "setPageComplete")
+  .mockImplementation(() => Promise.resolve("set"));
+const spyOnVisitPage = jest
+  .spyOn(pageStateService, "visitPage")
+  .mockImplementation(() => Promise.resolve("visited"));
 
 const localVue = createLocalVue();
 localVue.use(Vuex);
@@ -2803,7 +2812,135 @@ describe("MainFormPage.vue validateFields(), CSR", () => {
   });
 });
 
-// wrapper.vm.medicalServiceClaims[0].serviceDate = new Date(1595, 11, 17);
+describe("MainFormPage.vue validationModal handlers", () => {
+  // eslint-disable-next-line
+  let state;
+  let store;
+  let wrapper;
+  let spyOnNavigateToNextPage;
+
+  beforeEach(() => {
+    state = {
+      applicationUuid: null,
+    };
+    store = new Vuex.Store(storeTemplate);
+
+    wrapper = shallowMount(Page, {
+      store,
+      localVue,
+      mocks: mockRouter,
+    });
+    spyOnNavigateToNextPage = jest.spyOn(wrapper.vm, "navigateToNextPage");
+  });
+
+  afterEach(() => {
+    jest.resetModules();
+    jest.clearAllMocks();
+  });
+
+  it("calls navigateToNextPage() on Yes", () => {
+    wrapper.vm.validationModalYesHandler();
+    expect(spyOnNavigateToNextPage).toHaveBeenCalled();
+  });
+
+  it("sets display to false on No", async () => {
+    await wrapper.setData({ isValidationModalShown: true });
+    expect(wrapper.vm.isValidationModalShown).toEqual(true);
+    wrapper.vm.validationModalNoHandler();
+    expect(wrapper.vm.isValidationModalShown).toEqual(false);
+  });
+});
+
+describe("MainFormPage.vue navigateToNextPage()", () => {
+  // eslint-disable-next-line
+  let state;
+  let store;
+  let wrapper;
+
+  beforeEach(() => {
+    state = {
+      applicationUuid: null,
+    };
+    store = new Vuex.Store(storeTemplate);
+
+    wrapper = shallowMount(Page, {
+      store,
+      localVue,
+      mocks: mockRouter,
+    });
+  });
+
+  afterEach(() => {
+    jest.resetModules();
+    jest.clearAllMocks();
+  });
+
+  it("calls pageStateService.setPageComplete", async () => {
+    await wrapper.vm.navigateToNextPage();
+    await wrapper.vm.$nextTick();
+    expect(spyOnSetPageComplete).toHaveBeenCalled();
+  });
+
+  it("calls pageStateService.visitPage", async () => {
+    await wrapper.vm.navigateToNextPage();
+    await wrapper.vm.$nextTick();
+    expect(spyOnVisitPage).toHaveBeenCalled();
+  });
+
+  it("calls router.push", async () => {
+    await wrapper.vm.navigateToNextPage();
+    await wrapper.vm.$nextTick();
+    expect(wrapper.vm.$router.push).toHaveBeenCalled();
+  });
+
+  it("calls scrollTo", async () => {
+    await wrapper.vm.navigateToNextPage();
+    await wrapper.vm.$nextTick();
+    expect(spyOnScrollTo).toHaveBeenCalled();
+  });
+});
+
+describe("MainFormPage.vue saveData()", () => {
+  // eslint-disable-next-line
+  let state;
+  let store;
+  let wrapper;
+  let spyOnDispatch;
+
+  beforeEach(() => {
+    state = {
+      applicationUuid: null,
+    };
+    store = new Vuex.Store(storeTemplate);
+
+    wrapper = shallowMount(Page, {
+      store,
+      localVue,
+      mocks: mockRouter,
+    });
+
+    spyOnDispatch = jest.spyOn(store, "dispatch");
+    Object.assign(wrapper.vm, cloneDeep(passingData));
+  });
+
+  afterEach(() => {
+    jest.resetModules();
+    jest.clearAllMocks();
+  });
+
+  it("dispatches correctly", async () => {
+    wrapper.vm.saveData();
+    expect(spyOnDispatch).toHaveBeenCalled();
+  });
+
+  it("saves example value to store", async () => {
+    const testValue = "SaveDataTestValue"
+    expect(wrapper.vm.$store.state.payPatientForm.referredByLastName).not.toEqual(testValue);
+    await wrapper.setData({ referredByLastName: testValue});
+    wrapper.vm.saveData();
+    expect(wrapper.vm.$store.state.payPatientForm.referredByLastName).toEqual(testValue);
+  });  
+});
 
 // describe("MainFormPage.vue [[INSERT TITLE HERE]]", () => {
 //   // eslint-disable-next-line
