@@ -305,7 +305,7 @@ describe("validators.js serviceDateValidator()", () => {
   });
 });
 
-describe.only("validators.js motorVehicleAccidentClaimNumberMaskValidator()", () => {
+describe("validators.js motorVehicleAccidentClaimNumberMaskValidator()", () => {
   afterEach(() => {
     jest.resetModules();
   });
@@ -360,7 +360,7 @@ describe.only("validators.js motorVehicleAccidentClaimNumberMaskValidator()", ()
     expect(result).toEqual(false);
   });
 
-  it("returns false if given a string with too few characters", () => {
+  it("returns false if given a string with too many characters", () => {
     const result = motorVehicleAccidentClaimNumberMaskValidator("A12345678");
     expect(result).toEqual(false);
   });
