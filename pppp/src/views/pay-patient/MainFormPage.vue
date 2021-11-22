@@ -138,7 +138,7 @@
                 label='Motor Vehicle Accident Claim Number (optional):'
                 id='vehicle-accident-claim-number'
                 maxlength='8'
-                isUpperCaseForced='true'
+                isUpperCaseForced=true
                 class='mt-3'
                 v-model='vehicleAccidentClaimNumber'
                 :inputStyle='smallStyles'
