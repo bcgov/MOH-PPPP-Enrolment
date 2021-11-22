@@ -1891,13 +1891,13 @@ describe("MainFormPage.vue validateFields(), CSR", () => {
     expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
   });
 
-  it("(dependentNumber) flags invalid if not 00 or 66 with a PHN", async () => {
+  it("(dependentNumber) flags valid if not 00 or 66 with a PHN", async () => {
     Object.assign(wrapper.vm, cloneDeep(passingData));
     await wrapper.setData({ dependentNumber: "55" });
     await wrapper.vm.validateFields();
     await wrapper.vm.$nextTick;
-    expect(spyOnScrollToError).toHaveBeenCalled();
-    expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
+    expect(spyOnScrollToError).not.toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).toHaveBeenCalled();
   });
 
   it("(firstName) flags valid if not present", async () => {
@@ -1990,22 +1990,22 @@ describe("MainFormPage.vue validateFields(), CSR", () => {
     expect(spyOnNavigateToNextPage).toHaveBeenCalled();
   });
 
-  it("(birthDate) flags invalid if given date is too far in the past", async () => {
+  it("(birthDate) flags valid if given date is too far in the past", async () => {
     Object.assign(wrapper.vm, cloneDeep(passingData));
     await wrapper.setData({ birthDate: new Date(1595, 11, 17) });
     await wrapper.vm.validateFields();
     await wrapper.vm.$nextTick;
-    expect(spyOnScrollToError).toHaveBeenCalled();
-    expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
+    expect(spyOnScrollToError).not.toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).toHaveBeenCalled();
   });
 
-  it("(birthDate) flags invalid if given date is in future", async () => {
+  it("(birthDate) flags valid if given date is in future", async () => {
     Object.assign(wrapper.vm, cloneDeep(passingData));
     await wrapper.setData({ birthDate: testDateFutureYear });
     await wrapper.vm.validateFields();
     await wrapper.vm.$nextTick;
-    expect(spyOnScrollToError).toHaveBeenCalled();
-    expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
+    expect(spyOnScrollToError).not.toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).toHaveBeenCalled();
   });
 
   it("(birthDate) flags invalid if given invalid date", async () => {
@@ -2095,13 +2095,13 @@ describe("MainFormPage.vue validateFields(), CSR", () => {
     expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
   });
 
-  it("(vehicleAccidentClaimNumber) flags invalid if not correct format (2)", async () => {
+  it("(vehicleAccidentClaimNumber) flags valid if eight numerals", async () => {
     Object.assign(wrapper.vm, cloneDeep(passingData));
     await wrapper.setData({ vehicleAccidentClaimNumber: "88888888" });
     await wrapper.vm.validateFields();
     await wrapper.vm.$nextTick;
-    expect(spyOnScrollToError).toHaveBeenCalled();
-    expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
+    expect(spyOnScrollToError).not.toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).toHaveBeenCalled();
   });
 
   it("(vehicleAccidentClaimNumber) flags valid if correct format", async () => {
@@ -2142,24 +2142,24 @@ describe("MainFormPage.vue validateFields(), CSR", () => {
     expect(spyOnNavigateToNextPage).toHaveBeenCalled();
   });
 
-  it("(serviceDate) flags invalid if given date is too far in the past", async () => {
+  it("(serviceDate) flags valid if given date is far in the past", async () => {
     Object.assign(wrapper.vm, cloneDeep(passingData));
     wrapper.vm.medicalServiceClaims[0].serviceDate = new Date(1595, 11, 17);
     await wrapper.vm.validateFields();
     await wrapper.vm.$nextTick;
-    expect(spyOnScrollToError).toHaveBeenCalled();
-    expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
+    expect(spyOnScrollToError).not.toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).toHaveBeenCalled();
   });
 
-  it("(serviceDate) flags invalid if given date is in future", async () => {
+  it("(serviceDate) flags valid if given date is in future", async () => {
     Object.assign(wrapper.vm, cloneDeep(passingData));
     //feeItem is set in passing data to not be 03333, which changes this test.
     //see related tests at the end of this section
     wrapper.vm.medicalServiceClaims[0].serviceDate = testDateFutureYear;
     await wrapper.vm.validateFields();
     await wrapper.vm.$nextTick;
-    expect(spyOnScrollToError).toHaveBeenCalled();
-    expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
+    expect(spyOnScrollToError).not.toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).toHaveBeenCalled();
   });
 
   it("(serviceDate) flags invalid if given invalid date", async () => {
@@ -2176,14 +2176,14 @@ describe("MainFormPage.vue validateFields(), CSR", () => {
     expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
   });
 
-  it("(serviceDate) flags invalid if given date is after Oct 1 2021 and location is A", async () => {
+  it("(serviceDate) flags valid if given date is after Oct 1 2021 and location is A", async () => {
     Object.assign(wrapper.vm, cloneDeep(passingData));
     wrapper.vm.medicalServiceClaims[0].serviceDate = new Date(2021, 10, 3);
     wrapper.vm.medicalServiceClaims[0].locationOfService = "A";
     await wrapper.vm.validateFields();
     await wrapper.vm.$nextTick;
-    expect(spyOnScrollToError).toHaveBeenCalled();
-    expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
+    expect(spyOnScrollToError).not.toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).toHaveBeenCalled();
   });
 
   it("(serviceDate) flags valid if given date is before Oct 1 2021 and location is A", async () => {
@@ -2206,13 +2206,13 @@ describe("MainFormPage.vue validateFields(), CSR", () => {
     expect(spyOnNavigateToNextPage).toHaveBeenCalled();
   });
 
-  it("(serviceDate) flags invalid if date is within 90 days of the future and fee item is not 03333", async () => {
+  it("(serviceDate) flags valid if date is within 90 days of the future and fee item is not 03333", async () => {
     Object.assign(wrapper.vm, cloneDeep(passingData));
     wrapper.vm.medicalServiceClaims[0].serviceDate = testDateFutureMonth;
     await wrapper.vm.validateFields();
     await wrapper.vm.$nextTick;
-    expect(spyOnScrollToError).toHaveBeenCalled();
-    expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
+    expect(spyOnScrollToError).not.toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).toHaveBeenCalled();
   });
 
   it("(numberOfServices) flags valid if not present", async () => {
@@ -2242,13 +2242,13 @@ describe("MainFormPage.vue validateFields(), CSR", () => {
     expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
   });
 
-  it("(numberOfServices) flags invalid if zero", async () => {
+  it("(numberOfServices) flags valid if zero", async () => {
     Object.assign(wrapper.vm, cloneDeep(passingData));
     wrapper.vm.medicalServiceClaims[0].numberOfServices = "0";
     await wrapper.vm.validateFields();
     await wrapper.vm.$nextTick;
-    expect(spyOnScrollToError).toHaveBeenCalled();
-    expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
+    expect(spyOnScrollToError).not.toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).toHaveBeenCalled();
   });
 
   it("(feeItem) flags valid if not present", async () => {
@@ -2396,14 +2396,14 @@ describe("MainFormPage.vue validateFields(), CSR", () => {
     expect(spyOnNavigateToNextPage).toHaveBeenCalled();
   });
 
-  it("(locationOfService) flags invalid if A and after Oct 1st 2021", async () => {
+  it("(locationOfService) flags valid if A and after Oct 1st 2021", async () => {
     Object.assign(wrapper.vm, cloneDeep(passingData));
     wrapper.vm.medicalServiceClaims[0].locationOfService = "A";
     wrapper.vm.medicalServiceClaims[0].serviceDate = new Date(2021, 10, 3);
     await wrapper.vm.validateFields();
     await wrapper.vm.$nextTick;
-    expect(spyOnScrollToError).toHaveBeenCalled();
-    expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
+    expect(spyOnScrollToError).not.toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).toHaveBeenCalled();
   });
 
   it("(locationOfService) flags valid if A and before Oct 1st 2021", async () => {
@@ -2443,14 +2443,14 @@ describe("MainFormPage.vue validateFields(), CSR", () => {
     expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
   });
 
-  it("(submissionCode) flags invalid if not present and more than 90 days ago", async () => {
+  it("(submissionCode) flags valid if not present and more than 90 days ago", async () => {
     Object.assign(wrapper.vm, cloneDeep(passingData));
     wrapper.vm.medicalServiceClaims[0].submissionCode = null;
     wrapper.vm.medicalServiceClaims[0].serviceDate = testDatePast91Days;
     await wrapper.vm.validateFields();
     await wrapper.vm.$nextTick;
-    expect(spyOnScrollToError).toHaveBeenCalled();
-    expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
+    expect(spyOnScrollToError).not.toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).toHaveBeenCalled();
   });
 
   it("(submissionCode) flags valid if not present and less than 90 days ago", async () => {
@@ -2576,13 +2576,13 @@ describe("MainFormPage.vue validateFields(), CSR", () => {
     expect(spyOnNavigateToNextPage).toHaveBeenCalled();
   });
 
-  it("(practitionerFacilityNumber) flags invalid if less than five digits", async () => {
+  it("(practitionerFacilityNumber) flags valid if less than five digits", async () => {
     Object.assign(wrapper.vm, cloneDeep(passingData));
     await wrapper.setData({ practitionerFacilityNumber: "A1A1" });
     await wrapper.vm.validateFields();
     await wrapper.vm.$nextTick;
-    expect(spyOnScrollToError).toHaveBeenCalled();
-    expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
+    expect(spyOnScrollToError).not.toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).toHaveBeenCalled();
   });
 
   it("(practitionerSpecialtyCode) flags valid if not present", async () => {
