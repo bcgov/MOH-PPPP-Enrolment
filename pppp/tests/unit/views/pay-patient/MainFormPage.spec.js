@@ -2972,12 +2972,16 @@ describe("MainFormPage.vue getMedicalServiceClaimTitle()", () => {
   });
 
   it("returns correct title when 1 claim", () => {
-    const index = 0;
-    const result = wrapper.vm.getMedicalServiceClaimTitle(index);
-    expect(result).not.toContain(index);
+    //should return "Service" or something like it, without saying 1 out of 1
+    //so I check to see if 1 is in the result, which it shouldn't be
+    const arrayLength = wrapper.vm.medicalServiceClaims.length
+    const result = wrapper.vm.getMedicalServiceClaimTitle(0);
+    expect(result).not.toContain(arrayLength);
   });
 
   it("returns correct title when more than 1 claim", async () => {
+    //should return "Service 1 out of 3" or something like it
+    //so I check to see if 3 is in the result, which it should be
     await wrapper.setData({
       medicalServiceClaims: [
         {
@@ -3042,9 +3046,166 @@ describe("MainFormPage.vue getMedicalServiceClaimTitle()", () => {
         },
       ],
     });
-    const index = 3;
-    const result = wrapper.vm.getMedicalServiceClaimTitle(index);
-    expect(result).toContain(index);
+    const arrayLength = wrapper.vm.medicalServiceClaims.length
+    const result = wrapper.vm.getMedicalServiceClaimTitle(0);
+    expect(result).toContain(arrayLength);
+  });
+});
+
+describe("MainFormPage.vue getServiceDateFutureErrorMessage()", () => {
+  // eslint-disable-next-line
+  let state;
+  let store;
+  let wrapper;
+
+  beforeEach(() => {
+    state = {
+      applicationUuid: null,
+    };
+    store = new Vuex.Store(storeTemplate);
+
+    wrapper = shallowMount(Page, {
+      store,
+      localVue,
+      mocks: mockRouter,
+    });
+    Object.assign(wrapper.vm, cloneDeep(passingData));
+  });
+
+  afterEach(() => {
+    jest.resetModules();
+    jest.clearAllMocks();
+  });
+
+  it("returns correct message when 1 claim", () => {
+    const result = wrapper.vm.getServiceDateFutureErrorMessage();
+    expect(result).not.toContain("90"); //eg. "90 days in the future"
+  });
+
+  it("returns correct message when more than 1 claim", async () => {
+    const result = wrapper.vm.getServiceDateFutureErrorMessage("03333");
+    expect(result).toContain("90"); //eg. "90 days in the future"
+  });
+});
+
+describe("MainFormPage.vue isSubmissionCodeRequired()", () => {
+  // eslint-disable-next-line
+  let state;
+  let store;
+  let wrapper;
+
+  beforeEach(() => {
+    state = {
+      applicationUuid: null,
+    };
+    store = new Vuex.Store(storeTemplate);
+  });
+
+  afterEach(() => {
+    jest.resetModules();
+    jest.clearAllMocks();
+  });
+
+  it("returns false when serviceDate is null", () => { 
+    wrapper = shallowMount(Page, {
+      store,
+      localVue,
+      mocks: mockRouter,
+    });
+    Object.assign(wrapper.vm, cloneDeep(passingData));
+    wrapper.vm.medicalServiceClaims[0].serviceDate = null;
+    const result = wrapper.vm.isSubmissionCodeRequired(0)
+    expect(result).toEqual(false);
+  });
+
+  it("returns false when not service date is less than 90 days ago", () => { 
+    wrapper = shallowMount(Page, {
+      store,
+      localVue,
+      mocks: mockRouter,
+    });
+    Object.assign(wrapper.vm, cloneDeep(passingData));
+    wrapper.vm.medicalServiceClaims[0].serviceDate = testDatePast89Days;
+    const result = wrapper.vm.isSubmissionCodeRequired(0)
+    expect(result).toEqual(false);
+  });
+
+  it("returns true when not service date is more than 90 days ago", () => { 
+    wrapper = shallowMount(Page, {
+      store,
+      localVue,
+      mocks: mockRouter,
+    });
+    Object.assign(wrapper.vm, cloneDeep(passingData));
+    wrapper.vm.medicalServiceClaims[0].serviceDate = testDatePast91Days;
+    const result = wrapper.vm.isSubmissionCodeRequired(0)
+    expect(result).toEqual(true);
+  });
+
+  it("returns false when route is CSR", () => { 
+    wrapper = shallowMount(Page, {
+      store,
+      localVue,
+      mocks: mockRouterCSR,
+    });
+    Object.assign(wrapper.vm, cloneDeep(passingData));
+    wrapper.vm.medicalServiceClaims[0].serviceDate = testDatePast91Days;
+    const result = wrapper.vm.isSubmissionCodeRequired(0)
+    expect(result).toEqual(false);
+  });
+});
+
+//-----computed value tests-----
+describe("MainFormPage.vue isReferredByRequired()", () => {
+  // eslint-disable-next-line
+  let state;
+  let store;
+  let wrapper;
+
+  beforeEach(() => {
+    state = {
+      applicationUuid: null,
+    };
+    store = new Vuex.Store(storeTemplate);
+
+    wrapper = shallowMount(Page, {
+      store,
+      localVue,
+      mocks: mockRouter,
+    });
+  });
+
+  afterEach(() => {
+    jest.resetModules();
+    jest.clearAllMocks();
+  });
+
+  it("returns false if all three conditions are null", async () => {
+    await wrapper.setData({ referredByFirstNameInitial: null });
+    await wrapper.setData({ referredByLastName: null });
+    await wrapper.setData({ referredByPractitionerNumber: null });
+    expect(Page.computed.isReferredByRequired.call(wrapper.vm)).toBe(false)
+  });
+
+  it("returns true if the first is not null", async () => {
+    await wrapper.setData({ referredByFirstNameInitial: "A" });
+    await wrapper.setData({ referredByLastName: null });
+    await wrapper.setData({ referredByPractitionerNumber: null });
+    expect(Page.computed.isReferredByRequired.call(wrapper.vm)).toBe(true)
+  });
+
+  it("returns true if the second is not null", async () => {
+    await wrapper.setData({ referredByFirstNameInitial: null });
+    await wrapper.setData({ referredByLastName: "A" });
+    await wrapper.setData({ referredByPractitionerNumber: null });
+    expect(Page.computed.isReferredByRequired.call(wrapper.vm)).toBe(true)
+  });
+
+  it("returns true if the third is not null", async () => {
+    await wrapper.setData({ referredByFirstNameInitial: null });
+    await wrapper.setData({ referredByLastName: null });
+    await wrapper.setData({ referredByPractitionerNumber: "A" });
+    expect(Page.computed.isReferredByRequired.call(wrapper.vm)).toBe(true)
   });
 });
 
