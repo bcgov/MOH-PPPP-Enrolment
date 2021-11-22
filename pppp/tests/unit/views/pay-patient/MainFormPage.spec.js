@@ -2934,12 +2934,118 @@ describe("MainFormPage.vue saveData()", () => {
   });
 
   it("saves example value to store", async () => {
-    const testValue = "SaveDataTestValue"
-    expect(wrapper.vm.$store.state.payPatientForm.referredByLastName).not.toEqual(testValue);
-    await wrapper.setData({ referredByLastName: testValue});
+    const testValue = "SaveDataTestValue";
+    expect(
+      wrapper.vm.$store.state.payPatientForm.referredByLastName
+    ).not.toEqual(testValue);
+    await wrapper.setData({ referredByLastName: testValue });
     wrapper.vm.saveData();
-    expect(wrapper.vm.$store.state.payPatientForm.referredByLastName).toEqual(testValue);
-  });  
+    expect(wrapper.vm.$store.state.payPatientForm.referredByLastName).toEqual(
+      testValue
+    );
+  });
+});
+
+describe("MainFormPage.vue getMedicalServiceClaimTitle()", () => {
+  // eslint-disable-next-line
+  let state;
+  let store;
+  let wrapper;
+
+  beforeEach(() => {
+    state = {
+      applicationUuid: null,
+    };
+    store = new Vuex.Store(storeTemplate);
+
+    wrapper = shallowMount(Page, {
+      store,
+      localVue,
+      mocks: mockRouter,
+    });
+    Object.assign(wrapper.vm, cloneDeep(passingData));
+  });
+
+  afterEach(() => {
+    jest.resetModules();
+    jest.clearAllMocks();
+  });
+
+  it("returns correct title when 1 claim", () => {
+    const index = 0;
+    const result = wrapper.vm.getMedicalServiceClaimTitle(index);
+    expect(result).not.toContain(index);
+  });
+
+  it("returns correct title when more than 1 claim", async () => {
+    await wrapper.setData({
+      medicalServiceClaims: [
+        {
+          serviceDate: new Date(),
+          numberOfServices: "1",
+          serviceClarificationCode: "A1",
+          feeItem: "00010",
+          amountBilled: "0.00",
+          calledStartTime: {
+            hour: "08",
+            minute: "01",
+          },
+          renderedFinishTime: {
+            hour: "16",
+            minute: "05",
+          },
+          diagnosticCode: "001",
+          locationOfService: "B",
+          correspondenceAttached: null,
+          submissionCode: "I",
+          notes: "Notes here.",
+        },
+        {
+          serviceDate: new Date(),
+          numberOfServices: "1",
+          serviceClarificationCode: "A1",
+          feeItem: "00010",
+          amountBilled: "0.00",
+          calledStartTime: {
+            hour: "08",
+            minute: "01",
+          },
+          renderedFinishTime: {
+            hour: "16",
+            minute: "05",
+          },
+          diagnosticCode: "001",
+          locationOfService: "B",
+          correspondenceAttached: null,
+          submissionCode: "I",
+          notes: "Notes here.",
+        },
+        {
+          serviceDate: new Date(),
+          numberOfServices: "1",
+          serviceClarificationCode: "A1",
+          feeItem: "00010",
+          amountBilled: "0.00",
+          calledStartTime: {
+            hour: "08",
+            minute: "01",
+          },
+          renderedFinishTime: {
+            hour: "16",
+            minute: "05",
+          },
+          diagnosticCode: "001",
+          locationOfService: "B",
+          correspondenceAttached: null,
+          submissionCode: "I",
+          notes: "Notes here.",
+        },
+      ],
+    });
+    const index = 3;
+    const result = wrapper.vm.getMedicalServiceClaimTitle(index);
+    expect(result).toContain(index);
+  });
 });
 
 // describe("MainFormPage.vue [[INSERT TITLE HERE]]", () => {
