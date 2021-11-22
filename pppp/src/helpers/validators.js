@@ -60,6 +60,11 @@ export const birthDateValidator = (_, vm) => {
   return isValidISODateString(isoDateString);
 };
 
+export const motorVehicleAccidentClaimNumberMaskValidator = (value) => {
+  const criteria = new RegExp('^[A-Za-z][A-Za-z0-9]\\d\\d\\d\\d\\d\\d$');
+  return criteria.test(value);
+}
+
 export const serviceDateValidator = (_, vm) => {
   const data = vm.serviceDateData;
   if (!data || (!data.year && typeof data.month !== 'number' && !data.day)) {
