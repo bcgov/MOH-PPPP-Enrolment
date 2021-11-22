@@ -134,15 +134,24 @@
           <div class="text-danger"
               v-if="$v.isVehicleAccident.$dirty && !$v.isVehicleAccident.required"
               aria-live="assertive">This field is required.</div>
-          <MotorVehicleAccidentClaimNumberInput
+          <Input  
                 label='Motor Vehicle Accident Claim Number (optional):'
                 id='vehicle-accident-claim-number'
+                maxlength='8'
+                isUpperCaseForced='true'
                 class='mt-3'
                 v-model='vehicleAccidentClaimNumber'
                 :inputStyle='smallStyles'
                 @blur='handleBlurField($v.vehicleAccidentClaimNumber)' />
           <div class="text-danger"
-              v-if="$v.vehicleAccidentClaimNumber.$dirty && !$v.vehicleAccidentClaimNumber.motorVehicleAccidentClaimNumberValidator"
+              v-if="$v.vehicleAccidentClaimNumber.$dirty 
+              && (
+                !$v.vehicleAccidentClaimNumber.motorVehicleAccidentClaimNumberValidator 
+                ||
+                !$v.vehicleAccidentClaimNumber.motorVehicleAccidentClaimNumberMaskValidator 
+                ||
+                !$v.vehicleAccidentClaimNumber.alphanumericValidator
+              )"
               aria-live="assertive">Motor Vehicle Accident Claim Number must be valid.</div>
         </div> 
 
@@ -656,6 +665,7 @@ import {
   birthDateValidator,
   clarificationCodeValidator,
   diagnosticCodeValidator,
+  motorVehicleAccidentClaimNumberMaskValidator,
   serviceDateValidator,
   serviceDateCutOffValidator,
   serviceLocationCodeValidator,
@@ -717,7 +727,6 @@ import {
   DigitInput,
   FacilityNumberInput,
   Input,
-  MotorVehicleAccidentClaimNumberInput,
   NumberInput,
   PhnInput,
   PostalCodeInput,
@@ -818,7 +827,6 @@ export default {
     DigitInput,
     FacilityNumberInput,
     Input,
-    MotorVehicleAccidentClaimNumberInput,
     NumberInput,
     PageContent,
     PhnInput,
@@ -1013,7 +1021,9 @@ export default {
         required: requiredIf(() => !isCSR(this.$router.currentRoute.path)),
       },
       vehicleAccidentClaimNumber: {
-        motorVehicleAccidentClaimNumberValidator: optionalValidator(motorVehicleAccidentClaimNumberValidator),
+        alphanumericValidator: optionalValidator(alphanumericValidator),
+        motorVehicleAccidentClaimNumberValidator: optionalValidator(validateIf(!isCSR(this.$router.currentRoute.path), motorVehicleAccidentClaimNumberValidator)),
+        motorVehicleAccidentClaimNumberMaskValidator: optionalValidator(validateIf(!isCSR(this.$router.currentRoute.path), motorVehicleAccidentClaimNumberMaskValidator)),
       },
       planReferenceNumberOfOriginalClaim: {
         intValidator: optionalValidator(intValidator),
@@ -1088,7 +1098,7 @@ export default {
         minLength: minLength(5),
       },
       practitionerFacilityNumber: {
-        minLength: optionalValidator(minLength(5)),
+        minLength: optionalValidator(validateIf(!isCSR(this.$router.currentRoute.path), minLength(5))),
       },
       practitionerSpecialtyCode: {
         alphanumericValidator: optionalValidator(alphanumericValidator),
