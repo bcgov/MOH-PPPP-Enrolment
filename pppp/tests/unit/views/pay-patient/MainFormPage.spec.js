@@ -1573,7 +1573,7 @@ describe("MainFormPage.vue validateFields(), public", () => {
     expect(spyOnNavigateToNextPage).toHaveBeenCalled();
   });
 
-  it("(practitionerSpecialtyCode) flags invalid if less than five digits", async () => {
+  it("(practitionerSpecialtyCode) flags invalid if alphanumeric but not on list", async () => {
     Object.assign(wrapper.vm, cloneDeep(passingData));
     await wrapper.setData({ practitionerSpecialtyCode: "A1A1" });
     await wrapper.vm.validateFields();
@@ -2596,7 +2596,7 @@ describe("MainFormPage.vue validateFields(), CSR", () => {
     expect(spyOnNavigateToNextPage).toHaveBeenCalled();
   });
 
-  it("(practitionerSpecialtyCode) flags valid if alphanumeric", async () => {
+  it("(practitionerSpecialtyCode) flags valid if alphanumeric but not on list", async () => {
     Object.assign(wrapper.vm, cloneDeep(passingData));
     await wrapper.setData({ practitionerSpecialtyCode: "A1A1" });
     await wrapper.vm.validateFields();
