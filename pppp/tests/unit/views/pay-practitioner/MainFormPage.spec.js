@@ -3536,7 +3536,7 @@ describe("MainFormPage.vue beforeRouteLeave(to, from, next)", () => {
     jest.useFakeTimers();
     Page.beforeRouteLeave.call(
       wrapper.vm,
-      payPractitionerRouteStepOrder[1],
+      payPractitionerRouteStepOrder[3],
       payPractitionerRouteStepOrder[0],
       next
     );
