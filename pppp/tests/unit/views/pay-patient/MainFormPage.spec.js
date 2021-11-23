@@ -1726,6 +1726,17 @@ describe("MainFormPage.vue validateFields(), public", () => {
     expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
   });
 
+  it("flags valid if all three are null (referred By)", async () => {
+    Object.assign(wrapper.vm, cloneDeep(passingData));
+    await wrapper.setData({ referredByFirstNameInitial: null });
+    await wrapper.setData({ referredByLastName: null });
+    await wrapper.setData({ referredByPractitionerNumber: null });
+    await wrapper.vm.validateFields();
+    await wrapper.vm.$nextTick;
+    expect(spyOnScrollToError).not.toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).toHaveBeenCalled();
+  });
+
   it("flags invalid if referredTo first name initial present but not last name or prac number", async () => {
     Object.assign(wrapper.vm, cloneDeep(passingData));
     await wrapper.setData({ referredToFirstNameInitial: `Q` });
