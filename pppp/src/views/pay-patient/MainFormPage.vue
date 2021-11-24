@@ -988,7 +988,10 @@ export default {
         nameValidator,
       },
       birthDate: {
-        required: requiredIf(() => !isCSR(this.$router.currentRoute.path)),
+        required: requiredIf(() => {
+          return !isCSR(this.$router.currentRoute.path)
+              && this.dependentNumber !== '66';
+        }),
         birthDatePastValidator: optionalValidator(birthDatePastValidator),
         birthDateValidator,
         distantPastValidator: optionalValidator(distantPastValidator),
@@ -1190,7 +1193,7 @@ export default {
         }
       }
 
-      this.$v.$touch()
+      this.$v.$touch();
       if (this.$v.$invalid) {
         scrollToError();
         return;
