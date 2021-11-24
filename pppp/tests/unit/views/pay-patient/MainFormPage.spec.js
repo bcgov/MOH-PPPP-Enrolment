@@ -1302,7 +1302,7 @@ describe("MainFormPage.vue validateFields(), public", () => {
     expect(spyOnNavigateToNextPage).toHaveBeenCalled();
   });
 
-  it("(amountBilled) flags invalid value is correct but fee item is 03333", async () => {
+  it("(amountBilled) flags invalid if value is correct but fee item is 03333", async () => {
     Object.assign(wrapper.vm, cloneDeep(passingData));
     wrapper.vm.medicalServiceClaims[0].amountBilled = "2.00";
     wrapper.vm.medicalServiceClaims[0].feeItem = "03333";
@@ -2327,7 +2327,7 @@ describe("MainFormPage.vue validateFields(), CSR", () => {
     expect(spyOnNavigateToNextPage).toHaveBeenCalled();
   });
 
-  it("(amountBilled) flags invalid value is correct but fee item is 03333", async () => {
+  it("(amountBilled) flags invalid if value is correct but fee item is 03333", async () => {
     Object.assign(wrapper.vm, cloneDeep(passingData));
     wrapper.vm.medicalServiceClaims[0].amountBilled = "2.00";
     wrapper.vm.medicalServiceClaims[0].feeItem = "03333";
