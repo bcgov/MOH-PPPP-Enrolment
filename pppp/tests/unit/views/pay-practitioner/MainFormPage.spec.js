@@ -3102,6 +3102,97 @@ describe("MainFormPage.vue getMedicalServiceClaimTitle()", () => {
   });
 });
 
+describe.only("MainFormPage.vue getHospitalVisitClaimTitle()", () => {
+  // eslint-disable-next-line
+  let state;
+  let store;
+  let wrapper;
+
+  beforeEach(() => {
+    state = {
+      applicationUuid: null,
+    };
+    store = new Vuex.Store(storeTemplate);
+
+    wrapper = shallowMount(Page, {
+      store,
+      localVue,
+      mocks: mockRouter,
+    });
+    Object.assign(wrapper.vm, cloneDeep(passingData));
+  });
+
+  afterEach(() => {
+    jest.resetModules();
+    jest.clearAllMocks();
+  });
+
+  it("returns correct title when 1 claim", () => {
+    //should return "Service" or something like it, without saying 1 out of 1
+    //so I check to see if 1 is in the result, which it shouldn't be
+    const arrayLength = wrapper.vm.hospitalVisitClaims.length;
+    const result = wrapper.vm.getHospitalVisitClaimTitle(0);
+    expect(result).not.toContain(arrayLength);
+  });
+
+  it("returns correct title when more than 1 claim", async () => {
+    //should return "Service 1 out of 3" or something like it
+    //so I check to see if 3 is in the result, which it should be
+    await wrapper.setData({
+      hospitalVisitClaims: [
+        {
+          month: '12',
+          dayFrom: '24',
+          dayTo: '26',
+          year: '2020',
+          numberOfServices: '1',
+          serviceClarificationCode: 'A1',
+          feeItem: '00010',
+          amountBilled: '0.00',
+          diagnosticCode: '001',
+          locationOfService: 'A',
+          correspondenceAttached: null,
+          submissionCode: 'I',
+          notes: 'Notes here.',
+        },
+        {
+          month: '12',
+          dayFrom: '24',
+          dayTo: '26',
+          year: '2020',
+          numberOfServices: '1',
+          serviceClarificationCode: 'A1',
+          feeItem: '00010',
+          amountBilled: '0.00',
+          diagnosticCode: '001',
+          locationOfService: 'A',
+          correspondenceAttached: null,
+          submissionCode: 'I',
+          notes: 'Notes here.',
+        },
+        {
+          month: '12',
+          dayFrom: '24',
+          dayTo: '26',
+          year: '2020',
+          numberOfServices: '1',
+          serviceClarificationCode: 'A1',
+          feeItem: '00010',
+          amountBilled: '0.00',
+          diagnosticCode: '001',
+          locationOfService: 'A',
+          correspondenceAttached: null,
+          submissionCode: 'I',
+          notes: 'Notes here.',
+        }
+      ]
+    });
+    const arrayLength = wrapper.vm.hospitalVisitClaims.length;
+    const result = wrapper.vm.getHospitalVisitClaimTitle(0);
+    expect(result).toContain(arrayLength);
+  });
+});
+
 describe("MainFormPage.vue getServiceDateFutureErrorMessage()", () => {
   // eslint-disable-next-line
   let state;
