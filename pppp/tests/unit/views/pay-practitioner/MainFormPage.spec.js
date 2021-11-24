@@ -13,6 +13,8 @@ import apiService from "@/services/api-service";
 import { getConvertedPath } from "@/helpers/url";
 import { payPractitionerRoutes, payPractitionerRouteStepOrder } from "@/router/routes";
 
+const testDate = new Date();
+
 const testDateFutureYear = new Date();
 testDateFutureYear.setFullYear(testDateFutureYear.getFullYear() + 1);
 
@@ -353,10 +355,10 @@ const passingData = {
   
   hospitalVisitClaims: [
     {
-      month: '12',
-      dayFrom: '24',
-      dayTo: '26',
-      year: '2020',
+      month: testDate.getMonth().toString(),
+      dayFrom: testDate.getDate().toString(),
+      dayTo: testDate.getDate().toString(),
+      year: testDate.getFullYear().toString(),
       numberOfServices: '1',
       serviceClarificationCode: 'A1',
       feeItem: '00010',
@@ -3102,7 +3104,7 @@ describe("MainFormPage.vue getMedicalServiceClaimTitle()", () => {
   });
 });
 
-describe.only("MainFormPage.vue getHospitalVisitClaimTitle()", () => {
+describe("MainFormPage.vue getHospitalVisitClaimTitle()", () => {
   // eslint-disable-next-line
   let state;
   let store;
@@ -3292,6 +3294,77 @@ describe("MainFormPage.vue isSubmissionCodeRequired()", () => {
     Object.assign(wrapper.vm, cloneDeep(passingData));
     wrapper.vm.medicalServiceClaims[0].serviceDate = testDatePast91Days;
     const result = wrapper.vm.isSubmissionCodeRequired(0);
+    expect(result).toEqual(false);
+  });
+});
+
+describe.only("MainFormPage.vue isHospitalVisitSubmissionCodeRequired()", () => {
+  // eslint-disable-next-line
+  let state;
+  let store;
+  let wrapper;
+
+  beforeEach(() => {
+    state = {
+      applicationUuid: null,
+    };
+    store = new Vuex.Store(storeTemplate);
+  });
+
+  afterEach(() => {
+    jest.resetModules();
+    jest.clearAllMocks();
+  });
+
+  it.only("returns false when serviceDate is null", () => {
+    wrapper = shallowMount(Page, {
+      store,
+      localVue,
+      mocks: mockRouter,
+    });
+    Object.assign(wrapper.vm, cloneDeep(passingData));
+    wrapper.vm.hospitalVisitClaims[0].year = null;
+    wrapper.vm.hospitalVisitClaims[0].month = null;
+    wrapper.vm.hospitalVisitClaims[0].dayFrom = null;
+    const result = wrapper.vm.isHospitalVisitSubmissionCodeRequired(0);
+    expect(result).toEqual(false);
+  });
+
+  it("returns false when not service date is less than 90 days ago", () => {
+    wrapper = shallowMount(Page, {
+      store,
+      localVue,
+      mocks: mockRouter,
+    });
+    Object.assign(wrapper.vm, cloneDeep(passingData));
+    wrapper.vm.hospitalVisitClaims[0].year = testDatePast89Days.getFullYear().toString();
+    wrapper.vm.hospitalVisitClaims[0].month = testDatePast89Days.getMonth().toString();
+    wrapper.vm.hospitalVisitClaims[0].dayFrom = testDatePast89Days.getDate().toString();
+    const result = wrapper.vm.isHospitalVisitSubmissionCodeRequired(0);
+    expect(result).toEqual(false);
+  });
+
+  it("returns true when not service date is more than 90 days ago", () => {
+    wrapper = shallowMount(Page, {
+      store,
+      localVue,
+      mocks: mockRouter,
+    });
+    Object.assign(wrapper.vm, cloneDeep(passingData));
+    wrapper.vm.hospitalVisitClaims[0].serviceDate = testDatePast91Days;
+    const result = wrapper.vm.isHospitalVisitSubmissionCodeRequired(0);
+    expect(result).toEqual(true);
+  });
+
+  it("returns false when route is CSR", () => {
+    wrapper = shallowMount(Page, {
+      store,
+      localVue,
+      mocks: mockRouterCSR,
+    });
+    Object.assign(wrapper.vm, cloneDeep(passingData));
+    wrapper.vm.hospitalVisitClaims[0].serviceDate = testDatePast91Days;
+    const result = wrapper.vm.isHospitalVisitSubmissionCodeRequired(0);
     expect(result).toEqual(false);
   });
 });
