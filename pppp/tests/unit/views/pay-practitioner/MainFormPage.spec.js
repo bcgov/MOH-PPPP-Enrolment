@@ -11,7 +11,10 @@ import * as module3 from "../../../../src/store/modules/pay-practitioner-form";
 import * as dummyDataValid from "../../../../src/store/states/pay-practitioner-form-dummy-data";
 import apiService from "@/services/api-service";
 import { getConvertedPath } from "@/helpers/url";
-import { payPractitionerRoutes, payPractitionerRouteStepOrder } from "@/router/routes";
+import {
+  payPractitionerRoutes,
+  payPractitionerRouteStepOrder,
+} from "@/router/routes";
 
 const testDate = new Date();
 
@@ -313,79 +316,79 @@ const mockBackendValidationResponseDefault = {
 };
 
 const passingData = {
-  medicalServiceClaimsCount: '1',
-  hospitalVisitClaimsCount: '1',
+  medicalServiceClaimsCount: "1",
+  hospitalVisitClaimsCount: "1",
 
-  planReferenceNumber: '1234567890',
+  planReferenceNumber: "1234567890",
 
-  phn: '9999 999 998',
-  dependentNumber: '66',
-  firstName: 'Bob',
-  middleInitial: 'H',
-  lastName: 'Smith',
+  phn: "9999 999 998",
+  dependentNumber: "66",
+  firstName: "Bob",
+  middleInitial: "H",
+  lastName: "Smith",
   birthDate: new Date(),
 
-  isVehicleAccident: 'Y',
-  vehicleAccidentClaimNumber: 'A0000001',
+  isVehicleAccident: "Y",
+  vehicleAccidentClaimNumber: "A0000001",
 
-  planReferenceNumberOfOriginalClaim: '321',
-  
+  planReferenceNumberOfOriginalClaim: "321",
+
   medicalServiceClaims: [
     {
       serviceDate: new Date(),
-      numberOfServices: '1',
-      serviceClarificationCode: 'A1',
-      feeItem: '00010',
-      amountBilled: '0.00',
+      numberOfServices: "1",
+      serviceClarificationCode: "A1",
+      feeItem: "00010",
+      amountBilled: "0.00",
       calledStartTime: {
-        hour: '08',
-        minute: '08'
+        hour: "08",
+        minute: "08",
       },
       renderedFinishTime: {
-        hour: '16',
-        minute: '06'
+        hour: "16",
+        minute: "06",
       },
-      diagnosticCode: '001',
-      locationOfService: 'B',
+      diagnosticCode: "001",
+      locationOfService: "B",
       correspondenceAttached: null,
-      submissionCode: 'I',
-      notes: 'Notes here.',
-    }
+      submissionCode: "I",
+      notes: "Notes here.",
+    },
   ],
-  
+
   hospitalVisitClaims: [
     {
       month: testDate.getMonth().toString(),
       dayFrom: testDate.getDate().toString(),
       dayTo: testDate.getDate().toString(),
       year: testDate.getFullYear().toString(),
-      numberOfServices: '1',
-      serviceClarificationCode: 'A1',
-      feeItem: '00010',
-      amountBilled: '0.00',
-      diagnosticCode: '001',
-      locationOfService: 'B',
+      numberOfServices: "1",
+      serviceClarificationCode: "A1",
+      feeItem: "00010",
+      amountBilled: "0.00",
+      diagnosticCode: "001",
+      locationOfService: "B",
       correspondenceAttached: null,
-      submissionCode: 'I',
-      notes: 'Notes here.',
-    }
+      submissionCode: "I",
+      notes: "Notes here.",
+    },
   ],
 
-  practitionerLastName: 'GOTTNER',
-  practitionerFirstName: 'MICHAEL',
-  practitionerPaymentNumber: 'A1234',
-  practitionerPractitionerNumber: '00001',
-  practitionerFacilityNumber: '12345',
-  practitionerSpecialtyCode: '99',
-  coveragePreAuthNumber: '2222',
+  practitionerLastName: "GOTTNER",
+  practitionerFirstName: "MICHAEL",
+  practitionerPaymentNumber: "A1234",
+  practitionerPractitionerNumber: "00001",
+  practitionerFacilityNumber: "12345",
+  practitionerSpecialtyCode: "99",
+  coveragePreAuthNumber: "2222",
 
-  referredByFirstNameInitial: 'R',
-  referredByLastName: 'McDonald',
-  referredByPractitionerNumber: '22271',
+  referredByFirstNameInitial: "R",
+  referredByLastName: "McDonald",
+  referredByPractitionerNumber: "22271",
 
-  referredToFirstNameInitial: 'C',
-  referredToLastName: 'Lee',
-  referredToPractitionerNumber: '22272',
+  referredToFirstNameInitial: "C",
+  referredToLastName: "Lee",
+  referredToPractitionerNumber: "22272",
 };
 
 const failingData = {
@@ -405,7 +408,7 @@ const failingData = {
   vehicleAccidentClaimNumber: "",
 
   planReferenceNumberOfOriginalClaim: "",
-  
+
   medicalServiceClaims: [
     {
       serviceDate: new Date(),
@@ -415,20 +418,20 @@ const failingData = {
       amountBilled: "",
       calledStartTime: {
         hour: "",
-        minute: ""
+        minute: "",
       },
       renderedFinishTime: {
         hour: "",
-        minute: ""
+        minute: "",
       },
       diagnosticCode: "",
       locationOfService: "",
       correspondenceAttached: null,
       submissionCode: "",
       notes: "",
-    }
+    },
   ],
-  
+
   hospitalVisitClaims: [
     {
       month: "",
@@ -444,7 +447,7 @@ const failingData = {
       correspondenceAttached: null,
       submissionCode: "",
       notes: "",
-    }
+    },
   ],
 
   practitionerLastName: "",
@@ -606,7 +609,8 @@ describe("MainFormPage.vue pay practitioner created()", () => {
       storeTemplate.modules.payPractitionerForm.state.vehicleAccidentClaimNumber
     );
     expect(wrapper.vm.practitionerPractitionerNumber).toEqual(
-      storeTemplate.modules.payPractitionerForm.state.practitionerPractitionerNumber
+      storeTemplate.modules.payPractitionerForm.state
+        .practitionerPractitionerNumber
     );
     expect(wrapper.vm.referredToLastName).toEqual(
       storeTemplate.modules.payPractitionerForm.state.referredToLastName
@@ -2681,7 +2685,7 @@ describe("MainFormPage.vue validateFields(), CSR", () => {
     expect(spyOnScrollToError).not.toHaveBeenCalled();
     expect(spyOnNavigateToNextPage).toHaveBeenCalled();
   });
-  
+
   it("(referredByFirstNameInitial) flags invalid if not alphabetic", async () => {
     Object.assign(wrapper.vm, cloneDeep(passingData));
     await wrapper.setData({ referredByFirstNameInitial: "1" });
@@ -2992,9 +2996,9 @@ describe("MainFormPage.vue saveData()", () => {
     ).not.toEqual(testValue);
     await wrapper.setData({ referredByLastName: testValue });
     wrapper.vm.saveData();
-    expect(wrapper.vm.$store.state.payPractitionerForm.referredByLastName).toEqual(
-      testValue
-    );
+    expect(
+      wrapper.vm.$store.state.payPractitionerForm.referredByLastName
+    ).toEqual(testValue);
   });
 });
 
@@ -3143,51 +3147,51 @@ describe("MainFormPage.vue getHospitalVisitClaimTitle()", () => {
     await wrapper.setData({
       hospitalVisitClaims: [
         {
-          month: '12',
-          dayFrom: '24',
-          dayTo: '26',
-          year: '2020',
-          numberOfServices: '1',
-          serviceClarificationCode: 'A1',
-          feeItem: '00010',
-          amountBilled: '0.00',
-          diagnosticCode: '001',
-          locationOfService: 'A',
+          month: "12",
+          dayFrom: "24",
+          dayTo: "26",
+          year: "2020",
+          numberOfServices: "1",
+          serviceClarificationCode: "A1",
+          feeItem: "00010",
+          amountBilled: "0.00",
+          diagnosticCode: "001",
+          locationOfService: "A",
           correspondenceAttached: null,
-          submissionCode: 'I',
-          notes: 'Notes here.',
+          submissionCode: "I",
+          notes: "Notes here.",
         },
         {
-          month: '12',
-          dayFrom: '24',
-          dayTo: '26',
-          year: '2020',
-          numberOfServices: '1',
-          serviceClarificationCode: 'A1',
-          feeItem: '00010',
-          amountBilled: '0.00',
-          diagnosticCode: '001',
-          locationOfService: 'A',
+          month: "12",
+          dayFrom: "24",
+          dayTo: "26",
+          year: "2020",
+          numberOfServices: "1",
+          serviceClarificationCode: "A1",
+          feeItem: "00010",
+          amountBilled: "0.00",
+          diagnosticCode: "001",
+          locationOfService: "A",
           correspondenceAttached: null,
-          submissionCode: 'I',
-          notes: 'Notes here.',
+          submissionCode: "I",
+          notes: "Notes here.",
         },
         {
-          month: '12',
-          dayFrom: '24',
-          dayTo: '26',
-          year: '2020',
-          numberOfServices: '1',
-          serviceClarificationCode: 'A1',
-          feeItem: '00010',
-          amountBilled: '0.00',
-          diagnosticCode: '001',
-          locationOfService: 'A',
+          month: "12",
+          dayFrom: "24",
+          dayTo: "26",
+          year: "2020",
+          numberOfServices: "1",
+          serviceClarificationCode: "A1",
+          feeItem: "00010",
+          amountBilled: "0.00",
+          diagnosticCode: "001",
+          locationOfService: "A",
           correspondenceAttached: null,
-          submissionCode: 'I',
-          notes: 'Notes here.',
-        }
-      ]
+          submissionCode: "I",
+          notes: "Notes here.",
+        },
+      ],
     });
     const arrayLength = wrapper.vm.hospitalVisitClaims.length;
     const result = wrapper.vm.getHospitalVisitClaimTitle(0);
@@ -3337,12 +3341,16 @@ describe("MainFormPage.vue isHospitalVisitSubmissionCodeRequired()", () => {
       mocks: mockRouter,
     });
     Object.assign(wrapper.vm, cloneDeep(passingData));
-    wrapper.vm.hospitalVisitClaims[0].year = testDatePast89Days.getFullYear().toString();
+    wrapper.vm.hospitalVisitClaims[0].year = testDatePast89Days
+      .getFullYear()
+      .toString();
     // javascript date has January start at 0, but the select field has January start from 1
     // this code adjusts for that fact
     const correctedMonth = testDatePast89Days.getMonth() + 1;
     wrapper.vm.hospitalVisitClaims[0].month = correctedMonth.toString();
-    wrapper.vm.hospitalVisitClaims[0].dayFrom = testDatePast89Days.getDate().toString();
+    wrapper.vm.hospitalVisitClaims[0].dayFrom = testDatePast89Days
+      .getDate()
+      .toString();
     const result = wrapper.vm.isHospitalVisitSubmissionCodeRequired(0);
     expect(result).toEqual(false);
   });
@@ -3354,12 +3362,16 @@ describe("MainFormPage.vue isHospitalVisitSubmissionCodeRequired()", () => {
       mocks: mockRouter,
     });
     Object.assign(wrapper.vm, cloneDeep(passingData));
-    wrapper.vm.hospitalVisitClaims[0].year = testDatePast91Days.getFullYear().toString();
+    wrapper.vm.hospitalVisitClaims[0].year = testDatePast91Days
+      .getFullYear()
+      .toString();
     // javascript date has January start at 0, but the select field has January start from 1
     // this code adjusts for that fact
     const correctedMonth = testDatePast91Days.getMonth() + 1;
     wrapper.vm.hospitalVisitClaims[0].month = correctedMonth.toString();
-    wrapper.vm.hospitalVisitClaims[0].dayFrom = testDatePast91Days.getDate().toString();
+    wrapper.vm.hospitalVisitClaims[0].dayFrom = testDatePast91Days
+      .getDate()
+      .toString();
     const result = wrapper.vm.isHospitalVisitSubmissionCodeRequired(0);
     expect(result).toEqual(true);
   });
@@ -3371,12 +3383,16 @@ describe("MainFormPage.vue isHospitalVisitSubmissionCodeRequired()", () => {
       mocks: mockRouterCSR,
     });
     Object.assign(wrapper.vm, cloneDeep(passingData));
-    wrapper.vm.hospitalVisitClaims[0].year = testDatePast91Days.getFullYear().toString();
+    wrapper.vm.hospitalVisitClaims[0].year = testDatePast91Days
+      .getFullYear()
+      .toString();
     // javascript date has January start at 0, but the select field has January start from 1
     // this code adjusts for that fact
     const correctedMonth = testDatePast91Days.getMonth() + 1;
     wrapper.vm.hospitalVisitClaims[0].month = correctedMonth.toString();
-    wrapper.vm.hospitalVisitClaims[0].dayFrom = testDatePast91Days.getDate().toString();
+    wrapper.vm.hospitalVisitClaims[0].dayFrom = testDatePast91Days
+      .getDate()
+      .toString();
     const result = wrapper.vm.isHospitalVisitSubmissionCodeRequired(0);
     expect(result).toEqual(false);
   });
@@ -3616,47 +3632,47 @@ describe("MainFormPage.vue isContainingNoChargeFeeItem()", () => {
         dayFrom: testDate.getDate().toString(),
         dayTo: testDate.getDate().toString(),
         year: testDate.getFullYear().toString(),
-        numberOfServices: '1',
-        serviceClarificationCode: 'A1',
-        feeItem: '00010',
-        amountBilled: '0.00',
-        diagnosticCode: '001',
-        locationOfService: 'B',
+        numberOfServices: "1",
+        serviceClarificationCode: "A1",
+        feeItem: "00010",
+        amountBilled: "0.00",
+        diagnosticCode: "001",
+        locationOfService: "B",
         correspondenceAttached: null,
-        submissionCode: 'I',
-        notes: 'Notes here.',
+        submissionCode: "I",
+        notes: "Notes here.",
       },
       {
         month: testDate.getMonth().toString(),
         dayFrom: testDate.getDate().toString(),
         dayTo: testDate.getDate().toString(),
         year: testDate.getFullYear().toString(),
-        numberOfServices: '1',
-        serviceClarificationCode: 'A1',
-        feeItem: '00010',
-        amountBilled: '0.00',
-        diagnosticCode: '001',
-        locationOfService: 'B',
+        numberOfServices: "1",
+        serviceClarificationCode: "A1",
+        feeItem: "00010",
+        amountBilled: "0.00",
+        diagnosticCode: "001",
+        locationOfService: "B",
         correspondenceAttached: null,
-        submissionCode: 'I',
-        notes: 'Notes here.',
+        submissionCode: "I",
+        notes: "Notes here.",
       },
       {
         month: testDate.getMonth().toString(),
         dayFrom: testDate.getDate().toString(),
         dayTo: testDate.getDate().toString(),
         year: testDate.getFullYear().toString(),
-        numberOfServices: '1',
-        serviceClarificationCode: 'A1',
-        feeItem: '00010',
-        amountBilled: '0.00',
-        diagnosticCode: '001',
-        locationOfService: 'B',
+        numberOfServices: "1",
+        serviceClarificationCode: "A1",
+        feeItem: "00010",
+        amountBilled: "0.00",
+        diagnosticCode: "001",
+        locationOfService: "B",
         correspondenceAttached: null,
-        submissionCode: 'I',
-        notes: 'Notes here.',
-      }
-    ]
+        submissionCode: "I",
+        notes: "Notes here.",
+      },
+    ];
   });
 
   afterEach(() => {
@@ -3817,7 +3833,9 @@ describe("MainFormPage.vue beforeRouteLeave(to, from, next)", () => {
     jest.useFakeTimers();
     await pageStateService.importPageRoutes(payPractitionerRouteStepOrder);
     await wrapper.vm.$nextTick;
-    await pageStateService.setPageComplete(payPractitionerRouteStepOrder[0].path);
+    await pageStateService.setPageComplete(
+      payPractitionerRouteStepOrder[0].path
+    );
     await wrapper.vm.$nextTick;
     Page.beforeRouteLeave.call(
       wrapper.vm,
