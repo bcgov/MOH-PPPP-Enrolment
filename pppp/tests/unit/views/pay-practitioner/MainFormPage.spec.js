@@ -364,7 +364,7 @@ const passingData = {
       feeItem: '00010',
       amountBilled: '0.00',
       diagnosticCode: '001',
-      locationOfService: 'A',
+      locationOfService: 'B',
       correspondenceAttached: null,
       submissionCode: 'I',
       notes: 'Notes here.',
@@ -3609,6 +3609,54 @@ describe("MainFormPage.vue isContainingNoChargeFeeItem()", () => {
         notes: "Notes here.",
       },
     ];
+
+    wrapper.vm.hospitalVisitClaims = [
+      {
+        month: testDate.getMonth().toString(),
+        dayFrom: testDate.getDate().toString(),
+        dayTo: testDate.getDate().toString(),
+        year: testDate.getFullYear().toString(),
+        numberOfServices: '1',
+        serviceClarificationCode: 'A1',
+        feeItem: '00010',
+        amountBilled: '0.00',
+        diagnosticCode: '001',
+        locationOfService: 'B',
+        correspondenceAttached: null,
+        submissionCode: 'I',
+        notes: 'Notes here.',
+      },
+      {
+        month: testDate.getMonth().toString(),
+        dayFrom: testDate.getDate().toString(),
+        dayTo: testDate.getDate().toString(),
+        year: testDate.getFullYear().toString(),
+        numberOfServices: '1',
+        serviceClarificationCode: 'A1',
+        feeItem: '00010',
+        amountBilled: '0.00',
+        diagnosticCode: '001',
+        locationOfService: 'B',
+        correspondenceAttached: null,
+        submissionCode: 'I',
+        notes: 'Notes here.',
+      },
+      {
+        month: testDate.getMonth().toString(),
+        dayFrom: testDate.getDate().toString(),
+        dayTo: testDate.getDate().toString(),
+        year: testDate.getFullYear().toString(),
+        numberOfServices: '1',
+        serviceClarificationCode: 'A1',
+        feeItem: '00010',
+        amountBilled: '0.00',
+        diagnosticCode: '001',
+        locationOfService: 'B',
+        correspondenceAttached: null,
+        submissionCode: 'I',
+        notes: 'Notes here.',
+      }
+    ]
   });
 
   afterEach(() => {
@@ -3616,21 +3664,41 @@ describe("MainFormPage.vue isContainingNoChargeFeeItem()", () => {
     jest.clearAllMocks();
   });
 
-  it("returns true if one of the feeItems is 03333", () => {
+  it("returns true if one of the (medical) feeItems is 03333", () => {
     wrapper.vm.medicalServiceClaims[0].feeItem = "03333";
     expect(Page.computed.isContainingNoChargeFeeItem.call(wrapper.vm)).toBe(
       true
     );
   });
 
-  it("returns true if one of the feeItems is 03333 (2)", () => {
+  it("returns true if one of the (medical) feeItems is 03333 (2)", () => {
     wrapper.vm.medicalServiceClaims[1].feeItem = "03333";
     expect(Page.computed.isContainingNoChargeFeeItem.call(wrapper.vm)).toBe(
       true
     );
   });
 
-  it("returns false if none of the feeItems are 03333", () => {
+  it("returns false if none of the (medical) feeItems are 03333", () => {
+    expect(Page.computed.isContainingNoChargeFeeItem.call(wrapper.vm)).toBe(
+      false
+    );
+  });
+
+  it("returns true if one of the (hospital) feeItems is 03333", () => {
+    wrapper.vm.hospitalVisitClaims[0].feeItem = "03333";
+    expect(Page.computed.isContainingNoChargeFeeItem.call(wrapper.vm)).toBe(
+      true
+    );
+  });
+
+  it("returns true if one of the (hospital) feeItems is 03333 (2)", () => {
+    wrapper.vm.hospitalVisitClaims[1].feeItem = "03333";
+    expect(Page.computed.isContainingNoChargeFeeItem.call(wrapper.vm)).toBe(
+      true
+    );
+  });
+
+  it("returns false if none of the (hospital) feeItems are 03333", () => {
     expect(Page.computed.isContainingNoChargeFeeItem.call(wrapper.vm)).toBe(
       false
     );
