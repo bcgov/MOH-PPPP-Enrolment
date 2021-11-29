@@ -3298,7 +3298,7 @@ describe("MainFormPage.vue isSubmissionCodeRequired()", () => {
   });
 });
 
-describe.only("MainFormPage.vue isHospitalVisitSubmissionCodeRequired()", () => {
+describe("MainFormPage.vue isHospitalVisitSubmissionCodeRequired()", () => {
   // eslint-disable-next-line
   let state;
   let store;
@@ -3316,7 +3316,7 @@ describe.only("MainFormPage.vue isHospitalVisitSubmissionCodeRequired()", () => 
     jest.clearAllMocks();
   });
 
-  it.only("returns false when serviceDate is null", () => {
+  it("returns false when serviceDate is null", () => {
     wrapper = shallowMount(Page, {
       store,
       localVue,
@@ -3330,7 +3330,7 @@ describe.only("MainFormPage.vue isHospitalVisitSubmissionCodeRequired()", () => 
     expect(result).toEqual(false);
   });
 
-  it("returns false when not service date is less than 90 days ago", () => {
+  it("returns false when service date is less than 90 days ago", () => {
     wrapper = shallowMount(Page, {
       store,
       localVue,
@@ -3338,20 +3338,28 @@ describe.only("MainFormPage.vue isHospitalVisitSubmissionCodeRequired()", () => 
     });
     Object.assign(wrapper.vm, cloneDeep(passingData));
     wrapper.vm.hospitalVisitClaims[0].year = testDatePast89Days.getFullYear().toString();
-    wrapper.vm.hospitalVisitClaims[0].month = testDatePast89Days.getMonth().toString();
+    // javascript date has January start at 0, but the select field has January start from 1
+    // this code adjusts for that fact
+    const correctedMonth = testDatePast89Days.getMonth() + 1;
+    wrapper.vm.hospitalVisitClaims[0].month = correctedMonth.toString();
     wrapper.vm.hospitalVisitClaims[0].dayFrom = testDatePast89Days.getDate().toString();
     const result = wrapper.vm.isHospitalVisitSubmissionCodeRequired(0);
     expect(result).toEqual(false);
   });
 
-  it("returns true when not service date is more than 90 days ago", () => {
+  it("returns true when service date is more than 90 days ago", () => {
     wrapper = shallowMount(Page, {
       store,
       localVue,
       mocks: mockRouter,
     });
     Object.assign(wrapper.vm, cloneDeep(passingData));
-    wrapper.vm.hospitalVisitClaims[0].serviceDate = testDatePast91Days;
+    wrapper.vm.hospitalVisitClaims[0].year = testDatePast91Days.getFullYear().toString();
+    // javascript date has January start at 0, but the select field has January start from 1
+    // this code adjusts for that fact
+    const correctedMonth = testDatePast91Days.getMonth() + 1;
+    wrapper.vm.hospitalVisitClaims[0].month = correctedMonth.toString();
+    wrapper.vm.hospitalVisitClaims[0].dayFrom = testDatePast91Days.getDate().toString();
     const result = wrapper.vm.isHospitalVisitSubmissionCodeRequired(0);
     expect(result).toEqual(true);
   });
@@ -3363,7 +3371,12 @@ describe.only("MainFormPage.vue isHospitalVisitSubmissionCodeRequired()", () => 
       mocks: mockRouterCSR,
     });
     Object.assign(wrapper.vm, cloneDeep(passingData));
-    wrapper.vm.hospitalVisitClaims[0].serviceDate = testDatePast91Days;
+    wrapper.vm.hospitalVisitClaims[0].year = testDatePast91Days.getFullYear().toString();
+    // javascript date has January start at 0, but the select field has January start from 1
+    // this code adjusts for that fact
+    const correctedMonth = testDatePast91Days.getMonth() + 1;
+    wrapper.vm.hospitalVisitClaims[0].month = correctedMonth.toString();
+    wrapper.vm.hospitalVisitClaims[0].dayFrom = testDatePast91Days.getDate().toString();
     const result = wrapper.vm.isHospitalVisitSubmissionCodeRequired(0);
     expect(result).toEqual(false);
   });
