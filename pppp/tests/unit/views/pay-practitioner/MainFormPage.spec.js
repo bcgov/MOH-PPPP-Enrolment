@@ -1705,6 +1705,130 @@ describe.only("MainFormPage.vue validateFields(), public", () => {
     expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
   });
 
+  it("(diagnosticCode, hospitalVisitClaims) flags invalid if not present", async () => {
+    Object.assign(wrapper.vm, cloneDeep(passingData));
+    wrapper.vm.hospitalVisitClaims[0].diagnosticCode = null;
+    await wrapper.vm.validateFields();
+    await wrapper.vm.$nextTick;
+    expect(spyOnScrollToError).toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
+  });
+
+  it("(diagnosticCode, hospitalVisitClaims) flags invalid if not alphanumeric", async () => {
+    Object.assign(wrapper.vm, cloneDeep(passingData));
+    wrapper.vm.hospitalVisitClaims[0].diagnosticCode = "a^^^";
+    await wrapper.vm.validateFields();
+    await wrapper.vm.$nextTick;
+    expect(spyOnScrollToError).toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
+  });
+
+  it("(diagnosticCode, hospitalVisitClaims) flags invalid if not on diagnostic list", async () => {
+    Object.assign(wrapper.vm, cloneDeep(passingData));
+    wrapper.vm.hospitalVisitClaims[0].diagnosticCode = "A111";
+    await wrapper.vm.validateFields();
+    await wrapper.vm.$nextTick;
+    expect(spyOnScrollToError).toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
+  });
+
+  it("(locationOfService, hospitalVisitClaims) flags invalid if not present", async () => {
+    Object.assign(wrapper.vm, cloneDeep(passingData));
+    wrapper.vm.hospitalVisitClaims[0].locationOfService = null;
+    await wrapper.vm.validateFields();
+    await wrapper.vm.$nextTick;
+    expect(spyOnScrollToError).toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
+  });
+
+  it("(locationOfService, hospitalVisitClaims) flags invalid if A and after Oct 1st 2021", async () => {
+    Object.assign(wrapper.vm, cloneDeep(passingData));
+    wrapper.vm.hospitalVisitClaims[0].locationOfService = "A";
+    wrapper.vm.hospitalVisitClaims[0].dayFrom = "3";
+    wrapper.vm.hospitalVisitClaims[0].month = "11";
+    wrapper.vm.hospitalVisitClaims[0].year = "2021";
+    await wrapper.vm.validateFields();
+    await wrapper.vm.$nextTick;
+    expect(spyOnScrollToError).toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
+  });
+
+  it("(locationOfService, hospitalVisitClaims) flags valid if A and before Oct 1st 2021", async () => {
+    Object.assign(wrapper.vm, cloneDeep(passingData));
+    wrapper.vm.hospitalVisitClaims[0].locationOfService = "A";
+    wrapper.vm.hospitalVisitClaims[0].dayFrom = "3";
+    wrapper.vm.hospitalVisitClaims[0].month = "8";
+    wrapper.vm.hospitalVisitClaims[0].year = "2021";
+    await wrapper.vm.validateFields();
+    await wrapper.vm.$nextTick;
+    expect(spyOnScrollToError).not.toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).toHaveBeenCalled();
+  });
+
+  it("(serviceClarificationCode, hospitalVisitClaims) flags valid if not present", async () => {
+    Object.assign(wrapper.vm, cloneDeep(passingData));
+    wrapper.vm.hospitalVisitClaims[0].serviceClarificationCode = null;
+    await wrapper.vm.validateFields();
+    await wrapper.vm.$nextTick;
+    expect(spyOnScrollToError).not.toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).toHaveBeenCalled();
+  });
+
+  it("(serviceClarificationCode, hospitalVisitClaims) flags invalid if value is not in list", async () => {
+    Object.assign(wrapper.vm, cloneDeep(passingData));
+    wrapper.vm.hospitalVisitClaims[0].serviceClarificationCode = "AA";
+    await wrapper.vm.validateFields();
+    await wrapper.vm.$nextTick;
+    expect(spyOnScrollToError).toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
+  });
+
+  it("(submissionCode, hospitalVisitClaims) flags invalid if not present and more than 90 days ago", async () => {
+    Object.assign(wrapper.vm, cloneDeep(passingData));
+    wrapper.vm.hospitalVisitClaims[0].submissionCode = null;
+    wrapper.vm.hospitalVisitClaims[0].dayFrom = testDatePast91Days
+      .getDate()
+      .toString();
+    const correctedMonth = testDatePast89Days.getMonth() + 1;
+    wrapper.vm.hospitalVisitClaims[0].month = correctedMonth.toString();
+    wrapper.vm.hospitalVisitClaims[0].year = testDatePast91Days
+      .getFullYear()
+      .toString();
+    await wrapper.vm.validateFields();
+    await wrapper.vm.$nextTick;
+    expect(spyOnScrollToError).toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
+  });
+
+  it("(submissionCode, hospitalVisitClaims) flags valid if not present and less than 90 days ago", async () => {
+    Object.assign(wrapper.vm, cloneDeep(passingData));
+    wrapper.vm.hospitalVisitClaims[0].submissionCode = null;
+    wrapper.vm.hospitalVisitClaims[0].dayFrom = testDatePast89Days
+      .getDate()
+      .toString();
+    const correctedMonth = testDatePast89Days.getMonth() + 1;
+    wrapper.vm.hospitalVisitClaims[0].month = correctedMonth.toString();
+    wrapper.vm.hospitalVisitClaims[0].year = testDatePast89Days
+      .getFullYear()
+      .toString();
+    await wrapper.vm.validateFields();
+    await wrapper.vm.$nextTick;
+    expect(spyOnScrollToError).not.toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).toHaveBeenCalled();
+  });
+
+  it("(notes, hospitalVisitClaims) flags invalid if more than 400 characters", async () => {
+    const testMessage =
+      "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!";
+    Object.assign(wrapper.vm, cloneDeep(passingData));
+    wrapper.vm.hospitalVisitClaims[0].notes = testMessage;
+    wrapper.vm.hospitalVisitClaims[0].serviceDate = testDatePast89Days;
+    await wrapper.vm.validateFields();
+    await wrapper.vm.$nextTick;
+    expect(spyOnScrollToError).toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
+  });
+
   //end hospital visit tests
 
   it("(practitionerLastName) flags invalid if not present", async () => {
