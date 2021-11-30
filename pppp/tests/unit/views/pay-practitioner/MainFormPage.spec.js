@@ -1587,6 +1587,124 @@ describe.only("MainFormPage.vue validateFields(), public", () => {
     expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
   });
 
+  it("(numberOfServices, hospitalVisitClaims) flags invalid if not present", async () => {
+    Object.assign(wrapper.vm, cloneDeep(passingData));
+    wrapper.vm.hospitalVisitClaims[0].numberOfServices = null;
+    await wrapper.vm.validateFields();
+    await wrapper.vm.$nextTick;
+    expect(spyOnScrollToError).toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
+  });
+
+  it("(numberOfServices, hospitalVisitClaims) flags invalid if not an integer", async () => {
+    Object.assign(wrapper.vm, cloneDeep(passingData));
+    wrapper.vm.hospitalVisitClaims[0].numberOfServices = "a";
+    await wrapper.vm.validateFields();
+    await wrapper.vm.$nextTick;
+    expect(spyOnScrollToError).toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
+  });
+
+  it("(numberOfServices, hospitalVisitClaims) flags invalid if not a positive integer", async () => {
+    Object.assign(wrapper.vm, cloneDeep(passingData));
+    wrapper.vm.hospitalVisitClaims[0].numberOfServices = "-2";
+    await wrapper.vm.validateFields();
+    await wrapper.vm.$nextTick;
+    expect(spyOnScrollToError).toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
+  });
+
+  it("(numberOfServices, hospitalVisitClaims) flags invalid if zero", async () => {
+    Object.assign(wrapper.vm, cloneDeep(passingData));
+    wrapper.vm.hospitalVisitClaims[0].numberOfServices = "0";
+    await wrapper.vm.validateFields();
+    await wrapper.vm.$nextTick;
+    expect(spyOnScrollToError).toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
+  });
+
+  it("(feeItem, hospitalVisitClaims) flags invalid if not present", async () => {
+    Object.assign(wrapper.vm, cloneDeep(passingData));
+    wrapper.vm.hospitalVisitClaims[0].feeItem = null;
+    await wrapper.vm.validateFields();
+    await wrapper.vm.$nextTick;
+    expect(spyOnScrollToError).toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
+  });
+
+  it("(feeItem, hospitalVisitClaims) flags invalid if not an integer", async () => {
+    Object.assign(wrapper.vm, cloneDeep(passingData));
+    wrapper.vm.hospitalVisitClaims[0].feeItem = "a";
+    await wrapper.vm.validateFields();
+    await wrapper.vm.$nextTick;
+    expect(spyOnScrollToError).toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
+  });
+
+  it("(feeItem, hospitalVisitClaims) flags invalid if not a positive integer", async () => {
+    Object.assign(wrapper.vm, cloneDeep(passingData));
+    wrapper.vm.hospitalVisitClaims[0].feeItem = "-2";
+    await wrapper.vm.validateFields();
+    await wrapper.vm.$nextTick;
+    expect(spyOnScrollToError).toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
+  });
+
+  it("(amountBilled, hospitalVisitClaims) flags invalid if not present", async () => {
+    Object.assign(wrapper.vm, cloneDeep(passingData));
+    wrapper.vm.hospitalVisitClaims[0].amountBilled = null;
+    await wrapper.vm.validateFields();
+    await wrapper.vm.$nextTick;
+    expect(spyOnScrollToError).toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
+  });
+
+  it("(amountBilled, hospitalVisitClaims) flags invalid if not an integer", async () => {
+    Object.assign(wrapper.vm, cloneDeep(passingData));
+    wrapper.vm.hospitalVisitClaims[0].amountBilled = "a";
+    await wrapper.vm.validateFields();
+    await wrapper.vm.$nextTick;
+    expect(spyOnScrollToError).toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
+  });
+
+  it("(amountBilled, hospitalVisitClaims) flags invalid if not a positive integer", async () => {
+    Object.assign(wrapper.vm, cloneDeep(passingData));
+    wrapper.vm.hospitalVisitClaims[0].amountBilled = "-2";
+    await wrapper.vm.validateFields();
+    await wrapper.vm.$nextTick;
+    expect(spyOnScrollToError).toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
+  });
+
+  it("(amountBilled, hospitalVisitClaims) flags invalid if not a positive integer ending in .00", async () => {
+    Object.assign(wrapper.vm, cloneDeep(passingData));
+    wrapper.vm.hospitalVisitClaims[0].amountBilled = "2";
+    await wrapper.vm.validateFields();
+    await wrapper.vm.$nextTick;
+    expect(spyOnScrollToError).toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
+  });
+
+  it("(amountBilled, hospitalVisitClaims) flags valid if it does end in .00", async () => {
+    Object.assign(wrapper.vm, cloneDeep(passingData));
+    wrapper.vm.hospitalVisitClaims[0].amountBilled = "2.00";
+    await wrapper.vm.validateFields();
+    await wrapper.vm.$nextTick;
+    expect(spyOnScrollToError).not.toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).toHaveBeenCalled();
+  });
+
+  it("(amountBilled, hospitalVisitClaims) flags invalid if value is correct but fee item is 03333", async () => {
+    Object.assign(wrapper.vm, cloneDeep(passingData));
+    wrapper.vm.hospitalVisitClaims[0].amountBilled = "2.00";
+    wrapper.vm.hospitalVisitClaims[0].feeItem = "03333";
+    await wrapper.vm.validateFields();
+    await wrapper.vm.$nextTick;
+    expect(spyOnScrollToError).toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
+  });
+
   //end hospital visit tests
 
   it("(practitionerLastName) flags invalid if not present", async () => {
