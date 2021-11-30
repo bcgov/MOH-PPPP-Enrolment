@@ -18,6 +18,9 @@ import {
 
 const testDate = new Date();
 
+const testDateFutureDay = new Date();
+testDateFutureDay.setDate(testDateFutureDay.getDate() + 1);
+
 const testDateFutureYear = new Date();
 testDateFutureYear.setFullYear(testDateFutureYear.getFullYear() + 1);
 
@@ -842,7 +845,7 @@ describe("MainFormPage.vue handleInputHospitalVisitFeeItem()", () => {
   });
 });
 
-describe.only("MainFormPage.vue validateFields(), public", () => {
+describe("MainFormPage.vue validateFields(), public", () => {
   // eslint-disable-next-line
   let state;
   let store;
@@ -1789,7 +1792,7 @@ describe.only("MainFormPage.vue validateFields(), public", () => {
     wrapper.vm.hospitalVisitClaims[0].dayFrom = testDatePast91Days
       .getDate()
       .toString();
-    const correctedMonth = testDatePast89Days.getMonth() + 1;
+    const correctedMonth = testDatePast91Days.getMonth() + 1;
     wrapper.vm.hospitalVisitClaims[0].month = correctedMonth.toString();
     wrapper.vm.hospitalVisitClaims[0].year = testDatePast91Days
       .getFullYear()
@@ -1827,6 +1830,145 @@ describe.only("MainFormPage.vue validateFields(), public", () => {
     await wrapper.vm.$nextTick;
     expect(spyOnScrollToError).toHaveBeenCalled();
     expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
+  });
+
+  it("(each, hospitalVisitDateValidator, hospitalVisitClaims) flags invalid if date is invalid", async () => {
+    Object.assign(wrapper.vm, cloneDeep(passingData));
+    wrapper.vm.hospitalVisitClaims[0].dayFrom = "32";
+    wrapper.vm.hospitalVisitClaims[0].dayTo = null;
+    wrapper.vm.hospitalVisitClaims[0].month = "1";
+    wrapper.vm.hospitalVisitClaims[0].year = testDatePast91Days
+      .getFullYear()
+      .toString();
+    await wrapper.vm.validateFields();
+    await wrapper.vm.$nextTick;
+    expect(spyOnScrollToError).toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
+  });
+
+  it("(each, hospitalVisitDatePastValidator, hospitalVisitClaims) flags valid if date is in past 18 months", async () => {
+    Object.assign(wrapper.vm, cloneDeep(passingData));
+    wrapper.vm.hospitalVisitClaims[0].dayFrom = testDatePast91Days
+      .getDate()
+      .toString();
+    wrapper.vm.hospitalVisitClaims[0].dayTo = null;
+    const correctedMonth = testDatePast91Days.getMonth() + 1;
+    wrapper.vm.hospitalVisitClaims[0].month = correctedMonth.toString();
+    wrapper.vm.hospitalVisitClaims[0].year = testDatePast91Days
+      .getFullYear()
+      .toString();
+    await wrapper.vm.validateFields();
+    await wrapper.vm.$nextTick;
+    expect(spyOnScrollToError).not.toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).toHaveBeenCalled();
+  });
+
+  it("(each, hospitalVisitDatePastValidator, hospitalVisitClaims) flags invalid if date more than 18 months old", async () => {
+    Object.assign(wrapper.vm, cloneDeep(passingData));
+    wrapper.vm.hospitalVisitClaims[0].dayFrom = "31";
+    wrapper.vm.hospitalVisitClaims[0].dayTo = null;
+    wrapper.vm.hospitalVisitClaims[0].month = "1";
+    wrapper.vm.hospitalVisitClaims[0].year = "2001";
+    await wrapper.vm.validateFields();
+    await wrapper.vm.$nextTick;
+    expect(spyOnScrollToError).toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
+  });
+
+  it("(each, hospitalVisitDateFutureValidator, hospitalVisitClaims) flags invalid if date is in future", async () => {
+    Object.assign(wrapper.vm, cloneDeep(passingData));
+    wrapper.vm.hospitalVisitClaims[0].dayFrom = "31";
+    wrapper.vm.hospitalVisitClaims[0].dayTo = null;
+    wrapper.vm.hospitalVisitClaims[0].month = "1";
+    wrapper.vm.hospitalVisitClaims[0].year = testDateFutureYear.toString();
+    await wrapper.vm.validateFields();
+    await wrapper.vm.$nextTick;
+    expect(spyOnScrollToError).toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
+  });
+
+  it("(each, hospitalVisitDateToFutureValidator, hospitalVisitClaims) flags invalid if date is in future", async () => {
+    //date to isn't really possible to test independent of day from, due to date storage constraints
+    //for example, if dayFrom is the last day of the month, there's no way to store a dayTo after that
+    //since they both pull from the same month/year
+    //so this test will have to suffice
+    Object.assign(wrapper.vm, cloneDeep(passingData));
+    wrapper.vm.hospitalVisitClaims[0].dayFrom = "18";
+    wrapper.vm.hospitalVisitClaims[0].dayTo = "19";
+    wrapper.vm.hospitalVisitClaims[0].month = "1";
+    wrapper.vm.hospitalVisitClaims[0].year = testDateFutureYear.toString();
+    await wrapper.vm.validateFields();
+    await wrapper.vm.$nextTick;
+    expect(spyOnScrollToError).toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
+  });
+
+  it("(each, hospitalVisitDateRangeValidator, hospitalVisitClaims) flags valid if date is correct and there is no dayTo", async () => {
+    Object.assign(wrapper.vm, cloneDeep(passingData));
+    wrapper.vm.hospitalVisitClaims[0].dayFrom = testDate.getDate().toString();
+    wrapper.vm.hospitalVisitClaims[0].dayTo = null;
+    const correctedMonth = testDate.getMonth() + 1;
+    wrapper.vm.hospitalVisitClaims[0].month = correctedMonth.toString();
+    wrapper.vm.hospitalVisitClaims[0].year = testDate.getFullYear().toString();
+    await wrapper.vm.validateFields();
+    await wrapper.vm.$nextTick;
+    expect(spyOnScrollToError).not.toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).toHaveBeenCalled();
+  });
+
+  it("(each, hospitalVisitDateRangeValidator, hospitalVisitClaims) flags valid if date is correct and dayTo is after dayFrom", async () => {
+    Object.assign(wrapper.vm, cloneDeep(passingData));
+    wrapper.vm.hospitalVisitClaims[0].dayFrom = "18";
+    wrapper.vm.hospitalVisitClaims[0].dayTo = "19";
+    wrapper.vm.hospitalVisitClaims[0].month = "1";
+    wrapper.vm.hospitalVisitClaims[0].year = testDate.getFullYear().toString();
+    await wrapper.vm.validateFields();
+    await wrapper.vm.$nextTick;
+    expect(spyOnScrollToError).not.toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).toHaveBeenCalled();
+  });
+
+  it("(each, hospitalVisitDateRangeValidator, hospitalVisitClaims) flags invalid if date is correct and dayTo is before dayFrom", async () => {
+    Object.assign(wrapper.vm, cloneDeep(passingData));
+    wrapper.vm.hospitalVisitClaims[0].dayFrom = "18";
+    wrapper.vm.hospitalVisitClaims[0].dayTo = "17";
+    wrapper.vm.hospitalVisitClaims[0].month = "1";
+    wrapper.vm.hospitalVisitClaims[0].year = testDate.getFullYear().toString();
+    await wrapper.vm.validateFields();
+    await wrapper.vm.$nextTick;
+    expect(spyOnScrollToError).toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
+  });
+
+  it("(each, hospitalVisitDateCutOffValidator, hospitalVisitClaims) flags invalid if date is correct + after Oct 1 2021, and locationOfService is A", async () => {
+    Object.assign(wrapper.vm, cloneDeep(passingData));
+    wrapper.vm.hospitalVisitClaims[0].dayFrom = testDate.getDate().toString();
+    wrapper.vm.hospitalVisitClaims[0].dayTo = null;
+    const correctedMonth = testDate.getMonth() + 1;
+    wrapper.vm.hospitalVisitClaims[0].month = correctedMonth.toString();
+    wrapper.vm.hospitalVisitClaims[0].year = testDate.getFullYear().toString();
+    wrapper.vm.hospitalVisitClaims[0].locationOfService = "A";
+    await wrapper.vm.validateFields();
+    await wrapper.vm.$nextTick;
+    expect(spyOnScrollToError).toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
+  });
+
+  it("(each, hospitalVisitDateCutOffValidator, hospitalVisitClaims) flags valid if date is correct + before Oct 1 2021, and locationOfService is A", async () => {
+    //there will come a time when this test fails
+    //because it's been more than 18 months since Oct 1 2021
+    //meaning that although this validator still works as intended, other validators will flag it as invalid
+    //this test will need to be modified/retired at that time
+    Object.assign(wrapper.vm, cloneDeep(passingData));
+    wrapper.vm.hospitalVisitClaims[0].dayFrom = "18";
+    wrapper.vm.hospitalVisitClaims[0].dayTo = null;
+    wrapper.vm.hospitalVisitClaims[0].month = "8";
+    wrapper.vm.hospitalVisitClaims[0].year = "2021";
+    wrapper.vm.hospitalVisitClaims[0].locationOfService = "A";
+    await wrapper.vm.validateFields();
+    await wrapper.vm.$nextTick;
+    expect(spyOnScrollToError).not.toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).toHaveBeenCalled();
   });
 
   //end hospital visit tests
@@ -2848,6 +2990,497 @@ describe("MainFormPage.vue validateFields(), CSR", () => {
 
   //end of medical services tests
   //**hospitalVisitClaims tests go here** (CSR)
+
+  it("(month, hospitalVisitClaims) flags invalid if not present", async () => {
+    Object.assign(wrapper.vm, cloneDeep(passingData));
+    wrapper.vm.hospitalVisitClaims[0].month = null;
+    await wrapper.vm.validateFields();
+    await wrapper.vm.$nextTick;
+    expect(spyOnScrollToError).toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
+  });
+
+  it("(month, hospitalVisitClaims) flags invalid if not an integer", async () => {
+    Object.assign(wrapper.vm, cloneDeep(passingData));
+    wrapper.vm.hospitalVisitClaims[0].month = "a";
+    await wrapper.vm.validateFields();
+    await wrapper.vm.$nextTick;
+    expect(spyOnScrollToError).toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
+  });
+
+  it("(month, hospitalVisitClaims) flags invalid if not a positive integer", async () => {
+    Object.assign(wrapper.vm, cloneDeep(passingData));
+    wrapper.vm.hospitalVisitClaims[0].month = "-2";
+    await wrapper.vm.validateFields();
+    await wrapper.vm.$nextTick;
+    expect(spyOnScrollToError).toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
+  });
+
+  it("(dayFrom, hospitalVisitClaims) flags invalid if not present", async () => {
+    Object.assign(wrapper.vm, cloneDeep(passingData));
+    wrapper.vm.hospitalVisitClaims[0].dayFrom = null;
+    await wrapper.vm.validateFields();
+    await wrapper.vm.$nextTick;
+    expect(spyOnScrollToError).toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
+  });
+
+  it("(dayFrom, hospitalVisitClaims) flags invalid if not an integer", async () => {
+    Object.assign(wrapper.vm, cloneDeep(passingData));
+    wrapper.vm.hospitalVisitClaims[0].dayFrom = "a";
+    await wrapper.vm.validateFields();
+    await wrapper.vm.$nextTick;
+    expect(spyOnScrollToError).toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
+  });
+
+  it("(dayFrom, hospitalVisitClaims) flags invalid if not a positive integer", async () => {
+    Object.assign(wrapper.vm, cloneDeep(passingData));
+    wrapper.vm.hospitalVisitClaims[0].dayFrom = "-2";
+    await wrapper.vm.validateFields();
+    await wrapper.vm.$nextTick;
+    expect(spyOnScrollToError).toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
+  });
+
+  it("(dayTo, hospitalVisitClaims) flags valid if not present", async () => {
+    Object.assign(wrapper.vm, cloneDeep(passingData));
+    wrapper.vm.hospitalVisitClaims[0].dayTo = null;
+    await wrapper.vm.validateFields();
+    await wrapper.vm.$nextTick;
+    expect(spyOnScrollToError).not.toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).toHaveBeenCalled();
+  });
+
+  it("(dayTo, hospitalVisitClaims) flags invalid if not an integer", async () => {
+    Object.assign(wrapper.vm, cloneDeep(passingData));
+    wrapper.vm.hospitalVisitClaims[0].dayTo = "a";
+    await wrapper.vm.validateFields();
+    await wrapper.vm.$nextTick;
+    expect(spyOnScrollToError).toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
+  });
+
+  it("(dayTo, hospitalVisitClaims) flags invalid if not a positive integer", async () => {
+    Object.assign(wrapper.vm, cloneDeep(passingData));
+    wrapper.vm.hospitalVisitClaims[0].dayTo = "-2";
+    await wrapper.vm.validateFields();
+    await wrapper.vm.$nextTick;
+    expect(spyOnScrollToError).toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
+  });
+
+  it("(year, hospitalVisitClaims) flags invalid if not present", async () => {
+    Object.assign(wrapper.vm, cloneDeep(passingData));
+    wrapper.vm.hospitalVisitClaims[0].year = null;
+    await wrapper.vm.validateFields();
+    await wrapper.vm.$nextTick;
+    expect(spyOnScrollToError).toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
+  });
+
+  it("(year, hospitalVisitClaims) flags invalid if not an integer", async () => {
+    Object.assign(wrapper.vm, cloneDeep(passingData));
+    wrapper.vm.hospitalVisitClaims[0].year = "a";
+    await wrapper.vm.validateFields();
+    await wrapper.vm.$nextTick;
+    expect(spyOnScrollToError).toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
+  });
+
+  it("(year, hospitalVisitClaims) flags invalid if not a positive integer", async () => {
+    Object.assign(wrapper.vm, cloneDeep(passingData));
+    wrapper.vm.hospitalVisitClaims[0].year = "-2";
+    await wrapper.vm.validateFields();
+    await wrapper.vm.$nextTick;
+    expect(spyOnScrollToError).toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
+  });
+
+  it("(numberOfServices, hospitalVisitClaims) flags valid if not present", async () => {
+    Object.assign(wrapper.vm, cloneDeep(passingData));
+    wrapper.vm.hospitalVisitClaims[0].numberOfServices = null;
+    await wrapper.vm.validateFields();
+    await wrapper.vm.$nextTick;
+    expect(spyOnScrollToError).not.toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).toHaveBeenCalled();
+  });
+
+  it("(numberOfServices, hospitalVisitClaims) flags invalid if not an integer", async () => {
+    Object.assign(wrapper.vm, cloneDeep(passingData));
+    wrapper.vm.hospitalVisitClaims[0].numberOfServices = "a";
+    await wrapper.vm.validateFields();
+    await wrapper.vm.$nextTick;
+    expect(spyOnScrollToError).toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
+  });
+
+  it("(numberOfServices, hospitalVisitClaims) flags invalid if not a positive integer", async () => {
+    Object.assign(wrapper.vm, cloneDeep(passingData));
+    wrapper.vm.hospitalVisitClaims[0].numberOfServices = "-2";
+    await wrapper.vm.validateFields();
+    await wrapper.vm.$nextTick;
+    expect(spyOnScrollToError).toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
+  });
+
+  it("(numberOfServices, hospitalVisitClaims) flags valid if zero", async () => {
+    Object.assign(wrapper.vm, cloneDeep(passingData));
+    wrapper.vm.hospitalVisitClaims[0].numberOfServices = "0";
+    await wrapper.vm.validateFields();
+    await wrapper.vm.$nextTick;
+    expect(spyOnScrollToError).not.toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).toHaveBeenCalled();
+  });
+
+  it("(feeItem, hospitalVisitClaims) flags valid if not present", async () => {
+    Object.assign(wrapper.vm, cloneDeep(passingData));
+    wrapper.vm.hospitalVisitClaims[0].feeItem = null;
+    await wrapper.vm.validateFields();
+    await wrapper.vm.$nextTick;
+    expect(spyOnScrollToError).not.toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).toHaveBeenCalled();
+  });
+
+  it("(feeItem, hospitalVisitClaims) flags invalid if not an integer", async () => {
+    Object.assign(wrapper.vm, cloneDeep(passingData));
+    wrapper.vm.hospitalVisitClaims[0].feeItem = "a";
+    await wrapper.vm.validateFields();
+    await wrapper.vm.$nextTick;
+    expect(spyOnScrollToError).toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
+  });
+
+  it("(feeItem, hospitalVisitClaims) flags invalid if not a positive integer", async () => {
+    Object.assign(wrapper.vm, cloneDeep(passingData));
+    wrapper.vm.hospitalVisitClaims[0].feeItem = "-2";
+    await wrapper.vm.validateFields();
+    await wrapper.vm.$nextTick;
+    expect(spyOnScrollToError).toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
+  });
+
+  it("(amountBilled, hospitalVisitClaims) flags valid if not present", async () => {
+    Object.assign(wrapper.vm, cloneDeep(passingData));
+    wrapper.vm.hospitalVisitClaims[0].amountBilled = null;
+    await wrapper.vm.validateFields();
+    await wrapper.vm.$nextTick;
+    expect(spyOnScrollToError).not.toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).toHaveBeenCalled();
+  });
+
+  it("(amountBilled, hospitalVisitClaims) flags invalid if not an integer", async () => {
+    Object.assign(wrapper.vm, cloneDeep(passingData));
+    wrapper.vm.hospitalVisitClaims[0].amountBilled = "a";
+    await wrapper.vm.validateFields();
+    await wrapper.vm.$nextTick;
+    expect(spyOnScrollToError).toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
+  });
+
+  it("(amountBilled, hospitalVisitClaims) flags invalid if not a positive integer", async () => {
+    Object.assign(wrapper.vm, cloneDeep(passingData));
+    wrapper.vm.hospitalVisitClaims[0].amountBilled = "-2";
+    await wrapper.vm.validateFields();
+    await wrapper.vm.$nextTick;
+    expect(spyOnScrollToError).toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
+  });
+
+  it("(amountBilled, hospitalVisitClaims) flags invalid if not a positive integer ending in .00", async () => {
+    Object.assign(wrapper.vm, cloneDeep(passingData));
+    wrapper.vm.hospitalVisitClaims[0].amountBilled = "2";
+    await wrapper.vm.validateFields();
+    await wrapper.vm.$nextTick;
+    expect(spyOnScrollToError).toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
+  });
+
+  it("(amountBilled, hospitalVisitClaims) flags valid if it does end in .00", async () => {
+    Object.assign(wrapper.vm, cloneDeep(passingData));
+    wrapper.vm.hospitalVisitClaims[0].amountBilled = "2.00";
+    await wrapper.vm.validateFields();
+    await wrapper.vm.$nextTick;
+    expect(spyOnScrollToError).not.toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).toHaveBeenCalled();
+  });
+
+  it("(amountBilled, hospitalVisitClaims) flags invalid if value is correct but fee item is 03333", async () => {
+    Object.assign(wrapper.vm, cloneDeep(passingData));
+    wrapper.vm.hospitalVisitClaims[0].amountBilled = "2.00";
+    wrapper.vm.hospitalVisitClaims[0].feeItem = "03333";
+    await wrapper.vm.validateFields();
+    await wrapper.vm.$nextTick;
+    expect(spyOnScrollToError).toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
+  });
+
+  it("(diagnosticCode, hospitalVisitClaims) flags valid if not present", async () => {
+    Object.assign(wrapper.vm, cloneDeep(passingData));
+    wrapper.vm.hospitalVisitClaims[0].diagnosticCode = null;
+    await wrapper.vm.validateFields();
+    await wrapper.vm.$nextTick;
+    expect(spyOnScrollToError).not.toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).toHaveBeenCalled();
+  });
+
+  it("(diagnosticCode, hospitalVisitClaims) flags invalid if not alphanumeric", async () => {
+    Object.assign(wrapper.vm, cloneDeep(passingData));
+    wrapper.vm.hospitalVisitClaims[0].diagnosticCode = "a^^^";
+    await wrapper.vm.validateFields();
+    await wrapper.vm.$nextTick;
+    expect(spyOnScrollToError).toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
+  });
+
+  it("(diagnosticCode, hospitalVisitClaims) flags valid if not on diagnostic list", async () => {
+    Object.assign(wrapper.vm, cloneDeep(passingData));
+    wrapper.vm.hospitalVisitClaims[0].diagnosticCode = "A111";
+    await wrapper.vm.validateFields();
+    await wrapper.vm.$nextTick;
+    expect(spyOnScrollToError).not.toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).toHaveBeenCalled();
+  });
+
+  it("(locationOfService, hospitalVisitClaims) flags valid if not present", async () => {
+    Object.assign(wrapper.vm, cloneDeep(passingData));
+    wrapper.vm.hospitalVisitClaims[0].locationOfService = null;
+    await wrapper.vm.validateFields();
+    await wrapper.vm.$nextTick;
+    expect(spyOnScrollToError).not.toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).toHaveBeenCalled();
+  });
+
+  it("(locationOfService, hospitalVisitClaims) flags valid if A and after Oct 1st 2021", async () => {
+    Object.assign(wrapper.vm, cloneDeep(passingData));
+    wrapper.vm.hospitalVisitClaims[0].locationOfService = "A";
+    wrapper.vm.hospitalVisitClaims[0].dayFrom = "3";
+    wrapper.vm.hospitalVisitClaims[0].month = "11";
+    wrapper.vm.hospitalVisitClaims[0].year = "2021";
+    await wrapper.vm.validateFields();
+    await wrapper.vm.$nextTick;
+    expect(spyOnScrollToError).not.toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).toHaveBeenCalled();
+  });
+
+  it("(locationOfService, hospitalVisitClaims) flags valid if A and before Oct 1st 2021", async () => {
+    Object.assign(wrapper.vm, cloneDeep(passingData));
+    wrapper.vm.hospitalVisitClaims[0].locationOfService = "A";
+    wrapper.vm.hospitalVisitClaims[0].dayFrom = "3";
+    wrapper.vm.hospitalVisitClaims[0].month = "8";
+    wrapper.vm.hospitalVisitClaims[0].year = "2021";
+    await wrapper.vm.validateFields();
+    await wrapper.vm.$nextTick;
+    expect(spyOnScrollToError).not.toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).toHaveBeenCalled();
+  });
+
+  it("(serviceClarificationCode, hospitalVisitClaims) flags valid if not present", async () => {
+    Object.assign(wrapper.vm, cloneDeep(passingData));
+    wrapper.vm.hospitalVisitClaims[0].serviceClarificationCode = null;
+    await wrapper.vm.validateFields();
+    await wrapper.vm.$nextTick;
+    expect(spyOnScrollToError).not.toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).toHaveBeenCalled();
+  });
+
+  it("(serviceClarificationCode, hospitalVisitClaims) flags valid if value is not in list", async () => {
+    Object.assign(wrapper.vm, cloneDeep(passingData));
+    wrapper.vm.hospitalVisitClaims[0].serviceClarificationCode = "AA";
+    await wrapper.vm.validateFields();
+    await wrapper.vm.$nextTick;
+    expect(spyOnScrollToError).not.toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).toHaveBeenCalled();
+  });
+
+  it("(submissionCode, hospitalVisitClaims) flags invalid if not present and more than 90 days ago", async () => {
+    Object.assign(wrapper.vm, cloneDeep(passingData));
+    wrapper.vm.hospitalVisitClaims[0].submissionCode = null;
+    wrapper.vm.hospitalVisitClaims[0].dayFrom = testDatePast91Days
+      .getDate()
+      .toString();
+    const correctedMonth = testDatePast91Days.getMonth() + 1;
+    wrapper.vm.hospitalVisitClaims[0].month = correctedMonth.toString();
+    wrapper.vm.hospitalVisitClaims[0].year = testDatePast91Days
+      .getFullYear()
+      .toString();
+    await wrapper.vm.validateFields();
+    await wrapper.vm.$nextTick;
+    expect(spyOnScrollToError).toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
+  });
+
+  it("(submissionCode, hospitalVisitClaims) flags valid if not present and less than 90 days ago", async () => {
+    Object.assign(wrapper.vm, cloneDeep(passingData));
+    wrapper.vm.hospitalVisitClaims[0].submissionCode = null;
+    wrapper.vm.hospitalVisitClaims[0].dayFrom = testDatePast89Days
+      .getDate()
+      .toString();
+    const correctedMonth = testDatePast89Days.getMonth() + 1;
+    wrapper.vm.hospitalVisitClaims[0].month = correctedMonth.toString();
+    wrapper.vm.hospitalVisitClaims[0].year = testDatePast89Days
+      .getFullYear()
+      .toString();
+    await wrapper.vm.validateFields();
+    await wrapper.vm.$nextTick;
+    expect(spyOnScrollToError).not.toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).toHaveBeenCalled();
+  });
+
+  it("(notes, hospitalVisitClaims) flags invalid if more than 400 characters", async () => {
+    const testMessage =
+      "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!";
+    Object.assign(wrapper.vm, cloneDeep(passingData));
+    wrapper.vm.hospitalVisitClaims[0].notes = testMessage;
+    wrapper.vm.hospitalVisitClaims[0].serviceDate = testDatePast89Days;
+    await wrapper.vm.validateFields();
+    await wrapper.vm.$nextTick;
+    expect(spyOnScrollToError).toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
+  });
+
+  it("(each, hospitalVisitDateValidator, hospitalVisitClaims) flags invalid if date is invalid", async () => {
+    Object.assign(wrapper.vm, cloneDeep(passingData));
+    wrapper.vm.hospitalVisitClaims[0].dayFrom = "32";
+    wrapper.vm.hospitalVisitClaims[0].dayTo = null;
+    wrapper.vm.hospitalVisitClaims[0].month = "1";
+    wrapper.vm.hospitalVisitClaims[0].year = testDatePast91Days
+      .getFullYear()
+      .toString();
+    await wrapper.vm.validateFields();
+    await wrapper.vm.$nextTick;
+    expect(spyOnScrollToError).toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
+  });
+
+  it("(each, hospitalVisitDatePastValidator, hospitalVisitClaims) flags valid if date is in past 18 months", async () => {
+    Object.assign(wrapper.vm, cloneDeep(passingData));
+    wrapper.vm.hospitalVisitClaims[0].dayFrom = testDatePast91Days
+      .getDate()
+      .toString();
+    wrapper.vm.hospitalVisitClaims[0].dayTo = null;
+    const correctedMonth = testDatePast91Days.getMonth() + 1;
+    wrapper.vm.hospitalVisitClaims[0].month = correctedMonth.toString();
+    wrapper.vm.hospitalVisitClaims[0].year = testDatePast91Days
+      .getFullYear()
+      .toString();
+    await wrapper.vm.validateFields();
+    await wrapper.vm.$nextTick;
+    expect(spyOnScrollToError).not.toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).toHaveBeenCalled();
+  });
+
+  it("(each, hospitalVisitDatePastValidator, hospitalVisitClaims) flags invalid if date more than 18 months old", async () => {
+    Object.assign(wrapper.vm, cloneDeep(passingData));
+    wrapper.vm.hospitalVisitClaims[0].dayFrom = "31";
+    wrapper.vm.hospitalVisitClaims[0].dayTo = null;
+    wrapper.vm.hospitalVisitClaims[0].month = "1";
+    wrapper.vm.hospitalVisitClaims[0].year = "2001";
+    await wrapper.vm.validateFields();
+    await wrapper.vm.$nextTick;
+    expect(spyOnScrollToError).toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
+  });
+
+  it("(each, hospitalVisitDateFutureValidator, hospitalVisitClaims) flags invalid if date is in future", async () => {
+    Object.assign(wrapper.vm, cloneDeep(passingData));
+    wrapper.vm.hospitalVisitClaims[0].dayFrom = "31";
+    wrapper.vm.hospitalVisitClaims[0].dayTo = null;
+    wrapper.vm.hospitalVisitClaims[0].month = "1";
+    wrapper.vm.hospitalVisitClaims[0].year = testDateFutureYear.toString();
+    await wrapper.vm.validateFields();
+    await wrapper.vm.$nextTick;
+    expect(spyOnScrollToError).toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
+  });
+
+  it("(each, hospitalVisitDateToFutureValidator, hospitalVisitClaims) flags invalid if date is in future", async () => {
+    //date to isn't really possible to test independent of day from, due to date storage constraints
+    //for example, if dayFrom is the last day of the month, there's no way to store a dayTo after that
+    //since they both pull from the same month/year
+    //so this test will have to suffice
+    Object.assign(wrapper.vm, cloneDeep(passingData));
+    wrapper.vm.hospitalVisitClaims[0].dayFrom = "18";
+    wrapper.vm.hospitalVisitClaims[0].dayTo = "19";
+    wrapper.vm.hospitalVisitClaims[0].month = "1";
+    wrapper.vm.hospitalVisitClaims[0].year = testDateFutureYear.toString();
+    await wrapper.vm.validateFields();
+    await wrapper.vm.$nextTick;
+    expect(spyOnScrollToError).toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
+  });
+
+  it("(each, hospitalVisitDateRangeValidator, hospitalVisitClaims) flags valid if date is correct and there is no dayTo", async () => {
+    Object.assign(wrapper.vm, cloneDeep(passingData));
+    wrapper.vm.hospitalVisitClaims[0].dayFrom = testDate.getDate().toString();
+    wrapper.vm.hospitalVisitClaims[0].dayTo = null;
+    const correctedMonth = testDate.getMonth() + 1;
+    wrapper.vm.hospitalVisitClaims[0].month = correctedMonth.toString();
+    wrapper.vm.hospitalVisitClaims[0].year = testDate.getFullYear().toString();
+    await wrapper.vm.validateFields();
+    await wrapper.vm.$nextTick;
+    expect(spyOnScrollToError).not.toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).toHaveBeenCalled();
+  });
+
+  it("(each, hospitalVisitDateRangeValidator, hospitalVisitClaims) flags valid if date is correct and dayTo is after dayFrom", async () => {
+    Object.assign(wrapper.vm, cloneDeep(passingData));
+    wrapper.vm.hospitalVisitClaims[0].dayFrom = "18";
+    wrapper.vm.hospitalVisitClaims[0].dayTo = "19";
+    wrapper.vm.hospitalVisitClaims[0].month = "1";
+    wrapper.vm.hospitalVisitClaims[0].year = testDate.getFullYear().toString();
+    await wrapper.vm.validateFields();
+    await wrapper.vm.$nextTick;
+    expect(spyOnScrollToError).not.toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).toHaveBeenCalled();
+  });
+
+  it("(each, hospitalVisitDateRangeValidator, hospitalVisitClaims) flags invalid if date is correct and dayTo is before dayFrom", async () => {
+    Object.assign(wrapper.vm, cloneDeep(passingData));
+    wrapper.vm.hospitalVisitClaims[0].dayFrom = "18";
+    wrapper.vm.hospitalVisitClaims[0].dayTo = "17";
+    wrapper.vm.hospitalVisitClaims[0].month = "1";
+    wrapper.vm.hospitalVisitClaims[0].year = testDate.getFullYear().toString();
+    await wrapper.vm.validateFields();
+    await wrapper.vm.$nextTick;
+    expect(spyOnScrollToError).toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
+  });
+
+  it("(each, hospitalVisitDateCutOffValidator, hospitalVisitClaims) flags valid if date is correct + after Oct 1 2021, and locationOfService is A", async () => {
+    Object.assign(wrapper.vm, cloneDeep(passingData));
+    wrapper.vm.hospitalVisitClaims[0].dayFrom = testDate.getDate().toString();
+    wrapper.vm.hospitalVisitClaims[0].dayTo = null;
+    const correctedMonth = testDate.getMonth() + 1;
+    wrapper.vm.hospitalVisitClaims[0].month = correctedMonth.toString();
+    wrapper.vm.hospitalVisitClaims[0].year = testDate.getFullYear().toString();
+    wrapper.vm.hospitalVisitClaims[0].locationOfService = "A";
+    await wrapper.vm.validateFields();
+    await wrapper.vm.$nextTick;
+    expect(spyOnScrollToError).not.toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).toHaveBeenCalled();
+  });
+
+  it("(each, hospitalVisitDateCutOffValidator, hospitalVisitClaims) flags valid if date is correct + before Oct 1 2021, and locationOfService is A", async () => {
+    //there will come a time when this test fails
+    //because it's been more than 18 months since Oct 1 2021
+    //meaning that although this validator still works as intended, other validators will flag it as invalid
+    //this test will need to be modified/retired at that time
+    Object.assign(wrapper.vm, cloneDeep(passingData));
+    wrapper.vm.hospitalVisitClaims[0].dayFrom = "18";
+    wrapper.vm.hospitalVisitClaims[0].dayTo = null;
+    wrapper.vm.hospitalVisitClaims[0].month = "8";
+    wrapper.vm.hospitalVisitClaims[0].year = "2021";
+    wrapper.vm.hospitalVisitClaims[0].locationOfService = "A";
+    await wrapper.vm.validateFields();
+    await wrapper.vm.$nextTick;
+    expect(spyOnScrollToError).not.toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).toHaveBeenCalled();
+  });
+
+  //end hospitalVisitClaims tests (CSR)
 
   it("(practitionerLastName) flags valid if not present", async () => {
     Object.assign(wrapper.vm, cloneDeep(passingData));
