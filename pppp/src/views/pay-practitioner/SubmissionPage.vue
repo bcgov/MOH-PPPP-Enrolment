@@ -45,12 +45,12 @@
           <li>Please <a href="javascript:void(0)" @click="printPage()" class="print-link">print</a> this page for your records.</li>
           <li>Do not mail in a printed version of this form to Health Insurance BC.</li>
           <li>If you need to complete this form again for any additional claims, 
-            please click the "Start another form" button below.</li>
+            please click the "Start new form" button below.</li>
           <li>Please contact <a href="https://www2.gov.bc.ca/gov/content/health/practitioner-professional-resources/msp/contact-us" target="_blank">Health Insurance BC</a> if you have any questions.</li>
         </ul>
 
         <Button
-          :label="'Start another form'"
+          :label="'Start new form'"
           data-cy="newForm"
           @click="onNewForm()"
         />
