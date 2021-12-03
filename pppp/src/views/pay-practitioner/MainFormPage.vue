@@ -1371,7 +1371,7 @@ export default {
           return !isCSR(this.$router.currentRoute.path)
               && this.dependentNumber !== '66';
         }),
-        birthDatePastValidator: optionalValidator(birthDatePastValidator),
+        birthDatePastValidator: optionalValidator(validateIf(!isCSR(this.$router.currentRoute.path), birthDatePastValidator)),
         birthDateValidator,
         distantPastValidator: optionalValidator(validateIf(!isCSR(this.$router.currentRoute.path), distantPastValidator)),
       },

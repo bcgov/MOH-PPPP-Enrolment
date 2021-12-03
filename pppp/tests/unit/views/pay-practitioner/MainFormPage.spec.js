@@ -1048,13 +1048,24 @@ describe("MainFormPage.vue validateFields(), public", () => {
     expect(spyOnNavigateToNextPage).toHaveBeenCalled();
   });
 
-  it("(birthDate) flags invalid if not present", async () => {
+  it("(birthDate) flags invalid if not present and dependentNumber is not 66", async () => {
     Object.assign(wrapper.vm, cloneDeep(passingData));
     await wrapper.setData({ birthDate: null });
+    await wrapper.setData({ dependentNumber: "00" });
     await wrapper.vm.validateFields();
     await wrapper.vm.$nextTick;
     expect(spyOnScrollToError).toHaveBeenCalled();
     expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
+  });
+
+  it("(birthDate) flags valid if not present and dependentNumber is 66", async () => {
+    Object.assign(wrapper.vm, cloneDeep(passingData));
+    await wrapper.setData({ birthDate: null });
+    await wrapper.setData({ dependentNumber: "66" });
+    await wrapper.vm.validateFields();
+    await wrapper.vm.$nextTick;
+    expect(spyOnScrollToError).not.toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).toHaveBeenCalled();
   });
 
   it("(birthDate) flags invalid if given date is too far in the past", async () => {
