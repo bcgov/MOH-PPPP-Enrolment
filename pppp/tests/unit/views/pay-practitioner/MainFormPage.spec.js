@@ -1758,6 +1758,7 @@ describe("MainFormPage.vue validateFields(), public", () => {
   it("(locationOfService, hospitalVisitClaims) flags invalid if A and after Oct 1st 2021", async () => {
     Object.assign(wrapper.vm, cloneDeep(passingData));
     wrapper.vm.hospitalVisitClaims[0].locationOfService = "A";
+    wrapper.vm.hospitalVisitClaims[0].dayTo = null;
     wrapper.vm.hospitalVisitClaims[0].dayFrom = "3";
     wrapper.vm.hospitalVisitClaims[0].month = "11";
     wrapper.vm.hospitalVisitClaims[0].year = "2021";
@@ -1770,6 +1771,7 @@ describe("MainFormPage.vue validateFields(), public", () => {
   it("(locationOfService, hospitalVisitClaims) flags valid if A and before Oct 1st 2021", async () => {
     Object.assign(wrapper.vm, cloneDeep(passingData));
     wrapper.vm.hospitalVisitClaims[0].locationOfService = "A";
+    wrapper.vm.hospitalVisitClaims[0].dayTo = null;
     wrapper.vm.hospitalVisitClaims[0].dayFrom = "3";
     wrapper.vm.hospitalVisitClaims[0].month = "8";
     wrapper.vm.hospitalVisitClaims[0].year = "2021";
@@ -1800,6 +1802,7 @@ describe("MainFormPage.vue validateFields(), public", () => {
   it("(submissionCode, hospitalVisitClaims) flags invalid if not present and more than 90 days ago", async () => {
     Object.assign(wrapper.vm, cloneDeep(passingData));
     wrapper.vm.hospitalVisitClaims[0].submissionCode = null;
+    wrapper.vm.hospitalVisitClaims[0].dayTo = null;
     wrapper.vm.hospitalVisitClaims[0].dayFrom = testDatePast91Days
       .getDate()
       .toString();
@@ -1817,6 +1820,7 @@ describe("MainFormPage.vue validateFields(), public", () => {
   it("(submissionCode, hospitalVisitClaims) flags valid if not present and less than 90 days ago", async () => {
     Object.assign(wrapper.vm, cloneDeep(passingData));
     wrapper.vm.hospitalVisitClaims[0].submissionCode = null;
+    wrapper.vm.hospitalVisitClaims[0].dayTo = null;
     wrapper.vm.hospitalVisitClaims[0].dayFrom = testDatePast89Days
       .getDate()
       .toString();
@@ -3032,6 +3036,7 @@ describe("MainFormPage.vue validateFields(), CSR", () => {
   it("(dayFrom, hospitalVisitClaims) flags invalid if not present", async () => {
     Object.assign(wrapper.vm, cloneDeep(passingData));
     wrapper.vm.hospitalVisitClaims[0].dayFrom = null;
+    wrapper.vm.hospitalVisitClaims[0].dayTo = null;
     await wrapper.vm.validateFields();
     await wrapper.vm.$nextTick;
     expect(spyOnScrollToError).toHaveBeenCalled();
@@ -3041,6 +3046,7 @@ describe("MainFormPage.vue validateFields(), CSR", () => {
   it("(dayFrom, hospitalVisitClaims) flags invalid if not an integer", async () => {
     Object.assign(wrapper.vm, cloneDeep(passingData));
     wrapper.vm.hospitalVisitClaims[0].dayFrom = "a";
+    wrapper.vm.hospitalVisitClaims[0].dayTo = null;
     await wrapper.vm.validateFields();
     await wrapper.vm.$nextTick;
     expect(spyOnScrollToError).toHaveBeenCalled();
@@ -3050,6 +3056,7 @@ describe("MainFormPage.vue validateFields(), CSR", () => {
   it("(dayFrom, hospitalVisitClaims) flags invalid if not a positive integer", async () => {
     Object.assign(wrapper.vm, cloneDeep(passingData));
     wrapper.vm.hospitalVisitClaims[0].dayFrom = "-2";
+    wrapper.vm.hospitalVisitClaims[0].dayTo = null;
     await wrapper.vm.validateFields();
     await wrapper.vm.$nextTick;
     expect(spyOnScrollToError).toHaveBeenCalled();
@@ -3268,6 +3275,7 @@ describe("MainFormPage.vue validateFields(), CSR", () => {
     Object.assign(wrapper.vm, cloneDeep(passingData));
     wrapper.vm.hospitalVisitClaims[0].locationOfService = "A";
     wrapper.vm.hospitalVisitClaims[0].dayFrom = "3";
+    wrapper.vm.hospitalVisitClaims[0].dayTo = null;
     wrapper.vm.hospitalVisitClaims[0].month = "11";
     wrapper.vm.hospitalVisitClaims[0].year = "2021";
     await wrapper.vm.validateFields();
@@ -3280,6 +3288,7 @@ describe("MainFormPage.vue validateFields(), CSR", () => {
     Object.assign(wrapper.vm, cloneDeep(passingData));
     wrapper.vm.hospitalVisitClaims[0].locationOfService = "A";
     wrapper.vm.hospitalVisitClaims[0].dayFrom = "3";
+    wrapper.vm.hospitalVisitClaims[0].dayTo = null;
     wrapper.vm.hospitalVisitClaims[0].month = "8";
     wrapper.vm.hospitalVisitClaims[0].year = "2021";
     await wrapper.vm.validateFields();
@@ -3306,12 +3315,13 @@ describe("MainFormPage.vue validateFields(), CSR", () => {
     expect(spyOnNavigateToNextPage).toHaveBeenCalled();
   });
 
-  it("(submissionCode, hospitalVisitClaims) flags invalid if not present and more than 90 days ago", async () => {
+  it("(submissionCode, hospitalVisitClaims) flags valid if not present and more than 90 days ago", async () => {
     Object.assign(wrapper.vm, cloneDeep(passingData));
     wrapper.vm.hospitalVisitClaims[0].submissionCode = null;
     wrapper.vm.hospitalVisitClaims[0].dayFrom = testDatePast91Days
       .getDate()
       .toString();
+    wrapper.vm.hospitalVisitClaims[0].dayTo = null;
     const correctedMonth = testDatePast91Days.getMonth() + 1;
     wrapper.vm.hospitalVisitClaims[0].month = correctedMonth.toString();
     wrapper.vm.hospitalVisitClaims[0].year = testDatePast91Days
@@ -3319,16 +3329,17 @@ describe("MainFormPage.vue validateFields(), CSR", () => {
       .toString();
     await wrapper.vm.validateFields();
     await wrapper.vm.$nextTick;
-    expect(spyOnScrollToError).toHaveBeenCalled();
-    expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
+    expect(spyOnScrollToError).not.toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).toHaveBeenCalled();
   });
 
   it("(submissionCode, hospitalVisitClaims) flags valid if not present and less than 90 days ago", async () => {
     Object.assign(wrapper.vm, cloneDeep(passingData));
     wrapper.vm.hospitalVisitClaims[0].submissionCode = null;
     wrapper.vm.hospitalVisitClaims[0].dayFrom = testDatePast89Days
-      .getDate()
-      .toString();
+    .getDate()
+    .toString();
+    wrapper.vm.hospitalVisitClaims[0].dayTo = null;
     const correctedMonth = testDatePast89Days.getMonth() + 1;
     wrapper.vm.hospitalVisitClaims[0].month = correctedMonth.toString();
     wrapper.vm.hospitalVisitClaims[0].year = testDatePast89Days
