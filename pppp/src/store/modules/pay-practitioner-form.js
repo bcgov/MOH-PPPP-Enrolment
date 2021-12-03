@@ -229,6 +229,7 @@ export default {
       commit(SET_PRACTITIONER_PAYMENT_NUMBER, null);
       commit(SET_PRACTITIONER_PRACTITIONER_NUMBER, null);
       commit(SET_PRACTITIONER_SPECIALTY_CODE, null);
+      commit(SET_PRACTITIONER_FACILITY_NUMBER, null);
       commit(SET_COVERAGE_PRE_AUTH_NUMBER, null);
       
       commit(SET_REFERRED_BY_FIRST_NAME_INITIAL, null);
