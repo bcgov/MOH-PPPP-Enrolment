@@ -134,15 +134,24 @@
           <div class="text-danger"
               v-if="$v.isVehicleAccident.$dirty && !$v.isVehicleAccident.required"
               aria-live="assertive">Answer to question is required.</div>
-          <MotorVehicleAccidentClaimNumberInput
+          <Input
                 label='Motor Vehicle Accident Claim Number (optional):'
                 id='vehicle-accident-claim-number'
+                maxlength='8'
+                :isUpperCaseForced="true"
                 class='mt-3'
                 v-model='vehicleAccidentClaimNumber'
                 :inputStyle='smallStyles'
                 @blur='handleBlurField($v.vehicleAccidentClaimNumber)' />
           <div class="text-danger"
-              v-if="$v.vehicleAccidentClaimNumber.$dirty && !$v.vehicleAccidentClaimNumber.motorVehicleAccidentClaimNumberValidator"
+              v-if="$v.vehicleAccidentClaimNumber.$dirty 
+              && (
+                !$v.vehicleAccidentClaimNumber.motorVehicleAccidentClaimNumberValidator
+                ||
+                !$v.vehicleAccidentClaimNumber.motorVehicleAccidentClaimNumberMaskValidator 
+                ||
+                !$v.vehicleAccidentClaimNumber.alphanumericValidator
+              )"
               aria-live="assertive">Motor Vehicle Accident Claim Number must be valid.</div>
         </div>
 
@@ -302,7 +311,7 @@
                 v-if="v.diagnosticCode.$dirty && !v.diagnosticCode.required"
                 aria-live="assertive">Diagnostic code is required.</div>
             <div class="text-danger"
-                v-if="v.diagnosticCode.$dirty && v.diagnosticCode.required && !v.diagnosticCode.diagnosticCodeValidator"
+                v-if="v.diagnosticCode.$dirty && ((v.diagnosticCode.required && !v.diagnosticCode.diagnosticCodeValidator) || !v.diagnosticCode.alphanumericValidator)"
                 aria-live="assertive">Diagnostic code must be valid.</div>
             <Select label='Service Location Code:'
                   :id='"msc-location-of-service-" + index'
@@ -313,7 +322,9 @@
                   :inputStyle='extraLargeStyles'
                   @blur='handleBlurField($v.medicalServiceClaims.$each[index].locationOfService)'>
               <template v-slot:description>
-                <p class="input-description">MSP Claims submitted with Service Location Code (<b>A</b>) for dates of service on or after October 1, 2021, will not be accepted.</p>
+                <p class="input-description" v-if="!isCSR">
+                  MSP Claims submitted with Service Location Code (<b>A</b>) for dates of service on or after October 1, 2021, will not be accepted.
+                </p>
               </template>
             </Select>
             <div class="text-danger"
@@ -579,7 +590,7 @@
                 v-if="v.diagnosticCode.$dirty && !v.diagnosticCode.required"
                 aria-live="assertive">Diagnostic code is required.</div>
             <div class="text-danger"
-                v-if="v.diagnosticCode.$dirty && v.diagnosticCode.required && !v.diagnosticCode.diagnosticCodeValidator"
+                v-if="v.diagnosticCode.$dirty && ((v.diagnosticCode.required && !v.diagnosticCode.diagnosticCodeValidator) || !v.diagnosticCode.alphanumericValidator)"
                 aria-live="assertive">Diagnostic code must be valid.</div>
             <Select label='Service Location Code:'
                   :id='"hvc-location-of-service-" + index'
@@ -590,7 +601,9 @@
                   :inputStyle='extraLargeStyles'
                   @blur='handleBlurField($v.hospitalVisitClaims.$each[index].locationOfService)'>
               <template v-slot:description>
-                <p class="input-description">MSP Claims submitted with Service Location Code (<b>A</b>) for dates of service on or after October 1, 2021, will not be accepted.</p>
+                <p class="input-description" v-if="!isCSR">
+                  MSP Claims submitted with Service Location Code (<b>A</b>) for dates of service on or after October 1, 2021, will not be accepted.
+                </p>
               </template>
             </Select>
             <div class="text-danger"
@@ -883,11 +896,13 @@ import {
   birthDateValidator,
   clarificationCodeValidator,
   diagnosticCodeValidator,
+  motorVehicleAccidentClaimNumberMaskValidator,
   serviceDateValidator,
   serviceDateCutOffValidator,
   serviceLocationCodeValidator,
   specialtyCodeValidator,
   submissionCodeValidator,
+  validateIf
 } from '@/helpers/validators';
 import {
   selectOptionsSubmissionCode,
@@ -944,7 +959,6 @@ import {
   DigitInput,
   FacilityNumberInput,
   Input,
-  MotorVehicleAccidentClaimNumberInput,
   NumberInput,
   PhnInput,
   PractitionerNumberInput,
@@ -1185,7 +1199,6 @@ export default {
     DigitInput,
     FacilityNumberInput,
     Input,
-    MotorVehicleAccidentClaimNumberInput,
     NumberInput,
     PageContent,
     PhnInput,
@@ -1340,7 +1353,7 @@ export default {
       dependentNumber: {
         intValidator: optionalValidator(intValidator),
         positiveNumberValidator: optionalValidator(positiveNumberValidator),
-        dependentNumberValidator: optionalValidator(dependentNumberValidator),
+        dependentNumberValidator: optionalValidator(validateIf(!isCSR(this.$router.currentRoute.path), dependentNumberValidator)),
       },
       firstName: {
         required: requiredIf(() => !isCSR(this.$router.currentRoute.path)),
@@ -1358,15 +1371,17 @@ export default {
           return !isCSR(this.$router.currentRoute.path)
               && this.dependentNumber !== '66';
         }),
-        birthDatePastValidator: optionalValidator(birthDatePastValidator),
+        birthDatePastValidator: optionalValidator(validateIf(!isCSR(this.$router.currentRoute.path), birthDatePastValidator)),
         birthDateValidator,
-        distantPastValidator: optionalValidator(distantPastValidator),
+        distantPastValidator: optionalValidator(validateIf(!isCSR(this.$router.currentRoute.path), distantPastValidator)),
       },
       isVehicleAccident: {
         required: requiredIf(() => !isCSR(this.$router.currentRoute.path)),
       },
       vehicleAccidentClaimNumber: {
-        motorVehicleAccidentClaimNumberValidator: optionalValidator(motorVehicleAccidentClaimNumberValidator),
+        alphanumericValidator: optionalValidator(alphanumericValidator),
+        motorVehicleAccidentClaimNumberValidator: optionalValidator(validateIf(!isCSR(this.$router.currentRoute.path), motorVehicleAccidentClaimNumberValidator)),
+        motorVehicleAccidentClaimNumberMaskValidator: optionalValidator(validateIf(!isCSR(this.$router.currentRoute.path), motorVehicleAccidentClaimNumberMaskValidator)),
       },
       planReferenceNumberOfOriginalClaim: {
         intValidator: optionalValidator(intValidator),
@@ -1377,15 +1392,15 @@ export default {
           serviceDate: {
             required: requiredIf(() => !isCSR(this.$router.currentRoute.path)),
             serviceDateValidator: optionalValidator(serviceDateValidator),
-            serviceDateFutureValidator: optionalValidator(serviceDateFutureValidator),
-            distantPastValidator: optionalValidator(distantPastValidator),
-            serviceDateCutOffValidator: optionalValidator(serviceDateCutOffValidator),
+            serviceDateFutureValidator: optionalValidator(validateIf(!isCSR(this.$router.currentRoute.path), serviceDateFutureValidator)),
+            distantPastValidator: optionalValidator(validateIf(!isCSR(this.$router.currentRoute.path), distantPastValidator)),
+            serviceDateCutOffValidator: optionalValidator(validateIf(!isCSR(this.$router.currentRoute.path), serviceDateCutOffValidator)),
           },
           numberOfServices: {
             required: requiredIf(() => !isCSR(this.$router.currentRoute.path)),
             intValidator: optionalValidator(intValidator),
             positiveNumberValidator: optionalValidator(positiveNumberValidator),
-            nonZeroNumberValidator: optionalValidator(nonZeroNumberValidator),
+            nonZeroNumberValidator: optionalValidator(validateIf(!isCSR(this.$router.currentRoute.path), nonZeroNumberValidator)),
           },
           feeItem: {
             required: requiredIf(() => !isCSR(this.$router.currentRoute.path)),
@@ -1406,17 +1421,18 @@ export default {
           },
           diagnosticCode: {
             required: requiredIf(() => !isCSR(this.$router.currentRoute.path)),
-            diagnosticCodeValidator: optionalValidator(diagnosticCodeValidator),
+            alphanumericValidator: optionalValidator(alphanumericValidator),
+            diagnosticCodeValidator: optionalValidator(validateIf(!isCSR(this.$router.currentRoute.path), diagnosticCodeValidator)),
           },
           locationOfService: {
             required: requiredIf(() => !isCSR(this.$router.currentRoute.path)),
-            serviceLocationCodeValidator,
+            serviceLocationCodeValidator: validateIf(!isCSR(this.$router.currentRoute.path), serviceLocationCodeValidator),
           },
           serviceClarificationCode: {
-            clarificationCodeValidator: optionalValidator(clarificationCodeValidator),
+            clarificationCodeValidator: optionalValidator(clarificationCodeValidator(isCSR(this.$router.currentRoute.path))),
           },
           submissionCode: {
-            submissionCodeValidator,
+            submissionCodeValidator: validateIf(!isCSR(this.$router.currentRoute.path), submissionCodeValidator),
           },
           notes: {
             maxLength: maxLength(400),
@@ -1430,7 +1446,7 @@ export default {
           hospitalVisitDateFutureValidator: hospitalVisitDateFutureValidator(isCSR(this.$router.currentRoute.path)),
           hospitalVisitDateToFutureValidator,
           hospitalVisitDateRangeValidator,
-          hospitalVisitDateCutOffValidator,
+          hospitalVisitDateCutOffValidator: optionalValidator(validateIf(!isCSR(this.$router.currentRoute.path), hospitalVisitDateCutOffValidator)),
           month: {
             required: requiredIf(() => !isCSR(this.$router.currentRoute.path)),
             positiveNumberValidator: optionalValidator(positiveNumberValidator),
@@ -1454,7 +1470,7 @@ export default {
             required: requiredIf(() => !isCSR(this.$router.currentRoute.path)),
             intValidator: optionalValidator(intValidator),
             positiveNumberValidator: optionalValidator(positiveNumberValidator),
-            nonZeroNumberValidator: optionalValidator(nonZeroNumberValidator),
+            nonZeroNumberValidator: optionalValidator(validateIf(!isCSR(this.$router.currentRoute.path), nonZeroNumberValidator)),
           },
           feeItem: {
             required: requiredIf(() => !isCSR(this.$router.currentRoute.path)),
@@ -1469,17 +1485,18 @@ export default {
           },
           diagnosticCode: {
             required: requiredIf(() => !isCSR(this.$router.currentRoute.path)),
-            diagnosticCodeValidator: optionalValidator(diagnosticCodeValidator),
+            alphanumericValidator: optionalValidator(alphanumericValidator),
+            diagnosticCodeValidator: optionalValidator(validateIf(!isCSR(this.$router.currentRoute.path), diagnosticCodeValidator)),
           },
           locationOfService: {
             required: requiredIf(() => !isCSR(this.$router.currentRoute.path)),
-            hospitalVisitLocationCodeValidator,
+            hospitalVisitLocationCodeValidator: validateIf(!isCSR(this.$router.currentRoute.path), hospitalVisitLocationCodeValidator),
           },
           serviceClarificationCode: {
-            clarificationCodeValidator: optionalValidator(clarificationCodeValidator),
+            clarificationCodeValidator: optionalValidator(clarificationCodeValidator(isCSR(this.$router.currentRoute.path))),
           },
           submissionCode: {
-            hospitalVisitSubmissionCodeValidator,
+            hospitalVisitSubmissionCodeValidator: validateIf(!isCSR(this.$router.currentRoute.path), hospitalVisitSubmissionCodeValidator),
           },
           notes: {
             maxLength: maxLength(400),
@@ -1503,12 +1520,12 @@ export default {
         minLength: minLength(5),
       },
       practitionerFacilityNumber: {
-        minLength: optionalValidator(minLength(5)),
+        minLength: optionalValidator(validateIf(!isCSR(this.$router.currentRoute.path), minLength(5))),
       },
       practitionerSpecialtyCode: {
         alphanumericValidator: optionalValidator(alphanumericValidator),
-        minLength: optionalValidator(minLength(2)),
-        specialtyCodeValidator: optionalValidator(specialtyCodeValidator),
+        minLength: optionalValidator(validateIf(!isCSR(this.$router.currentRoute.path), minLength(2))),
+        specialtyCodeValidator: optionalValidator(validateIf(!isCSR(this.$router.currentRoute.path), specialtyCodeValidator)),
       },
       coveragePreAuthNumber: {
         minLength: optionalValidator(minLength(4)),
@@ -1589,6 +1606,12 @@ export default {
         if (this.medicalServiceClaims[i].feeItem) {
           this.medicalServiceClaims[i].feeItem = padLeadingZeros(this.medicalServiceClaims[i].feeItem, 5);
         }
+
+        // Set default "numberOfServices" to 00 
+        if (!this.medicalServiceClaims[i].numberOfServices) {
+          this.medicalServiceClaims[i].numberOfServices = '00';
+        }
+
         // Set default "calledStartTime" to "00:00".
         if (!this.medicalServiceClaims[i].calledStartTime
           || (
@@ -1621,6 +1644,11 @@ export default {
         // Pad Fee Items with leading zeros.
         if (this.hospitalVisitClaims[i].feeItem) {
           this.hospitalVisitClaims[i].feeItem = padLeadingZeros(this.hospitalVisitClaims[i].feeItem, 5);
+        }
+
+        // Set default "numberOfServices" to 00 
+        if (!this.hospitalVisitClaims[i].numberOfServices) {
+          this.hospitalVisitClaims[i].numberOfServices = '00';
         }
       }
       
@@ -1783,12 +1811,15 @@ export default {
       const past90Days = subDays(startOfToday(), 90);
       let serviceDate = this.medicalServiceClaims[index].serviceDate;
       
-      if (!isValid(serviceDate)) {
+      if (!isValid(serviceDate) || isCSR(this.$router.currentRoute.path)) {
         return false;
       }
       return isBefore(serviceDate, addDays(past90Days, 1));
     },
     isHospitalVisitSubmissionCodeRequired(index) {
+      if (isCSR(this.$router.currentRoute.path)) {
+        return false;
+      }
       const past90Days = subDays(startOfToday(), 90);
       const ISODateStr = getISODateString(
         this.hospitalVisitClaims[index].year,
