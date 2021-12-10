@@ -302,6 +302,7 @@
             <Input label='Diagnostic Code:'
                   :id='"msc-diagnostic-code-" + index'
                   :cypressId="'diagnosticCode' + index"
+                  :isUpperCaseForced='true' 
                   class='mt-3'
                   maxlength="5"
                   v-model='claim.diagnosticCode'

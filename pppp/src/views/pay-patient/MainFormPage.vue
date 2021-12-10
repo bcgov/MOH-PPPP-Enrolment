@@ -304,6 +304,7 @@
             <Input label='Diagnostic Code:'
                   :id='"diagnostic-code-" + index'
                   :cypressId="'diagnosticCode' + index"
+                  :isUpperCaseForced='true' 
                   class='mt-3'
                   v-model='claim.diagnosticCode'
                   maxlength='5'
