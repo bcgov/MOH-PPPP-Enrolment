@@ -1358,14 +1358,14 @@ export default {
       },
       firstName: {
         required: requiredIf(() => !isCSR(this.$router.currentRoute.path)),
-        nameValidator,
+        nameValidator: optionalValidator(nameValidator),
       },
       middleInitial: {
         nameInitialValidator: optionalValidator(nameInitialValidator),
       },
       lastName: {
         required: requiredIf(() => !isCSR(this.$router.currentRoute.path)),
-        nameValidator,
+        nameValidator: optionalValidator(nameValidator),
       },
       birthDate: {
         required: requiredIf(() => {
@@ -1506,11 +1506,11 @@ export default {
       },
       practitionerLastName: {
         required: requiredIf(() => !isCSR(this.$router.currentRoute.path)),
-        nameValidator,
+        nameValidator: optionalValidator(nameValidator),
       },
       practitionerFirstName: {
         required: requiredIf(() => !isCSR(this.$router.currentRoute.path)),
-        nameValidator,
+        nameValidator: optionalValidator(nameValidator),
       },
       practitionerPaymentNumber: {
         required: requiredIf(() => !isCSR(this.$router.currentRoute.path)),
