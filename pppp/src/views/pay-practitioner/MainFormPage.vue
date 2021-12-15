@@ -1079,7 +1079,7 @@ const hospitalVisitDatePastValidator = (csr) => {
 
     return isValidISODateString(isoDateString)
         && isValid(date)
-        && isAfter(date, subDays(subMonths(startOfToday(), 18), 1));
+        && (isAfter(date, subDays(subMonths(startOfToday(), 18), 1)) || csr);
   }
 };
 
