@@ -370,6 +370,7 @@ const passingData = {
 };
 
 const failingData = {
+  planReferenceNumber: "",
   phn: "",
   dependentNumber: "",
   firstName: "",
@@ -802,7 +803,7 @@ describe("MainFormPage.vue validateFields(), public", () => {
   });
 
   it("does not navigate successfully when data is bad", async () => {
-    Object.assign(wrapper.vm, failingData);
+    Object.assign(wrapper.vm, cloneDeep(failingData));
     await wrapper.vm.validateFields();
     await wrapper.vm.$nextTick;
     expect(spyOnScrollToError).toHaveBeenCalled();
@@ -1838,7 +1839,7 @@ describe("MainFormPage.vue validateFields(), CSR", () => {
   });
 
   it("does not navigate successfully when data is bad", async () => {
-    Object.assign(wrapper.vm, failingData);
+    Object.assign(wrapper.vm, cloneDeep(failingData));
     await wrapper.vm.validateFields();
     await wrapper.vm.$nextTick;
     expect(spyOnScrollToError).toHaveBeenCalled();
