@@ -3394,7 +3394,7 @@ describe("MainFormPage.vue validateFields(), CSR", () => {
     expect(spyOnNavigateToNextPage).toHaveBeenCalled();
   });
 
-  it("(each, hospitalVisitDatePastValidator, hospitalVisitClaims) flags invalid if date more than 18 months old", async () => {
+  it("(each, hospitalVisitDatePastValidator, hospitalVisitClaims) flags valid if date more than 18 months old", async () => {
     Object.assign(wrapper.vm, cloneDeep(passingData));
     wrapper.vm.hospitalVisitClaims[0].dayFrom = "31";
     wrapper.vm.hospitalVisitClaims[0].dayTo = null;
@@ -3402,8 +3402,8 @@ describe("MainFormPage.vue validateFields(), CSR", () => {
     wrapper.vm.hospitalVisitClaims[0].year = "2001";
     await wrapper.vm.validateFields();
     await wrapper.vm.$nextTick;
-    expect(spyOnScrollToError).toHaveBeenCalled();
-    expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
+    expect(spyOnScrollToError).not.toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).toHaveBeenCalled();
   });
 
   it("(each, hospitalVisitDateFutureValidator, hospitalVisitClaims) flags invalid if date is in future", async () => {
