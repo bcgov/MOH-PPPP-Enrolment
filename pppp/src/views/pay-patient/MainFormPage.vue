@@ -32,7 +32,8 @@
         <a name='patient'></a>
         <h2>Patient Information</h2>
         <div class="section-container p-3">
-          <PhnInput label='Personal Health Number (PHN):'
+          <PhnInput 
+                :label='"Personal Health Number (PHN)" + (!$v.phn.required ? "" : " (optional)") + ":"'
                 id='phn'
                 cypressId="PHN"
                 v-model='phn'
@@ -60,7 +61,8 @@
           <div class="text-danger"
               v-if="$v.dependentNumber.$dirty && $v.dependentNumber.intValidator && $v.dependentNumber.positiveNumberValidator && !$v.dependentNumber.dependentNumberValidator"
               aria-live="assertive">Dependant must be 00 or 66 for this PHN.</div>
-          <Input label='Patient Legal First Name:'
+          <Input 
+                :label='"Patient Legal First Name" + (!$v.firstName.required ? "" : " (optional)") + ":"'
                 id='first-name'
                 cypressId="patientFirstName"
                 className='mt-3'
@@ -84,7 +86,8 @@
           <div class="text-danger"
               v-if="$v.middleInitial.$dirty && !$v.middleInitial.nameInitialValidator"
               aria-live="assertive">Second name initial must be a letter.</div>
-          <Input label='Patient Legal Last Name:'
+          <Input 
+                :label='"Patient Legal Last Name" + (!$v.lastName.required ? "" : " (optional)") + ":"'
                 id='last-name'
                 cypressId="patientLastName"
                 className='mt-3'
@@ -98,7 +101,8 @@
           <div class="text-danger"
               v-if="$v.lastName.$dirty && $v.lastName.required && !$v.lastName.nameValidator"
               aria-live="assertive">Patient Legal Last Name must begin with a letter and cannot include special characters except hyphens, periods, apostrophes and blank characters.</div>
-          <DateInput :label='"Patient Birth Date" + ((dependentNumber === "66" && !isCSR) ? " (optional)" : "") + ":"'
+          <DateInput 
+                :label='"Patient Birth Date" + (!$v.birthDate.required ? "" : " (optional)") + ":"'
                 id='birth-date'
                 cypressId="patientBirthDate"
                 className='mt-3'
@@ -126,7 +130,8 @@
         
         <a name='vehicle-accident'></a>
         <div class="section-container p-3 mt-5">
-          <Radio label='Is this claim related to a motor vehicle accident?'
+          <Radio 
+                :label='"Is this claim related to a motor vehicle accident" + (!$v.isVehicleAccident.required ? "" : " (optional)") + "?"'
                 v-model='isVehicleAccident'
                 cypressId="motorVehicleAccident"
                 :items='isVehicleAccidentOptions'
@@ -177,7 +182,8 @@
           <a :name='"medical-service-claim-" + index'></a>
           <h2 class="mt-5">{{getMedicalServiceClaimTitle(index)}}</h2>
           <div class="section-container p-3">
-            <DateInput label='Service Date:'
+            <DateInput 
+                      :label='"Service Date" + (!$v.medicalServiceClaims.$each[index].serviceDate.required ? "" : " (optional)") + ":"'
                       :cypressId="'serviceDate' + index"
                       :id="'service-date' + index"
                       v-model='claim.serviceDate'
@@ -207,7 +213,8 @@
                   && v.serviceDate.required
                   && !v.serviceDate.serviceDateCutOffValidator"
                 aria-live="assertive">Service Date is invalid for the Service Location Code.</div>
-            <DigitInput label='Number of Services:'
+            <DigitInput 
+                  :label='"Number of Services" + (!$v.medicalServiceClaims.$each[index].numberOfServices.required ? "" : " (optional)") + ":"'
                   :id='"number-of-services-" + index'
                   :cypressId="'numberOfServices' + index"
                   class='mt-3'
@@ -242,7 +249,8 @@
             <div class="text-danger"
                 v-if="v.serviceClarificationCode.$dirty && !v.serviceClarificationCode.clarificationCodeValidator"
                 aria-live="assertive">Service Clarification Code is invalid.</div>  
-            <DigitInput label='Fee Item:'
+            <DigitInput 
+                  :label='"Fee Item" + (!$v.medicalServiceClaims.$each[index].feeItem.required ? "" : " (optional)") + ":"'
                   :id='"fee-item-" + index'
                   :cypressId="'feeItem' + index"
                   class='mt-3'
@@ -263,7 +271,8 @@
             <div class="text-danger"
                 v-if="medicalServiceClaimsFeeItemValidationError[index]"
                 aria-live="assertive">Fee Item does not match our records.</div>
-            <NumberInput label='Amount Billed:'
+            <NumberInput 
+                  :label='"Amount Billed" + (!$v.medicalServiceClaims.$each[index].amountBilled.required ? "" : " (optional)") + ":"'
                   :id='"amount-billed-" + index'
                   :cypressId="'amountBilled' + index"
                   class='mt-3'
@@ -301,7 +310,8 @@
             <div class="text-danger"
                 v-if="v.renderedFinishTime.$dirty && !v.renderedFinishTime.partialTimeValidator"
                 aria-live="assertive">Rendered finish time must be an exact value.</div>
-            <Input label='Diagnostic Code:'
+            <Input 
+                  :label='"Diagnostic Code" + (!$v.medicalServiceClaims.$each[index].diagnosticCode.required ? "" : " (optional)") + ":"'
                   :id='"diagnostic-code-" + index'
                   :cypressId="'diagnosticCode' + index"
                   :isUpperCaseForced='true' 
