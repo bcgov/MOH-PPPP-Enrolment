@@ -1529,7 +1529,7 @@ export default {
         specialtyCodeValidator: optionalValidator(validateIf(!isCSR(this.$router.currentRoute.path), specialtyCodeValidator)),
       },
       coveragePreAuthNumber: {
-        minLength: optionalValidator(minLength(4)),
+        minLength: optionalValidator(validateIf(!isCSR(this.$router.currentRoute.path), minLength(4))),
         intValidator: optionalValidator(intValidator),
         positiveNumberValidator: optionalValidator(positiveNumberValidator),
       },
