@@ -1836,15 +1836,13 @@ export default {
   },
   computed: {
     isReferredByRequired() {
-      return !!this.referredByFirstNameInitial
-          || !!this.referredByLastName
-          || !!this.referredByPractitionerNumber;
+      return (!!this.referredByFirstNameInitial || !!this.referredByLastName || !!this.referredByPractitionerNumber) 
+      && !isCSR(this.$router.currentRoute.path);
     },
     isReferredToRequired() {
-      return !!this.referredToFirstNameInitial
-          || !!this.referredToLastName
-          || !!this.referredToPractitionerNumber
-          || (this.isContainingNoChargeFeeItem && !isCSR(this.$router.currentRoute.path));
+      return (!!this.referredToFirstNameInitial || !!this.referredToLastName 
+      || !!this.referredToPractitionerNumber || this.isContainingNoChargeFeeItem) 
+      && !isCSR(this.$router.currentRoute.path);
     },
     isContainingNoChargeFeeItem() {
       for (let i=0; i<this.medicalServiceClaims.length; i++) {
