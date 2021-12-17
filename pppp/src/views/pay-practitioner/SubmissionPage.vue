@@ -41,7 +41,7 @@
 
         <h3 class="mt-4">Next Steps</h3>
         <hr/>
-        <ul>
+        <ul v-if='!isCSR'>
           <li>Please <a href="javascript:void(0)" @click="printPage()" class="print-link">print</a> this page for your records.</li>
           <li>Do not mail in a printed version of this form to Health Insurance BC.</li>
           <li>If you need to complete this form again for any additional claims, 
@@ -65,7 +65,7 @@
 import PageContent from '@/components/PageContent.vue';
 import ReviewTableList from '@/components/pay-practitioner/ReviewTableList.vue';
 import { formatDate, Button } from 'common-lib-vue';
-import { getConvertedPath } from '@/helpers/url';
+import { getConvertedPath, isCSR } from '@/helpers/url';
 import pageStateService from '@/services/page-state-service';
 import {
   payPractitionerRoutes,
@@ -108,6 +108,11 @@ export default {
     onNewForm() {
       window.location.reload();
     }
+  },
+  computed: {
+    isCSR() {
+      return isCSR(this.$router.currentRoute.path);
+    },
   },
   // Required in order to block back navigation.
   beforeRouteLeave(to, from, next) {
