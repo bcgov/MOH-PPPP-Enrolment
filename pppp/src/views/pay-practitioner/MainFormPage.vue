@@ -8,9 +8,10 @@
         <div v-if='isCSR'
             class="section-container p-3 mb-5">
           <a name='plan-reference-number'></a>
-          <DigitInput label='Plan Reference Number:'
+          <DigitInput label='Plan Reference Number: (required)'
                 id='plan-reference-number'
                 cypressId="PRN"
+                :isRequiredAsteriskShown='true'
                 v-model='planReferenceNumber'
                 maxlength='10'
                 :inputStyle='smallStyles'
@@ -44,7 +45,8 @@
           <div class="text-danger"
               v-if="$v.phn.$dirty && $v.phn.required && !$v.phn.phnValidator"
               aria-live="assertive">Personal Health Number (PHN) must be valid.</div>
-          <DigitInput label='Dependant (optional):'
+          <DigitInput 
+                :label='"Dependant" + (isCSR ? "" : " (optional)") + ":"'
                 id='dependent-number'
                 className='mt-3'
                 maxlength="2"
@@ -74,7 +76,8 @@
           <div class="text-danger"
               v-if="$v.firstName.$dirty && $v.firstName.required && !$v.firstName.nameValidator"
               aria-live="assertive">Patient Legal First Name must begin with a letter and cannot include special characters except hyphens, periods, apostrophes and blank characters.</div>
-          <Input label='Second Name Initial (optional):'
+          <Input 
+                :label='"Second Name Initial" + (isCSR ? "" : " (optional)") + ":"'
                 id='middle-initial'
                 className='mt-3'
                 maxlength="1"
@@ -135,7 +138,7 @@
               v-if="$v.isVehicleAccident.$dirty && !$v.isVehicleAccident.required"
               aria-live="assertive">Answer to question is required.</div>
           <Input
-                label='Motor Vehicle Accident Claim Number (optional):'
+                :label='"Motor Vehicle Accident Claim Number" + (isCSR ? "" : " (optional)") + ":"'                
                 id='vehicle-accident-claim-number'
                 maxlength='8'
                 :isUpperCaseForced="true"
@@ -157,7 +160,8 @@
 
         <a name='claim-info'></a>
         <div class="section-container p-3 mt-5">
-          <DigitInput label='Plan Reference Number of Original Claim (optional):'
+          <DigitInput 
+                :label='"Plan Reference Number of Original Claim" + (isCSR ? "" : " (optional)") + ":"'
                 id='plan-reference-number-of-original-claim'
                 maxlength="10"
                 v-model='planReferenceNumberOfOriginalClaim'
@@ -229,7 +233,8 @@
                   && v.numberOfServices.positiveNumberValidator
                   && !v.numberOfServices.nonZeroNumberValidator"
                 aria-live="assertive">Number of Services must be greater than 0.</div>
-            <Input label='Service Clarification Code (optional):'
+            <Input 
+                  :label='"Service Clarification Code" + (isCSR ? "" : " (optional)") + ":"'
                   :id='"msc-service-clarification-code-" + index'
                   class='mt-3'
                   maxlength="2"
@@ -281,7 +286,8 @@
             <div class="text-danger"
                 v-if="v.amountBilled.$dirty && v.amountBilled.required && !v.amountBilled.amountBilledZeroValidator"
                 aria-live="assertive">Amount billed must be zero if Fee item is '03333'.</div>
-            <TimeInput label='Called Start Time (optional):'
+            <TimeInput 
+                      :label='"Called Start Time" + (isCSR ? "" : " (optional)") + ":"'
                       :id='"msc-called-start-time-" + index'
                       className='mt-3'
                       v-model='claim.calledStartTime'
@@ -290,7 +296,8 @@
             <div class="text-danger"
                 v-if="v.calledStartTime.$dirty && !v.calledStartTime.partialTimeValidator"
                 aria-live="assertive">Called start time must be an exact value.</div>
-            <TimeInput label='Rendered Finish Time (optional):'
+            <TimeInput 
+                      :label='"Rendered Finish Time" + (isCSR ? "" : " (optional)") + ":"'
                       :id='"msc-rendered-finish-time-" + index'
                       className='mt-3'
                       v-model='claim.renderedFinishTime'
@@ -337,14 +344,15 @@
                   && v.locationOfService.required
                   && !v.locationOfService.serviceLocationCodeValidator"
                 aria-live="assertive">Service Location Code is invalid for the Service Date.</div>
-            <Select label='Correspondence Attached (optional):'
+            <Select 
+                :label='"Correspondence Attached" + (isCSR ? "" : " (optional)") + ":"'
                 :id='"msc-correspondence-attached-" + index'
                 class='mt-3'
                 v-model='claim.correspondenceAttached'
                 :options='correspondenceAttachedOptions'
                 defaultOptionLabel='None'
                 :inputStyle='largeStyles' />
-            <Select :label='"Submission Code" + (isSubmissionCodeRequired(index) ? "" : " (optional)") + ":"'
+            <Select :label='"Submission Code" + ((isCSR || isSubmissionCodeRequired(index)) ? "" : " (optional)") + ":"'
                 :id='"msc-submission-code-" + index'
                 :cypressId="'submissionCode' + index"
                 class='mt-3'
@@ -356,7 +364,8 @@
             <div class="text-danger"
                 v-if="v.submissionCode.$dirty && isSubmissionCodeRequired(index) && !v.submissionCode.submissionCodeValidator"
                 aria-live="assertive">Submission code is required.</div>
-            <Textarea label="Notes/Additional Information (optional):"
+            <Textarea 
+              :label='"Notes/Additional Information" + (isCSR ? "" : " (optional)") + ":"'
               :id="'msc-medical-notes-' + index"
               :cypressId="'medNotesAttach' + index"
               class="mt-3"
@@ -391,7 +400,8 @@
                       @blur='handleBlurField($v.hospitalVisitClaims.$each[index].dayFrom)' />
               </div>
               <div class="col-md-3">
-                <DigitInput label='Day To (optional):'
+                <DigitInput 
+                      :label='"Day To" + (isCSR ? "" : " (optional)") + ":"'
                       :id="'hvc-day-to-' + index"
                       maxlength="2"
                       v-model='claim.dayTo'
@@ -527,7 +537,8 @@
                   && v.numberOfServices.positiveNumberValidator
                   && !v.numberOfServices.nonZeroNumberValidator"
                 aria-live="assertive">Number of Services must be greater than 0.</div>
-            <Input label='Service Clarification Code (optional):'
+            <Input 
+                  :label='"Service Clarification Code" + (isCSR ? "" : " (optional)") + ":"'
                   :id='"hvc-service-clarification-code-" + index'
                   class='mt-3'
                   maxlength="2"
@@ -616,14 +627,16 @@
                   && v.locationOfService.required
                   && !v.locationOfService.hospitalVisitLocationCodeValidator"
                 aria-live="assertive">Service Location Code is invalid for the Service Date.</div>
-            <Select label='Correspondence Attached (optional):'
+            <Select 
+                  :label='"Correspondence Attached" + (isCSR ? "" : " (optional)") + ":"'
                   :id='"hvc-correspondence-attached-" + index'
                   class='mt-3'
                   v-model='claim.correspondenceAttached'
                   :options='correspondenceAttachedOptions'
                   defaultOptionLabel='None'
                   :inputStyle='largeStyles' />
-            <Select :label='"Submission Code" + (isHospitalVisitSubmissionCodeRequired(index) ? "" : " (optional)") + ":"'
+            <Select 
+                  :label='"Submission Code" + ((isCSR || isHospitalVisitSubmissionCodeRequired(index)) ? "" : " (optional)") + ":"'
                   :id='"hvc-submission-code-" + index'
                   :cypressId="'hospitalClaimSubmissionCode' + index"
                   class='mt-3'
@@ -635,7 +648,8 @@
             <div class="text-danger"
                 v-if="v.submissionCode.$dirty && isHospitalVisitSubmissionCodeRequired(index) && !v.submissionCode.hospitalVisitSubmissionCodeValidator"
                 aria-live="assertive">Submission code is required.</div>
-            <Textarea label="Notes/Additional Information (optional):"
+            <Textarea 
+                  :label='"Notes/Additional Information" + (isCSR ? "" : " (optional)") + ":"'
                   :id="'hvc-hospital-notes-' + index"
                   :cypressId="'hospitalNotesAttach' + index"
                   class="mt-3"
@@ -725,7 +739,8 @@
           <div class="text-danger"
               v-if="isPractitionerErrorShown"
               aria-live="assertive">Practitioner information does not match our records.</div>
-          <Input label='Specialty Code (optional):'
+          <Input 
+                :label='"Specialty Code" + (isCSR ? "" : " (optional)") + ":"'
                 id='specialty-code'
                 class='mt-3'
                 maxlength="2"
@@ -746,7 +761,8 @@
                 && $v.practitionerSpecialtyCode.alphanumericValidator
                 && !$v.practitionerSpecialtyCode.specialtyCodeValidator"
               aria-live="assertive">Specialty Code is invalid.</div>
-          <FacilityNumberInput label='Facility Number (optional):'
+          <FacilityNumberInput 
+                :label='"Facility Number" + (isCSR ? "" : " (optional)") + ":"'
                 id='facility-number'
                 class='mt-3'
                 v-model='practitionerFacilityNumber'
@@ -755,7 +771,8 @@
           <div class="text-danger"
               v-if="$v.practitionerFacilityNumber.$dirty && !$v.practitionerFacilityNumber.minLength"
               aria-live="assertive">Facility number must not be less than 5 characters.</div>
-          <DigitInput label='Coverage Pre-Authorization Number (optional):'
+          <DigitInput 
+                :label='"Coverage Pre-Authorization Number" + (isCSR ? "" : " (optional)") + ":"'
                 id='coverage-pre-authorization-number'
                 class='mt-3'
                 maxlength="4"
@@ -776,7 +793,7 @@
         <a name='referred-by'></a>
         <h2 class="mt-5">Referred By</h2>
         <div class="section-container p-3">
-          <PractitionerNumberInput :label='"Referred By Practitioner Number" + (isReferredByRequired ? "" : " (optional)") + ":"'
+          <PractitionerNumberInput :label='"Referred By Practitioner Number" + ((isReferredByRequired || isCSR ) ? "" : " (optional)") + ":"'
                 id='referred-by-practitioner-number'
                 v-model='referredByPractitionerNumber'
                 :inputStyle='smallStyles'
@@ -787,7 +804,7 @@
           <div class="text-danger"
               v-if="$v.referredByPractitionerNumber.$dirty && !$v.referredByPractitionerNumber.minLength"
               aria-live="assertive">Practitioner number must not be less than 5 characters.</div>
-          <Input :label='"Referred By Practitioner Last Name" + (isReferredByRequired ? "" : " (optional)") + ":"'
+          <Input :label='"Referred By Practitioner Last Name" + ((isReferredByRequired || isCSR ) ? "" : " (optional)") + ":"'
                 id='referred-by-last-name'
                 maxlength="18"
                 class='mt-3'
@@ -800,7 +817,7 @@
           <div class="text-danger"
               v-if="$v.referredByLastName.$dirty && !$v.referredByLastName.nameValidator"
               aria-live="assertive">Last name must begin with a letter and cannot include special characters except hyphens, periods, apostrophes and blank characters.</div>
-          <Input :label='"Referred By Practitioner First Name Initial" + (isReferredByRequired ? "" : " (optional)") + ":"'
+          <Input :label='"Referred By Practitioner First Name Initial" + ((isReferredByRequired || isCSR ) ? "" : " (optional)") + ":"'
                 id='referred-by-first-name-initial'
                 maxlength="1"
                 class='mt-3'
@@ -818,7 +835,7 @@
         <a name='referred-to'></a>
         <h2 class="mt-5">Referred To</h2>
         <div class="section-container p-3">
-          <PractitionerNumberInput :label='"Referred To Practitioner Number" + (isReferredToRequired ? "" : " (optional)") + ":"'
+          <PractitionerNumberInput :label='"Referred To Practitioner Number" + ((isReferredToRequired || isCSR ) ? "" : " (optional)") + ":"'
                 id='referred-to-practitioner-number'
                 v-model='referredToPractitionerNumber'
                 :inputStyle='smallStyles'
@@ -829,7 +846,7 @@
           <div class="text-danger"
               v-if="$v.referredToPractitionerNumber.$dirty && !$v.referredToPractitionerNumber.minLength"
               aria-live="assertive">Practitioner number must not be less than 5 characters.</div>
-          <Input :label='"Referred To Practitioner Last Name" + (isReferredToRequired ? "" : " (optional)") + ":"'
+          <Input :label='"Referred To Practitioner Last Name" + ((isReferredToRequired || isCSR ) ? "" : " (optional)") + ":"'
                 id='referred-to-last-name'
                 maxlength="18"
                 class='mt-3'
@@ -842,7 +859,7 @@
           <div class="text-danger"
               v-if="$v.referredToLastName.$dirty && !$v.referredToLastName.nameValidator"
               aria-live="assertive">Last name must begin with a letter and cannot include special characters except hyphens, periods, apostrophes and blank characters.</div>
-          <Input :label='"Referred To Practitioner First Name Initial" + (isReferredToRequired ? "" : " (optional)") + ":"'
+          <Input :label='"Referred To Practitioner First Name Initial" + ((isReferredToRequired || isCSR ) ? "" : " (optional)") + ":"'
                 id='referred-to-first-name-initial'
                 maxlength="1"
                 class='mt-3'
