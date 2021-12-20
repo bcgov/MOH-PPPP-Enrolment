@@ -3394,7 +3394,7 @@ describe("MainFormPage.vue validateFields(), CSR", () => {
     expect(spyOnNavigateToNextPage).toHaveBeenCalled();
   });
 
-  it("(each, hospitalVisitDatePastValidator, hospitalVisitClaims) flags invalid if date more than 18 months old", async () => {
+  it("(each, hospitalVisitDatePastValidator, hospitalVisitClaims) flags valid if date more than 18 months old", async () => {
     Object.assign(wrapper.vm, cloneDeep(passingData));
     wrapper.vm.hospitalVisitClaims[0].dayFrom = "31";
     wrapper.vm.hospitalVisitClaims[0].dayTo = null;
@@ -3402,8 +3402,8 @@ describe("MainFormPage.vue validateFields(), CSR", () => {
     wrapper.vm.hospitalVisitClaims[0].year = "2001";
     await wrapper.vm.validateFields();
     await wrapper.vm.$nextTick;
-    expect(spyOnScrollToError).toHaveBeenCalled();
-    expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
+    expect(spyOnScrollToError).not.toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).toHaveBeenCalled();
   });
 
   it("(each, hospitalVisitDateFutureValidator, hospitalVisitClaims) flags invalid if date is in future", async () => {
@@ -3675,13 +3675,13 @@ describe("MainFormPage.vue validateFields(), CSR", () => {
     expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
   });
 
-  it("(coveragePreAuthNumber) flags invalid if not minimum length", async () => {
+  it("(coveragePreAuthNumber) flags valid if not minimum length", async () => {
     Object.assign(wrapper.vm, cloneDeep(passingData));
     await wrapper.setData({ coveragePreAuthNumber: "2" });
     await wrapper.vm.validateFields();
     await wrapper.vm.$nextTick;
-    expect(spyOnScrollToError).toHaveBeenCalled();
-    expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
+    expect(spyOnScrollToError).not.toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).toHaveBeenCalled();
   });
 
   it("(coveragePreAuthNumber) flags valid if minimum length", async () => {
@@ -3777,37 +3777,37 @@ describe("MainFormPage.vue validateFields(), CSR", () => {
     expect(spyOnNavigateToNextPage).toHaveBeenCalled();
   });
 
-  it("flags invalid if referredBy first name initial present but not last name or prac number", async () => {
+  it("flags valid if referredBy first name initial present but not last name or prac number", async () => {
     Object.assign(wrapper.vm, cloneDeep(passingData));
     await wrapper.setData({ referredByFirstNameInitial: `Q` });
     await wrapper.setData({ referredByLastName: null });
     await wrapper.setData({ referredByPractitionerNumber: null });
     await wrapper.vm.validateFields();
     await wrapper.vm.$nextTick;
-    expect(spyOnScrollToError).toHaveBeenCalled();
-    expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
+    expect(spyOnScrollToError).not.toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).toHaveBeenCalled();
   });
 
-  it("flags invalid if referredBy last name present but not first name initial or prac number", async () => {
+  it("flags valid if referredBy last name present but not first name initial or prac number", async () => {
     Object.assign(wrapper.vm, cloneDeep(passingData));
     await wrapper.setData({ referredByFirstNameInitial: null });
     await wrapper.setData({ referredByLastName: "Surname" });
     await wrapper.setData({ referredByPractitionerNumber: null });
     await wrapper.vm.validateFields();
     await wrapper.vm.$nextTick;
-    expect(spyOnScrollToError).toHaveBeenCalled();
-    expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
+    expect(spyOnScrollToError).not.toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).toHaveBeenCalled();
   });
 
-  it("flags invalid if referredBy prac number present but not first name initial or last name", async () => {
+  it("flags valid if referredBy prac number present but not first name initial or last name", async () => {
     Object.assign(wrapper.vm, cloneDeep(passingData));
     await wrapper.setData({ referredByFirstNameInitial: null });
     await wrapper.setData({ referredByLastName: null });
     await wrapper.setData({ referredByPractitionerNumber: "11111" });
     await wrapper.vm.validateFields();
     await wrapper.vm.$nextTick;
-    expect(spyOnScrollToError).toHaveBeenCalled();
-    expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
+    expect(spyOnScrollToError).not.toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).toHaveBeenCalled();
   });
 
   it("flags valid if all three are null (referred By)", async () => {
@@ -3821,37 +3821,37 @@ describe("MainFormPage.vue validateFields(), CSR", () => {
     expect(spyOnNavigateToNextPage).toHaveBeenCalled();
   });
 
-  it("flags invalid if referredTo first name initial present but not last name or prac number", async () => {
+  it("flags valid if referredTo first name initial present but not last name or prac number", async () => {
     Object.assign(wrapper.vm, cloneDeep(passingData));
     await wrapper.setData({ referredToFirstNameInitial: `Q` });
     await wrapper.setData({ referredToLastName: null });
     await wrapper.setData({ referredToPractitionerNumber: null });
     await wrapper.vm.validateFields();
     await wrapper.vm.$nextTick;
-    expect(spyOnScrollToError).toHaveBeenCalled();
-    expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
+    expect(spyOnScrollToError).not.toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).toHaveBeenCalled();
   });
 
-  it("flags invalid if referredTo last name present but not first name initial or prac number", async () => {
+  it("flags valid if referredTo last name present but not first name initial or prac number", async () => {
     Object.assign(wrapper.vm, cloneDeep(passingData));
     await wrapper.setData({ referredToFirstNameInitial: null });
     await wrapper.setData({ referredToLastName: "Surname" });
     await wrapper.setData({ referredToPractitionerNumber: null });
     await wrapper.vm.validateFields();
     await wrapper.vm.$nextTick;
-    expect(spyOnScrollToError).toHaveBeenCalled();
-    expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
+    expect(spyOnScrollToError).not.toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).toHaveBeenCalled();
   });
 
-  it("flags invalid if referredTo prac number present but not first name initial or last name", async () => {
+  it("flags valid if referredTo prac number present but not first name initial or last name", async () => {
     Object.assign(wrapper.vm, cloneDeep(passingData));
     await wrapper.setData({ referredToFirstNameInitial: null });
     await wrapper.setData({ referredToLastName: null });
     await wrapper.setData({ referredToPractitionerNumber: "11111" });
     await wrapper.vm.validateFields();
     await wrapper.vm.$nextTick;
-    expect(spyOnScrollToError).toHaveBeenCalled();
-    expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
+    expect(spyOnScrollToError).not.toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).toHaveBeenCalled();
   });
 
   it("flags valid if all three are null (referred To)", async () => {
