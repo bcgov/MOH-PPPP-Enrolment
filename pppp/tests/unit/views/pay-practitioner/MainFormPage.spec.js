@@ -17,12 +17,19 @@ import {
 } from "@/router/routes";
 
 const testDate = new Date();
+const adjustedTestDateMonth = testDate.getMonth() + 1;
+//testDate.getMonth() returns 0 for January
+//but the hospital visit selector indexes January as 1, since it's the first item on the list
+//this constant adjusts for this difference
 
 const testDateFutureDay = new Date();
 testDateFutureDay.setDate(testDateFutureDay.getDate() + 1);
 
 const testDateFutureYear = new Date();
 testDateFutureYear.setFullYear(testDateFutureYear.getFullYear() + 1);
+
+const testDatePastYear = new Date();
+testDatePastYear.setFullYear(testDatePastYear.getFullYear() - 1);
 
 const testDateFutureMonth = new Date();
 testDateFutureMonth.setMonth(testDateFutureMonth.getMonth() + 1);
@@ -361,7 +368,7 @@ const passingData = {
 
   hospitalVisitClaims: [
     {
-      month: testDate.getMonth().toString(),
+      month: adjustedTestDateMonth.toString(),
       dayFrom: testDate.getDate().toString(),
       dayTo: testDate.getDate().toString(),
       year: testDate.getFullYear().toString(),
@@ -1936,7 +1943,7 @@ describe("MainFormPage.vue validateFields(), public", () => {
     wrapper.vm.hospitalVisitClaims[0].dayFrom = "18";
     wrapper.vm.hospitalVisitClaims[0].dayTo = "19";
     wrapper.vm.hospitalVisitClaims[0].month = "1";
-    wrapper.vm.hospitalVisitClaims[0].year = testDate.getFullYear().toString();
+    wrapper.vm.hospitalVisitClaims[0].year = testDatePastYear.getFullYear().toString();
     await wrapper.vm.validateFields();
     await wrapper.vm.$nextTick;
     expect(spyOnScrollToError).not.toHaveBeenCalled();
@@ -3452,7 +3459,7 @@ describe("MainFormPage.vue validateFields(), CSR", () => {
     wrapper.vm.hospitalVisitClaims[0].dayFrom = "18";
     wrapper.vm.hospitalVisitClaims[0].dayTo = "19";
     wrapper.vm.hospitalVisitClaims[0].month = "1";
-    wrapper.vm.hospitalVisitClaims[0].year = testDate.getFullYear().toString();
+    wrapper.vm.hospitalVisitClaims[0].year = testDatePastYear.getFullYear().toString();
     await wrapper.vm.validateFields();
     await wrapper.vm.$nextTick;
     expect(spyOnScrollToError).not.toHaveBeenCalled();
