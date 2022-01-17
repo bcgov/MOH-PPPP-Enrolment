@@ -20,13 +20,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - uses: actions/setup-node@main
         with:
           node-version: "12"
       - name: install dependencies
         run: npm ci
       - uses: oke-py/npm-audit-action@v1.8.2
         with:
-          node-version: "12"
           github_token: ${{ secrets.GITHUB_TOKEN }}
           working_directory: ./pppp
           issue_labels: vulnerability
