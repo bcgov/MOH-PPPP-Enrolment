@@ -1,14 +1,14 @@
 name: npm audit workflow
-on: 
+on:
   push:
-    branches: 
+    branches:
       - npm-audit-action
   workflow_dispatch:
     inputs:
       source_tag:
-        description: 'Source Image Tag'     
+        description: "Source Image Tag"
         required: true
-        default: 'latest'
+        default: "latest"
   # schedule:
   #   - cron: '0 0 1 * *'
 defaults:
@@ -20,11 +20,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+        with:
+          node-version: "10"
       - name: install dependencies
         run: npm ci
       - uses: oke-py/npm-audit-action@v1.8.2
         with:
+          node-version: "10"
           github_token: ${{ secrets.GITHUB_TOKEN }}
           working_directory: ./pppp
           issue_labels: vulnerability
           dedupe_issues: true
+        name: run npm-audit-action
