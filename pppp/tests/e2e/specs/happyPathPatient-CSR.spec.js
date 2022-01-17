@@ -73,6 +73,8 @@ describe("Pay Patient-CSR", () => {
       .parent()
       .trigger("change");
 
+    cy.get("[data-cy=notesAttach0]").type(`aabb""//\\ `);
+
     cy.get("[data-cy=addressOwneraddress-owner-patient]").click({
       force: true,
     });
@@ -97,6 +99,12 @@ describe("Pay Patient-CSR", () => {
 
     cy.location().should((loc) => {
       expect(loc.pathname).to.eq("/pppp/pay-patient-csr/submission");
+    });
+
+    cy.get("[data-cy=newForm]").click();
+
+    cy.location().should((loc) => {
+      expect(loc.pathname).to.eq("/pppp/pay-patient-csr");
     });
   });
 });

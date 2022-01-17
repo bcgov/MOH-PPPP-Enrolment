@@ -8,9 +8,10 @@
         <div v-if='isCSR'
             class="section-container p-3 mb-5">
           <a name='plan-reference-number'></a>
-          <DigitInput label='Plan Reference Number:'
+          <DigitInput label='Plan Reference Number: (required)'
                 id='plan-reference-number'
                 cypressId="PRN"
+                :isRequiredAsteriskShown='true'
                 v-model='planReferenceNumber'
                 maxlength='10'
                 :inputStyle='smallStyles'
@@ -44,7 +45,8 @@
           <div class="text-danger"
               v-if="$v.phn.$dirty && $v.phn.required && !$v.phn.phnValidator"
               aria-live="assertive">Personal Health Number (PHN) must be valid.</div>
-          <DigitInput label='Dependant (optional):'
+          <DigitInput 
+                :label='"Dependant" + (isCSR ? "" : " (optional)") + ":"'
                 id='dependent-number'
                 className='mt-3'
                 v-model='dependentNumber'
@@ -74,7 +76,8 @@
           <div class="text-danger"
               v-if="$v.firstName.$dirty && $v.firstName.required && !$v.firstName.nameValidator"
               aria-live="assertive">Patient Legal First Name must begin with a letter and cannot include special characters except hyphens, periods, apostrophes and blank characters.</div>
-          <Input label='Second Name Initial (optional):'
+          <Input
+                :label='"Second Name Initial" + (isCSR ? "" : " (optional)") + ":"' 
                 id='middle-initial'
                 className='mt-3'
                 v-model='middleInitial'
@@ -98,7 +101,7 @@
           <div class="text-danger"
               v-if="$v.lastName.$dirty && $v.lastName.required && !$v.lastName.nameValidator"
               aria-live="assertive">Patient Legal Last Name must begin with a letter and cannot include special characters except hyphens, periods, apostrophes and blank characters.</div>
-          <DateInput :label='"Patient Birth Date" + (dependentNumber === "66" ? " (optional)" : "") + ":"'
+          <DateInput :label='"Patient Birth Date" + ((dependentNumber === "66" && !isCSR) ? " (optional)" : "") + ":"'
                 id='birth-date'
                 cypressId="patientBirthDate"
                 className='mt-3'
@@ -134,21 +137,31 @@
           <div class="text-danger"
               v-if="$v.isVehicleAccident.$dirty && !$v.isVehicleAccident.required"
               aria-live="assertive">This field is required.</div>
-          <MotorVehicleAccidentClaimNumberInput
-                label='Motor Vehicle Accident Claim Number (optional):'
+          <Input  
+                :label='"Motor Vehicle Accident Claim Number" + (isCSR ? "" : " (optional)") + ":"'
                 id='vehicle-accident-claim-number'
+                maxlength='8'
+                :isUpperCaseForced="true"
                 class='mt-3'
                 v-model='vehicleAccidentClaimNumber'
                 :inputStyle='smallStyles'
                 @blur='handleBlurField($v.vehicleAccidentClaimNumber)' />
           <div class="text-danger"
-              v-if="$v.vehicleAccidentClaimNumber.$dirty && !$v.vehicleAccidentClaimNumber.motorVehicleAccidentClaimNumberValidator"
+              v-if="$v.vehicleAccidentClaimNumber.$dirty 
+              && (
+                !$v.vehicleAccidentClaimNumber.motorVehicleAccidentClaimNumberValidator 
+                ||
+                !$v.vehicleAccidentClaimNumber.motorVehicleAccidentClaimNumberMaskValidator 
+                ||
+                !$v.vehicleAccidentClaimNumber.alphanumericValidator
+              )"
               aria-live="assertive">Motor Vehicle Accident Claim Number must be valid.</div>
         </div> 
 
         <a name='claim-info'></a>
         <div class="section-container p-3 mt-5">
-          <DigitInput label='Plan Reference Number of Original Claim (optional):'
+          <DigitInput 
+                :label='"Plan Reference Number of Original Claim" + (isCSR ? "" : " (optional)") + ":"'
                 id='plan-reference-number-of-original-claim'
                 v-model='planReferenceNumberOfOriginalClaim'
                 maxlength='10'
@@ -222,7 +235,8 @@
                   && !v.numberOfServices.nonZeroNumberValidator"
                 aria-live="assertive">Number of Services must be greater than 0.</div>
                  
-            <Input label='Service Clarification Code (optional):'
+            <Input 
+                  :label='"Service Clarification Code" + (isCSR ? "" : " (optional)") + ":"'
                   :id='"service-clarification-code-" + index'
                   class='mt-3'
                   v-model='claim.serviceClarificationCode'
@@ -274,7 +288,8 @@
             <div class="text-danger"
                 v-if="v.amountBilled.$dirty && v.amountBilled.required && !v.amountBilled.amountBilledZeroValidator"
                 aria-live="assertive">Amount billed must be zero if Fee item is '03333'.</div>
-            <TimeInput label='Called Start Time (optional):'
+            <TimeInput 
+                      :label='"Called Start Time" + (isCSR ? "" : " (optional)") + ":"'
                       :id='"called-start-time-" + index'
                       className='mt-3'
                       v-model='claim.calledStartTime'
@@ -283,7 +298,8 @@
             <div class="text-danger"
                 v-if="v.calledStartTime.$dirty && !v.calledStartTime.partialTimeValidator"
                 aria-live="assertive">Called start time must be an exact value.</div>
-            <TimeInput label='Rendered Finish Time (optional):'
+            <TimeInput 
+                      :label='"Rendered Finish Time" + (isCSR ? "" : " (optional)") + ":"'
                       :id='"rendered-finish-time-" + index'
                       className='mt-3'
                       v-model='claim.renderedFinishTime'
@@ -295,6 +311,7 @@
             <Input label='Diagnostic Code:'
                   :id='"diagnostic-code-" + index'
                   :cypressId="'diagnosticCode' + index"
+                  :isUpperCaseForced='true' 
                   class='mt-3'
                   v-model='claim.diagnosticCode'
                   maxlength='5'
@@ -304,7 +321,7 @@
                 v-if="v.diagnosticCode.$dirty && !v.diagnosticCode.required"
                 aria-live="assertive">Diagnostic code is required.</div>
             <div class="text-danger"
-                v-if="v.diagnosticCode.$dirty && v.diagnosticCode.required && !v.diagnosticCode.diagnosticCodeValidator"
+                v-if="v.diagnosticCode.$dirty && ((v.diagnosticCode.required && !v.diagnosticCode.diagnosticCodeValidator) || !v.diagnosticCode.alphanumericValidator)"
                 aria-live="assertive">Diagnostic code must be valid.</div>
             <Select label='Service Location Code:'
                   :id='"location-of-service-" + index'
@@ -315,7 +332,9 @@
                   :inputStyle='extraLargeStyles'
                   @blur='handleBlurField($v.medicalServiceClaims.$each[index].locationOfService)'>
               <template v-slot:description>
-                <p class="input-description">MSP Claims submitted with Service Location Code (<b>A</b>) for dates of service on or after October 1, 2021, will not be accepted.</p>
+                <p class="input-description" v-if="!isCSR">
+                  MSP Claims submitted with Service Location Code (<b>A</b>) for dates of service on or after October 1, 2021, will not be accepted.
+                </p>
               </template>
             </Select>
             <div class="text-danger"
@@ -327,14 +346,15 @@
                   && v.locationOfService.required
                   && !v.locationOfService.serviceLocationCodeValidator"
                 aria-live="assertive">Service Location Code is invalid for the Service Date.</div>
-            <Select label='Correspondence Attached (optional):'
+            <Select 
+                :label='"Correspondence Attached" + (isCSR ? "" : " (optional)") + ":"'
                 :id='"correspondence-attached-" + index'
                 class='mt-3'
                 v-model='claim.correspondenceAttached'
                 :options='correspondenceAttachedOptions'
                 defaultOptionLabel='None'
                 :inputStyle='largeStyles' />
-            <Select :label='"Submission Code" + (isSubmissionCodeRequired(index) ? "" : " (optional)") + ":"'
+            <Select :label='"Submission Code" + ((isCSR || isSubmissionCodeRequired(index)) ? "" : " (optional)") + ":"'
                 :id='"submission-code-" + index'
                 :cypressId="'submissionCode' + index"
                 class='mt-3'
@@ -346,8 +366,10 @@
             <div class="text-danger"
                 v-if="v.submissionCode.$dirty && isSubmissionCodeRequired(index) && !v.submissionCode.submissionCodeValidator"
                 aria-live="assertive">Submission code is required.</div>
-            <Textarea label='Notes/Additional Information (optional):'
+            <Textarea 
+                  :label='"Notes/Additional Information" + (isCSR ? "" : " (optional)") + ":"'
                   :id='"notes-" + index'
+                  :cypressId="'notesAttach' + index"
                   class='mt-3'
                   v-model='claim.notes'
                   :remainingCharsMaxlength='400'
@@ -367,13 +389,15 @@
           <div class="text-danger"
               v-if="$v.addressOwner.$dirty && !$v.addressOwner.required"
               aria-live="assertive">This field is required.</div>
-          <Input label='Apartment / Unit (optional):'
+          <Input 
+                :label='"Apartment / Unit" + (isCSR ? "" : " (optional)") + ":"'
                 id='unit-number'
                 className='mt-3'
                 v-model='unitNumber'
                 maxlength='6'
                 :inputStyle='smallStyles' />
-          <Input label='Street Number (optional):'
+          <Input 
+                :label='"Street Number" + (isCSR ? "" : " (optional)") + ":"'
                 id='street-number'
                 className='mt-3'
                 v-model='streetNumber'
@@ -497,7 +521,8 @@
           <div class="text-danger"
               v-if="isPractitionerErrorShown"
               aria-live="assertive">Practitioner information does not match our records.</div>
-          <Input label='Specialty Code (optional):'
+          <Input 
+                :label='"Specialty Code" + (isCSR ? "" : " (optional)") + ":"'                
                 id='specialty-code'
                 class='mt-3'
                 v-model='practitionerSpecialtyCode'
@@ -518,7 +543,8 @@
                 && $v.practitionerSpecialtyCode.alphanumericValidator
                 && !$v.practitionerSpecialtyCode.specialtyCodeValidator"
               aria-live="assertive">Specialty Code is invalid.</div>
-          <FacilityNumberInput label='Facility Number (optional):'
+          <FacilityNumberInput 
+                :label='"Facility Number" + (isCSR ? "" : " (optional)") + ":"'
                 id='facility-number'
                 class='mt-3'
                 v-model='practitionerFacilityNumber'
@@ -532,7 +558,8 @@
         <a name='referred-by'></a>
         <h2 class="mt-5">Referred By</h2>
         <div class="section-container p-3">
-          <PractitionerNumberInput :label='"Referred By Practitioner Number" + (isReferredByRequired ? "" : " (optional)") + ":"'
+          <PractitionerNumberInput 
+                :label='"Referred By Practitioner Number" + ((isReferredByRequired || isCSR ) ? "" : " (optional)") + ":"'
                 id='referred-by-practitioner-number'
                 v-model='referredByPractitionerNumber'
                 :inputStyle='smallStyles'
@@ -543,7 +570,8 @@
           <div class="text-danger"
               v-if="$v.referredByPractitionerNumber.$dirty && !$v.referredByPractitionerNumber.minLength"
               aria-live="assertive">Practitioner number must not be less than 5 characters.</div>
-          <Input :label='"Referred By Practitioner Last Name" + (isReferredByRequired ? "" : " (optional)") + ":"'
+          <Input 
+                :label='"Referred By Practitioner Last Name" + ((isReferredByRequired || isCSR ) ? "" : " (optional)") + ":"'
                 id='referred-by-last-name'
                 v-model='referredByLastName'
                 maxlength='18'
@@ -556,7 +584,8 @@
           <div class="text-danger"
               v-if="$v.referredByLastName.$dirty && !$v.referredByLastName.nameValidator"
               aria-live="assertive">Last name must begin with a letter and cannot include special characters except hyphens, periods, apostrophes and blank characters.</div>
-          <Input :label='"Referred By Practitioner First Name Initial" + (isReferredByRequired ? "" : " (optional)") + ":"'
+          <Input 
+                :label='"Referred By Practitioner First Name Initial" + ((isReferredByRequired || isCSR ) ? "" : " (optional)") + ":"'
                 id='referred-by-first-name-initial'
                 v-model='referredByFirstNameInitial'
                 maxlength='1'
@@ -574,7 +603,7 @@
         <a name='referred-to'></a>
         <h2 class="mt-5">Referred To</h2>
         <div class="section-container p-3">
-          <PractitionerNumberInput :label='"Referred To Practitioner Number" + (isReferredToRequired ? "" : " (optional)") + ":"'
+          <PractitionerNumberInput :label='"Referred To Practitioner Number" + ((isReferredToRequired || isCSR ) ? "" : " (optional)") + ":"'
                 id='referred-to-practitioner-number'
                 v-model='referredToPractitionerNumber'
                 :inputStyle='smallStyles'
@@ -585,7 +614,7 @@
           <div class="text-danger"
               v-if="$v.referredToPractitionerNumber.$dirty && !$v.referredToPractitionerNumber.minLength"
               aria-live="assertive">Practitioner number must not be less than 5 characters.</div>
-          <Input :label='"Referred To Practitioner Last Name" + (isReferredToRequired ? "" : " (optional)") + ":"'
+          <Input :label='"Referred To Practitioner Last Name" + ((isReferredToRequired || isCSR ) ? "" : " (optional)") + ":"'
                 id='referred-to-last-name'
                 v-model='referredToLastName'
                 maxlength='18'
@@ -598,7 +627,7 @@
           <div class="text-danger"
               v-if="$v.referredToLastName.$dirty && !$v.referredToLastName.nameValidator"
               aria-live="assertive">Last name must begin with a letter and cannot include special characters except hyphens, periods, apostrophes and blank characters.</div>
-          <Input :label='"Referred To Practitioner First Name Initial" + (isReferredToRequired ? "" : " (optional)") + ":"'
+          <Input :label='"Referred To Practitioner First Name Initial" + ((isReferredToRequired || isCSR ) ? "" : " (optional)") + ":"'
                 id='referred-to-first-name-initial'
                 v-model='referredToFirstNameInitial'
                 maxlength='1'
@@ -653,11 +682,13 @@ import {
   birthDateValidator,
   clarificationCodeValidator,
   diagnosticCodeValidator,
+  motorVehicleAccidentClaimNumberMaskValidator,
   serviceDateValidator,
   serviceDateCutOffValidator,
   serviceLocationCodeValidator,
   specialtyCodeValidator,
   submissionCodeValidator,
+  validateIf
 } from '@/helpers/validators';
 import {
   selectOptionsSubmissionCode,
@@ -707,13 +738,12 @@ import {
   SET_REFERRED_TO_PRACTITIONER_NUMBER,
 } from '@/store/modules/pay-patient-form';
 import logService from '@/services/log-service';
-import { required, maxLength, minLength } from 'vuelidate/lib/validators';
+import { required, requiredIf, maxLength, minLength } from 'vuelidate/lib/validators';
 import {
   DateInput,
   DigitInput,
   FacilityNumberInput,
   Input,
-  MotorVehicleAccidentClaimNumberInput,
   NumberInput,
   PhnInput,
   PostalCodeInput,
@@ -814,7 +844,6 @@ export default {
     DigitInput,
     FacilityNumberInput,
     Input,
-    MotorVehicleAccidentClaimNumberInput,
     NumberInput,
     PageContent,
     PhnInput,
@@ -967,48 +996,54 @@ export default {
     const validations = {
       planReferenceNumber: {},
       phn: {
-        required,
-        phnValidator,
+        required: requiredIf(() => !isCSR(this.$router.currentRoute.path)),
+        phnValidator: optionalValidator(phnValidator),
       },
       dependentNumber: {
         intValidator: optionalValidator(intValidator),
         positiveNumberValidator: optionalValidator(positiveNumberValidator),
-        dependentNumberValidator: optionalValidator(dependentNumberValidator),
+        dependentNumberValidator: optionalValidator(validateIf(!isCSR(this.$router.currentRoute.path), dependentNumberValidator)),
       },
       firstName: {
-        required,
-        nameValidator,
+        required: requiredIf(() => !isCSR(this.$router.currentRoute.path)),
+        nameValidator: optionalValidator(nameValidator),
       },
       middleInitial: {
         nameInitialValidator: optionalValidator(nameInitialValidator),
       },
       lastName: {
-        required,
-        nameValidator,
+        required: requiredIf(() => !isCSR(this.$router.currentRoute.path)),
+        nameValidator: optionalValidator(nameValidator),
       },
       birthDate: {
-        birthDatePastValidator: optionalValidator(birthDatePastValidator),
+        required: requiredIf(() => {
+          return !isCSR(this.$router.currentRoute.path)
+              && this.dependentNumber !== '66';
+        }),
+        birthDatePastValidator: optionalValidator(validateIf(!isCSR(this.$router.currentRoute.path), birthDatePastValidator)),
         birthDateValidator,
-        distantPastValidator: optionalValidator(distantPastValidator),
+        distantPastValidator: optionalValidator(validateIf(!isCSR(this.$router.currentRoute.path), distantPastValidator)),
       },
       addressOwner: {
-        required,
+        required: requiredIf(() => !isCSR(this.$router.currentRoute.path)),
       },
       streetName: {
-        required,
+        required: requiredIf(() => !isCSR(this.$router.currentRoute.path)),
       },
       city: {
-        required,
+        required: requiredIf(() => !isCSR(this.$router.currentRoute.path)),
       },
       postalCode: {
-        required,
+        required: requiredIf(() => !isCSR(this.$router.currentRoute.path)),
         bcPostalCodeValidator,
       },
       isVehicleAccident: {
-        required,
+        required: requiredIf(() => !isCSR(this.$router.currentRoute.path)),
       },
       vehicleAccidentClaimNumber: {
-        motorVehicleAccidentClaimNumberValidator: optionalValidator(motorVehicleAccidentClaimNumberValidator),
+        alphanumericValidator: optionalValidator(alphanumericValidator),
+        motorVehicleAccidentClaimNumberValidator: optionalValidator(validateIf(!isCSR(this.$router.currentRoute.path), motorVehicleAccidentClaimNumberValidator)),
+        motorVehicleAccidentClaimNumberMaskValidator: optionalValidator(validateIf(!isCSR(this.$router.currentRoute.path), motorVehicleAccidentClaimNumberMaskValidator)),
       },
       planReferenceNumberOfOriginalClaim: {
         intValidator: optionalValidator(intValidator),
@@ -1017,28 +1052,28 @@ export default {
       medicalServiceClaims: {
         $each: {
           serviceDate: {
-            required,
-            serviceDateValidator,
-            serviceDateFutureValidator,
-            distantPastValidator,
-            serviceDateCutOffValidator,
+            required: requiredIf(() => !isCSR(this.$router.currentRoute.path)),
+            serviceDateValidator: optionalValidator(serviceDateValidator),
+            serviceDateFutureValidator: optionalValidator(validateIf(!isCSR(this.$router.currentRoute.path), serviceDateFutureValidator)),
+            distantPastValidator: optionalValidator(validateIf(!isCSR(this.$router.currentRoute.path), distantPastValidator)),
+            serviceDateCutOffValidator: optionalValidator(validateIf(!isCSR(this.$router.currentRoute.path), serviceDateCutOffValidator)),
           },
           numberOfServices: {
-            required,
-            intValidator,
-            positiveNumberValidator,
-            nonZeroNumberValidator,
+            required: requiredIf(() => !isCSR(this.$router.currentRoute.path)),
+            intValidator: optionalValidator(intValidator),
+            positiveNumberValidator: optionalValidator(positiveNumberValidator),
+            nonZeroNumberValidator: optionalValidator(validateIf(!isCSR(this.$router.currentRoute.path), nonZeroNumberValidator)),
           },
           feeItem: {
-            required,
-            intValidator,
-            positiveNumberValidator,
+            required: requiredIf(() => !isCSR(this.$router.currentRoute.path)),
+            intValidator: optionalValidator(intValidator),
+            positiveNumberValidator: optionalValidator(positiveNumberValidator),
           },
           amountBilled: {
-            required,
-            dollarNumberValidator,
-            positiveNumberValidator,
-            amountBilledZeroValidator,
+            required: requiredIf(() => !isCSR(this.$router.currentRoute.path)),
+            dollarNumberValidator: optionalValidator(dollarNumberValidator),
+            positiveNumberValidator: optionalValidator(positiveNumberValidator),
+            amountBilledZeroValidator: optionalValidator(amountBilledZeroValidator),
           },
           calledStartTime: {
             partialTimeValidator: optionalValidator(partialTimeValidator),
@@ -1047,18 +1082,19 @@ export default {
             partialTimeValidator: optionalValidator(partialTimeValidator),
           },
           diagnosticCode: {
-            required,
-            diagnosticCodeValidator,
+            required: requiredIf(() => !isCSR(this.$router.currentRoute.path)),
+            alphanumericValidator: optionalValidator(alphanumericValidator),
+            diagnosticCodeValidator: optionalValidator(validateIf(!isCSR(this.$router.currentRoute.path), diagnosticCodeValidator)),
           },
           locationOfService: {
-            required,
-            serviceLocationCodeValidator,
+            required: requiredIf(() => !isCSR(this.$router.currentRoute.path)),
+            serviceLocationCodeValidator: validateIf(!isCSR(this.$router.currentRoute.path), serviceLocationCodeValidator),
           },
           serviceClarificationCode: {
-            clarificationCodeValidator: optionalValidator(clarificationCodeValidator),
+            clarificationCodeValidator: optionalValidator(clarificationCodeValidator(isCSR(this.$router.currentRoute.path))),
           },
           submissionCode: {
-            submissionCodeValidator,
+            submissionCodeValidator: validateIf(!isCSR(this.$router.currentRoute.path), submissionCodeValidator),
           },
           notes: {
             maxLength: maxLength(400),
@@ -1066,28 +1102,28 @@ export default {
         }
       },
       practitionerLastName: {
-        required,
-        nameValidator,
+        required: requiredIf(() => !isCSR(this.$router.currentRoute.path)),
+        nameValidator: optionalValidator(nameValidator),
       },
       practitionerFirstName: {
-        required,
-        nameValidator,
+        required: requiredIf(() => !isCSR(this.$router.currentRoute.path)),
+        nameValidator: optionalValidator(nameValidator),
       },
       practitionerPaymentNumber: {
-        required,
+        required: requiredIf(() => !isCSR(this.$router.currentRoute.path)),
         minLength: minLength(5),
       },
       practitionerPractitionerNumber: {
-        required,
+        required: requiredIf(() => !isCSR(this.$router.currentRoute.path)),
         minLength: minLength(5),
       },
       practitionerFacilityNumber: {
-        minLength: optionalValidator(minLength(5)),
+        minLength: optionalValidator(validateIf(!isCSR(this.$router.currentRoute.path), minLength(5))),
       },
       practitionerSpecialtyCode: {
         alphanumericValidator: optionalValidator(alphanumericValidator),
-        minLength: optionalValidator(minLength(2)),
-        specialtyCodeValidator: optionalValidator(specialtyCodeValidator),
+        minLength: optionalValidator(validateIf(!isCSR(this.$router.currentRoute.path), minLength(2))),
+        specialtyCodeValidator: optionalValidator(validateIf(!isCSR(this.$router.currentRoute.path), specialtyCodeValidator)),
       },
       referredByFirstNameInitial: {
         alphaValidator: optionalValidator(alphaValidator),
@@ -1108,7 +1144,7 @@ export default {
         minLength: optionalValidator(minLength(5)),
       },
     };
-    if (this.dependentNumber !== '66') {
+    if (this.dependentNumber !== '66' && !isCSR(this.$router.currentRoute.path)) {
       validations.birthDate.required = required;
     }
     if (this.isReferredByRequired) {
@@ -1160,6 +1196,11 @@ export default {
         if (this.medicalServiceClaims[i].feeItem) {
           this.medicalServiceClaims[i].feeItem = padLeadingZeros(this.medicalServiceClaims[i].feeItem, 5);
         }
+
+        // Set default "numberOfServices" to 00 
+        if (!this.medicalServiceClaims[i].numberOfServices) {
+          this.medicalServiceClaims[i].numberOfServices = '00';
+        }
         // Set default "calledStartTime" to "00:00".
         if (!this.medicalServiceClaims[i].calledStartTime
           || (
@@ -1188,7 +1229,7 @@ export default {
         }
       }
 
-      this.$v.$touch()
+      this.$v.$touch();
       if (this.$v.$invalid) {
         scrollToError();
         return;
@@ -1203,69 +1244,70 @@ export default {
 
       const token = this.$store.state.payPatientForm.captchaToken;
       const applicationUuid = this.$store.state.payPatientForm.applicationUuid;
-      
-      // Do server-side validation.
-      apiService.validateApplication(token, {
-        applicationUuid: applicationUuid,
-        practitionerFirstName: this.practitionerFirstName || '',
-        practitionerLastName: this.practitionerLastName || '',
-        practitionerNumber: this.practitionerPractitionerNumber || '',
-        serviceFeeItem1: this.medicalServiceClaims[0] && this.medicalServiceClaims[0].feeItem ? this.medicalServiceClaims[0].feeItem : '',
-        serviceFeeItem2: this.medicalServiceClaims[1] && this.medicalServiceClaims[1].feeItem ? this.medicalServiceClaims[1].feeItem : '',
-        serviceFeeItem3: this.medicalServiceClaims[2] && this.medicalServiceClaims[2].feeItem ? this.medicalServiceClaims[2].feeItem : '',
-        serviceFeeItem4: this.medicalServiceClaims[3] && this.medicalServiceClaims[3].feeItem ? this.medicalServiceClaims[3].feeItem : '',
-        serviceLocationCode1: '',
-        serviceLocationCode2: '',
-        serviceLocationCode3: '',
-        serviceLocationCode4: '',
-        hospitalFeeItem1: '',
-        hospitalFeeItem2: '',
-        hospitalLocationCode1: '',
-        hospitalLocationCode2: ''
-      }).then((response) => {
-        const responseData = response.data;
-        const returnCode = response.data.returnCode;
-        let containsErrors = false;
-        let containsWarnings = false;
 
-        this.isValidating = false;
+      if (!isCSR(this.$router.currentRoute.path)) {
+        // Do server-side validation.
+        apiService.validateApplication(token, {
+          applicationUuid: applicationUuid,
+          practitionerFirstName: this.practitionerFirstName || '',
+          practitionerLastName: this.practitionerLastName || '',
+          practitionerNumber: this.practitionerPractitionerNumber || '',
+          serviceFeeItem1: this.medicalServiceClaims[0] && this.medicalServiceClaims[0].feeItem ? this.medicalServiceClaims[0].feeItem : '',
+          serviceFeeItem2: this.medicalServiceClaims[1] && this.medicalServiceClaims[1].feeItem ? this.medicalServiceClaims[1].feeItem : '',
+          serviceFeeItem3: this.medicalServiceClaims[2] && this.medicalServiceClaims[2].feeItem ? this.medicalServiceClaims[2].feeItem : '',
+          serviceFeeItem4: this.medicalServiceClaims[3] && this.medicalServiceClaims[3].feeItem ? this.medicalServiceClaims[3].feeItem : '',
+          serviceLocationCode1: '',
+          serviceLocationCode2: '',
+          serviceLocationCode3: '',
+          serviceLocationCode4: '',
+          hospitalFeeItem1: '',
+          hospitalFeeItem2: '',
+          hospitalLocationCode1: '',
+          hospitalLocationCode2: ''
+        }).then((response) => {
+          const responseData = response.data;
+          const returnCode = response.data.returnCode;
+          let containsErrors = false;
+          let containsWarnings = false;
 
-        switch (returnCode) {
-          case '0': // Valid payload data.
-            this.navigateToNextPage();
-            break;
-          case '1': // Invalid payload data.
-            if ( responseData.practitionerFirstName === 'N'
-              || responseData.practitionerLastName === 'N'
-              || responseData.practitionerNumber === 'N') {
-              this.isPractitionerErrorShown = true;
-              containsErrors = true;
-            }
-            for (let i=0; i<MAX_MEDICAL_SERVICE_CLAIMS; i++) {
-              if (responseData['serviceFeeItem' + (i+1)] === 'N') {
-                this.medicalServiceClaimsFeeItemValidationError[i] = true;
+          this.isValidating = false;
+
+          switch (returnCode) {
+            case '0': // Valid payload data.
+              this.navigateToNextPage();
+              break;
+            case '1': // Invalid payload data.
+              if ( responseData.practitionerFirstName === 'N'
+                || responseData.practitionerLastName === 'N'
+                || responseData.practitionerNumber === 'N') {
+                this.isPractitionerErrorShown = true;
                 containsErrors = true;
               }
-            }
-            if (containsErrors) {
+              for (let i=0; i<MAX_MEDICAL_SERVICE_CLAIMS; i++) {
+                if (responseData['serviceFeeItem' + (i+1)] === 'N') {
+                  this.medicalServiceClaimsFeeItemValidationError[i] = true;
+                  containsErrors = true;
+                }
+              }
+              if (containsErrors) {
+                scrollToError();
+              } else if (containsWarnings) {
+                this.isValidationModalShown = true;
+              }
+              break;
+            default: // An error occurred.
+              this.isSystemUnavailable = true;
               scrollToError();
-            } else if (containsWarnings) {
-              this.isValidationModalShown = true;
-            }
-            break;
-          default: // An error occurred.
-            this.isSystemUnavailable = true;
-            scrollToError();
-            break;
-        }
-      }).catch(() => {
-        this.isValidating = false;
-        this.isSystemUnavailable = true;
-        scrollToError();
-      });
-      // this.isValidationModalShown = true;
-
-      // this.navigateToNextPage();
+              break;
+          }
+        }).catch(() => {
+          this.isValidating = false;
+          this.isSystemUnavailable = true;
+          scrollToError();
+        });
+      } else {
+      this.navigateToNextPage();
+      }
     },
     validationModalYesHandler() {
       this.navigateToNextPage();
@@ -1338,7 +1380,7 @@ export default {
     isSubmissionCodeRequired(index) {
       const past90Days = subDays(startOfToday(), 90);
       let serviceDate = this.medicalServiceClaims[index].serviceDate;
-      if (!serviceDate) {
+      if (!serviceDate || isCSR(this.$router.currentRoute.path)) {
         return false;
       }
       return isBefore(serviceDate, addDays(past90Days, 1));
@@ -1346,15 +1388,13 @@ export default {
   },
   computed: {
     isReferredByRequired() {
-      return !!this.referredByFirstNameInitial
-          || !!this.referredByLastName
-          || !!this.referredByPractitionerNumber;
+      return (!!this.referredByFirstNameInitial || !!this.referredByLastName || !!this.referredByPractitionerNumber) 
+      && !isCSR(this.$router.currentRoute.path);
     },
     isReferredToRequired() {
-      return !!this.referredToFirstNameInitial
-          || !!this.referredToLastName
-          || !!this.referredToPractitionerNumber
-          || this.isContainingNoChargeFeeItem;
+      return (!!this.referredToFirstNameInitial || !!this.referredToLastName 
+      || !!this.referredToPractitionerNumber || this.isContainingNoChargeFeeItem) 
+      && !isCSR(this.$router.currentRoute.path);
     },
     isContainingNoChargeFeeItem() {
       for (let i=0; i<this.medicalServiceClaims.length; i++) {

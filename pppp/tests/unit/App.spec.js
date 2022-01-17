@@ -156,10 +156,10 @@ describe("App.vue pageTitle()", () => {
   });
 
   it("returns a string", () => {
-    expect(typeof wrapper.vm.pageTitle === "string").toBe(true);
-    expect(typeof wrapper2.vm.pageTitle === "string").toBe(true);
-    expect(typeof wrapper3.vm.pageTitle === "string").toBe(true);
-    expect(typeof wrapper4.vm.pageTitle === "string").toBe(true);
+    expect(typeof wrapper.vm.pageTitle() === "string").toBe(true);
+    expect(typeof wrapper2.vm.pageTitle() === "string").toBe(true);
+    expect(typeof wrapper3.vm.pageTitle() === "string").toBe(true);
+    expect(typeof wrapper4.vm.pageTitle() === "string").toBe(true);
   });
 
   it("returns different page titles for each route path", () => {
@@ -172,10 +172,10 @@ describe("App.vue pageTitle()", () => {
     //this allows future states to change the text of the page title without breaking the test
     //just as long as they're all different from each other
 
-    const result1 = wrapper.vm.pageTitle;
-    const result2 = wrapper2.vm.pageTitle;
-    const result3 = wrapper3.vm.pageTitle;
-    const result4 = wrapper4.vm.pageTitle;
+    const result1 = wrapper.vm.pageTitle();
+    const result2 = wrapper2.vm.pageTitle();
+    const result3 = wrapper3.vm.pageTitle();
+    const result4 = wrapper4.vm.pageTitle();
     let testArray1 = [result2, result3, result4];
     let testArray2 = [result1, result3, result4];
     let testArray3 = [result1, result2, result4];

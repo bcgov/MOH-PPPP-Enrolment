@@ -79,6 +79,8 @@ describe("Pay Practitioner-CSR", () => {
       .parent()
       .trigger("change");
 
+    cy.get("[data-cy=medNotesAttach0]").type(`aabb""//\\ `);
+
     //hospital claim section
     cy.get("select")
       .find("option[data-cy=hospitalClaimMonth010]")
@@ -105,6 +107,8 @@ describe("Pay Practitioner-CSR", () => {
       .parent()
       .trigger("change");
 
+    cy.get("[data-cy=hospitalNotesAttach0]").type(`aabb""//\\ `);
+
     cy.get("[data-cy=practitionerLastName]").type(backendLastName);
     cy.get("[data-cy=practitionerFirstName]").type(backendFirstName);
     cy.get("[data-cy=paymentNumber]").type(backendPractitionerNumber);
@@ -121,6 +125,12 @@ describe("Pay Practitioner-CSR", () => {
 
     cy.location().should((loc) => {
       expect(loc.pathname).to.eq("/pppp/pay-practitioner-csr/submission");
+    });
+    
+    cy.get("[data-cy=newForm]").click();
+
+    cy.location().should((loc) => {
+      expect(loc.pathname).to.eq("/pppp/pay-practitioner-csr");
     });
   });
 });

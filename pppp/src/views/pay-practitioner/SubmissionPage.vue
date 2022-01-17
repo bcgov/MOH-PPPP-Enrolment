@@ -41,11 +41,19 @@
 
         <h3 class="mt-4">Next Steps</h3>
         <hr/>
-        <ul>
+        <ul v-if='!isCSR'>
           <li>Please <a href="javascript:void(0)" @click="printPage()" class="print-link">print</a> this page for your records.</li>
           <li>Do not mail in a printed version of this form to Health Insurance BC.</li>
+          <li>If you need to complete this form again for any additional claims, 
+            please click the "Start new form" button below.</li>
           <li>Please contact <a href="https://www2.gov.bc.ca/gov/content/health/practitioner-professional-resources/msp/contact-us" target="_blank">Health Insurance BC</a> if you have any questions.</li>
         </ul>
+
+        <Button
+          :label="'Start new form'"
+          data-cy="newForm"
+          @click="onNewForm()"
+        />
 
         <ReviewTableList className='mt-5 mb-5' />
       </div>
@@ -56,8 +64,8 @@
 <script>
 import PageContent from '@/components/PageContent.vue';
 import ReviewTableList from '@/components/pay-practitioner/ReviewTableList.vue';
-import { formatDate } from 'common-lib-vue';
-import { getConvertedPath } from '@/helpers/url';
+import { formatDate, Button } from 'common-lib-vue';
+import { getConvertedPath, isCSR } from '@/helpers/url';
 import pageStateService from '@/services/page-state-service';
 import {
   payPractitionerRoutes,
@@ -75,6 +83,7 @@ export default {
   components: {
     PageContent,
     ReviewTableList,
+    Button
   },
   data: () => {
     return {
@@ -95,7 +104,15 @@ export default {
   methods: {
     printPage() {
       window.print();
+    },
+    onNewForm() {
+      window.location.reload();
     }
+  },
+  computed: {
+    isCSR() {
+      return isCSR(this.$router.currentRoute.path);
+    },
   },
   // Required in order to block back navigation.
   beforeRouteLeave(to, from, next) {

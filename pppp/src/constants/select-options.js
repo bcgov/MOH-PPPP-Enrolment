@@ -1,7 +1,7 @@
 export const selectOptionsSubmissionCode = [
   {
     value: 'A',
-    label: 'A (Preapproved by Claims Management or Staff)'
+    label: 'A (Overage Preapproved by Claims Management or Staff)'
   },
   {
     value: 'C',

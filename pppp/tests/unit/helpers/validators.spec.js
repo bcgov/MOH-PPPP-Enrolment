@@ -2,6 +2,7 @@ import {
   bcPostalCodeValidator,
   clinicNameValidator,
   clarificationCodeValidator,
+  motorVehicleAccidentClaimNumberMaskValidator,
   diagnosticCodeValidator,
   birthDateValidator,
   serviceDateValidator,
@@ -65,23 +66,51 @@ describe("validators.js clinicNameValidator()", () => {
 });
 
 describe("validators.js clarificationCodeValidator()", () => {
+  const isCSRFunction = clarificationCodeValidator(true);
+  const isNotCSRFunction = clarificationCodeValidator(false);
+
   afterEach(() => {
     jest.resetModules();
   });
 
-  it("returns false if given an empty value", () => {
-    const result = clarificationCodeValidator();
+  it("returns false if given an empty value (not CSR)", () => { 
+    const result = isNotCSRFunction("")
     expect(result).toEqual(false);
   });
 
-  it("returns false if given a value that's not on the list", () => {
-    const result = clarificationCodeValidator("potato");
+  it("returns false if given an empty value (CSR)", () => { 
+    const result = isCSRFunction("")
     expect(result).toEqual(false);
   });
 
-  it("returns true if given a value that is on the list", () => {
-    const result = clarificationCodeValidator("AC");
+  it("returns false if given a value that's not on the list (not CSR)", () => {
+    const result = isNotCSRFunction("potato");
+    expect(result).toEqual(false);
+  });
+
+  it("returns true if given an alphanumeric value that's not on the list (CSR)", () => {
+    const result = isCSRFunction("potato");
     expect(result).toEqual(true);
+  });
+
+  it("returns true if given a value that is on the list (not CSR)", () => {
+    const result = isNotCSRFunction("AC");
+    expect(result).toEqual(true);
+  });
+
+  it("returns true if given a value that is on the list (CSR)", () => {
+    const result = isCSRFunction("AC");
+    expect(result).toEqual(true);
+  });
+
+  it("returns false if given a non-alphanumeric value (not CSR)", () => { 
+    const result = isNotCSRFunction("$$")
+    expect(result).toEqual(false);
+  });
+
+  it("returns false if given a non-alphanumeric value (CSR)", () => { 
+    const result = isCSRFunction("$$")
+    expect(result).toEqual(false);
   });
 });
 
@@ -272,6 +301,67 @@ describe("validators.js serviceDateValidator()", () => {
     };
     const result = serviceDateValidator("", testDate1);
     // expect(result).toEqual(false);
+    expect(result).toEqual(false);
+  });
+});
+
+describe("validators.js motorVehicleAccidentClaimNumberMaskValidator()", () => {
+  afterEach(() => {
+    jest.resetModules();
+  });
+
+  it("returns false if given an empty value", () => {
+    const result = motorVehicleAccidentClaimNumberMaskValidator();
+    expect(result).toEqual(false);
+  });
+
+  it("returns false if given a string containing hyphens, periods, apostrophes, and spaces", () => {
+    const result = motorVehicleAccidentClaimNumberMaskValidator("-.'-.'-.");
+    expect(result).toEqual(false);
+  });
+
+  it("returns false if given a string containing special characters", () => {
+    const result = motorVehicleAccidentClaimNumberMaskValidator("ÁḚȈỐÚÁḚȈ");
+    expect(result).toEqual(false);
+  });
+
+  it("returns false if given a string containing other punctuation", () => {
+    const result = motorVehicleAccidentClaimNumberMaskValidator("()@#$%^&");
+    expect(result).toEqual(false);
+  });
+
+  it("returns true if given a string containing two letters and six numbers", () => {
+    const result = motorVehicleAccidentClaimNumberMaskValidator("AA123456");
+    expect(result).toEqual(true);
+  });
+
+  it("returns true if given a string containing one letter and seven numbers", () => {
+    const result = motorVehicleAccidentClaimNumberMaskValidator("A1234567");
+    expect(result).toEqual(true);
+  });
+
+  it("returns false if given a string containing eight letters", () => {
+    const result = motorVehicleAccidentClaimNumberMaskValidator("ABCDEFGH");
+    expect(result).toEqual(false);
+  });
+
+  it("returns false if given a string containing eight numbers", () => {
+    const result = motorVehicleAccidentClaimNumberMaskValidator("12345678");
+    expect(result).toEqual(false);
+  });
+
+  it("returns false if given a string containing eight zeroes", () => {
+    const result = motorVehicleAccidentClaimNumberMaskValidator("00000000");
+    expect(result).toEqual(false);
+  });
+
+  it("returns false if given a string with too few characters", () => {
+    const result = motorVehicleAccidentClaimNumberMaskValidator("A123456");
+    expect(result).toEqual(false);
+  });
+
+  it("returns false if given a string with too many characters", () => {
+    const result = motorVehicleAccidentClaimNumberMaskValidator("A12345678");
     expect(result).toEqual(false);
   });
 });
