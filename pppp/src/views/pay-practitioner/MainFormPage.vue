@@ -593,6 +593,7 @@
             <Input label='Diagnostic Code:'
                   :id='"hvc-diagnostic-code-" + index'
                   :cypressId="'hospitalClaimDiagnosticCode' + index"
+                  :isUpperCaseForced='true'
                   class='mt-3'
                   maxlength="5"
                   v-model='claim.diagnosticCode'
