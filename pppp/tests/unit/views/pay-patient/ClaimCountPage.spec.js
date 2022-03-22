@@ -239,7 +239,7 @@ describe("ClaimCountPage.vue pay patient isFirstLoad()", () => {
     });
 
     const result = wrapper.vm.isFirstLoad();
-    expect(result).toEqual(true);
+    expect(result).toBe(true);
   });
 
   it("returns false if application uuid is null", () => {
@@ -260,7 +260,7 @@ describe("ClaimCountPage.vue pay patient isFirstLoad()", () => {
       },
     });
     const result = wrapper.vm.isFirstLoad();
-    expect(result).toEqual(true);
+    expect(result).toBe(true);
   });
 });
 

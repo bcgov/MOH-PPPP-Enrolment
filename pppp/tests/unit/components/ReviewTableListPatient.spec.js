@@ -954,7 +954,7 @@ describe("ReviewTableList patient getMedicalServiceClaimTitle(index)", () => {
       },
     });
     const result = wrapper.vm.getMedicalServiceClaimTitle(0);
-    expect(result).toEqual("Service");
+    expect(result).toBe("Service");
   });
 
   it("returns 2", () => {
@@ -968,6 +968,6 @@ describe("ReviewTableList patient getMedicalServiceClaimTitle(index)", () => {
       },
     });
     const result = wrapper.vm.getMedicalServiceClaimTitle(0);
-    expect(result).toEqual("Service (1 of 3)");
+    expect(result).toBe("Service (1 of 3)");
   });
 });

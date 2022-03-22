@@ -232,7 +232,7 @@ describe("ProgressBar.vue getLinkStyles()", () => {
 
   it("returns an object", async () => {
     const result = wrapper.vm.getLinkStyles(routeStepOrder[0].path);
-    expect(typeof result).toEqual("object");
+    expect(typeof result).toBe("object");
   });
 
   it("returns an object containing pointer when passed a valid path in the past", async () => {

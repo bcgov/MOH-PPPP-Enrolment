@@ -435,9 +435,9 @@ describe("Captcha.vue handleInputChange()", () => {
       Promise.resolve(mockInputResponseInvalid)
     );
 
-    expect(wrapper.vm.isLoadingCaptchaVerification).toEqual("default");
+    expect(wrapper.vm.isLoadingCaptchaVerification).toBe("default");
     await wrapper.vm.handleInputChange(fakeEvent);
-    expect(wrapper.vm.isLoadingCaptchaVerification).toEqual(false);
+    expect(wrapper.vm.isLoadingCaptchaVerification).toBe(false);
   });
 
   it("changes error message and inputAnswer when it receives invalid response", async () => {
@@ -592,8 +592,8 @@ describe("Captcha.vue handleTryAnotherImageClick()", () => {
 
     await wrapper.vm.handleTryAnotherImageClick();
 
-    expect(wrapper.vm.isInputValid).not.toEqual("default");
-    expect(wrapper.vm.errorMessage).not.toEqual("default");
+    expect(wrapper.vm.isInputValid).not.toBe("default");
+    expect(wrapper.vm.errorMessage).not.toBe("default");
   });
 
   it("calls fetchNewCaptcha() on function call", async () => {
@@ -651,7 +651,7 @@ describe("Captcha.vue playAudio()", () => {
     await wrapper.vm.playAudio();
     await wrapper.vm.$nextTick();
 
-    expect(wrapper.vm.isLoadingAudio).not.toEqual(0);
+    expect(wrapper.vm.isLoadingAudio).not.toBe(0);
   });
 
   it("sets this.audio to a falsy value and error message to a truthy one on error", async () => {
@@ -714,6 +714,6 @@ describe("Captcha.vue playAudio()", () => {
     await wrapper.vm.playAudio();
     await wrapper.vm.$nextTick();
 
-    expect(wrapper.vm.audio).not.toEqual("default");
+    expect(wrapper.vm.audio).not.toBe("default");
   });
 });
