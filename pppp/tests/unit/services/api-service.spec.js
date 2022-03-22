@@ -348,13 +348,13 @@ describe("APIService filterSpecialChar()", () => {
   it("filters out slashes and quotes", () => {
     const testText = `test text. should have: // should not have:\ ""`;
     const result = APIService.filterSpecialChar(testText);
-    expect(result).toEqual(`test text. should have: // should not have: `);
+    expect(result).toBe(`test text. should have: // should not have: `);
   });
 
   it("filters out slashes and quotes (2) (the way it appears in the e2e testing)", () => {
     const testText = `aabb""//\\ `;
     const result = APIService.filterSpecialChar(testText);
-    expect(result).toEqual(`aabb// `);
+    expect(result).toBe(`aabb// `);
   });
 });
 

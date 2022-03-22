@@ -43,7 +43,7 @@ describe("pageStateService importPageRoutes()", () => {
   });
 
   it("sets isVisited to false for all routes", () => {
-    expect(pageStateService.pages[0].isVisited).toEqual(false);
+    expect(pageStateService.pages[0].isVisited).toBe(false);
   });
 });
 
@@ -61,7 +61,7 @@ describe("setPageIncomplete()", () => {
   it("sets to incomplete", () => {
     expect(pageStateService.pages[0].isComplete).toBeUndefined();
     pageStateService.setPageIncomplete(testPath);
-    expect(pageStateService.pages[0].isComplete).toEqual(false);
+    expect(pageStateService.pages[0].isComplete).toBe(false);
   });
 });
 
@@ -79,7 +79,7 @@ describe("setPageComplete()", () => {
   it("sets to complete", () => {
     expect(pageStateService.pages[0].isComplete).toBeUndefined();
     pageStateService.setPageComplete(testPath);
-    expect(pageStateService.pages[0].isComplete).toEqual(true);
+    expect(pageStateService.pages[0].isComplete).toBe(true);
   });
 });
 
@@ -97,13 +97,13 @@ describe("isPageComplete()", () => {
   it("returns true if isComplete equals true", () => {
     pageStateService.pages[0].isComplete = true;
     const result = pageStateService.isPageComplete(testPath);
-    expect(result).toEqual(true);
+    expect(result).toBe(true);
   });
 
   it("returns false if isComplete equals false", () => {
     pageStateService.pages[0].isComplete = false;
     const result = pageStateService.isPageComplete(testPath);
-    expect(result).toEqual(false);
+    expect(result).toBe(false);
   });
 });
 
@@ -119,15 +119,15 @@ describe("visitPage()", () => {
   });
 
   it("sets isVisited to true for path passed", () => {
-    expect(pageStateService.pages[0].isVisited).toEqual(false);
+    expect(pageStateService.pages[0].isVisited).toBe(false);
     pageStateService.visitPage(testPath);
-    expect(pageStateService.pages[0].isVisited).toEqual(true);
+    expect(pageStateService.pages[0].isVisited).toBe(true);
   });
 
   it("doesn't break if path not found", () => {
-    expect(pageStateService.pages[0].isVisited).toEqual(false);
+    expect(pageStateService.pages[0].isVisited).toBe(false);
     pageStateService.visitPage("potato");
-    expect(pageStateService.pages[0].isVisited).toEqual(false);
+    expect(pageStateService.pages[0].isVisited).toBe(false);
   });
 });
 
@@ -144,13 +144,13 @@ describe("isPageVisited()", () => {
 
   it("returns false when isVisited is false", () => {
     const result = pageStateService.isPageVisited(testPath);
-    expect(result).toEqual(false);
+    expect(result).toBe(false);
   });
 
   it("returns true when isVisited is true", () => {
     pageStateService.pages[0].isVisited = true;
     const result = pageStateService.isPageVisited(testPath);
-    expect(result).toEqual(true);
+    expect(result).toBe(true);
   });
 
   it("returns undefined when passed a path that doesn't exist", () => {

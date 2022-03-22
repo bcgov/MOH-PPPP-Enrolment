@@ -637,7 +637,7 @@ describe("MainFormPage.vue pay practitioner created()", () => {
   it("sets page loaded to true", async () => {
     jest.advanceTimersByTime(5);
     await wrapper.vm.$nextTick;
-    expect(wrapper.vm.isPageLoaded).toEqual(true);
+    expect(wrapper.vm.isPageLoaded).toBe(true);
   });
 });
 
@@ -707,9 +707,9 @@ describe("MainFormPage.vue handleInputPractitioner()", () => {
 
   it("sets isPractitionerErrorShown to false", () => {
     wrapper.vm.isPractitionerErrorShown = true;
-    expect(wrapper.vm.isPractitionerErrorShown).toEqual(true);
+    expect(wrapper.vm.isPractitionerErrorShown).toBe(true);
     wrapper.vm.handleInputPractitioner();
-    expect(wrapper.vm.isPractitionerErrorShown).toEqual(false);
+    expect(wrapper.vm.isPractitionerErrorShown).toBe(false);
   });
 });
 
@@ -739,11 +739,11 @@ describe("MainFormPage.vue handleInputServiceFeeItem()", () => {
 
   it("sets fee item validation to false", () => {
     wrapper.vm.medicalServiceClaimsFeeItemValidationError[0] = true;
-    expect(wrapper.vm.medicalServiceClaimsFeeItemValidationError[0]).toEqual(
+    expect(wrapper.vm.medicalServiceClaimsFeeItemValidationError[0]).toBe(
       true
     );
     wrapper.vm.handleInputServiceFeeItem(0);
-    expect(wrapper.vm.medicalServiceClaimsFeeItemValidationError[0]).toEqual(
+    expect(wrapper.vm.medicalServiceClaimsFeeItemValidationError[0]).toBe(
       false
     );
   });
@@ -775,9 +775,9 @@ describe("MainFormPage.vue handleProcessBirthDate()", () => {
 
   it("sets data to equal value passed", () => {
     wrapper.vm.birthDateData = "notPotato";
-    expect(wrapper.vm.birthDateData).toEqual("notPotato");
+    expect(wrapper.vm.birthDateData).toBe("notPotato");
     wrapper.vm.handleProcessBirthDate("potato");
-    expect(wrapper.vm.birthDateData).toEqual("potato");
+    expect(wrapper.vm.birthDateData).toBe("potato");
   });
 });
 
@@ -810,7 +810,7 @@ describe("MainFormPage.vue handleProcessServiceDate()", () => {
 
     wrapper.vm.medicalServiceClaims[claimIndex].serviceDateData = "notPotato";
     wrapper.vm.handleProcessServiceDate("potato", claimIndex);
-    expect(wrapper.vm.medicalServiceClaims[claimIndex].serviceDateData).toEqual(
+    expect(wrapper.vm.medicalServiceClaims[claimIndex].serviceDateData).toBe(
       "potato"
     );
   });
@@ -842,11 +842,11 @@ describe("MainFormPage.vue handleInputHospitalVisitFeeItem()", () => {
 
   it("sets fee item validation to false", () => {
     wrapper.vm.hospitalVisitClaimsFeeItemValidationError[0] = true;
-    expect(wrapper.vm.hospitalVisitClaimsFeeItemValidationError[0]).toEqual(
+    expect(wrapper.vm.hospitalVisitClaimsFeeItemValidationError[0]).toBe(
       true
     );
     wrapper.vm.handleInputHospitalVisitFeeItem(0);
-    expect(wrapper.vm.hospitalVisitClaimsFeeItemValidationError[0]).toEqual(
+    expect(wrapper.vm.hospitalVisitClaimsFeeItemValidationError[0]).toBe(
       false
     );
   });
@@ -885,9 +885,9 @@ describe("MainFormPage.vue validationModal handlers", () => {
 
   it("sets display to false on No", async () => {
     await wrapper.setData({ isValidationModalShown: true });
-    expect(wrapper.vm.isValidationModalShown).toEqual(true);
+    expect(wrapper.vm.isValidationModalShown).toBe(true);
     wrapper.vm.validationModalNoHandler();
-    expect(wrapper.vm.isValidationModalShown).toEqual(false);
+    expect(wrapper.vm.isValidationModalShown).toBe(false);
   });
 });
 
@@ -1016,7 +1016,7 @@ describe("MainFormPage.vue getMedicalServiceClaimTitle()", () => {
     //so I check to see if 1 is in the result, which it shouldn't be
     const arrayLength = wrapper.vm.medicalServiceClaims.length;
     const result = wrapper.vm.getMedicalServiceClaimTitle(0);
-    expect(result).not.toContain(arrayLength);
+    expect(result).not.toContain(`${arrayLength}`);
   });
 
   it("returns correct title when more than 1 claim", async () => {
@@ -1088,7 +1088,7 @@ describe("MainFormPage.vue getMedicalServiceClaimTitle()", () => {
     });
     const arrayLength = wrapper.vm.medicalServiceClaims.length;
     const result = wrapper.vm.getMedicalServiceClaimTitle(0);
-    expect(result).toContain(arrayLength);
+    expect(result).toContain(`${arrayLength}`);
   });
 });
 
@@ -1122,7 +1122,7 @@ describe("MainFormPage.vue getHospitalVisitClaimTitle()", () => {
     //so I check to see if 1 is in the result, which it shouldn't be
     const arrayLength = wrapper.vm.hospitalVisitClaims.length;
     const result = wrapper.vm.getHospitalVisitClaimTitle(0);
-    expect(result).not.toContain(arrayLength);
+    expect(result).not.toContain(`${arrayLength}`);
   });
 
   it("returns correct title when more than 1 claim", async () => {
@@ -1179,7 +1179,7 @@ describe("MainFormPage.vue getHospitalVisitClaimTitle()", () => {
     });
     const arrayLength = wrapper.vm.hospitalVisitClaims.length;
     const result = wrapper.vm.getHospitalVisitClaimTitle(0);
-    expect(result).toContain(arrayLength);
+    expect(result).toContain(`${arrayLength}`);
   });
 });
 
@@ -1246,7 +1246,7 @@ describe("MainFormPage.vue isSubmissionCodeRequired()", () => {
     Object.assign(wrapper.vm, cloneDeep(passingData));
     wrapper.vm.medicalServiceClaims[0].serviceDate = null;
     const result = wrapper.vm.isSubmissionCodeRequired(0);
-    expect(result).toEqual(false);
+    expect(result).toBe(false);
   });
 
   it("returns false when not service date is less than 90 days ago", () => {
@@ -1258,7 +1258,7 @@ describe("MainFormPage.vue isSubmissionCodeRequired()", () => {
     Object.assign(wrapper.vm, cloneDeep(passingData));
     wrapper.vm.medicalServiceClaims[0].serviceDate = testDatePast89Days;
     const result = wrapper.vm.isSubmissionCodeRequired(0);
-    expect(result).toEqual(false);
+    expect(result).toBe(false);
   });
 
   it("returns true when not service date is more than 90 days ago", () => {
@@ -1270,7 +1270,7 @@ describe("MainFormPage.vue isSubmissionCodeRequired()", () => {
     Object.assign(wrapper.vm, cloneDeep(passingData));
     wrapper.vm.medicalServiceClaims[0].serviceDate = testDatePast91Days;
     const result = wrapper.vm.isSubmissionCodeRequired(0);
-    expect(result).toEqual(true);
+    expect(result).toBe(true);
   });
 
   it("returns false when route is CSR", () => {
@@ -1282,7 +1282,7 @@ describe("MainFormPage.vue isSubmissionCodeRequired()", () => {
     Object.assign(wrapper.vm, cloneDeep(passingData));
     wrapper.vm.medicalServiceClaims[0].serviceDate = testDatePast91Days;
     const result = wrapper.vm.isSubmissionCodeRequired(0);
-    expect(result).toEqual(false);
+    expect(result).toBe(false);
   });
 });
 
@@ -1315,7 +1315,7 @@ describe("MainFormPage.vue isHospitalVisitSubmissionCodeRequired()", () => {
     wrapper.vm.hospitalVisitClaims[0].month = null;
     wrapper.vm.hospitalVisitClaims[0].dayFrom = null;
     const result = wrapper.vm.isHospitalVisitSubmissionCodeRequired(0);
-    expect(result).toEqual(false);
+    expect(result).toBe(false);
   });
 
   it("returns false when service date is less than 90 days ago", () => {
@@ -1336,7 +1336,7 @@ describe("MainFormPage.vue isHospitalVisitSubmissionCodeRequired()", () => {
       .getDate()
       .toString();
     const result = wrapper.vm.isHospitalVisitSubmissionCodeRequired(0);
-    expect(result).toEqual(false);
+    expect(result).toBe(false);
   });
 
   it("returns true when service date is more than 90 days ago", () => {
@@ -1357,7 +1357,7 @@ describe("MainFormPage.vue isHospitalVisitSubmissionCodeRequired()", () => {
       .getDate()
       .toString();
     const result = wrapper.vm.isHospitalVisitSubmissionCodeRequired(0);
-    expect(result).toEqual(true);
+    expect(result).toBe(true);
   });
 
   it("returns false when route is CSR", () => {
@@ -1378,7 +1378,7 @@ describe("MainFormPage.vue isHospitalVisitSubmissionCodeRequired()", () => {
       .getDate()
       .toString();
     const result = wrapper.vm.isHospitalVisitSubmissionCodeRequired(0);
-    expect(result).toEqual(false);
+    expect(result).toBe(false);
   });
 });
 

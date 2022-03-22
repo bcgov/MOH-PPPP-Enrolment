@@ -48,7 +48,7 @@ describe("ConsentModal.vue getFocusableEls()", () => {
     const result = wrapper.vm.getFocusableEls();
     //jest doesn't have a built in type checker as of June 2021.
     //if that ever changes, please refactor the following expect clause for clarity
-    expect(Array.isArray(result)).toEqual(true);
+    expect(Array.isArray(result)).toBe(true);
   });
 
   it("has a length greater than zero", () => {
@@ -110,7 +110,7 @@ describe("ConsentModal.vue handleCaptchaVerified()", () => {
   it("changes captchaValid to true on function call", async () => {
     wrapper.vm.handleCaptchaVerified("token");
 
-    expect(wrapper.vm.isCaptchaValid).toEqual(true);
+    expect(wrapper.vm.isCaptchaValid).toBe(true);
   });
 
   it("dispatches SET_CAPTCHA_TOKEN action in VueX store on function call", async () => {
@@ -123,7 +123,7 @@ describe("ConsentModal.vue handleCaptchaVerified()", () => {
   it("updates focusable elements on function call", async () => {
     wrapper.vm.handleCaptchaVerified("token");
 
-    expect(wrapper.vm.focusableEls).not.toEqual("default");
+    expect(wrapper.vm.focusableEls).not.toBe("default");
   });
 });
 
@@ -240,7 +240,7 @@ describe("ConsentModal.vue handleTab()", () => {
     const spyOnFocus = jest.spyOn(wrapper.vm.focusableEls[0], "focus");
 
     wrapper.vm.handleTab();
-    expect(wrapper.vm.focusedEl.name).toEqual("default1");
+    expect(wrapper.vm.focusedEl.name).toBe("default1");
     expect(spyOnFocus).toHaveBeenCalled();
   });
 
@@ -253,7 +253,7 @@ describe("ConsentModal.vue handleTab()", () => {
     });
 
     wrapper.vm.handleTab();
-    expect(wrapper.vm.focusedEl.name).toEqual("default2");
+    expect(wrapper.vm.focusedEl.name).toBe("default2");
   });
 
   it("moves focus from the last element to the first if the last is focused", async () => {
@@ -264,7 +264,7 @@ describe("ConsentModal.vue handleTab()", () => {
       focusedEl: wrapper.vm.focusableEls[3],
     });
     wrapper.vm.handleTab();
-    expect(wrapper.vm.focusedEl.name).toEqual("default1");
+    expect(wrapper.vm.focusedEl.name).toBe("default1");
   });
 
   it("should call the focus function belonging to the newly focused element", async () => {
@@ -311,7 +311,7 @@ describe("ConsentModal.vue handleTabBackwards()", () => {
 
     const spyOnFocus = jest.spyOn(wrapper.vm.focusableEls[3], "focus");
     wrapper.vm.handleTabBackwards();
-    expect(wrapper.vm.focusedEl.name).toEqual("default4");
+    expect(wrapper.vm.focusedEl.name).toBe("default4");
     expect(spyOnFocus).toHaveBeenCalled();
   });
 
@@ -324,7 +324,7 @@ describe("ConsentModal.vue handleTabBackwards()", () => {
     });
 
     wrapper.vm.handleTabBackwards();
-    expect(wrapper.vm.focusedEl.name).toEqual("default1");
+    expect(wrapper.vm.focusedEl.name).toBe("default1");
   });
 
   it("moves focus from the first element to the last if the first is focused", async () => {
@@ -335,7 +335,7 @@ describe("ConsentModal.vue handleTabBackwards()", () => {
       focusedEl: wrapper.vm.focusableEls[0],
     });
     wrapper.vm.handleTabBackwards();
-    expect(wrapper.vm.focusedEl.name).toEqual("default4");
+    expect(wrapper.vm.focusedEl.name).toBe("default4");
   });
 
   it("should call focus function on focused element", async () => {
