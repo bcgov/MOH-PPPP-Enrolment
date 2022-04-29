@@ -653,6 +653,15 @@ describe("MainFormPage.vue validateFields(), public", () => {
     expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
   });
 
+  it("(PHN) flags invalid if PHN doesn't start with 9", async () => {
+    Object.assign(wrapper.vm, cloneDeep(passingData));
+    await wrapper.setData({ phn: "7999 999 998" });
+    await wrapper.vm.validateFields();
+    await wrapper.vm.$nextTick;
+    expect(spyOnScrollToError).toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
+  });
+
   it("(dependentNumber) flags invalid if non number", async () => {
     Object.assign(wrapper.vm, cloneDeep(passingData));
     await wrapper.setData({ dependentNumber: "a" });
