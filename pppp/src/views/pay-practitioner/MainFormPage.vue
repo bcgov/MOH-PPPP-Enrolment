@@ -43,8 +43,8 @@
               v-if="$v.phn.$dirty && !$v.phn.required"
               aria-live="assertive">Personal Health Number (PHN) is required.</div>
           <div class="text-danger"
-              v-if="$v.phn.$dirty && $v.phn.required && !$v.phn.phnValidator"
-              aria-live="assertive">Personal Health Number (PHN) must be valid.</div>
+              v-if="$v.phn.$dirty && $v.phn.required && (!$v.phn.phnValidator || !$v.phn.phnNineValidator)"
+              aria-live="assertive">The number you have entered is not a valid British Columbia PHN.</div>
           <DigitInput 
                 :label='"Dependant" + (isCSR ? "" : " (optional)") + ":"'
                 id='dependent-number'
@@ -921,7 +921,8 @@ import {
   serviceLocationCodeValidator,
   specialtyCodeValidator,
   submissionCodeValidator,
-  validateIf
+  validateIf,
+  phnNineValidator
 } from '@/helpers/validators';
 import {
   selectOptionsSubmissionCode,
@@ -1368,6 +1369,7 @@ export default {
       phn: {
         required: requiredIf(() => !isCSR(this.$router.currentRoute.path)),
         phnValidator: optionalValidator(phnValidator),
+        phnNineValidator: optionalValidator(phnNineValidator),
       },
       dependentNumber: {
         intValidator: optionalValidator(intValidator),
