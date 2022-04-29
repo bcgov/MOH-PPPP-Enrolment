@@ -7,6 +7,7 @@ import {
   birthDateValidator,
   serviceDateValidator,
 } from "@/helpers/validators.js";
+import { phnNineValidator } from "../../../src/helpers/validators";
 
 describe("validators.js bcPostalCodeValidator()", () => {
   afterEach(() => {
@@ -362,6 +363,47 @@ describe("validators.js motorVehicleAccidentClaimNumberMaskValidator()", () => {
 
   it("returns false if given a string with too many characters", () => {
     const result = motorVehicleAccidentClaimNumberMaskValidator("A12345678");
+    expect(result).toBe(false);
+  });
+});
+
+describe("validators.js phnNineValidator()", () => {
+  afterEach(() => {
+    jest.resetModules();
+  });
+
+  it("returns true if given a string that starts with 9", () => {
+    const result = phnNineValidator("9999999998");
+    expect(result).toBe(true);
+  });
+
+  it("returns true if given a string that starts with 9 (2)", () => {
+    const result = phnNineValidator("9");
+    expect(result).toBe(true);
+  });
+
+  it("returns false if given a string that that does NOT start with 9", () => {
+    const result = phnNineValidator("7999999998");
+    expect(result).toBe(false);
+  });
+
+  it("returns false if given an empty value", () => {
+    const result = phnNineValidator();
+    expect(result).toBe(false);
+  });  
+
+  it("returns false if given an integer", () => {
+    const result = phnNineValidator(9999999998);
+    expect(result).toBe(false);
+  });
+
+  it("returns false if given an array", () => {
+    const result = phnNineValidator(["9", "9"]);
+    expect(result).toBe(false);
+  });
+
+  it("returns false if given an object", () => {
+    const result = phnNineValidator({"9": "9", "8": "9"});
     expect(result).toBe(false);
   });
 });

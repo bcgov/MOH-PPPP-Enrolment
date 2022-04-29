@@ -113,3 +113,13 @@ export const serviceDateCutOffValidator = (value, vm) => {
   }
   return true;
 }
+
+export const phnNineValidator = (value) => {
+  if (typeof value !== "string") {
+    return false;
+  }
+  if (value && value[0] === "9") {
+    return true;
+  }
+  return false;
+}
