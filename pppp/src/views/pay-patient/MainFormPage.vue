@@ -44,7 +44,7 @@
               aria-live="assertive">Personal Health Number (PHN) is required.</div>
           <div class="text-danger"
               v-if="$v.phn.$dirty && $v.phn.required && (!$v.phn.phnValidator || !$v.phn.phnNineValidator)"
-              aria-live="assertive">The number you have entered is not a valid British Columbia PHN.</div>
+              aria-live="assertive">Personal Health Number (PHN) must be a valid British Columbia PHN.</div>
           <DigitInput 
                 :label='"Dependant" + (isCSR ? "" : " (optional)") + ":"'
                 id='dependent-number'
