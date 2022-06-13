@@ -1,5 +1,4 @@
-import Vue from 'vue';
-import VueRouter from 'vue-router';
+import { createRouter, createWebHistory } from 'vue-router';
 import {
   PAY_PATIENT_BASE_URL,
   PAY_PATIENT_CSR_BASE_URL,
@@ -27,8 +26,6 @@ import PractitionerSubmissionPage from '@/views/pay-practitioner/SubmissionPage.
 import PractitionerSubmissionErrorPage from '@/views/pay-practitioner/SubmissionErrorPage.vue';
 import MaintenancePage from '@/views/MaintenancePage.vue';
 import PageNotFoundPage from '@/views/PageNotFoundPage.vue';
-
-Vue.use(VueRouter);
 
 pageStateService.importPageRoutes(commonRoutes);
 pageStateService.importPageRoutes(payPatientRoutes);
@@ -187,8 +184,8 @@ const routeCollection = [
   },
 ];
 
-const router = new VueRouter({
-  mode: 'history',
+const router = createRouter({
+  history: createWebHistory(),
   base: process.env.BASE_URL,
   routes: routeCollection
 });

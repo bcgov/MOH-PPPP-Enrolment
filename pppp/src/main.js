@@ -1,5 +1,4 @@
-import Vue from 'vue';
-import Vuelidate from 'vuelidate';
+import Vue, { createApp } from 'vue';
 import App from '@/App.vue';
 import router from '@/router';
 import store from '@/store';
@@ -36,17 +35,12 @@ library.add(faTimesCircle);
 library.add(faInfoCircle);
 Vue.component('font-awesome-icon', FontAwesomeIcon);
 
-Vue.use(Vuelidate);
-
-Vue.config.productionTip = false;
-
 // Add 'ie' class name when is IE browser.
 if (isIE()) {
   document.body.classList.add('ie');
 }
 
-new Vue({
-  router,
-  store,
-  render: h => h(App)
-}).$mount('#app');
+createApp(App)
+  .use(router)
+  .use(store)
+  .mount('#app');
