@@ -104,7 +104,7 @@ export default {
     };
   },
   created() {
-    if (this.isFirstLoad() || isCSR(this.$router.currentRoute.path)) {
+    if (this.isFirstLoad() || isCSR(this.$router.currentRoute.value.path)) {
       // Load environment variables, and route to maintenance page.
       spaEnvService.loadEnvs()
         .then(() => {
@@ -124,7 +124,7 @@ export default {
           if (
             spaEnvService.values &&
             spaEnvService.values.SPA_ENV_PPPP_IS_CSR_ENABLED === "false" &&
-            isCSR(this.$router.currentRoute.path)
+            isCSR(this.$router.currentRoute.value.path)
           ) {
             const toPath = commonRoutes.SPECIFIC_PAGE_NOT_FOUND_PAGE.path ; //commonRoutes.PAGE_NOT_FOUND_PAGE.path
             pageStateService.setPageComplete(toPath);
@@ -245,7 +245,7 @@ export default {
       
       // Navigate to next path
       const toPath = getConvertedPath(
-        this.$router.currentRoute.path,
+        this.$router.currentRoute.value.path,
         payPractitionerRoutes.MAIN_FORM_PAGE.path
       );
       pageStateService.setPageComplete(toPath);
@@ -263,7 +263,7 @@ export default {
       // Navigate to self.
       const topScrollPosition = getTopScrollPosition();
       const toPath = getConvertedPath(
-        this.$router.currentRoute.path,
+        this.$router.currentRoute.value.path,
         payPractitionerRoutes.CLAIM_COUNT_PAGE.path
       );
       next({

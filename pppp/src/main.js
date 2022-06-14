@@ -1,4 +1,4 @@
-import Vue, { createApp } from 'vue';
+import { createApp } from 'vue';
 import App from '@/App.vue';
 import router from '@/router';
 import store from '@/store';
@@ -33,7 +33,6 @@ library.add(faPencilAlt);
 library.add(faPrint);
 library.add(faTimesCircle);
 library.add(faInfoCircle);
-Vue.component('font-awesome-icon', FontAwesomeIcon);
 
 // Add 'ie' class name when is IE browser.
 if (isIE()) {
@@ -43,4 +42,5 @@ if (isIE()) {
 createApp(App)
   .use(router)
   .use(store)
+  .component("font-awesome-icon", FontAwesomeIcon)
   .mount('#app');

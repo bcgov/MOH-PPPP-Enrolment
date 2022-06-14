@@ -439,13 +439,13 @@ export default {
       return items;
     },
     isCSR() {
-      return isCSR(this.$router.currentRoute.path);
+      return isCSR(this.$router.currentRoute.value.path);
     }
   },
   methods: {
     navigateToClaimCountPage() {
       const toPath = getConvertedPath(
-        this.$router.currentRoute.path,
+        this.$router.currentRoute.value.path,
         payPractitionerRoutes.CLAIM_COUNT_PAGE.path
       );
       pageStateService.setPageComplete(toPath);
@@ -454,7 +454,7 @@ export default {
     },
     navigateToMainFormPage(anchorName) {
       const toPath = getConvertedPath(
-        this.$router.currentRoute.path,
+        this.$router.currentRoute.value.path,
         payPractitionerRoutes.MAIN_FORM_PAGE.path
       );
       pageStateService.setPageComplete(toPath);

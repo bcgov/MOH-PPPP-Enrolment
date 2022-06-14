@@ -49,11 +49,6 @@ const routeCollection = [
     name: commonRoutes.SPECIFIC_PAGE_NOT_FOUND_PAGE.name,
     component: PageNotFoundPage
   },
-  {
-    path: commonRoutes.PAGE_NOT_FOUND_PAGE.path,
-    name: commonRoutes.PAGE_NOT_FOUND_PAGE.name,
-    component: PageNotFoundPage
-  },
   
   // Pay Patient Routes.
   // {
@@ -182,11 +177,17 @@ const routeCollection = [
     name: payPractitionerCSRRoutes.SUBMISSION_ERROR_PAGE.name,
     component: PractitionerSubmissionErrorPage
   },
+
+  // Catch all unknown pages.
+  {
+    path: commonRoutes.PAGE_NOT_FOUND_PAGE.path,
+    name: commonRoutes.PAGE_NOT_FOUND_PAGE.name,
+    component: PageNotFoundPage
+  },
 ];
 
 const router = createRouter({
-  history: createWebHistory(),
-  base: process.env.BASE_URL,
+  history: createWebHistory(process.env.BASE_URL),
   routes: routeCollection
 });
 

@@ -149,10 +149,10 @@ export const commonRoutes = {
   SPECIFIC_PAGE_NOT_FOUND_PAGE: {
     path: '/pagenotfound',
     title: 'Page not found ',
-    name: 'PageNotFoundPage '
+    name: 'SpecificPageNotFoundPage '
   },
   PAGE_NOT_FOUND_PAGE: {
-    path: '*',
+    path: '/test',
     title: 'Page not found',
     name: 'PageNotFoundPage'
   }

@@ -145,7 +145,7 @@ export default {
     },
     navigateToSubmissionPage() {
       const toPath = getConvertedPath(
-        this.$router.currentRoute.path,
+        this.$router.currentRoute.value.path,
         payPatientRoutes.SUBMISSION_PAGE.path
       );
       pageStateService.setPageComplete(toPath);
@@ -155,7 +155,7 @@ export default {
     },
     navigateToSubmissionErrorPage() {
       const toPath = getConvertedPath(
-        this.$router.currentRoute.path,
+        this.$router.currentRoute.value.path,
         payPatientRoutes.SUBMISSION_ERROR_PAGE.path
       );
       pageStateService.setPageComplete(toPath);
@@ -166,7 +166,7 @@ export default {
   },
   computed: {
     isCSR() {
-      return isCSR(this.$router.currentRoute.path);
+      return isCSR(this.$router.currentRoute.value.path);
     },
     isFormAbleToSubmit() {
       const correspondenceAttached = this.$store.state.payPatientForm.medicalServiceClaims.map(x => x.correspondenceAttached);
@@ -189,7 +189,7 @@ export default {
       // Navigate to self.
       const topScrollPosition = getTopScrollPosition();
       const toPath = getConvertedPath(
-        this.$router.currentRoute.path,
+        this.$router.currentRoute.value.path,
         payPatientRoutes.REVIEW_PAGE.path
       );
       next({

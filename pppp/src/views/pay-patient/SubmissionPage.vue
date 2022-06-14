@@ -111,7 +111,7 @@ export default {
   },
   computed: {
     isCSR() {
-      return isCSR(this.$router.currentRoute.path);
+      return isCSR(this.$router.currentRoute.value.path);
     },
   },
   // Required in order to block back navigation.
@@ -123,7 +123,7 @@ export default {
       next();
     } else {
       const toPath = getConvertedPath(
-        this.$router.currentRoute.path,
+        this.$router.currentRoute.value.path,
         payPatientRoutes.HOME_PAGE.path
       );
       next({ path: toPath });

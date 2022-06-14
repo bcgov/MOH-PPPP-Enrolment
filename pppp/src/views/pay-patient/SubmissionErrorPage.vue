@@ -63,7 +63,7 @@ export default {
       next();
     } else {
       const toPath = getConvertedPath(
-        this.$router.currentRoute.path,
+        this.$router.currentRoute.value.path,
         payPatientRoutes.HOME_PAGE.path
       );
       next({ path: toPath });

@@ -87,7 +87,7 @@ export default {
   },
   computed: {
     stepRoutes() {
-      const currentPath = this.$router.currentRoute.path;
+      const currentPath = this.$router.currentRoute.value.path;
       if (currentPath.includes(PAY_PATIENT_BASE_URL)) {
         return isCSR(currentPath) ? payPatientCSRStepRoutes : payPatientStepRoutes;
       } else if (currentPath.includes(PAY_PRACTITIONER_BASE_URL)) {
@@ -101,7 +101,7 @@ export default {
   },
   methods: {
     pageTitle() {
-      const currentPath = this.$router.currentRoute.path;
+      const currentPath = this.$router.currentRoute.value.path;
       if (currentPath.includes(PAY_PATIENT_BASE_URL)) {
         return isCSR(currentPath) ? 'Pay Patient Claim - CSR' : 'Pay Patient Claim';
       } else if (currentPath.includes(PAY_PRACTITIONER_BASE_URL)) {
@@ -110,7 +110,7 @@ export default {
       return '';
     },
     isConsentModalOpen() {
-      const currentPath = this.$router.currentRoute.path;
+      const currentPath = this.$router.currentRoute.value.path;
       if (currentPath.includes(PAY_PATIENT_BASE_URL)) {
         return this.$store.state.payPatientForm.isInfoCollectionNoticeOpen;
       } else if (currentPath.includes(PAY_PRACTITIONER_BASE_URL)) {
@@ -122,7 +122,7 @@ export default {
       this.$store.dispatch(appModule + '/' + SET_SHOW_MOBILE_STEPPER_DETAILS, isDetailsShown);
     },
     handleClickStepperLink(path) {
-      pageStateService.setPageIncomplete(this.$router.currentRoute.path);
+      pageStateService.setPageIncomplete(this.$router.currentRoute.value.path);
       pageStateService.setPageComplete(path);
       this.$router.push(path);
       scrollTo(0);

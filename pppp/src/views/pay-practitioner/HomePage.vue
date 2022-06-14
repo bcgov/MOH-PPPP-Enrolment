@@ -117,7 +117,7 @@ export default {
   methods: {
     nextPage() {
       const toPath = getConvertedPath(
-        this.$router.currentRoute.path,
+        this.$router.currentRoute.value.path,
         payPractitionerRoutes.CLAIM_COUNT_PAGE.path
       );
       pageStateService.setPageComplete(toPath);
@@ -135,7 +135,7 @@ export default {
       // Navigate to self.
       const topScrollPosition = getTopScrollPosition();
       const toPath = getConvertedPath(
-        this.$router.currentRoute.path,
+        this.$router.currentRoute.value.path,
         payPractitionerRoutes.HOME_PAGE.path
       );
       next({

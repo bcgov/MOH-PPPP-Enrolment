@@ -1367,42 +1367,42 @@ export default {
     const validations = {
       planReferenceNumber: {},
       phn: {
-        required: requiredIf(() => !isCSR(this.$router.currentRoute.path)),
+        required: requiredIf(() => !isCSR(this.$router.currentRoute.value.path)),
         phnValidator: optionalValidator(phnValidator),
         phnNineValidator: optionalValidator(phnNineValidator),
       },
       dependentNumber: {
         intValidator: optionalValidator(intValidator),
         positiveNumberValidator: optionalValidator(positiveNumberValidator),
-        dependentNumberValidator: optionalValidator(validateIf(!isCSR(this.$router.currentRoute.path), dependentNumberValidator)),
+        dependentNumberValidator: optionalValidator(validateIf(!isCSR(this.$router.currentRoute.value.path), dependentNumberValidator)),
       },
       firstName: {
-        required: requiredIf(() => !isCSR(this.$router.currentRoute.path)),
+        required: requiredIf(() => !isCSR(this.$router.currentRoute.value.path)),
         nameValidator: optionalValidator(nameValidator),
       },
       middleInitial: {
         nameInitialValidator: optionalValidator(nameInitialValidator),
       },
       lastName: {
-        required: requiredIf(() => !isCSR(this.$router.currentRoute.path)),
+        required: requiredIf(() => !isCSR(this.$router.currentRoute.value.path)),
         nameValidator: optionalValidator(nameValidator),
       },
       birthDate: {
         required: requiredIf(() => {
-          return !isCSR(this.$router.currentRoute.path)
+          return !isCSR(this.$router.currentRoute.value.path)
               && this.dependentNumber !== '66';
         }),
-        birthDatePastValidator: optionalValidator(validateIf(!isCSR(this.$router.currentRoute.path), birthDatePastValidator)),
+        birthDatePastValidator: optionalValidator(validateIf(!isCSR(this.$router.currentRoute.value.path), birthDatePastValidator)),
         birthDateValidator,
-        distantPastValidator: optionalValidator(validateIf(!isCSR(this.$router.currentRoute.path), distantPastValidator)),
+        distantPastValidator: optionalValidator(validateIf(!isCSR(this.$router.currentRoute.value.path), distantPastValidator)),
       },
       isVehicleAccident: {
-        required: requiredIf(() => !isCSR(this.$router.currentRoute.path)),
+        required: requiredIf(() => !isCSR(this.$router.currentRoute.value.path)),
       },
       vehicleAccidentClaimNumber: {
         alphanumericValidator: optionalValidator(alphanumericValidator),
-        motorVehicleAccidentClaimNumberValidator: optionalValidator(validateIf(!isCSR(this.$router.currentRoute.path), motorVehicleAccidentClaimNumberValidator)),
-        motorVehicleAccidentClaimNumberMaskValidator: optionalValidator(validateIf(!isCSR(this.$router.currentRoute.path), motorVehicleAccidentClaimNumberMaskValidator)),
+        motorVehicleAccidentClaimNumberValidator: optionalValidator(validateIf(!isCSR(this.$router.currentRoute.value.path), motorVehicleAccidentClaimNumberValidator)),
+        motorVehicleAccidentClaimNumberMaskValidator: optionalValidator(validateIf(!isCSR(this.$router.currentRoute.value.path), motorVehicleAccidentClaimNumberMaskValidator)),
       },
       planReferenceNumberOfOriginalClaim: {
         intValidator: optionalValidator(intValidator),
@@ -1411,25 +1411,25 @@ export default {
       medicalServiceClaims: {
         $each: {
           serviceDate: {
-            required: requiredIf(() => !isCSR(this.$router.currentRoute.path)),
+            required: requiredIf(() => !isCSR(this.$router.currentRoute.value.path)),
             serviceDateValidator: optionalValidator(serviceDateValidator),
-            serviceDateFutureValidator: optionalValidator(validateIf(!isCSR(this.$router.currentRoute.path), serviceDateFutureValidator)),
-            distantPastValidator: optionalValidator(validateIf(!isCSR(this.$router.currentRoute.path), distantPastValidator)),
-            serviceDateCutOffValidator: optionalValidator(validateIf(!isCSR(this.$router.currentRoute.path), serviceDateCutOffValidator)),
+            serviceDateFutureValidator: optionalValidator(validateIf(!isCSR(this.$router.currentRoute.value.path), serviceDateFutureValidator)),
+            distantPastValidator: optionalValidator(validateIf(!isCSR(this.$router.currentRoute.value.path), distantPastValidator)),
+            serviceDateCutOffValidator: optionalValidator(validateIf(!isCSR(this.$router.currentRoute.value.path), serviceDateCutOffValidator)),
           },
           numberOfServices: {
-            required: requiredIf(() => !isCSR(this.$router.currentRoute.path)),
+            required: requiredIf(() => !isCSR(this.$router.currentRoute.value.path)),
             intValidator: optionalValidator(intValidator),
             positiveNumberValidator: optionalValidator(positiveNumberValidator),
-            nonZeroNumberValidator: optionalValidator(validateIf(!isCSR(this.$router.currentRoute.path), nonZeroNumberValidator)),
+            nonZeroNumberValidator: optionalValidator(validateIf(!isCSR(this.$router.currentRoute.value.path), nonZeroNumberValidator)),
           },
           feeItem: {
-            required: requiredIf(() => !isCSR(this.$router.currentRoute.path)),
+            required: requiredIf(() => !isCSR(this.$router.currentRoute.value.path)),
             intValidator: optionalValidator(intValidator),
             positiveNumberValidator: optionalValidator(positiveNumberValidator),
           },
           amountBilled: {
-            required: requiredIf(() => !isCSR(this.$router.currentRoute.path)),
+            required: requiredIf(() => !isCSR(this.$router.currentRoute.value.path)),
             dollarNumberValidator: optionalValidator(dollarNumberValidator),
             positiveNumberValidator: optionalValidator(positiveNumberValidator),
             amountBilledZeroValidator: optionalValidator(amountBilledZeroValidator),
@@ -1441,19 +1441,19 @@ export default {
             partialTimeValidator: optionalValidator(partialTimeValidator),
           },
           diagnosticCode: {
-            required: requiredIf(() => !isCSR(this.$router.currentRoute.path)),
+            required: requiredIf(() => !isCSR(this.$router.currentRoute.value.path)),
             alphanumericValidator: optionalValidator(alphanumericValidator),
-            diagnosticCodeValidator: optionalValidator(validateIf(!isCSR(this.$router.currentRoute.path), diagnosticCodeValidator)),
+            diagnosticCodeValidator: optionalValidator(validateIf(!isCSR(this.$router.currentRoute.value.path), diagnosticCodeValidator)),
           },
           locationOfService: {
-            required: requiredIf(() => !isCSR(this.$router.currentRoute.path)),
-            serviceLocationCodeValidator: validateIf(!isCSR(this.$router.currentRoute.path), serviceLocationCodeValidator),
+            required: requiredIf(() => !isCSR(this.$router.currentRoute.value.path)),
+            serviceLocationCodeValidator: validateIf(!isCSR(this.$router.currentRoute.value.path), serviceLocationCodeValidator),
           },
           serviceClarificationCode: {
-            clarificationCodeValidator: optionalValidator(clarificationCodeValidator(isCSR(this.$router.currentRoute.path))),
+            clarificationCodeValidator: optionalValidator(clarificationCodeValidator(isCSR(this.$router.currentRoute.value.path))),
           },
           submissionCode: {
-            submissionCodeValidator: validateIf(!isCSR(this.$router.currentRoute.path), submissionCodeValidator),
+            submissionCodeValidator: validateIf(!isCSR(this.$router.currentRoute.value.path), submissionCodeValidator),
           },
           notes: {
             maxLength: maxLength(400),
@@ -1462,19 +1462,19 @@ export default {
       },
       hospitalVisitClaims: {
         $each: {
-          hospitalVisitDateValidator: hospitalVisitDateValidator(isCSR(this.$router.currentRoute.path)),
-          hospitalVisitDatePastValidator: hospitalVisitDatePastValidator(isCSR(this.$router.currentRoute.path)),
-          hospitalVisitDateFutureValidator: hospitalVisitDateFutureValidator(isCSR(this.$router.currentRoute.path)),
+          hospitalVisitDateValidator: hospitalVisitDateValidator(isCSR(this.$router.currentRoute.value.path)),
+          hospitalVisitDatePastValidator: hospitalVisitDatePastValidator(isCSR(this.$router.currentRoute.value.path)),
+          hospitalVisitDateFutureValidator: hospitalVisitDateFutureValidator(isCSR(this.$router.currentRoute.value.path)),
           hospitalVisitDateToFutureValidator,
           hospitalVisitDateRangeValidator,
-          hospitalVisitDateCutOffValidator: optionalValidator(validateIf(!isCSR(this.$router.currentRoute.path), hospitalVisitDateCutOffValidator)),
+          hospitalVisitDateCutOffValidator: optionalValidator(validateIf(!isCSR(this.$router.currentRoute.value.path), hospitalVisitDateCutOffValidator)),
           month: {
-            required: requiredIf(() => !isCSR(this.$router.currentRoute.path)),
+            required: requiredIf(() => !isCSR(this.$router.currentRoute.value.path)),
             positiveNumberValidator: optionalValidator(positiveNumberValidator),
             intValidator: optionalValidator(intValidator),
           },
           dayFrom: {
-            required: requiredIf(() => !isCSR(this.$router.currentRoute.path)),
+            required: requiredIf(() => !isCSR(this.$router.currentRoute.value.path)),
             positiveNumberValidator: optionalValidator(positiveNumberValidator),
             intValidator: optionalValidator(intValidator),
           },
@@ -1483,41 +1483,41 @@ export default {
             positiveNumberValidator: optionalValidator(positiveNumberValidator),
           },
           year: {
-            required: requiredIf(() => !isCSR(this.$router.currentRoute.path)),
+            required: requiredIf(() => !isCSR(this.$router.currentRoute.value.path)),
             positiveNumberValidator: optionalValidator(positiveNumberValidator),
             intValidator: optionalValidator(intValidator),
           },
           numberOfServices: {
-            required: requiredIf(() => !isCSR(this.$router.currentRoute.path)),
+            required: requiredIf(() => !isCSR(this.$router.currentRoute.value.path)),
             intValidator: optionalValidator(intValidator),
             positiveNumberValidator: optionalValidator(positiveNumberValidator),
-            nonZeroNumberValidator: optionalValidator(validateIf(!isCSR(this.$router.currentRoute.path), nonZeroNumberValidator)),
+            nonZeroNumberValidator: optionalValidator(validateIf(!isCSR(this.$router.currentRoute.value.path), nonZeroNumberValidator)),
           },
           feeItem: {
-            required: requiredIf(() => !isCSR(this.$router.currentRoute.path)),
+            required: requiredIf(() => !isCSR(this.$router.currentRoute.value.path)),
             intValidator: optionalValidator(intValidator),
             positiveNumberValidator: optionalValidator(positiveNumberValidator),
           },
           amountBilled: {
-            required: requiredIf(() => !isCSR(this.$router.currentRoute.path)),
+            required: requiredIf(() => !isCSR(this.$router.currentRoute.value.path)),
             dollarNumberValidator: optionalValidator(dollarNumberValidator),
             positiveNumberValidator: optionalValidator(positiveNumberValidator),
             amountBilledZeroValidator: optionalValidator(amountBilledZeroValidator),
           },
           diagnosticCode: {
-            required: requiredIf(() => !isCSR(this.$router.currentRoute.path)),
+            required: requiredIf(() => !isCSR(this.$router.currentRoute.value.path)),
             alphanumericValidator: optionalValidator(alphanumericValidator),
-            diagnosticCodeValidator: optionalValidator(validateIf(!isCSR(this.$router.currentRoute.path), diagnosticCodeValidator)),
+            diagnosticCodeValidator: optionalValidator(validateIf(!isCSR(this.$router.currentRoute.value.path), diagnosticCodeValidator)),
           },
           locationOfService: {
-            required: requiredIf(() => !isCSR(this.$router.currentRoute.path)),
-            hospitalVisitLocationCodeValidator: validateIf(!isCSR(this.$router.currentRoute.path), hospitalVisitLocationCodeValidator),
+            required: requiredIf(() => !isCSR(this.$router.currentRoute.value.path)),
+            hospitalVisitLocationCodeValidator: validateIf(!isCSR(this.$router.currentRoute.value.path), hospitalVisitLocationCodeValidator),
           },
           serviceClarificationCode: {
-            clarificationCodeValidator: optionalValidator(clarificationCodeValidator(isCSR(this.$router.currentRoute.path))),
+            clarificationCodeValidator: optionalValidator(clarificationCodeValidator(isCSR(this.$router.currentRoute.value.path))),
           },
           submissionCode: {
-            hospitalVisitSubmissionCodeValidator: validateIf(!isCSR(this.$router.currentRoute.path), hospitalVisitSubmissionCodeValidator),
+            hospitalVisitSubmissionCodeValidator: validateIf(!isCSR(this.$router.currentRoute.value.path), hospitalVisitSubmissionCodeValidator),
           },
           notes: {
             maxLength: maxLength(400),
@@ -1525,31 +1525,31 @@ export default {
         }
       },
       practitionerLastName: {
-        required: requiredIf(() => !isCSR(this.$router.currentRoute.path)),
+        required: requiredIf(() => !isCSR(this.$router.currentRoute.value.path)),
         nameValidator: optionalValidator(nameValidator),
       },
       practitionerFirstName: {
-        required: requiredIf(() => !isCSR(this.$router.currentRoute.path)),
+        required: requiredIf(() => !isCSR(this.$router.currentRoute.value.path)),
         nameValidator: optionalValidator(nameValidator),
       },
       practitionerPaymentNumber: {
-        required: requiredIf(() => !isCSR(this.$router.currentRoute.path)),
+        required: requiredIf(() => !isCSR(this.$router.currentRoute.value.path)),
         minLength: minLength(5),
       },
       practitionerPractitionerNumber: {
-        required: requiredIf(() => !isCSR(this.$router.currentRoute.path)),
+        required: requiredIf(() => !isCSR(this.$router.currentRoute.value.path)),
         minLength: minLength(5),
       },
       practitionerFacilityNumber: {
-        minLength: optionalValidator(validateIf(!isCSR(this.$router.currentRoute.path), minLength(5))),
+        minLength: optionalValidator(validateIf(!isCSR(this.$router.currentRoute.value.path), minLength(5))),
       },
       practitionerSpecialtyCode: {
         alphanumericValidator: optionalValidator(alphanumericValidator),
-        minLength: optionalValidator(validateIf(!isCSR(this.$router.currentRoute.path), minLength(2))),
-        specialtyCodeValidator: optionalValidator(validateIf(!isCSR(this.$router.currentRoute.path), specialtyCodeValidator)),
+        minLength: optionalValidator(validateIf(!isCSR(this.$router.currentRoute.value.path), minLength(2))),
+        specialtyCodeValidator: optionalValidator(validateIf(!isCSR(this.$router.currentRoute.value.path), specialtyCodeValidator)),
       },
       coveragePreAuthNumber: {
-        minLength: optionalValidator(validateIf(!isCSR(this.$router.currentRoute.path), minLength(4))),
+        minLength: optionalValidator(validateIf(!isCSR(this.$router.currentRoute.value.path), minLength(4))),
         intValidator: optionalValidator(intValidator),
         positiveNumberValidator: optionalValidator(positiveNumberValidator),
       },
@@ -1572,7 +1572,7 @@ export default {
         minLength: optionalValidator(minLength(5)),
       },
     };
-    if (this.dependentNumber !== '66' && !isCSR(this.$router.currentRoute.path)) {
+    if (this.dependentNumber !== '66' && !isCSR(this.$router.currentRoute.value.path)) {
       validations.birthDate.required = required;
     }
     if (this.isReferredByRequired) {
@@ -1689,7 +1689,7 @@ export default {
       const token = this.$store.state.payPractitionerForm.captchaToken;
       const applicationUuid = this.$store.state.payPractitionerForm.applicationUuid;
       
-      if (!isCSR(this.$router.currentRoute.path)) {
+      if (!isCSR(this.$router.currentRoute.value.path)) {
         // Do server-side validation.
         apiService.validateApplication(token, {
           applicationUuid: applicationUuid,
@@ -1768,7 +1768,7 @@ export default {
     navigateToNextPage() {
       // Navigate to next path.
       const toPath = getConvertedPath(
-        this.$router.currentRoute.path,
+        this.$router.currentRoute.value.path,
         payPractitionerRoutes.REVIEW_PAGE.path
       );
       pageStateService.setPageComplete(toPath);
@@ -1832,13 +1832,13 @@ export default {
       const past90Days = subDays(startOfToday(), 90);
       let serviceDate = this.medicalServiceClaims[index].serviceDate;
       
-      if (!isValid(serviceDate) || isCSR(this.$router.currentRoute.path)) {
+      if (!isValid(serviceDate) || isCSR(this.$router.currentRoute.value.path)) {
         return false;
       }
       return isBefore(serviceDate, addDays(past90Days, 1));
     },
     isHospitalVisitSubmissionCodeRequired(index) {
-      if (isCSR(this.$router.currentRoute.path)) {
+      if (isCSR(this.$router.currentRoute.value.path)) {
         return false;
       }
       const past90Days = subDays(startOfToday(), 90);
@@ -1857,12 +1857,12 @@ export default {
   computed: {
     isReferredByRequired() {
       return (!!this.referredByFirstNameInitial || !!this.referredByLastName || !!this.referredByPractitionerNumber) 
-      && !isCSR(this.$router.currentRoute.path);
+      && !isCSR(this.$router.currentRoute.value.path);
     },
     isReferredToRequired() {
       return (!!this.referredToFirstNameInitial || !!this.referredToLastName 
       || !!this.referredToPractitionerNumber || this.isContainingNoChargeFeeItem) 
-      && !isCSR(this.$router.currentRoute.path);
+      && !isCSR(this.$router.currentRoute.value.path);
     },
     isContainingNoChargeFeeItem() {
       for (let i=0; i<this.medicalServiceClaims.length; i++) {
@@ -1878,7 +1878,7 @@ export default {
       return false;
     },
     isCSR() {
-      return isCSR(this.$router.currentRoute.path);
+      return isCSR(this.$router.currentRoute.value.path);
     },
     validationWarningList() {
       const result = [];
@@ -1896,7 +1896,7 @@ export default {
       // Navigate to self.
       const topScrollPosition = getTopScrollPosition();
       const toPath = getConvertedPath(
-        this.$router.currentRoute.path,
+        this.$router.currentRoute.value.path,
         payPractitionerRoutes.MAIN_FORM_PAGE.path
       );
       next({
