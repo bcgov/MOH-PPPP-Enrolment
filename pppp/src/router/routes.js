@@ -152,7 +152,7 @@ export const commonRoutes = {
     name: 'SpecificPageNotFoundPage '
   },
   PAGE_NOT_FOUND_PAGE: {
-    path: '/test',
+    path: '/:pathMatch(.*)*',
     title: 'Page not found',
     name: 'PageNotFoundPage'
   }

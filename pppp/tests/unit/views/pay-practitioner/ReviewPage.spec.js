@@ -695,7 +695,7 @@ describe("ReviewPage.vue pay practitioner navigateToSubmissionPage()", () => {
       .mockImplementation(() => Promise.resolve("pushed"));
 
     toPath = getConvertedPath(
-      wrapper.vm.$router.currentRoute.path,
+      wrapper.vm.$router.currentRoute.value.path,
       payPractitionerRoutes.SUBMISSION_PAGE.path
     );
 
@@ -761,7 +761,7 @@ describe("ReviewPage.vue pay practitioner navigateToSubmissionErrorPage()", () =
       .mockImplementation(() => Promise.resolve("pushed"));
 
     toPath = getConvertedPath(
-      wrapper.vm.$router.currentRoute.path,
+      wrapper.vm.$router.currentRoute.value.path,
       payPractitionerRoutes.SUBMISSION_ERROR_PAGE.path
     );
 
@@ -848,7 +848,7 @@ describe("ReviewPage.vue beforeRouteLeave(to, from, next)", () => {
     jest.advanceTimersByTime(5);
     await wrapper.vm.$nextTick;
     const testPath = getConvertedPath(
-      wrapper.vm.$router.currentRoute.path,
+      wrapper.vm.$router.currentRoute.value.path,
       payPractitionerRoutes.REVIEW_PAGE.path
     );
     expect(next).toHaveBeenCalledWith({

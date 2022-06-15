@@ -185,7 +185,7 @@ describe("HomePage.vue pay patient nextPage()", () => {
 
     expect(spyOnRouter).toHaveBeenCalledWith(
       getConvertedPath(
-        $router.currentRoute.path,
+        $router.currentRoute.value.path,
         payPatientRoutes.CLAIM_COUNT_PAGE.path
       )
     );
@@ -263,7 +263,7 @@ describe("HomePage.vue pay patient beforeRouteLeave(to, from, next)", () => {
     jest.advanceTimersByTime(5);
     await wrapper.vm.$nextTick;
     const testPath = getConvertedPath(
-      wrapper.vm.$router.currentRoute.path,
+      wrapper.vm.$router.currentRoute.value.path,
       payPatientRoutes.HOME_PAGE.path
     );
     expect(next).toHaveBeenCalledWith({

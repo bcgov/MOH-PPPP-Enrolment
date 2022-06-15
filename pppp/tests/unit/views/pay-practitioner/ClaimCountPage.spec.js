@@ -486,7 +486,7 @@ describe("ClaimCountPage.vue pay practitioner validateFields() part 2 (valid)", 
     wrapper.vm.validateFields();
     expect(spyOnRouter).toHaveBeenCalledWith(
       getConvertedPath(
-        wrapper.vm.$router.currentRoute.path,
+        wrapper.vm.$router.currentRoute.value.path,
         payPractitionerRoutes.MAIN_FORM_PAGE.path
       )
     );
@@ -556,7 +556,7 @@ describe("ClaimCountPage.vue pay practitioner beforeRouteLeave(to, from, next)",
     jest.advanceTimersByTime(5);
     await wrapper.vm.$nextTick;
     const testPath = getConvertedPath(
-      wrapper.vm.$router.currentRoute.path,
+      wrapper.vm.$router.currentRoute.value.path,
       payPractitionerRoutes.CLAIM_COUNT_PAGE.path
     );
     expect(next).toHaveBeenCalledWith({

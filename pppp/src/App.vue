@@ -5,7 +5,7 @@
               imagePath='/pppp/images/' 
               :key="$route.fullPath"/>
       <div class="container stepper">
-        <PageStepper :currentPath='$router.currentRoute.path'
+        <PageStepper :currentPath='$router.currentRoute.value.path'
                     :routes='stepRoutes'
                     @toggleShowMobileDetails='handleToggleShowMobileStepperDetails($event)'
                     :isMobileStepperOpen='isMobileStepperOpen'

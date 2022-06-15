@@ -234,7 +234,7 @@ describe("SubmissionPage.vue beforeRouteLeave(to, from, next)", () => {
     jest.advanceTimersByTime(5);
     await wrapper.vm.$nextTick;
     const testPath = getConvertedPath(
-      wrapper.vm.$router.currentRoute.path,
+      wrapper.vm.$router.currentRoute.value.path,
       payPatientRoutes.HOME_PAGE.path
     );
     expect(next).toHaveBeenCalledWith({

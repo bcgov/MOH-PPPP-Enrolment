@@ -14,7 +14,7 @@
                 :max='4'
                 :inputStyle='inputStyle'/>
         <div class="text-danger"
-            v-if="$v.claimCount.$dirty && !$v.claimCount.required"
+            v-if="v$.claimCount.$dirty && v$.claimCount.required.$invalid"
             aria-live="assertive">Claim count is required.</div>
       </div>
     </PageContent>
@@ -47,7 +47,8 @@ import {
   SET_MEDICAL_SERVICE_CLAIMS,
 } from '@/store/modules/pay-patient-form';
 import logService from '@/services/log-service';
-import { required } from 'vuelidate/lib/validators';
+import { required } from '@vuelidate/validators'
+import useVuelidate from '@vuelidate/core'
 import {
   NumberSelect,
   cloneDeep,
@@ -59,6 +60,11 @@ export default {
     ContinueBar,
     NumberSelect,
     PageContent,
+  },
+  setup() {
+    return {
+      v$: useVuelidate(),
+    };
   },
   data: () => {
     return {
@@ -140,8 +146,8 @@ export default {
       return !this.$store.state.payPatientForm.applicationUuid;
     },
     validateFields() {
-      this.$v.$touch()
-      if (this.$v.$invalid) {
+      this.v$.$touch()
+      if (this.v$.$invalid) {
         scrollToError();
         return;
       }
