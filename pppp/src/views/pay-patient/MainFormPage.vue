@@ -196,6 +196,7 @@
               v-model:serviceClarificationCode="claim.serviceClarificationCode"
               v-model:submissionCode="claim.submissionCode"
               v-model:notes="claim.notes"
+              v-model:medicalServiceClaimsFeeItemValidationError="medicalServiceClaimsFeeItemValidationError[index]"
             />
           </div>
         </div>
@@ -959,9 +960,6 @@ export default {
     },
     handleInputPractitioner() {
       this.isPractitionerErrorShown = false;
-    },
-    handleInputServiceFeeItem(index) {
-      this.medicalServiceClaimsFeeItemValidationError[index] = false;
     },
     handleProcessBirthDate(data) {
       this.birthDateData = data;

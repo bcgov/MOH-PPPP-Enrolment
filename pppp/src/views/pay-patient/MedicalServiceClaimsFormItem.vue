@@ -55,7 +55,7 @@
           && !v$.numberOfServices.positiveNumberValidator.$invalid
           && v$.numberOfServices.nonZeroNumberValidator.$invalid"
         aria-live="assertive">Number of Services must be greater than 0.</div>
-    <Input 
+    <InputComponent 
           :label='"Service Clarification Code" + (isCSR ? "" : " (optional)") + ":"'
           :id='"service-clarification-code-" + index'
           class='mt-3'
@@ -68,48 +68,49 @@
     <div class="text-danger"
         v-if="v$.serviceClarificationCode.$dirty && v$.serviceClarificationCode.clarificationCodeValidator.$invalid"
         aria-live="assertive">Service Clarification Code is invalid.</div>  
-    <!--<DigitInput label='Fee Item:'
+    <DigitInput label='Fee Item:'
           :id='"fee-item-" + index'
           :cypressId="'feeItem' + index"
           class='mt-3'
-          v-model='feeItem'
+          :modelValue='feeItem'
           maxlength='5'
           :inputStyle='smallStyles'
-          @blur='handleBlurField(v$.medicalServiceClaims.$each[index].feeItem)'
-          @input='handleInputServiceFeeItem(index)' />
+          @blur='handleBlurField(v$.feeItem)'
+          @update:modelValue='handleInputServiceFeeItem($event)' />
     <div class="text-danger"
-        v-if="v.feeItem.$dirty && !v.feeItem.required"
+        v-if="v$.feeItem.$dirty && !v$.feeItem.required"
         aria-live="assertive">Fee Item is required.</div>
     <div class="text-danger"
-        v-if="v.feeItem.$dirty && v.feeItem.required && !v.feeItem.intValidator"
+        v-if="v$.feeItem.$dirty && v$.feeItem.required && !v$.feeItem.intValidator"
         aria-live="assertive">Fee Item must be an integer.</div>
     <div class="text-danger"
-        v-if="v.feeItem.$dirty && v.feeItem.required && !v.feeItem.positiveNumberValidator"
+        v-if="v$.feeItem.$dirty && v$.feeItem.required && !v$.feeItem.positiveNumberValidator"
         aria-live="assertive">Fee Item must be a positive number.</div>
     <div class="text-danger"
-        v-if="medicalServiceClaimsFeeItemValidationError[index]"
+        v-if="medicalServiceClaimsFeeItemValidationError"
         aria-live="assertive">Fee Item does not match our records.</div>
     <NumberInput label='Amount Billed:'
           :id='"amount-billed-" + index'
           :cypressId="'amountBilled' + index"
           class='mt-3'
-          v-model='amountBilled'
+          :modelValue='amountBilled'
           maxlength='8'   
           :inputStyle='smallStyles'
-          @blur='handleBlurField(v$.medicalServiceClaims.$each[index].amountBilled)' />
+          @update:modelValue="$emit('update:amountBilled', $event)"
+          @blur='handleBlurField(v$.amountBilled)' />
     <div class="text-danger"
-        v-if="v.amountBilled.$dirty && !v.amountBilled.required"
+        v-if="v$.amountBilled.$dirty && v$.amountBilled.required.$invalid"
         aria-live="assertive">Amount billed is required.</div>
     <div class="text-danger"
-        v-if="v.amountBilled.$dirty && v.amountBilled.required && !v.amountBilled.dollarNumberValidator"
+        v-if="v$.amountBilled.$dirty && !v$.amountBilled.required.$invalid && v$.amountBilled.dollarNumberValidator.$invalid"
         aria-live="assertive">Amount billed must be a dollar amount. Example: 10.00</div>
     <div class="text-danger"
-        v-if="v.amountBilled.$dirty && v.amountBilled.required && !v.amountBilled.positiveNumberValidator"
+        v-if="v$.amountBilled.$dirty && !v$.amountBilled.required.$invalid && v$.amountBilled.positiveNumberValidator.$invalid"
         aria-live="assertive">Amount billed must be a positive number.</div> 
     <div class="text-danger"
-        v-if="v.amountBilled.$dirty && v.amountBilled.required && !v.amountBilled.amountBilledZeroValidator"
+        v-if="v$.amountBilled.$dirty && !v$.amountBilled.required.$invalid && v$.amountBilled.amountBilledZeroValidator.$invalid"
         aria-live="assertive">Amount billed must be zero if Fee item is '03333'.</div>
-    <TimeInput 
+    <!--<TimeInput 
               :label='"Called Start Time" + (isCSR ? "" : " (optional)") + ":"'
               :id='"called-start-time-" + index'
               className='mt-3'
@@ -209,6 +210,7 @@ import {
 } from 'date-fns';
 import {
   extraSmallStyles,
+  smallStyles,
 } from '@/constants/input-styles';
 import {
   isCSR,
@@ -225,6 +227,7 @@ import {
 import {
   DateInput,
   DigitInput,
+  Input,
   alphanumericValidator,
   distantPastValidator,
   dollarNumberValidator,
@@ -268,6 +271,7 @@ export default {
   components: {
     DateInput,
     DigitInput,
+    InputComponent: Input,
   },
   props: {
     index: {
@@ -328,10 +332,15 @@ export default {
       type: String,
       default: null,
     },
+    medicalServiceClaimsFeeItemValidationError: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
       extraSmallStyles,
+      smallStyles,
     }
   },
   setup() {
@@ -400,9 +409,9 @@ export default {
     handleProcessServiceDate(data) {
       this.$emit('update:serviceDateData', data);
     },
-    updateServiceDate(value) {
-      console.log('updated serviceDate', value);
-      this.$emit('update:serviceDate', value);
+    handleInputServiceFeeItem(value) {
+      this.$emit('update:feeItem', value)
+      this.$emit('update:medicalServiceClaimsFeeItemValidationError', false)
     },
     getServiceDateFutureErrorMessage(feeItem) {
       if (feeItem === '03333') {
