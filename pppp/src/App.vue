@@ -1,7 +1,7 @@
 <template>
   <div>
     <div :aria-hidden="[isConsentModalOpen]">
-      <Header :title='this.pageTitle()'
+      <HeaderComponent :title='this.pageTitle()'
               imagePath='/pppp/images/' 
               :key="$route.fullPath"/>
       <div class="container stepper">
@@ -14,7 +14,7 @@
       <main>
         <router-view/>
       </main>
-      <Footer :version='version' />
+      <FooterComponent :version='version' />
     </div>
     <ConsentModal v-if="this.isConsentModalOpen()"
                   :applicationUuid="applicationUuid"
@@ -68,8 +68,8 @@ export default {
   name: 'App',
   components: {
     ConsentModal,
-    Footer,
-    Header,
+    FooterComponent: Footer,
+    HeaderComponent: Header,
     PageStepper,
   },
   data: () => {

@@ -33,7 +33,7 @@
             
           </div>
           <div class="modal-footer justify-content-center">
-            <Button label="Continue"
+            <ButtonComponent label="Continue"
                     cypressId="consentContinue"
                     @click="closeModal()"
                     :disabled="!isCaptchaValid || !isTermsAccepted"/>
@@ -51,7 +51,7 @@ import Captcha from '../components/Captcha';
 export default {
   name: "ConsentModal",
   components: {
-    Button,
+    ButtonComponent: Button,
     Captcha,
   },
   props: {
@@ -70,16 +70,14 @@ export default {
       isTermsAccepted: false,
     };
   },
-  created() {
+  mounted() {
     window.addEventListener('keydown', this.handleKeyDown);
     document.body.classList.add('no-scroll');
+    this.focusableEls = this.getFocusableEls();
   },
-  destroyed() {
+  unmounted() {
     window.removeEventListener('keydown', this.handleKeyDown);
     document.body.classList.remove('no-scroll');
-  },
-  mounted() {
-    this.focusableEls = this.getFocusableEls();
   },
   methods: {
     getFocusableEls() {

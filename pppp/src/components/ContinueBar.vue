@@ -1,7 +1,7 @@
 <template>
   <div class='continue-bar'>
     <div class="d-flex flex-row-reverse p-3 container">
-      <Button :label='buttonLabel'
+      <ButtonComponent :label='buttonLabel'
               :hasLoader='hasLoader'
               data-cy="continueBar"
               @click='onContinue()'/>
@@ -15,7 +15,7 @@ import { Button } from 'common-lib-vue';
 export default {
   name: 'ContinueBar',
   components: {
-    Button
+    ButtonComponent: Button,
   },
   props: {
     hasLoader: {

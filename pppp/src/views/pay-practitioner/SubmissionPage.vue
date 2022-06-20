@@ -49,7 +49,7 @@
           <li>Please contact <a href="https://www2.gov.bc.ca/gov/content/health/practitioner-professional-resources/msp/contact-us" target="_blank">Health Insurance BC</a> if you have any questions.</li>
         </ul>
 
-        <Button
+        <ButtonComponent
           :label="'Start new form'"
           data-cy="newForm"
           @click="onNewForm()"
@@ -83,7 +83,7 @@ export default {
   components: {
     PageContent,
     ReviewTableList,
-    Button
+    ButtonComponent: Button,
   },
   data: () => {
     return {

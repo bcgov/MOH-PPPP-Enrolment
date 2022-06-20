@@ -4,7 +4,7 @@ module.exports = {
     node: true
   },
   'extends': [
-    'plugin:vue/essential',
+    'plugin:vue/vue3-essential',
     'eslint:recommended',
     'plugin:jest/recommended',
     'plugin:jest/style',
@@ -25,7 +25,8 @@ module.exports = {
     "jest/no-identical-title": "warn",
     "jest/prefer-to-have-length": "warn",
     "jest/valid-expect": "error",
-    "no-unused-vars": ["warn", { "vars": "all", "args": "after-used", "ignoreRestSiblings": false }]
+    "no-unused-vars": ["warn", { "vars": "all", "args": "after-used", "ignoreRestSiblings": false }],
+    "vue/no-v-model-argument": "off"
   },
   overrides: [
     {

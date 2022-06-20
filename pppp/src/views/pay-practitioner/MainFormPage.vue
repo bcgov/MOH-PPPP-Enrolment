@@ -62,7 +62,7 @@
           <div class="text-danger"
               v-if="$v.dependentNumber.$dirty && $v.dependentNumber.intValidator && $v.dependentNumber.positiveNumberValidator && !$v.dependentNumber.dependentNumberValidator"
               aria-live="assertive">Dependant must be 00 or 66 for this PHN.</div>
-          <Input label='Patient Legal First Name:'
+          <InputComponent label='Patient Legal First Name:'
                 id='first-name'
                 cypressId="patientFirstName"
                 className='mt-3'
@@ -76,7 +76,7 @@
           <div class="text-danger"
               v-if="$v.firstName.$dirty && $v.firstName.required && !$v.firstName.nameValidator"
               aria-live="assertive">Patient Legal First Name must begin with a letter and cannot include special characters except hyphens, periods, apostrophes and blank characters.</div>
-          <Input 
+          <InputComponent 
                 :label='"Second Name Initial" + (isCSR ? "" : " (optional)") + ":"'
                 id='middle-initial'
                 className='mt-3'
@@ -87,7 +87,7 @@
           <div class="text-danger"
               v-if="$v.middleInitial.$dirty && !$v.middleInitial.nameInitialValidator"
               aria-live="assertive">Second name initial must be a letter.</div>
-          <Input label='Patient Legal Last Name:'
+          <InputComponent label='Patient Legal Last Name:'
                 id='last-name'
                 cypressId="patientLastName"
                 className='mt-3'
@@ -137,7 +137,7 @@
           <div class="text-danger"
               v-if="$v.isVehicleAccident.$dirty && !$v.isVehicleAccident.required"
               aria-live="assertive">Answer to question is required.</div>
-          <Input
+          <InputComponent
                 :label='"Motor Vehicle Accident Claim Number" + (isCSR ? "" : " (optional)") + ":"'                
                 id='vehicle-accident-claim-number'
                 maxlength='8'
@@ -233,7 +233,7 @@
                   && v.numberOfServices.positiveNumberValidator
                   && !v.numberOfServices.nonZeroNumberValidator"
                 aria-live="assertive">Number of Services must be greater than 0.</div>
-            <Input 
+            <InputComponent 
                   :label='"Service Clarification Code" + (isCSR ? "" : " (optional)") + ":"'
                   :id='"msc-service-clarification-code-" + index'
                   class='mt-3'
@@ -306,7 +306,7 @@
             <div class="text-danger"
                 v-if="v.renderedFinishTime.$dirty && !v.renderedFinishTime.partialTimeValidator"
                 aria-live="assertive">Rendered finish time must be an exact value.</div>
-            <Input label='Diagnostic Code:'
+            <InputComponent label='Diagnostic Code:'
                   :id='"msc-diagnostic-code-" + index'
                   :cypressId="'diagnosticCode' + index"
                   :isUpperCaseForced='true' 
@@ -321,7 +321,7 @@
             <div class="text-danger"
                 v-if="v.diagnosticCode.$dirty && ((v.diagnosticCode.required && !v.diagnosticCode.diagnosticCodeValidator) || !v.diagnosticCode.alphanumericValidator)"
                 aria-live="assertive">Diagnostic code must be valid.</div>
-            <Select label='Service Location Code:'
+            <SelectComponent label='Service Location Code:'
                   :id='"msc-location-of-service-" + index'
                   :cypressId="'serviceLocationCode' + index"
                   class='mt-3'
@@ -334,7 +334,7 @@
                   MSP Claims submitted with Service Location Code (<b>A</b>) for dates of service on or after October 1, 2021, will not be accepted.
                 </p>
               </template>
-            </Select>
+            </SelectComponent>
             <div class="text-danger"
                 v-if="v.locationOfService.$dirty
                   && !v.locationOfService.required"
@@ -344,7 +344,7 @@
                   && v.locationOfService.required
                   && !v.locationOfService.serviceLocationCodeValidator"
                 aria-live="assertive">Service Location Code is invalid for the Service Date.</div>
-            <Select 
+            <SelectComponent 
                 :label='"Correspondence Attached" + (isCSR ? "" : " (optional)") + ":"'
                 :id='"msc-correspondence-attached-" + index'
                 class='mt-3'
@@ -352,7 +352,7 @@
                 :options='correspondenceAttachedOptions'
                 defaultOptionLabel='None'
                 :inputStyle='largeStyles' />
-            <Select :label='"Submission Code" + ((isCSR || isSubmissionCodeRequired(index)) ? "" : " (optional)") + ":"'
+            <SelectComponent :label='"Submission Code" + ((isCSR || isSubmissionCodeRequired(index)) ? "" : " (optional)") + ":"'
                 :id='"msc-submission-code-" + index'
                 :cypressId="'submissionCode' + index"
                 class='mt-3'
@@ -364,7 +364,7 @@
             <div class="text-danger"
                 v-if="v.submissionCode.$dirty && isSubmissionCodeRequired(index) && !v.submissionCode.submissionCodeValidator"
                 aria-live="assertive">Submission code is required.</div>
-            <Textarea 
+            <TextareaComponent 
               :label='"Notes/Additional Information" + (isCSR ? "" : " (optional)") + ":"'
               :id="'msc-medical-notes-' + index"
               :cypressId="'medNotesAttach' + index"
@@ -384,7 +384,7 @@
           <div class="section-container p-3">
             <div class="row mb-3">
               <div class="col-md-3">
-                <Select label='Month:'
+                <SelectComponent label='Month:'
                       :id="'hvc-month-' + index"
                       :cypressId="'hospitalClaimMonth' + index"
                       v-model='claim.month'
@@ -537,7 +537,7 @@
                   && v.numberOfServices.positiveNumberValidator
                   && !v.numberOfServices.nonZeroNumberValidator"
                 aria-live="assertive">Number of Services must be greater than 0.</div>
-            <Input 
+            <InputComponent 
                   :label='"Service Clarification Code" + (isCSR ? "" : " (optional)") + ":"'
                   :id='"hvc-service-clarification-code-" + index'
                   class='mt-3'
@@ -590,7 +590,7 @@
             <div class="text-danger"
                 v-if="v.amountBilled.$dirty && v.amountBilled.required && !v.amountBilled.amountBilledZeroValidator"
                 aria-live="assertive">Amount billed must be zero if Fee item is '03333'.</div>
-            <Input label='Diagnostic Code:'
+            <InputComponent label='Diagnostic Code:'
                   :id='"hvc-diagnostic-code-" + index'
                   :cypressId="'hospitalClaimDiagnosticCode' + index"
                   :isUpperCaseForced='true'
@@ -605,7 +605,7 @@
             <div class="text-danger"
                 v-if="v.diagnosticCode.$dirty && ((v.diagnosticCode.required && !v.diagnosticCode.diagnosticCodeValidator) || !v.diagnosticCode.alphanumericValidator)"
                 aria-live="assertive">Diagnostic code must be valid.</div>
-            <Select label='Service Location Code:'
+            <SelectComponent label='Service Location Code:'
                   :id='"hvc-location-of-service-" + index'
                   :cypressId="'hospitalClaimServiceLocation' + index"
                   class='mt-3'
@@ -618,7 +618,7 @@
                   MSP Claims submitted with Service Location Code (<b>A</b>) for dates of service on or after October 1, 2021, will not be accepted.
                 </p>
               </template>
-            </Select>
+            </SelectComponent>
             <div class="text-danger"
                 v-if="v.locationOfService.$dirty
                   && !v.locationOfService.required"
@@ -628,7 +628,7 @@
                   && v.locationOfService.required
                   && !v.locationOfService.hospitalVisitLocationCodeValidator"
                 aria-live="assertive">Service Location Code is invalid for the Service Date.</div>
-            <Select 
+            <SelectComponent 
                   :label='"Correspondence Attached" + (isCSR ? "" : " (optional)") + ":"'
                   :id='"hvc-correspondence-attached-" + index'
                   class='mt-3'
@@ -636,7 +636,7 @@
                   :options='correspondenceAttachedOptions'
                   defaultOptionLabel='None'
                   :inputStyle='largeStyles' />
-            <Select 
+            <SelectComponent 
                   :label='"Submission Code" + ((isCSR || isHospitalVisitSubmissionCodeRequired(index)) ? "" : " (optional)") + ":"'
                   :id='"hvc-submission-code-" + index'
                   :cypressId="'hospitalClaimSubmissionCode' + index"
@@ -649,7 +649,7 @@
             <div class="text-danger"
                 v-if="v.submissionCode.$dirty && isHospitalVisitSubmissionCodeRequired(index) && !v.submissionCode.hospitalVisitSubmissionCodeValidator"
                 aria-live="assertive">Submission code is required.</div>
-            <Textarea 
+            <TextareaComponent 
                   :label='"Notes/Additional Information" + (isCSR ? "" : " (optional)") + ":"'
                   :id="'hvc-hospital-notes-' + index"
                   :cypressId="'hospitalNotesAttach' + index"
@@ -674,7 +674,7 @@
               </ul>
             </TipBox>
           </div>
-          <Input label='Practitioner Last Name:'
+          <InputComponent label='Practitioner Last Name:'
                 id='practitioner-last-name'
                 cypressId="practitionerLastName"
                 maxlength="35"
@@ -691,7 +691,7 @@
           <div class="text-danger"
               v-if="isPractitionerErrorShown"
               aria-live="assertive">Practitioner information does not match our records.</div>
-          <Input label='Practitioner First Name:'
+          <InputComponent label='Practitioner First Name:'
                 id='practitioner-first-name'
                 cypressId="practitionerFirstName"
                 maxlength="15"
@@ -740,7 +740,7 @@
           <div class="text-danger"
               v-if="isPractitionerErrorShown"
               aria-live="assertive">Practitioner information does not match our records.</div>
-          <Input 
+          <InputComponent 
                 :label='"Specialty Code" + (isCSR ? "" : " (optional)") + ":"'
                 id='specialty-code'
                 class='mt-3'
@@ -805,7 +805,7 @@
           <div class="text-danger"
               v-if="$v.referredByPractitionerNumber.$dirty && !$v.referredByPractitionerNumber.minLength"
               aria-live="assertive">Practitioner number must not be less than 5 characters.</div>
-          <Input :label='"Referred By Practitioner Last Name" + ((isReferredByRequired || isCSR ) ? "" : " (optional)") + ":"'
+          <InputComponent :label='"Referred By Practitioner Last Name" + ((isReferredByRequired || isCSR ) ? "" : " (optional)") + ":"'
                 id='referred-by-last-name'
                 maxlength="18"
                 class='mt-3'
@@ -818,7 +818,7 @@
           <div class="text-danger"
               v-if="$v.referredByLastName.$dirty && !$v.referredByLastName.nameValidator"
               aria-live="assertive">Last name must begin with a letter and cannot include special characters except hyphens, periods, apostrophes and blank characters.</div>
-          <Input :label='"Referred By Practitioner First Name Initial" + ((isReferredByRequired || isCSR ) ? "" : " (optional)") + ":"'
+          <InputComponent :label='"Referred By Practitioner First Name Initial" + ((isReferredByRequired || isCSR ) ? "" : " (optional)") + ":"'
                 id='referred-by-first-name-initial'
                 maxlength="1"
                 class='mt-3'
@@ -847,7 +847,7 @@
           <div class="text-danger"
               v-if="$v.referredToPractitionerNumber.$dirty && !$v.referredToPractitionerNumber.minLength"
               aria-live="assertive">Practitioner number must not be less than 5 characters.</div>
-          <Input :label='"Referred To Practitioner Last Name" + ((isReferredToRequired || isCSR ) ? "" : " (optional)") + ":"'
+          <InputComponent :label='"Referred To Practitioner Last Name" + ((isReferredToRequired || isCSR ) ? "" : " (optional)") + ":"'
                 id='referred-to-last-name'
                 maxlength="18"
                 class='mt-3'
@@ -860,7 +860,7 @@
           <div class="text-danger"
               v-if="$v.referredToLastName.$dirty && !$v.referredToLastName.nameValidator"
               aria-live="assertive">Last name must begin with a letter and cannot include special characters except hyphens, periods, apostrophes and blank characters.</div>
-          <Input :label='"Referred To Practitioner First Name Initial" + ((isReferredToRequired || isCSR ) ? "" : " (optional)") + ":"'
+          <InputComponent :label='"Referred To Practitioner First Name Initial" + ((isReferredToRequired || isCSR ) ? "" : " (optional)") + ":"'
                 id='referred-to-first-name-initial'
                 maxlength="1"
                 class='mt-3'
@@ -1218,15 +1218,15 @@ export default {
     DateInput,
     DigitInput,
     FacilityNumberInput,
-    Input,
+    InputComponent: Input,
     NumberInput,
     PageContent,
     PhnInput,
     PractitionerNumberInput,
     PromptModal,
     Radio,
-    Select,
-    Textarea,
+    SelectComponent: Select,
+    TextareaComponent: Textarea,
     TimeInput,
     TipBox,
   },

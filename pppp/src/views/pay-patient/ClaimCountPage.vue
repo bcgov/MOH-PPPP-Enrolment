@@ -47,8 +47,8 @@ import {
   SET_MEDICAL_SERVICE_CLAIMS,
 } from '@/store/modules/pay-patient-form';
 import logService from '@/services/log-service';
-import { required } from '@vuelidate/validators'
-import useVuelidate from '@vuelidate/core'
+import { required } from '@vuelidate/validators';
+import useVuelidate from '@vuelidate/core';
 import {
   NumberSelect,
   cloneDeep,
