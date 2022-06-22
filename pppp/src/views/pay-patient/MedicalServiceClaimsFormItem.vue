@@ -110,93 +110,100 @@
     <div class="text-danger"
         v-if="v$.amountBilled.$dirty && !v$.amountBilled.required.$invalid && v$.amountBilled.amountBilledZeroValidator.$invalid"
         aria-live="assertive">Amount billed must be zero if Fee item is '03333'.</div>
-    <!--<TimeInput 
+    <TimeInput 
               :label='"Called Start Time" + (isCSR ? "" : " (optional)") + ":"'
               :id='"called-start-time-" + index'
               className='mt-3'
-              v-model='calledStartTime'
+              :modelValue='calledStartTime'
               :isHourTwoDigits='true'
-              @blur='handleBlurField(v$.medicalServiceClaims.$each[index].calledStartTime)' />
+              @update:modelValue="$emit('update:calledStartTime', $event)"
+              @blur='handleBlurField(v$.calledStartTime)' />
     <div class="text-danger"
-        v-if="v.calledStartTime.$dirty && !v.calledStartTime.partialTimeValidator"
+        v-if="v$.calledStartTime.$dirty && v$.calledStartTime.partialTimeValidator.$invalid"
         aria-live="assertive">Called start time must be an exact value.</div>
     <TimeInput 
               :label='"Rendered Finish Time" + (isCSR ? "" : " (optional)") + ":"'
               :id='"rendered-finish-time-" + index'
               className='mt-3'
-              v-model='renderedFinishTime'
+              :modelValue='renderedFinishTime'
               :isHourTwoDigits='true'
-              @blur='handleBlurField(v$.medicalServiceClaims.$each[index].renderedFinishTime)' />
+              @update:modelValue="$emit('update:renderedFinishTime', $event)"
+              @blur='handleBlurField(v$.renderedFinishTime)' />
     <div class="text-danger"
-        v-if="v.renderedFinishTime.$dirty && !v.renderedFinishTime.partialTimeValidator"
+        v-if="v$.renderedFinishTime.$dirty && v$.renderedFinishTime.partialTimeValidator.$invalid"
         aria-live="assertive">Rendered finish time must be an exact value.</div>
-    <Input label='Diagnostic Code:'
+    <InputComponent label='Diagnostic Code:'
           :id='"diagnostic-code-" + index'
           :cypressId="'diagnosticCode' + index"
           :isUpperCaseForced='true' 
           class='mt-3'
-          v-model='diagnosticCode'
+          :modelValue='diagnosticCode'
           maxlength='5'
           :inputStyle='smallStyles'
-          @blur='handleBlurField(v$.medicalServiceClaims.$each[index].diagnosticCode)' />
+          @update:modelValue="$emit('update:diagnosticCode', $event)"
+          @blur='handleBlurField(v$.diagnosticCode)' />
     <div class="text-danger"
-        v-if="v.diagnosticCode.$dirty && !v.diagnosticCode.required"
+        v-if="v$.diagnosticCode.$dirty && v$.diagnosticCode.required.$invalid"
         aria-live="assertive">Diagnostic code is required.</div>
     <div class="text-danger"
-        v-if="v.diagnosticCode.$dirty && ((v.diagnosticCode.required && !v.diagnosticCode.diagnosticCodeValidator) || !v.diagnosticCode.alphanumericValidator)"
+        v-if="v$.diagnosticCode.$dirty && ((!v$.diagnosticCode.required.$invalid && v$.diagnosticCode.diagnosticCodeValidator.$invalid) || v$.diagnosticCode.alphanumericValidator.$invalid)"
         aria-live="assertive">Diagnostic code must be valid.</div>
-    <Select label='Service Location Code:'
+    <SelectComponent label='Service Location Code:'
           :id='"location-of-service-" + index'
           :cypressId="'serviceLocationCode' + index"
           class='mt-3'
-          v-model='locationOfService'
+          :modelValue='locationOfService'
           :options='serviceLocationOptions'
           :inputStyle='extraLargeStyles'
-          @blur='handleBlurField(v$.medicalServiceClaims.$each[index].locationOfService)'>
+          @update:modelValue="$emit('update:locationOfService', $event)"
+          @blur='handleBlurField(v$.locationOfService)'>
       <template v-slot:description>
         <p class="input-description" v-if="!isCSR">
           MSP Claims submitted with Service Location Code (<b>A</b>) for dates of service on or after October 1, 2021, will not be accepted.
         </p>
       </template>
-    </Select>
+    </SelectComponent>
     <div class="text-danger"
-        v-if="v.locationOfService.$dirty
-          && !v.locationOfService.required"
+        v-if="v$.locationOfService.$dirty
+          && v$.locationOfService.required.$invalid"
         aria-live="assertive">Service Location Code is required.</div>
     <div class="text-danger"
-        v-if="v.locationOfService.$dirty
-          && v.locationOfService.required
-          && !v.locationOfService.serviceLocationCodeValidator"
+        v-if="v$.locationOfService.$dirty
+          && !v$.locationOfService.required.$invalid
+          && v$.locationOfService.serviceLocationCodeValidator.$invalid"
         aria-live="assertive">Service Location Code is invalid for the Service Date.</div>
-    <Select 
+    <SelectComponent 
         :label='"Correspondence Attached" + (isCSR ? "" : " (optional)") + ":"'
         :id='"correspondence-attached-" + index'
         class='mt-3'
-        v-model='correspondenceAttached'
+        :modelValue='correspondenceAttached'
+        @update:modelValue="$emit('update:correspondenceAttached', $event)"
         :options='correspondenceAttachedOptions'
         defaultOptionLabel='None'
         :inputStyle='largeStyles' />
-    <Select :label='"Submission Code" + ((isCSR || isSubmissionCodeRequired(index)) ? "" : " (optional)") + ":"'
+    <SelectComponent :label='"Submission Code" + ((isCSR || isSubmissionCodeRequired()) ? "" : " (optional)") + ":"'
         :id='"submission-code-" + index'
         :cypressId="'submissionCode' + index"
         class='mt-3'
-        v-model='submissionCode'
+        :modelValue='submissionCode'
         defaultOptionLabel='None'
         :options='submissionCodeOptions'
         :inputStyle='largeStyles'
-        @blur='handleBlurField(v$.medicalServiceClaims.$each[index].submissionCode)' />
+        @update:modelValue="$emit('update:submissionCode', $event)"
+        @blur='handleBlurField(v$.submissionCode)' />
     <div class="text-danger"
-        v-if="v.submissionCode.$dirty && isSubmissionCodeRequired(index) && !v.submissionCode.submissionCodeValidator"
+        v-if="v$.submissionCode.$dirty && isSubmissionCodeRequired() && v$.submissionCode.submissionCodeValidator.$invalid"
         aria-live="assertive">Submission code is required.</div>
-    <Textarea 
+    <TextareaComponent
           :label='"Notes/Additional Information" + (isCSR ? "" : " (optional)") + ":"'
           :id='"notes-" + index'
           :cypressId="'notesAttach' + index"
           class='mt-3'
-          v-model='notes'
+          :modelValue='notes'
+          @update:modelValue="$emit('update:notes', $event)"
           :remainingCharsMaxlength='400'
           :isRemainingCharsShown='true'
-          :inputStyle='textareaStyle' /> -->
+          :inputStyle='textareaStyle' />
   </div>
 </template>
 
@@ -207,11 +214,19 @@ import {
   startOfToday,
   addDays,
   isBefore,
+  subDays,
 } from 'date-fns';
 import {
   extraSmallStyles,
   smallStyles,
+  largeStyles,
+  extraLargeStyles,
 } from '@/constants/input-styles';
+import {
+  selectOptionsSubmissionCode,
+  selectOptionsCorrespondenceAttached,
+  selectOptionsServiceLocation,
+} from '@/constants/select-options';
 import {
   isCSR,
 } from '@/helpers/url';
@@ -228,6 +243,10 @@ import {
   DateInput,
   DigitInput,
   Input,
+  NumberInput,
+  Select,
+  Textarea,
+  TimeInput,
   alphanumericValidator,
   distantPastValidator,
   dollarNumberValidator,
@@ -272,6 +291,10 @@ export default {
     DateInput,
     DigitInput,
     InputComponent: Input,
+    NumberInput,
+    SelectComponent: Select,
+    TextareaComponent: Textarea,
+    TimeInput,
   },
   props: {
     index: {
@@ -324,6 +347,10 @@ export default {
       type: String,
       default: null,
     },
+    correspondenceAttached: {
+      type: String,
+      default: null,
+    },
     submissionCode: {
       type: String,
       default: null,
@@ -339,8 +366,18 @@ export default {
   },
   data() {
     return {
+      // Select options.
+      correspondenceAttachedOptions: selectOptionsCorrespondenceAttached,
+      submissionCodeOptions: selectOptionsSubmissionCode,
+      serviceLocationOptions: selectOptionsServiceLocation,
+      // Component styles.
       extraSmallStyles,
       smallStyles,
+      largeStyles,
+      extraLargeStyles,
+      textareaStyle: {
+        height: '150px'
+      },
     }
   },
   setup() {
@@ -410,14 +447,22 @@ export default {
       this.$emit('update:serviceDateData', data);
     },
     handleInputServiceFeeItem(value) {
-      this.$emit('update:feeItem', value)
-      this.$emit('update:medicalServiceClaimsFeeItemValidationError', false)
+      this.$emit('update:feeItem', value);
+      this.$emit('update:medicalServiceClaimsFeeItemValidationError', false);
     },
     getServiceDateFutureErrorMessage(feeItem) {
       if (feeItem === '03333') {
         return 'Service date cannot be more than 90 days in the future.';
       }
       return 'Service date cannot be in the future.';
+    },
+    isSubmissionCodeRequired() {
+      const past90Days = subDays(startOfToday(), 90);
+      let serviceDate = this.serviceDate;
+      if (!serviceDate || isCSR(this.$router.currentRoute.value.path)) {
+        return false;
+      }
+      return isBefore(serviceDate, addDays(past90Days, 1));
     },
   },
   computed: {

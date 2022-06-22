@@ -194,6 +194,7 @@
               v-model:diagnosticCode="claim.diagnosticCode"
               v-model:locationOfService="claim.locationOfService"
               v-model:serviceClarificationCode="claim.serviceClarificationCode"
+              v-model:correspondenceAttached="claim.correspondenceAttached"
               v-model:submissionCode="claim.submissionCode"
               v-model:notes="claim.notes"
               v-model:medicalServiceClaimsFeeItemValidationError="medicalServiceClaimsFeeItemValidationError[index]"
@@ -210,7 +211,7 @@
                 :items='addressOwnerOptions'
                 @blur='handleBlurField(v$.addressOwner)' />
           <div class="text-danger"
-              v-if="v$.addressOwner.$dirty && !v$.addressOwner.required"
+              v-if="v$.addressOwner.$dirty && v$.addressOwner.required.$invalid"
               aria-live="assertive">This field is required.</div>
           <InputComponent 
                 :label='"Apartment / Unit" + (isCSR ? "" : " (optional)") + ":"'
@@ -235,7 +236,7 @@
                 :inputStyle='mediumStyles'
                 @blur='handleBlurField(v$.streetName)' />
           <div class="text-danger"
-              v-if="v$.streetName.$dirty && !v$.streetName.required"
+              v-if="v$.streetName.$dirty && v$.streetName.required.$invalid"
               aria-live="assertive">Street Name is required.</div>
           <InputComponent label='City:'
                 id='city'
@@ -246,7 +247,7 @@
                 :inputStyle='mediumStyles'
                 @blur='handleBlurField(v$.city)' />
           <div class="text-danger"
-              v-if="v$.city.$dirty && !v$.city.required"
+              v-if="v$.city.$dirty && v$.city.required.$invalid"
               aria-live="assertive">City is required.</div>
           <div class='my-3'>Province:</div>
           <p><strong>British Columbia</strong></p>
@@ -258,10 +259,10 @@
                 :inputStyle='smallStyles'
                 @blur='handleBlurField(v$.postalCode)' />
           <div class="text-danger"
-              v-if="v$.postalCode.$dirty && !v$.postalCode.required"
+              v-if="v$.postalCode.$dirty && v$.postalCode.required.$invalid"
               aria-live="assertive">Postal Code is required.</div>
           <div class="text-danger"
-              v-if="v$.postalCode.$dirty && v$.postalCode.required && !v$.postalCode.bcPostalCodeValidator"
+              v-if="v$.postalCode.$dirty && !v$.postalCode.required.$invalid && v$.postalCode.bcPostalCodeValidator.$invalid"
               aria-live="assertive">Must be a valid BC postal code.</div>
         </div>
 
@@ -287,10 +288,10 @@
                 @blur='handleBlurField(v$.practitionerLastName)'
                 @input='handleInputPractitioner()' />
           <div class="text-danger"
-              v-if="v$.practitionerLastName.$dirty && !v$.practitionerLastName.required"
+              v-if="v$.practitionerLastName.$dirty && v$.practitionerLastName.required.$invalid"
               aria-live="assertive">Practitioner Last Name is required.</div>
           <div class="text-danger"
-              v-if="v$.practitionerLastName.$dirty && v$.practitionerLastName.required && !v$.practitionerLastName.nameValidator"
+              v-if="v$.practitionerLastName.$dirty && !v$.practitionerLastName.required.$invalid && v$.practitionerLastName.nameValidator.$invalid"
               aria-live="assertive">Practitioner Last Name must begin with a letter and cannot include special characters except hyphens, periods, apostrophes and blank characters.</div>
           <div class="text-danger"
               v-if="isPractitionerErrorShown"
@@ -305,10 +306,10 @@
                 @blur='handleBlurField(v$.practitionerFirstName)'
                 @input='handleInputPractitioner()' />
           <div class="text-danger"
-              v-if="v$.practitionerFirstName.$dirty && !v$.practitionerFirstName.required"
+              v-if="v$.practitionerFirstName.$dirty && v$.practitionerFirstName.required.$invalid"
               aria-live="assertive">Practitioner First Name is required.</div>
           <div class="text-danger"
-              v-if="v$.practitionerFirstName.$dirty && v$.practitionerFirstName.required && !v$.practitionerFirstName.nameValidator"
+              v-if="v$.practitionerFirstName.$dirty && !v$.practitionerFirstName.required.$invalid && v$.practitionerFirstName.nameValidator.$invalid"
               aria-live="assertive">Practitioner First Name must begin with a letter and cannot include special characters except hyphens, periods, apostrophes and blank characters.</div>
           <div class="text-danger"
               v-if="isPractitionerErrorShown"
@@ -322,10 +323,10 @@
                 :inputStyle='smallStyles'
                 @blur='handleBlurField(v$.practitionerPaymentNumber)'/>
           <div class="text-danger"
-              v-if="v$.practitionerPaymentNumber.$dirty && !v$.practitionerPaymentNumber.required"
+              v-if="v$.practitionerPaymentNumber.$dirty && v$.practitionerPaymentNumber.required.$invalid"
               aria-live="assertive">Payment number is required.</div>
           <div class="text-danger"
-              v-if="v$.practitionerPaymentNumber.$dirty && v$.practitionerPaymentNumber.required && !v$.practitionerPaymentNumber.minLength"
+              v-if="v$.practitionerPaymentNumber.$dirty && !v$.practitionerPaymentNumber.required.$invalid && v$.practitionerPaymentNumber.minLength.$invalid"
               aria-live="assertive">Payment number must not be less than 5 characters.</div>
           <PractitionerNumberInput label='Practitioner Number:'
                 id='practitioner-number'
@@ -336,10 +337,10 @@
                 @blur='handleBlurField(v$.practitionerPractitionerNumber)'
                 @input='handleInputPractitioner()'/>
           <div class="text-danger"
-              v-if="v$.practitionerPractitionerNumber.$dirty && !v$.practitionerPractitionerNumber.required"
+              v-if="v$.practitionerPractitionerNumber.$dirty && v$.practitionerPractitionerNumber.required.$invalid"
               aria-live="assertive">Practitioner number is required.</div>
           <div class="text-danger"
-              v-if="v$.practitionerPractitionerNumber.$dirty && v$.practitionerPractitionerNumber.required && !v$.practitionerPractitionerNumber.minLength"
+              v-if="v$.practitionerPractitionerNumber.$dirty && !v$.practitionerPractitionerNumber.required.$invalid && v$.practitionerPractitionerNumber.minLength.$invalid"
               aria-live="assertive">Practitioner number must not be less than 5 characters.</div>
           <div class="text-danger"
               v-if="isPractitionerErrorShown"
@@ -354,17 +355,17 @@
                 @blur='handleBlurField(v$.practitionerSpecialtyCode)'/>
           <div class="text-danger"
               v-if="v$.practitionerSpecialtyCode.$dirty
-                && !v$.practitionerSpecialtyCode.alphanumericValidator"
+                && v$.practitionerSpecialtyCode.alphanumericValidator.$invalid"
               aria-live="assertive">Specialty Code must be alphanumeric.</div>
           <div class="text-danger"
               v-if="v$.practitionerSpecialtyCode.$dirty
-                && !v$.practitionerSpecialtyCode.minLength"
+                && v$.practitionerSpecialtyCode.minLengthValue.$invalid"
               aria-live="assertive">Specialty Code cannot be less than 2 characters.</div>
           <div class="text-danger"
               v-if="v$.practitionerSpecialtyCode.$dirty
-                && v$.practitionerSpecialtyCode.minLength
-                && v$.practitionerSpecialtyCode.alphanumericValidator
-                && !v$.practitionerSpecialtyCode.specialtyCodeValidator"
+                && !v$.practitionerSpecialtyCode.minLengthValue.$invalid
+                && !v$.practitionerSpecialtyCode.alphanumericValidator.$invalid
+                && v$.practitionerSpecialtyCode.specialtyCodeValidator.$invalid"
               aria-live="assertive">Specialty Code is invalid.</div>
           <FacilityNumberInput 
                 :label='"Facility Number" + (isCSR ? "" : " (optional)") + ":"'
@@ -374,7 +375,7 @@
                 :inputStyle='smallStyles'
                 @blur='handleBlurField(v$.practitionerFacilityNumber)'/>
           <div class="text-danger"
-              v-if="v$.practitionerFacilityNumber.$dirty && !v$.practitionerFacilityNumber.minLength"
+              v-if="v$.practitionerFacilityNumber.$dirty && v$.practitionerFacilityNumber.minLength.$invalid"
               aria-live="assertive">Facility number must not be less than 5 characters.</div>
         </div>
 
@@ -388,10 +389,10 @@
                 :inputStyle='smallStyles'
                 @blur='handleBlurField(v$.referredByPractitionerNumber)'/>
           <div class="text-danger"
-              v-if="isReferredByRequired && v$.referredByPractitionerNumber.$dirty && !v$.referredByPractitionerNumber.required"
+              v-if="isReferredByRequired && v$.referredByPractitionerNumber.$dirty && v$.referredByPractitionerNumber.required.$invalid"
               aria-live="assertive">Practitioner number is required.</div>
           <div class="text-danger"
-              v-if="v$.referredByPractitionerNumber.$dirty && !v$.referredByPractitionerNumber.minLength"
+              v-if="v$.referredByPractitionerNumber.$dirty && v$.referredByPractitionerNumber.minLength.$invalid"
               aria-live="assertive">Practitioner number must not be less than 5 characters.</div>
           <InputComponent 
                 :label='"Referred By Practitioner Last Name" + ((isReferredByRequired || isCSR ) ? "" : " (optional)") + ":"'
@@ -402,10 +403,10 @@
                 :inputStyle='mediumStyles'
                 @blur='handleBlurField(v$.referredByLastName)'/>
           <div class="text-danger"
-              v-if="isReferredByRequired && v$.referredByLastName.$dirty && !v$.referredByLastName.required"
+              v-if="isReferredByRequired && v$.referredByLastName.$dirty && v$.referredByLastName.required.$invalid"
               aria-live="assertive">Last name is required.</div>
           <div class="text-danger"
-              v-if="v$.referredByLastName.$dirty && !v$.referredByLastName.nameValidator"
+              v-if="v$.referredByLastName.$dirty && v$.referredByLastName.nameValidator.$invalid"
               aria-live="assertive">Last name must begin with a letter and cannot include special characters except hyphens, periods, apostrophes and blank characters.</div>
           <InputComponent 
                 :label='"Referred By Practitioner First Name Initial" + ((isReferredByRequired || isCSR ) ? "" : " (optional)") + ":"'
@@ -416,10 +417,10 @@
                 :inputStyle='extraSmallStyles'
                 @blur='handleBlurField(v$.referredByFirstNameInitial)'/>
           <div class="text-danger"
-              v-if="isReferredByRequired && v$.referredByFirstNameInitial.$dirty && !v$.referredByFirstNameInitial.required"
+              v-if="isReferredByRequired && v$.referredByFirstNameInitial.$dirty && v$.referredByFirstNameInitial.required.$invalid"
               aria-live="assertive">First Name Initial is required.</div>
           <div class="text-danger"
-              v-if="v$.referredByFirstNameInitial.$dirty && !v$.referredByFirstNameInitial.alphaValidator"
+              v-if="v$.referredByFirstNameInitial.$dirty && v$.referredByFirstNameInitial.alphaValidator.$invalid"
               aria-live="assertive">First Name Initial must only be an alphabetic character.</div>
         </div>
 
@@ -432,10 +433,10 @@
                 :inputStyle='smallStyles'
                 @blur='handleBlurField(v$.referredToPractitionerNumber)'/>
           <div class="text-danger"
-              v-if="isReferredToRequired && v$.referredToPractitionerNumber.$dirty && !v$.referredToPractitionerNumber.required"
+              v-if="isReferredToRequired && v$.referredToPractitionerNumber.$dirty && v$.referredToPractitionerNumber.required.$invalid"
               aria-live="assertive">Practitioner number is required.</div>
           <div class="text-danger"
-              v-if="v$.referredToPractitionerNumber.$dirty && !v$.referredToPractitionerNumber.minLength"
+              v-if="v$.referredToPractitionerNumber.$dirty && v$.referredToPractitionerNumber.minLength.$invalid"
               aria-live="assertive">Practitioner number must not be less than 5 characters.</div>
           <InputComponent :label='"Referred To Practitioner Last Name" + ((isReferredToRequired || isCSR ) ? "" : " (optional)") + ":"'
                 id='referred-to-last-name'
@@ -445,10 +446,10 @@
                 :inputStyle='mediumStyles'
                 @blur='handleBlurField(v$.referredToLastName)'/>
           <div class="text-danger"
-              v-if="isReferredToRequired && v$.referredToLastName.$dirty && !v$.referredToLastName.required"
+              v-if="isReferredToRequired && v$.referredToLastName.$dirty && v$.referredToLastName.required.$invalid"
               aria-live="assertive">Last name is required.</div>
           <div class="text-danger"
-              v-if="v$.referredToLastName.$dirty && !v$.referredToLastName.nameValidator"
+              v-if="v$.referredToLastName.$dirty && v$.referredToLastName.nameValidator.$invalid"
               aria-live="assertive">Last name must begin with a letter and cannot include special characters except hyphens, periods, apostrophes and blank characters.</div>
           <InputComponent :label='"Referred To Practitioner First Name Initial" + ((isReferredToRequired || isCSR ) ? "" : " (optional)") + ":"'
                 id='referred-to-first-name-initial'
@@ -458,10 +459,10 @@
                 :inputStyle='extraSmallStyles'
                 @blur='handleBlurField(v$.referredToFirstNameInitial)'/>
           <div class="text-danger"
-              v-if="isReferredToRequired && v$.referredToFirstNameInitial.$dirty && !v$.referredToFirstNameInitial.required"
+              v-if="isReferredToRequired && v$.referredToFirstNameInitial.$dirty && v$.referredToFirstNameInitial.required.$invalid"
               aria-live="assertive">First Name Initial is required.</div>
           <div class="text-danger"
-              v-if="v$.referredToFirstNameInitial.$dirty && !v$.referredToFirstNameInitial.alphaValidator"
+              v-if="v$.referredToFirstNameInitial.$dirty && v$.referredToFirstNameInitial.alphaValidator.$invalid"
               aria-live="assertive">First Name Initial must only be an alphabetic character.</div>
         </div>
         <div v-if="isSystemUnavailable"
@@ -515,16 +516,9 @@ import {
   phnNineValidator
 } from '@/helpers/validators';
 import {
-  selectOptionsSubmissionCode,
-  selectOptionsCorrespondenceAttached,
-  selectOptionsServiceLocation,
-} from '@/constants/select-options';
-import {
   extraSmallStyles,
   smallStyles,
   mediumStyles,
-  largeStyles,
-  extraLargeStyles,
 } from '@/constants/input-styles';
 import ContinueBar from '@/components/ContinueBar.vue';
 import PageContent from '@/components/PageContent.vue';
@@ -598,7 +592,6 @@ import {
   addDays,
   isBefore,
   isSameDay,
-  subDays,
 } from 'date-fns';
 
 const bcPostalCodeValidator = (value) => {
@@ -715,17 +708,9 @@ export default {
           value: 'N',
         }
       ],
-      correspondenceAttachedOptions: selectOptionsCorrespondenceAttached,
-      submissionCodeOptions: selectOptionsSubmissionCode,
-      serviceLocationOptions: selectOptionsServiceLocation,
       extraSmallStyles,
       smallStyles,
       mediumStyles,
-      largeStyles,
-      extraLargeStyles,
-      textareaStyle: {
-        height: '150px'
-      },
 
       planReferenceNumber: null,
       phn: null,
@@ -904,7 +889,7 @@ export default {
       },
       practitionerSpecialtyCode: {
         alphanumericValidator: optionalValidator(alphanumericValidator),
-        minLength: optionalValidator(validateIf(!isCSR(this.$router.currentRoute.value.path), minLength(2))),
+        minLengthValue: optionalValidator(validateIf(!isCSR(this.$router.currentRoute.value.path), minLength(2))),
         specialtyCodeValidator: optionalValidator(validateIf(!isCSR(this.$router.currentRoute.value.path), specialtyCodeValidator)),
       },
       referredByFirstNameInitial: {
@@ -950,9 +935,6 @@ export default {
     return validations;
   },
   methods: {
-    test(v) {
-      console.log(v);
-    },
     handleBlurField(validation) {
       if (validation) {
         validation.$touch();
@@ -1152,14 +1134,6 @@ export default {
         return `Service (${index + 1} of ${this.medicalServiceClaims.length})`;
       }
       return 'Service';
-    },
-    isSubmissionCodeRequired(index) {
-      const past90Days = subDays(startOfToday(), 90);
-      let serviceDate = this.medicalServiceClaims[index].serviceDate;
-      if (!serviceDate || isCSR(this.$router.currentRoute.value.path)) {
-        return false;
-      }
-      return isBefore(serviceDate, addDays(past90Days, 1));
     },
   },
   computed: {
