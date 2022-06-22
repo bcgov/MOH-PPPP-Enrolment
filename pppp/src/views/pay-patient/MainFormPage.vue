@@ -557,7 +557,7 @@ import {
   SET_REFERRED_TO_PRACTITIONER_NUMBER,
 } from '@/store/modules/pay-patient-form';
 import logService from '@/services/log-service';
-import { required, requiredIf, maxLength, minLength } from '@vuelidate/validators';
+import { required, requiredIf, maxLength, minLength } from '@vuelidate/validators/dist/raw.esm';
 import useVuelidate from '@vuelidate/core';
 import {
   DateInput,
