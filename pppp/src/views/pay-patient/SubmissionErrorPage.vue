@@ -7,7 +7,10 @@
           <div class="row align-items-center">
             <div class="col-2 pr-0 text-center">
               <div class="status-icon text-danger">
-                <font-awesome-icon icon="times-circle" />
+                <IconTimesCircle
+                  color="#d93e45"
+                  class="times-circle-icon"
+                />
               </div>
             </div>
             <div class="col-10 pl-0 py-3">
@@ -36,10 +39,12 @@ import {
 import { scrollTo } from '../../helpers/scroll';
 import { getConvertedPath } from '@/helpers/url';
 import logService from '../../services/log-service';
+import { IconTimesCircle } from 'common-lib-vue';
 
 export default {
   name: 'SubmissionErrorPage',
   components: {
+    IconTimesCircle,
     PageContent,
   },
   created() {
@@ -81,5 +86,9 @@ export default {
 }
 .status-icon {
   font-size: 32px;
+}
+.times-circle-icon {
+  width: 32px;
+  height: 32px;
 }
 </style>

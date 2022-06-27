@@ -9,7 +9,7 @@
             class="col-3 text-right print-hide">
           <a href="javascript:void(0)"
             @click="navigateToMainFormPage('plan-reference-number')">Edit 
-            <font-awesome-icon icon="pencil-alt" />
+            <IconPencil color="#1a5a96"/>
           </a>
         </div>
       </div>
@@ -27,7 +27,7 @@
             class="col-3 text-right print-hide">
           <a href="javascript:void(0)"
               @click="navigateToMainFormPage('patient')">Edit 
-            <font-awesome-icon icon="pencil-alt" />
+            <IconPencil color="#1a5a96"/>
           </a>
         </div>
       </div>
@@ -42,7 +42,7 @@
             class="col-3 text-right print-hide">
           <a href="javascript:void(0)"
             @click="navigateToMainFormPage('vehicle-accident')">Edit 
-            <font-awesome-icon icon="pencil-alt" />
+            <IconPencil color="#1a5a96"/>
           </a>
         </div>
       </div>
@@ -57,7 +57,7 @@
             class="col-3 text-right print-hide">
           <a href="javascript:void(0)"
             @click="navigateToMainFormPage('claim-info')">Edit 
-            <font-awesome-icon icon="pencil-alt" />
+            <IconPencil color="#1a5a96"/>
           </a>
         </div>
       </div>
@@ -76,7 +76,7 @@
             class="col-3 text-right print-hide">
           <a href="javascript:void(0)"
             @click="navigateToMainFormPage(`medical-service-claim-${index}`)">Edit 
-            <font-awesome-icon icon="pencil-alt" />
+            <IconPencil color="#1a5a96"/>
           </a>
         </div>
       </div>
@@ -93,7 +93,7 @@
             class="col-3 text-right print-hide">
           <a href="javascript:void(0)"
             @click="navigateToMainFormPage('mailing-address')">Edit 
-            <font-awesome-icon icon="pencil-alt" />
+            <IconPencil color="#1a5a96"/>
           </a>
         </div>
       </div>
@@ -110,7 +110,7 @@
             class="col-3 text-right print-hide">
           <a href="javascript:void(0)"
             @click="navigateToMainFormPage('practitioner')">Edit 
-            <font-awesome-icon icon="pencil-alt" />
+            <IconPencil color="#1a5a96"/>
           </a>
         </div>
       </div>
@@ -127,7 +127,7 @@
             class="col-3 text-right print-hide">
           <a href="javascript:void(0)"
             @click="navigateToMainFormPage('referred-by')">Edit 
-            <font-awesome-icon icon="pencil-alt" />
+            <IconPencil color="#1a5a96"/>
           </a>
         </div>
       </div>
@@ -144,7 +144,7 @@
             class="col-3 text-right print-hide">
           <a href="javascript:void(0)"
             @click="navigateToMainFormPage('referred-to')">Edit 
-            <font-awesome-icon icon="pencil-alt" />
+            <IconPencil color="#1a5a96"/>
           </a>
         </div>
       </div>
@@ -164,6 +164,7 @@ import {
 } from '@/helpers/scroll';
 import pageStateService from '@/services/page-state-service';
 import {
+  IconPencil,
   capitalCaseWord,
   formatDate,
 } from 'common-lib-vue';
@@ -175,6 +176,7 @@ import {
 export default {
   name: 'PayPatientReviewTableList',
   components: {
+    IconPencil,
     ReviewTable,
   },
   props: {
