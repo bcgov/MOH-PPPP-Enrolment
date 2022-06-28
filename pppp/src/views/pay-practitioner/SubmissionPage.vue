@@ -10,10 +10,13 @@
             <a href="javascript:void(0)"
               class="print-btn"
               @click="printPage()">Print or Save as PDF
-              <font-awesome-icon icon="print" />
+              <IconPrint
+                color="#1a5a96"
+                class="print-icon"
+              />
             </a>
             <div class="tip-container">
-              <font-awesome-icon class="ml-2" icon="info-circle" />
+              <IconInfoCircle class="info-circle-icon ml-2" />
               <div class="tip">To save as a PDF, in the print window, select “Save as PDF”</div>
             </div>
           </div>
@@ -23,7 +26,10 @@
         <div class="success-box container">
           <div class="row align-items-center">
             <div class="col-md-1 pr-0 icon-container text-center">
-              <font-awesome-icon icon="check-circle" size="3x" />
+              <IconCheckCircle
+                color="#2E8540"
+                class="check-circle-icon"
+              />
             </div>
             <div class="col-md-10 pt-2 pb-2">
               <p>Your submission has been received.</p>
@@ -64,7 +70,13 @@
 <script>
 import PageContent from '@/components/PageContent.vue';
 import ReviewTableList from '@/components/pay-practitioner/ReviewTableList.vue';
-import { formatDate, Button } from 'common-lib-vue';
+import {
+  Button,
+  IconCheckCircle,
+  IconInfoCircle,
+  IconPrint,
+  formatDate,
+} from 'common-lib-vue';
 import { getConvertedPath, isCSR } from '@/helpers/url';
 import pageStateService from '@/services/page-state-service';
 import {
@@ -81,6 +93,9 @@ import logService from '@/services/log-service';
 export default {
   name: 'SubmissionPage',
   components: {
+    IconCheckCircle,
+    IconInfoCircle,
+    IconPrint,
     PageContent,
     ReviewTableList,
     ButtonComponent: Button,
@@ -187,6 +202,18 @@ export default {
 }
 .status-icon {
   font-size: 32px;
+}
+.print-icon {
+  width: 16px;
+  height: 16px;
+}
+.info-circle-icon {
+  width: 16px;
+  height: 16px;
+}
+.check-circle-icon {
+  widows: 32px;
+  height: 32px;
 }
 .info-box-label-cell {
   min-width: 230px;

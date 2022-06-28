@@ -14,7 +14,7 @@
                 :max='4'
                 :inputStyle='inputStyle'/>
         <div class="text-danger"
-            v-if="$v.medicalServiceClaimsCount.$dirty && !$v.medicalServiceClaimsCount.required"
+            v-if="v$.medicalServiceClaimsCount.$dirty && v$.medicalServiceClaimsCount.required.$invalid"
             aria-live="assertive">Medical service claim count is required.</div>
         
         <h2 class="mt-3">Hospital Visits</h2>
@@ -26,14 +26,14 @@
                 :max='2'
                 :inputStyle='inputStyle'/>
         <div class="text-danger"
-            v-if="$v.hospitalVisitClaimsCount.$dirty && !$v.hospitalVisitClaimsCount.required"
+            v-if="v$.hospitalVisitClaimsCount.$dirty && v$.hospitalVisitClaimsCount.required.$invalid"
             aria-live="assertive">Hospital visit claim count is required.</div>
         <div class="text-danger mt-3"
-            v-if=" $v.medicalServiceClaimsCount.$dirty
-                && $v.medicalServiceClaimsCount.required
-                && $v.hospitalVisitClaimsCount.$dirty
-                && $v.hospitalVisitClaimsCount.required
-                && !$v.atLeastOneClaimValidator"
+            v-if=" v$.medicalServiceClaimsCount.$dirty
+                && !v$.medicalServiceClaimsCount.required.$invalid
+                && v$.hospitalVisitClaimsCount.$dirty
+                && !v$.hospitalVisitClaimsCount.required.$invalid
+                && v$.atLeastOneClaimValidator.$invalid"
             aria-live="assertive">At least one claim is required.</div>
       </div>
     </PageContent>
@@ -68,7 +68,8 @@ import {
   SET_HOSPITAL_VISIT_CLAIMS_COUNT,
 } from '@/store/modules/pay-practitioner-form';
 import logService from '@/services/log-service';
-import { required } from 'vuelidate/lib/validators';
+import { required } from '@vuelidate/validators/dist/raw.esm';
+import useVuelidate from '@vuelidate/core';
 import { getConvertedPath, isCSR } from '@/helpers/url';
 
 const atLeastOneClaimValidator = (vm) => {
@@ -101,6 +102,11 @@ export default {
         maxWidth: '100%',
       },
       applicationUuid: null,
+    };
+  },
+  setup() {
+    return {
+      v$: useVuelidate(),
     };
   },
   created() {
@@ -174,8 +180,8 @@ export default {
       return !this.$store.state.payPractitionerForm.applicationUuid;
     },
     validateFields() {
-      this.$v.$touch()
-      if (this.$v.$invalid) {
+      this.v$.$touch()
+      if (this.v$.$invalid) {
         scrollToError();
         return;
       }
