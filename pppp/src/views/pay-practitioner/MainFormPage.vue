@@ -176,22 +176,36 @@
         </div>
 
         <div v-for="(claim, index) in medicalServiceClaims"
-            :key="'medical-service-claim-' + index"
-            :set="v = v$.medicalServiceClaims.$each[index]">
+            :key="'medical-service-claim-' + index">
           <a :name='"medical-service-claim-" + index'></a>
           <h2 class="mt-5">{{getMedicalServiceClaimTitle(index)}}</h2>
           <div class="section-container p-3">
-            <MedicalServiceClaimFormItem />
+            <MedicalServiceClaimsFormItem
+              :index="index"
+              v-model:serviceDate="claim.serviceDate"
+              v-model:serviceDateData="claim.serviceDateData"
+              v-model:numberOfServices="claim.numberOfServices"
+              v-model:serviceClarificationCode="claim.serviceClarificationCode"
+              v-model:feeItem="claim.feeItem"
+              v-model:amountBilled="claim.amountBilled"
+              v-model:calledStartTime="claim.calledStartTime"
+              v-model:renderedFinishTime="claim.renderedFinishTime"
+              v-model:diagnosticCode="claim.diagnosticCode"
+              v-model:locationOfService="claim.locationOfService"
+              v-model:correspondenceAttached="claim.correspondenceAttached"
+              v-model:submissionCode="claim.submissionCode"
+              v-model:notes="claim.notes"
+              v-model:medicalServiceClaimsFeeItemValidationError="medicalServiceClaimsFeeItemValidationError[index]"
+            />
           </div>
         </div>
         
         <div v-for="(claim, index) in hospitalVisitClaims"
-            :key="'hospital-visit-claim' + index"
-            :set="v = v$.hospitalVisitClaims.$each[index]">
+            :key="'hospital-visit-claim' + index">
           <a :name='"hospital-visit-claim-" + index'></a>
           <h2 class="mt-5">{{getHospitalVisitClaimTitle(index)}}</h2>
           <div class="section-container p-3">
-            <HospitalVisitClaimsFormItem />
+            <!-- <HospitalVisitClaimsFormItem /> -->
           </div>
         </div>
 
@@ -447,14 +461,8 @@ import {
 } from '@/helpers/url';
 import {
   birthDateValidator,
-  clarificationCodeValidator,
-  diagnosticCodeValidator,
   motorVehicleAccidentClaimNumberMaskValidator,
-  serviceDateValidator,
-  serviceDateCutOffValidator,
-  serviceLocationCodeValidator,
   specialtyCodeValidator,
-  submissionCodeValidator,
   validateIf,
   phnNineValidator
 } from '@/helpers/validators';
@@ -467,13 +475,12 @@ import {
   extraSmallStyles,
   smallStyles,
   mediumStyles,
-  largeStyles,
-  extraLargeStyles,
 } from '@/constants/input-styles';
 import ContinueBar from '@/components/ContinueBar.vue';
 import PageContent from '@/components/PageContent.vue';
 import TipBox from '@/components/TipBox.vue';
-import HospitalVisitClaimsFormItem from '@/views/pay-practitioner/HospitalVisitClaimsFormItem.vue';
+import MedicalServiceClaimsFormItem from '@/views/pay-practitioner/MedicalServiceClaimsFormItem.vue';
+// import HospitalVisitClaimsFormItem from '@/views/pay-practitioner/HospitalVisitClaimsFormItem.vue';
 import {
   MODULE_NAME as formModule,
   SET_PLAN_REFERENCE_NUMBER,
@@ -503,7 +510,7 @@ import {
   SET_PRACTITIONER_FACILITY_NUMBER
 } from '@/store/modules/pay-practitioner-form';
 import logService from '@/services/log-service';
-import { required, requiredIf, maxLength, minLength } from '@vuelidate/validators/dist/raw.esm';
+import { required, requiredIf, minLength } from '@vuelidate/validators/dist/raw.esm';
 import useVuelidate from '@vuelidate/core';
 import {
   DateInput,
@@ -518,12 +525,10 @@ import {
   alphaValidator,
   cloneDeep,
   distantPastValidator,
-  dollarNumberValidator,
   getISODateString,
   intValidator,
   isValidISODateString,
   motorVehicleAccidentClaimNumberValidator,
-  nonZeroNumberValidator,
   padLeadingZeros,
   pastDateValidator,
   positiveNumberValidator,
@@ -534,7 +539,6 @@ import {
 import {
   isSameDay,
   startOfToday,
-  addDays,
   subDays,
   isBefore,
   parseISO,
@@ -559,37 +563,8 @@ const dependentNumberValidator = (value, vm) => {
   return true;
 };
 
-const amountBilledZeroValidator = (value, vm) => {
-  const feeItem = vm.feeItem;
-  const parsedValue = parseFloat(value);
-  if (feeItem && feeItem === '03333' && parsedValue !== 0) {
-    return false;
-  }
-  return true;
-};
-
 const birthDatePastValidator = (value) => {
   return pastDateValidator(value) || isSameDay(value, startOfToday());
-};
-
-const serviceDateFutureValidator = (value, vm) => {
-  const feeItem = vm.feeItem;
-  if (!value) {
-    return false;
-  }
-  if (feeItem === '03333') {
-    const future90Days = addDays(startOfToday(), 91); // Add 1 day to include today's date.
-    return isBefore(value, future90Days);
-  }
-  return isBefore(value, addDays(startOfToday(), 1)); // Add 1 day to include today's date.
-};
-
-const partialTimeValidator = (value) => {
-  if ((value.hour && !value.minute)
-    || (!value.hour && value.minute)) {
-    return false;
-  }
-  return true;
 };
 
 const MAX_MEDICAL_SERVICE_CLAIMS = 4;
@@ -602,8 +577,9 @@ export default {
     DateInput,
     DigitInput,
     FacilityNumberInput,
-    HospitalVisitClaimsFormItem,
+    // HospitalVisitClaimsFormItem,
     InputComponent: Input,
+    MedicalServiceClaimsFormItem,
     PageContent,
     PhnInput,
     PractitionerNumberInput,
@@ -652,11 +628,6 @@ export default {
       extraSmallStyles,
       smallStyles,
       mediumStyles,
-      largeStyles,
-      extraLargeStyles,
-      textareaStyle: {
-        height: '150px'
-      },
 
       planReferenceNumber: null,
 
@@ -794,58 +765,6 @@ export default {
         intValidator: optionalValidator(intValidator),
         positiveNumberValidator: optionalValidator(positiveNumberValidator),
       },
-      medicalServiceClaims: {
-        $each: {
-          serviceDate: {
-            required: requiredIf(() => !isCSR(this.$router.currentRoute.value.path)),
-            serviceDateValidator: optionalValidator(serviceDateValidator),
-            serviceDateFutureValidator: optionalValidator(validateIf(!isCSR(this.$router.currentRoute.value.path), serviceDateFutureValidator)),
-            distantPastValidator: optionalValidator(validateIf(!isCSR(this.$router.currentRoute.value.path), distantPastValidator)),
-            serviceDateCutOffValidator: optionalValidator(validateIf(!isCSR(this.$router.currentRoute.value.path), serviceDateCutOffValidator)),
-          },
-          numberOfServices: {
-            required: requiredIf(() => !isCSR(this.$router.currentRoute.value.path)),
-            intValidator: optionalValidator(intValidator),
-            positiveNumberValidator: optionalValidator(positiveNumberValidator),
-            nonZeroNumberValidator: optionalValidator(validateIf(!isCSR(this.$router.currentRoute.value.path), nonZeroNumberValidator)),
-          },
-          feeItem: {
-            required: requiredIf(() => !isCSR(this.$router.currentRoute.value.path)),
-            intValidator: optionalValidator(intValidator),
-            positiveNumberValidator: optionalValidator(positiveNumberValidator),
-          },
-          amountBilled: {
-            required: requiredIf(() => !isCSR(this.$router.currentRoute.value.path)),
-            dollarNumberValidator: optionalValidator(dollarNumberValidator),
-            positiveNumberValidator: optionalValidator(positiveNumberValidator),
-            amountBilledZeroValidator: optionalValidator(amountBilledZeroValidator),
-          },
-          calledStartTime: {
-            partialTimeValidator: optionalValidator(partialTimeValidator),
-          },
-          renderedFinishTime: {
-            partialTimeValidator: optionalValidator(partialTimeValidator),
-          },
-          diagnosticCode: {
-            required: requiredIf(() => !isCSR(this.$router.currentRoute.value.path)),
-            alphanumericValidator: optionalValidator(alphanumericValidator),
-            diagnosticCodeValidator: optionalValidator(validateIf(!isCSR(this.$router.currentRoute.value.path), diagnosticCodeValidator)),
-          },
-          locationOfService: {
-            required: requiredIf(() => !isCSR(this.$router.currentRoute.value.path)),
-            serviceLocationCodeValidator: validateIf(!isCSR(this.$router.currentRoute.value.path), serviceLocationCodeValidator),
-          },
-          serviceClarificationCode: {
-            clarificationCodeValidator: optionalValidator(clarificationCodeValidator(isCSR(this.$router.currentRoute.value.path))),
-          },
-          submissionCode: {
-            submissionCodeValidator: validateIf(!isCSR(this.$router.currentRoute.value.path), submissionCodeValidator),
-          },
-          notes: {
-            maxLength: maxLength(400),
-          },
-        }
-      },
       practitionerLastName: {
         required: requiredIf(() => !isCSR(this.$router.currentRoute.value.path)),
         nameValidator: optionalValidator(nameValidator),
@@ -926,14 +845,8 @@ export default {
     handleProcessBirthDate(data) {
       this.birthDateData = data;
     },
-    handleProcessServiceDate(data, claimIndex) {
-      this.medicalServiceClaims[claimIndex].serviceDateData = data;
-    },
     handleInputPractitioner() {
       this.isPractitionerErrorShown = false;
-    },
-    handleInputServiceFeeItem(index) {
-      this.medicalServiceClaimsFeeItemValidationError[index] = false;
     },
     handleInputHospitalVisitFeeItem(index) {
       this.hospitalVisitClaimsFeeItemValidationError[index] = false;
@@ -997,6 +910,7 @@ export default {
       
       this.v$.$touch();
       if (this.v$.$invalid) {
+        console.log('invalid form:', this.v$);
         scrollToError();
         return;
       }
@@ -1143,21 +1057,6 @@ export default {
         return `Hospital Visit (${index + 1} of ${this.hospitalVisitClaims.length})`;
       }
       return 'Hospital Visit';
-    },
-    getServiceDateFutureErrorMessage(feeItem) {
-      if (feeItem === '03333') {
-        return 'Service Date cannot be more than 90 days in the future.';
-      }
-      return 'Service Date cannot be in the future.';
-    },
-    isSubmissionCodeRequired(index) {
-      const past90Days = subDays(startOfToday(), 90);
-      let serviceDate = this.medicalServiceClaims[index].serviceDate;
-      
-      if (!isValid(serviceDate) || isCSR(this.$router.currentRoute.value.path)) {
-        return false;
-      }
-      return isBefore(serviceDate, addDays(past90Days, 1));
     },
     isHospitalVisitSubmissionCodeRequired(index) {
       if (isCSR(this.$router.currentRoute.value.path)) {
