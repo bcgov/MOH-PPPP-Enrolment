@@ -205,7 +205,22 @@
           <a :name='"hospital-visit-claim-" + index'></a>
           <h2 class="mt-5">{{getHospitalVisitClaimTitle(index)}}</h2>
           <div class="section-container p-3">
-            <!-- <HospitalVisitClaimsFormItem /> -->
+            <HospitalVisitClaimsFormItem
+              :index="index"
+              v-model:month="claim.month"
+              v-model:dayFrom="claim.dayFrom"
+              v-model:dayTo="claim.dayTo"
+              v-model:year="claim.year"
+              v-model:numberOfServices="claim.numberOfServices"
+              v-model:serviceClarificationCode="claim.serviceClarificationCode"
+              v-model:feeItem="claim.feeItem"
+              v-model:amountBilled="claim.amountBilled"
+              v-model:diagnosticCode="claim.diagnosticCode"
+              v-model:locationOfService="claim.locationOfService"
+              v-model:correspondenceAttached="claim.correspondenceAttached"
+              v-model:submissionCode="claim.submissionCode"
+              v-model:notes="claim.notes"
+              v-model:hospitalVisitClaimsFeeItemValidationError="hospitalVisitClaimsFeeItemValidationError[index]" />
           </div>
         </div>
 
@@ -467,11 +482,6 @@ import {
   phnNineValidator
 } from '@/helpers/validators';
 import {
-  selectOptionsSubmissionCode,
-  selectOptionsCorrespondenceAttached,
-  selectOptionsServiceLocation,
-} from '@/constants/select-options';
-import {
   extraSmallStyles,
   smallStyles,
   mediumStyles,
@@ -480,7 +490,7 @@ import ContinueBar from '@/components/ContinueBar.vue';
 import PageContent from '@/components/PageContent.vue';
 import TipBox from '@/components/TipBox.vue';
 import MedicalServiceClaimsFormItem from '@/views/pay-practitioner/MedicalServiceClaimsFormItem.vue';
-// import HospitalVisitClaimsFormItem from '@/views/pay-practitioner/HospitalVisitClaimsFormItem.vue';
+import HospitalVisitClaimsFormItem from '@/views/pay-practitioner/HospitalVisitClaimsFormItem.vue';
 import {
   MODULE_NAME as formModule,
   SET_PLAN_REFERENCE_NUMBER,
@@ -525,24 +535,17 @@ import {
   alphaValidator,
   cloneDeep,
   distantPastValidator,
-  getISODateString,
   intValidator,
-  isValidISODateString,
   motorVehicleAccidentClaimNumberValidator,
   padLeadingZeros,
   pastDateValidator,
   positiveNumberValidator,
   optionalValidator,
   phnValidator,
-  selectOptionsMonths,
 } from 'common-lib-vue';
 import {
   isSameDay,
   startOfToday,
-  subDays,
-  isBefore,
-  parseISO,
-  isValid,
 } from 'date-fns';
 
 const nameValidator = (value) => {
@@ -577,7 +580,7 @@ export default {
     DateInput,
     DigitInput,
     FacilityNumberInput,
-    // HospitalVisitClaimsFormItem,
+    HospitalVisitClaimsFormItem,
     InputComponent: Input,
     MedicalServiceClaimsFormItem,
     PageContent,
@@ -621,10 +624,6 @@ export default {
           value: 'N',
         }
       ],
-      monthOptions: selectOptionsMonths,
-      correspondenceAttachedOptions: selectOptionsCorrespondenceAttached,
-      submissionCodeOptions: selectOptionsSubmissionCode,
-      serviceLocationOptions: selectOptionsServiceLocation,
       extraSmallStyles,
       smallStyles,
       mediumStyles,
@@ -848,9 +847,6 @@ export default {
     handleInputPractitioner() {
       this.isPractitionerErrorShown = false;
     },
-    handleInputHospitalVisitFeeItem(index) {
-      this.hospitalVisitClaimsFeeItemValidationError[index] = false;
-    },
     validateFields() {
       // If no dependent number is given, then default to "00".
       if (!this.dependentNumber) {
@@ -1057,22 +1053,6 @@ export default {
         return `Hospital Visit (${index + 1} of ${this.hospitalVisitClaims.length})`;
       }
       return 'Hospital Visit';
-    },
-    isHospitalVisitSubmissionCodeRequired(index) {
-      if (isCSR(this.$router.currentRoute.value.path)) {
-        return false;
-      }
-      const past90Days = subDays(startOfToday(), 90);
-      const ISODateStr = getISODateString(
-        this.hospitalVisitClaims[index].year,
-        this.hospitalVisitClaims[index].month,
-        this.hospitalVisitClaims[index].dayFrom,
-      );
-      const serviceDate = parseISO(ISODateStr);
-      if (!isValid(serviceDate) || !isValidISODateString(ISODateStr)) {
-        return false;
-      }
-      return isBefore(serviceDate, past90Days);
     },
   },
   computed: {
