@@ -1,12 +1,6 @@
-import { shallowMount, createLocalVue } from "@vue/test-utils";
-import Vuex from "vuex";
-import Vuelidate from "vuelidate";
+import { shallowMount } from "@vue/test-utils";
 import Page from "@/App.vue";
-
-import * as module1 from "@/store/modules/app";
-import * as module2 from "@/store/modules/pay-patient-form";
-import * as module3 from "@/store/modules/pay-practitioner-form";
-import { cloneDeep } from "lodash";
+import store from "@/store/index";
 import {
   payPatientStepRoutes,
   payPractitionerStepRoutes,
@@ -14,92 +8,85 @@ import {
   payPractitionerCSRStepRoutes,
 } from "@/router/step-routes";
 
-const localVue = createLocalVue();
-localVue.use(Vuex);
-localVue.use(Vuelidate);
-
-const storeTemplate = {
-  modules: {
-    app: cloneDeep(module1.default),
-    payPatientForm: cloneDeep(module2.default),
-    payPractitionerForm: cloneDeep(module3.default),
-  },
-};
-
-let store;
-store = new Vuex.Store(storeTemplate);
+const mockRoute = {
+  params: {
+    id: 1
+  }
+}
+const mockRouter = {
+  push: jest.fn()
+}
 
 const payPatientTemplate = shallowMount(Page, {
-  localVue,
-  stubs: ["router-link", "router-view"],
-  store,
-  mocks: {
-    $route: {
-      path: "/",
-    },
-    $router: {
-      push: jest.fn(),
-      currentRoute: {
-        path: "/pay-patient",
+  global: {
+    plugins: [store],
+    mocks: {
+      $route: mockRoute,
+      $router: {
+        ...mockRouter,
+        currentRoute: {
+          value: {
+            path: "/pay-patient",
+          },
+        },
       },
-    },
+    }
   },
+  stubs: ["router-link", "router-view"],
 });
 const payPatientCSRTemplate = shallowMount(Page, {
-  localVue,
   stubs: ["router-link", "router-view"],
-  store,
-  mocks: {
-    $route: {
-      path: "/",
-    },
-    $router: {
-      push: jest.fn(),
-      currentRoute: {
-        path: "/pay-patient-csr",
+  global: {
+    plugins: [store],
+    mocks: {
+      $route: mockRoute,
+      $router: {
+        ...mockRouter,
+        currentRoute: {
+          value: {
+            path: "/pay-patient-csr",
+          },
+        },
       },
-    },
+    }
   },
 });
 const payPractitionerTemplate = shallowMount(Page, {
-  localVue,
   stubs: ["router-link", "router-view"],
-  store,
-  mocks: {
-    $route: {
-      path: "/",
-    },
-    $router: {
-      push: jest.fn(),
-      currentRoute: {
-        path: "/pay-practitioner",
+  global: {
+    plugins: [store],
+    mocks: {
+      $route: mockRoute,
+      $router: {
+        ...mockRouter,
+        currentRoute: {
+          value: {
+            path: "/pay-practitioner",
+          },
+        },
       },
-    },
+    }
   },
 });
 const payPractitionerCSRTemplate = shallowMount(Page, {
-  localVue,
   stubs: ["router-link", "router-view"],
-  store,
-  mocks: {
-    $route: {
-      path: "/",
-    },
-    $router: {
-      push: jest.fn(),
-      currentRoute: {
-        path: "/pay-practitioner-csr",
+  global: {
+    plugins: [store],
+    mocks: {
+      $route: mockRoute,
+      $router: {
+        ...mockRouter,
+        currentRoute: {
+          value: {
+            path: "/pay-practitioner-csr",
+          },
+        },
       },
-    },
+    }
   },
 });
 
 describe("App.vue render test", () => {
-  afterEach(() => {
-    jest.resetModules();
-    jest.clearAllMocks();
-  });
-
   it("renders", () => {
     const wrapper = payPatientTemplate;
     expect(wrapper.element).toBeDefined();
@@ -107,11 +94,6 @@ describe("App.vue render test", () => {
 });
 
 describe("App.vue stepRoutes()", () => {
-  afterEach(() => {
-    jest.resetModules();
-    jest.clearAllMocks();
-  });
-
   it("returns an array", () => {
     const wrapper = payPatientTemplate;
     const wrapper2 = payPatientCSRTemplate;
@@ -149,11 +131,6 @@ describe("App.vue pageTitle()", () => {
   const wrapper2 = payPatientCSRTemplate;
   const wrapper3 = payPractitionerTemplate;
   const wrapper4 = payPractitionerCSRTemplate;
-
-  afterEach(() => {
-    jest.resetModules();
-    jest.clearAllMocks();
-  });
 
   it("returns a string", () => {
     expect(typeof wrapper.vm.pageTitle() === "string").toBe(true);
