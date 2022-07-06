@@ -906,7 +906,6 @@ export default {
       
       this.v$.$touch();
       if (this.v$.$invalid) {
-        console.log('invalid form:', this.v$);
         scrollToError();
         return;
       }

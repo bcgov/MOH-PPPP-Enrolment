@@ -7,7 +7,10 @@
           <div class="row align-items-center">
             <div class="col-2 pr-0 text-center">
               <div class="status-icon text-danger">
-                <font-awesome-icon icon="times-circle" />
+                <IconTimesCircle
+                  color="#d93e45"
+                  class="times-circle-icon"
+                />
               </div>
             </div>
             <div class="col-10 pl-0 py-3">
@@ -23,6 +26,7 @@
 </template>
 
 <script>
+import { IconTimesCircle } from 'common-lib-vue';
 import PageContent from '@/components/PageContent.vue';
 import pageStateService from '@/services/page-state-service';
 import {
@@ -40,6 +44,7 @@ import logService from '@/services/log-service';
 export default {
   name: 'SubmissionErrorPage',
   components: {
+    IconTimesCircle,
     PageContent,
   },
   created() {
@@ -81,5 +86,9 @@ export default {
 }
 .status-icon {
   font-size: 32px;
+}
+.times-circle-icon {
+  width: 32px;
+  height: 32px;
 }
 </style>
