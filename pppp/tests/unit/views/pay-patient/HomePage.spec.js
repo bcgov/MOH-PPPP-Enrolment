@@ -84,9 +84,6 @@ describe("HomePage.vue pay patient created()", () => {
       .spyOn(logService, "logNavigation")
       .mockImplementation(() => Promise.resolve("logged"));
 
-    // wrapper.vm.$options.created.forEach((hook) => {
-    //   hook.call(wrapper.vm);
-    // });
     wrapper = mount(Page, {
       global: {
         plugins: [store],
@@ -136,6 +133,11 @@ describe("HomePage.vue pay patient nextPage()", () => {
       currentRoute: $route,
       push: jest.fn(),
     };
+
+    spyOnRouter = jest
+      .spyOn($router, "push")
+      .mockImplementation(() => Promise.resolve("pushed"));
+    
     wrapper = mount(Page, {
       global: {
         plugins: [store],
@@ -145,14 +147,6 @@ describe("HomePage.vue pay patient nextPage()", () => {
         }
       },
     });
-
-    spyOnRouter = jest
-      .spyOn($router, "push")
-      .mockImplementation(() => Promise.resolve("pushed"));
-
-    // wrapper.vm.$options.created.forEach((hook) => {
-    //   hook.call(wrapper.vm);
-    // });
   });
 
   afterEach(() => {

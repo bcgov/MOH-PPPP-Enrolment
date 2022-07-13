@@ -1,11 +1,7 @@
-import { mount, createLocalVue } from "@vue/test-utils";
-import Vuex from "vuex";
-import { cloneDeep } from "lodash";
+import { mount } from "@vue/test-utils";
 import Page from "@/views/pay-practitioner/HomePage.vue";
-import * as module1 from "../../../../src/store/modules/app";
-import * as module2 from "../../../../src/store/modules/pay-patient-form";
+import store from "../../../../src/store/index";
 import * as module3 from "../../../../src/store/modules/pay-practitioner-form";
-import * as dummyDataValid from "../../../../src/store/states/pay-patient-form-dummy-data";
 import spaEnvService from "@/services/spa-env-service";
 import logService from "@/services/log-service";
 import pageStateService from "@/services/page-state-service";
@@ -16,20 +12,6 @@ import {
 } from "@/router/routes";
 
 const next = jest.fn();
-
-const localVue = createLocalVue();
-localVue.use(Vuex);
-
-const storeTemplate = {
-  modules: {
-    app: cloneDeep(module1.default),
-    payPatientForm: cloneDeep(module2.default),
-    payPractitionerForm: cloneDeep(module3.default),
-  },
-};
-
-const patientState = cloneDeep(dummyDataValid.default);
-storeTemplate.modules.payPatientForm.state = cloneDeep(patientState);
 
 const scrollHelper = require("@/helpers/scroll");
 
@@ -50,15 +32,15 @@ const spyOnSetPageIncomplete = jest
 jest.spyOn(window, "scrollTo").mockImplementation(jest.fn);
 
 describe("HomePage.vue pay practitioner", () => {
-  let store;
   let wrapper;
   let $route;
   let $router;
 
   beforeEach(() => {
-    store = new Vuex.Store(storeTemplate);
     $route = {
-      path: "/potato-csr",
+      value: {
+        path: "/potato-csr",
+      },
     };
     $router = {
       $route,
@@ -66,16 +48,13 @@ describe("HomePage.vue pay practitioner", () => {
       push: jest.fn(),
     };
     wrapper = mount(Page, {
-      localVue,
-      store,
-      mocks: {
-        $route,
-        $router,
+      global: {
+        plugins: [store],
+        mocks: {
+          $route,
+          $router,
+        }
       },
-    });
-
-    wrapper.vm.$options.created.forEach((hook) => {
-      hook.call(wrapper.vm);
     });
   });
 
@@ -90,7 +69,6 @@ describe("HomePage.vue pay practitioner", () => {
 });
 
 describe("HomePage.vue pay practitioner created()", () => {
-  let store;
   let wrapper;
   let $route;
   let $router;
@@ -99,24 +77,18 @@ describe("HomePage.vue pay practitioner created()", () => {
   let spyOnLogService;
 
   beforeEach(() => {
-    store = new Vuex.Store(storeTemplate);
     $route = {
-      path: "/potato-csr",
+      value: {
+        path: "/potato-csr",
+      },
     };
     $router = {
       $route,
       currentRoute: $route,
       push: jest.fn(),
     };
-    wrapper = mount(Page, {
-      localVue,
-      store,
-      mocks: {
-        $route,
-        $router,
-      },
-    });
-    spyOnDispatch = jest.spyOn(wrapper.vm.$store, "dispatch");
+    
+    spyOnDispatch = jest.spyOn(store, "dispatch");
 
     spyOnSpaEnvs = jest
       .spyOn(spaEnvService, "loadEnvs")
@@ -126,8 +98,14 @@ describe("HomePage.vue pay practitioner created()", () => {
       .spyOn(logService, "logNavigation")
       .mockImplementation(() => Promise.resolve("logged"));
 
-    wrapper.vm.$options.created.forEach((hook) => {
-      hook.call(wrapper.vm);
+    wrapper = mount(Page, {
+      global: {
+        plugins: [store],
+        mocks: {
+          $route,
+          $router,
+        }
+      },
     });
   });
 
@@ -153,37 +131,35 @@ describe("HomePage.vue pay practitioner created()", () => {
 });
 
 describe("HomePage.vue pay practitioner nextPage()", () => {
-  let store;
   let wrapper;
   let $route;
   let $router;
   let spyOnRouter;
 
   beforeEach(() => {
-    store = new Vuex.Store(storeTemplate);
     $route = {
-      path: "/potato-csr",
+      value: {
+        path: "/potato-csr",
+      },
     };
     $router = {
       $route,
       currentRoute: $route,
       push: jest.fn(),
     };
-    wrapper = mount(Page, {
-      localVue,
-      store,
-      mocks: {
-        $route,
-        $router,
-      },
-    });
-
+    
     spyOnRouter = jest
       .spyOn($router, "push")
       .mockImplementation(() => Promise.resolve("pushed"));
 
-    wrapper.vm.$options.created.forEach((hook) => {
-      hook.call(wrapper.vm);
+    wrapper = mount(Page, {
+      global: {
+        plugins: [store],
+        mocks: {
+          $route,
+          $router,
+        }
+      },
     });
   });
 
@@ -218,15 +194,15 @@ describe("HomePage.vue pay practitioner nextPage()", () => {
 });
 
 describe("HomePage.vue pay practitioner beforeRouteLeave(to, from, next)", () => {
-  let store;
   let wrapper;
   let $route;
   let $router;
 
   beforeEach(() => {
-    store = new Vuex.Store(storeTemplate);
     $route = {
-      path: "/potato",
+      value: {
+        path: "/potato",
+      },
     };
     $router = {
       $route,
@@ -234,11 +210,12 @@ describe("HomePage.vue pay practitioner beforeRouteLeave(to, from, next)", () =>
       push: jest.fn(),
     };
     wrapper = mount(Page, {
-      localVue,
-      store,
-      mocks: {
-        $route,
-        $router,
+      global: {
+        plugins: [store],
+        mocks: {
+          $route,
+          $router,
+        }
       },
     });
   });
