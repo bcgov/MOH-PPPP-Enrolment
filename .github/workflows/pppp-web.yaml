@@ -7,6 +7,7 @@ on:
       - "pppp/src/**/*.js"
       - "pppp/src/**/*.scss"
       - "pppp/src/**/*.vue"
+      - "pppp/tests/unit/**/*.spec.js"
       - "pppp/package*.json"
   workflow_dispatch:
 defaults:

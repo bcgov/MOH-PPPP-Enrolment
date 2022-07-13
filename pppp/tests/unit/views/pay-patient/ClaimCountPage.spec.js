@@ -1,5 +1,4 @@
 import { mount } from "@vue/test-utils";
-import Vuex from "vuex";
 import Page from "@/views/pay-patient/ClaimCountPage.vue";
 import store from "../../../../src/store/index";
 import * as module2 from "../../../../src/store/modules/pay-patient-form";
@@ -7,6 +6,7 @@ import logService from "@/services/log-service";
 import pageStateService from "@/services/page-state-service";
 import { payPatientRoutes, payPatientRouteStepOrder } from "@/router/routes";
 import { getConvertedPath } from "@/helpers/url";
+import { cloneDeep } from 'common-lib-vue';
 
 jest.mock("axios", () => ({
   get: jest.fn(),
@@ -83,6 +83,7 @@ const dummyDataValid = {
     referredToPractitionerNumber: "22272",
   },
 };
+dummyDataValid.default.medicalServiceClaims[0].serviceDate = testDate;
 
 const spyOnLogService = jest
   .spyOn(logService, "logNavigation")
@@ -313,6 +314,7 @@ describe("ClaimCountPage.vue pay patient validateFields() part 2 (valid)", () =>
   let wrapper;
   let $route;
   let $router;
+  let $store;
   let spyOnRouter;
   let spyOnDispatch;
 
@@ -327,22 +329,23 @@ describe("ClaimCountPage.vue pay patient validateFields() part 2 (valid)", () =>
       currentRoute: $route,
       push: jest.fn(),
     };
-    spyOnDispatch = jest.spyOn(store, "dispatch");
+    $store = {
+      state: {
+        payPatientForm: cloneDeep(dummyDataValid.default),
+      },
+      dispatch: jest.fn(),
+    };
+    spyOnDispatch = jest.spyOn($store, "dispatch");
     spyOnRouter = jest
       .spyOn($router, "push")
       .mockImplementation(() => Promise.resolve("pushed"));
-
-    const patientState2 = cloneDeep(dummyDataValid.default);
-    patientState2.medicalServiceClaims[0].serviceDate = testDate;
-
-    store.modules.payPatientForm.state = patientState2;
     wrapper = mount(Page, {
       global: {
-        plugins: [store],
         mocks: {
           $route,
           $router,
-        }
+          $store,
+        },
       },
     });
   });
