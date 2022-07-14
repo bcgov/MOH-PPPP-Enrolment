@@ -1,8 +1,7 @@
-import { mount, createLocalVue } from "@vue/test-utils";
+import { mount } from "@vue/test-utils";
 import Vuex from "vuex";
-import Vuelidate from "vuelidate";
 import Page from "@/views/pay-practitioner/ClaimCountPage.vue";
-import { cloneDeep } from "lodash";
+import store from "../../../../src/store/index";
 import * as module1 from "../../../../src/store/modules/app";
 import * as module2 from "../../../../src/store/modules/pay-patient-form";
 import * as module3 from "../../../../src/store/modules/pay-practitioner-form";
@@ -13,10 +12,7 @@ import {
   payPractitionerRouteStepOrder,
 } from "@/router/routes";
 import { getConvertedPath } from "@/helpers/url";
-
-const localVue = createLocalVue();
-localVue.use(Vuex);
-localVue.use(Vuelidate);
+import { cloneDeep } from 'common-lib-vue';
 
 jest.mock("axios", () => ({
   get: jest.fn(),
@@ -25,7 +21,8 @@ jest.mock("axios", () => ({
   }),
 }));
 
-const testDate = new Date().getFullYear() - 1;
+const testDate = new Date();
+testDate.setFullYear(testDate.getFullYear() - 1);
 const next = jest.fn();
 
 const dummyDataValid = {
@@ -49,7 +46,7 @@ const dummyDataValid = {
 
     medicalServiceClaims: [
       {
-        serviceDate: new Date(),
+        serviceDate: testDate,
         numberOfServices: "1",
         serviceClarificationCode: "A1",
         feeItem: "03333",
@@ -163,24 +160,33 @@ const spyOnSetPageIncomplete = jest
   .mockImplementation(() => Promise.resolve("set"));
 
 describe("ClaimCountPage.vue render test", () => {
-  let store;
   let wrapper;
+  let $route;
+  let $router;
+  let $store;
 
   beforeEach(() => {
-    store = new Vuex.Store(storeTemplate);
+    $route = {
+      value: {
+        path: "/",
+      }
+    };
+    $router = {
+      push: jest.fn(),
+      currentRoute: $route,
+    };
+    $store = {
+      state: {
+        payPractitionerForm: {}
+      },
+    };
     wrapper = mount(Page, {
-      localVue,
-      store,
-      mocks: {
-        $route: {
-          path: "/",
-        },
-        $router: {
-          push: jest.fn(),
-          currentRoute: {
-            path: "/potato-csr",
-          },
-        },
+      global: {
+        mocks: {
+          $route,
+          $router,
+          $store,
+        }
       },
     });
   });
@@ -196,23 +202,33 @@ describe("ClaimCountPage.vue render test", () => {
 });
 
 describe("ClaimCountPage.vue pay practitioner created()", () => {
-  let store;
+  let wrapper;
+  let $route;
+  let $router;
+  let $store;
 
   beforeEach(() => {
-    store = new Vuex.Store(storeTemplate);
-    mount(Page, {
-      localVue,
-      store,
-      mocks: {
-        $route: {
-          path: "/",
-        },
-        $router: {
-          push: jest.fn(),
-          currentRoute: {
-            path: "/potato-csr",
-          },
-        },
+    $route = {
+      value: {
+        path: "/",
+      }
+    };
+    $router = {
+      push: jest.fn(),
+      currentRoute: $route,
+    };
+    $store = {
+      state: {
+        payPractitionerForm: {}
+      },
+    };
+    wrapper = mount(Page, {
+      global: {
+        mocks: {
+          $route,
+          $router,
+          $store,
+        }
       },
     });
   });
@@ -228,52 +244,68 @@ describe("ClaimCountPage.vue pay practitioner created()", () => {
 });
 
 describe("ClaimCountPage.vue pay patient isFirstLoad()", () => {
-  let store;
   let wrapper;
+  let $route;
+  let $router;
+  let $store;
+
+  beforeEach(() => {
+    $route = {
+      value: {
+        path: "potato-csr",
+      }
+    };
+    $router = {
+      push: jest.fn(),
+      currentRoute: $route,
+    };
+  });
 
   afterEach(() => {
     jest.resetModules();
     jest.clearAllMocks();
   });
 
-  it("returns true if application uuid present", () => {
-    store = new Vuex.Store(storeTemplate);
-    wrapper = mount(Page, {
-      localVue,
-      store,
-      mocks: {
-        $route: {
-          path: "/",
-        },
-        $router: {
-          push: jest.fn(),
-          currentRoute: {
-            path: "/potato-csr",
-          },
-        },
+  it("returns false if application uuid present", () => {
+    $store = {
+      state: {
+        payPractitionerForm: {
+          applicationUuid: 'potato',
+        }
       },
+      dispatch: jest.fn(),
+    };
+    wrapper = mount(Page, {
+      global: {
+        mocks: {
+          $route,
+          $router,
+          $store,
+        }
+      }
     });
 
     const result = wrapper.vm.isFirstLoad();
-    expect(result).toBe(true);
+    expect(result).toBe(false);
   });
 
-  it("returns false if application uuid is null", () => {
-    store = new Vuex.Store(storeTemplate2);
-    wrapper = mount(Page, {
-      localVue,
-      store,
-      mocks: {
-        $route: {
-          path: "/",
-        },
-        $router: {
-          push: jest.fn(),
-          currentRoute: {
-            path: "/potato-csr",
-          },
-        },
+  it("returns true if application uuid is null", () => {
+    $store = {
+      state: {
+        payPractitionerForm: {
+          applicationUuid: null,
+        }
       },
+      dispatch: jest.fn(),
+    };
+    wrapper = mount(Page, {
+      global: {
+        mocks: {
+          $route,
+          $router,
+          $store,
+        }
+      }
     });
 
     const result = wrapper.vm.isFirstLoad();
@@ -282,7 +314,7 @@ describe("ClaimCountPage.vue pay patient isFirstLoad()", () => {
 });
 
 describe("ClaimCountPage.vue pay practitioner validateFields() part 1 (invalid)", () => {
-  let store;
+  let $store;
   let wrapper;
   let $route;
   let $router;
@@ -290,28 +322,37 @@ describe("ClaimCountPage.vue pay practitioner validateFields() part 1 (invalid)"
   let spyOnDispatch;
 
   beforeEach(() => {
-    store = new Vuex.Store(storeTemplate);
     $route = {
-      path: "/potato-csr",
+      value: {
+        path: "/potato-csr",
+      }
     };
     $router = {
       $route,
       currentRoute: $route,
       push: jest.fn(),
     };
-    wrapper = mount(Page, {
-      localVue,
-      store,
-      mocks: {
-        $route,
-        $router,
+    $store = {
+      state: {
+        payPractitionerForm: {},
       },
-    });
-    spyOnDispatch = jest.spyOn(wrapper.vm.$store, "dispatch");
+      dispatch: jest.fn(),
+    };
+    spyOnDispatch = jest.spyOn($store, "dispatch");
 
     spyOnRouter = jest
       .spyOn($router, "push")
       .mockImplementation(() => Promise.resolve("pushed"));
+    
+    wrapper = mount(Page, {
+      global: {
+        mocks: {
+          $route,
+          $router,
+          $store,
+        },
+      },
+    });
   });
 
   afterEach(() => {
@@ -351,7 +392,7 @@ describe("ClaimCountPage.vue pay practitioner validateFields() part 1 (invalid)"
 });
 
 describe("ClaimCountPage.vue pay practitioner validateFields() part 2 (valid)", () => {
-  let store;
+  let $store;
   let wrapper;
   let $route;
   let $router;
@@ -359,28 +400,37 @@ describe("ClaimCountPage.vue pay practitioner validateFields() part 2 (valid)", 
   let spyOnDispatch;
 
   beforeEach(() => {
-    store = new Vuex.Store(storeTemplate2);
+    $store = {
+      state: {
+        payPractitionerForm: cloneDeep(dummyDataValid.default),
+      },
+      dispatch: jest.fn(),
+    };
     $route = {
-      path: "/potato-csr",
+      value: {
+        path: "/potato-csr",
+      }
     };
     $router = {
       $route,
       currentRoute: $route,
       push: jest.fn(),
     };
-    wrapper = mount(Page, {
-      localVue,
-      store,
-      mocks: {
-        $route,
-        $router,
-      },
-    });
-    spyOnDispatch = jest.spyOn(wrapper.vm.$store, "dispatch");
+    spyOnDispatch = jest.spyOn($store, "dispatch");
 
     spyOnRouter = jest
       .spyOn($router, "push")
       .mockImplementation(() => Promise.resolve("pushed"));
+    
+    wrapper = mount(Page, {
+      global: {
+        mocks: {
+          $route,
+          $router,
+          $store,
+        },
+      },
+    });
   });
 
   afterEach(() => {
@@ -430,7 +480,7 @@ describe("ClaimCountPage.vue pay practitioner validateFields() part 2 (valid)", 
           numberOfServices: "1",
           renderedFinishTime: { hour: "16", minute: "06" },
           serviceClarificationCode: "A1",
-          serviceDate: testDate,
+          serviceDate: cloneDeep(testDate),
           serviceDateData: null,
           submissionCode: "I",
         },
@@ -494,34 +544,43 @@ describe("ClaimCountPage.vue pay practitioner validateFields() part 2 (valid)", 
 });
 
 describe("ClaimCountPage.vue pay practitioner beforeRouteLeave(to, from, next)", () => {
-  let store;
+  let $store;
   let wrapper;
   let $route;
   let $router;
 
   beforeEach(() => {
-    store = new Vuex.Store(storeTemplate2);
+    $store = {
+      state: {
+        payPractitionerForm: {},
+      },
+      dispatch: jest.fn(),
+    };
     $route = {
-      path: "/potato-csr",
+      value: {
+        path: "/potato-csr",
+      }
     };
     $router = {
       $route,
       currentRoute: $route,
       push: jest.fn(),
     };
-    wrapper = mount(Page, {
-      localVue,
-      store,
-      mocks: {
-        $route,
-        $router,
-      },
-    });
-    jest.spyOn(wrapper.vm.$store, "dispatch");
+    jest.spyOn($store, "dispatch");
 
     jest
       .spyOn($router, "push")
       .mockImplementation(() => Promise.resolve("pushed"));
+    
+    wrapper = mount(Page, {
+      global: {
+        mocks: {
+          $route,
+          $router,
+          $store,
+        },
+      },
+    });
   });
 
   afterEach(() => {

@@ -68,7 +68,7 @@ import {
   SET_HOSPITAL_VISIT_CLAIMS_COUNT,
 } from '@/store/modules/pay-practitioner-form';
 import logService from '@/services/log-service';
-import { required } from '@vuelidate/validators/dist/raw.esm';
+import { required } from '@vuelidate/validators';
 import useVuelidate from '@vuelidate/core';
 import { getConvertedPath, isCSR } from '@/helpers/url';
 
