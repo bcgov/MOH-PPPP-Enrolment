@@ -1,4 +1,4 @@
-import { shallowMount, createLocalVue } from "@vue/test-utils";
+import { shallowMount } from "@vue/test-utils";
 import Vuex from "vuex";
 import { cloneDeep } from "lodash";
 import Page from "@/views/pay-patient/SubmissionErrorPage.vue";
@@ -7,14 +7,9 @@ import * as module2 from "../../../../src/store/modules/pay-patient-form";
 import * as module3 from "../../../../src/store/modules/pay-practitioner-form";
 import spaEnvService from "@/services/spa-env-service";
 import logService from "@/services/log-service";
-import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import pageStateService from "@/services/page-state-service";
 import { getConvertedPath } from "@/helpers/url";
 import { payPatientRoutes, payPatientRouteStepOrder } from "@/router/routes";
-
-const localVue = createLocalVue();
-localVue.use(Vuex);
-localVue.component("font-awesome-icon", FontAwesomeIcon);
 
 const next = jest.fn();
 
@@ -57,7 +52,6 @@ describe("SubmissionPage.vue pay patient", () => {
       push: jest.fn(),
     };
     wrapper = shallowMount(Page, {
-      localVue,
       store,
       mocks: {
         $route,
@@ -102,7 +96,6 @@ describe("SubmissionPage.vue pay patient created()", () => {
       push: jest.fn(),
     };
     wrapper = shallowMount(Page, {
-      localVue,
       store,
       mocks: {
         $route,
@@ -147,7 +140,6 @@ describe("SubmissionPage.vue beforeRouteLeave(to, from, next)", () => {
       push: jest.fn(),
     };
     wrapper = shallowMount(Page, {
-      localVue,
       store,
       mocks: {
         $route,
