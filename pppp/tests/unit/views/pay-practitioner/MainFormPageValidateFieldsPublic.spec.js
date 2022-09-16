@@ -1657,7 +1657,7 @@ describe("MainFormPage.vue validateFields(), public", () => {
     Object.assign(wrapper.vm, cloneDeep(passingData));
     wrapper.vm.hospitalVisitClaims[0].dayFrom = "18";
     wrapper.vm.hospitalVisitClaims[0].dayTo = "19";
-    wrapper.vm.hospitalVisitClaims[0].month = "1";
+    wrapper.vm.hospitalVisitClaims[0].month = testDatePastYear.getMonth().toString();
     wrapper.vm.hospitalVisitClaims[0].year = testDatePastYear
       .getFullYear()
       .toString();

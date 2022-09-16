@@ -93,7 +93,7 @@ export default {
     // Load environment variables, and route to maintenance page.
     spaEnvService.loadEnvs()
       .then(() => {
-        if (spaEnvService.values && spaEnvService.values.SPA_ENV_OOP_MAINTENANCE_FLAG === 'true') {
+        if (spaEnvService.values && spaEnvService.values.SPA_ENV_PPPP_MAINTENANCE_FLAG === 'true') {
           const toPath = payPatientRoutes.MAINTENANCE_PAGE.path;
           pageStateService.setPageComplete(toPath);
           pageStateService.visitPage(toPath);
