@@ -211,59 +211,6 @@ describe("ClaimCountPage.vue pay patient created()", () => {
   });
 });
 
-describe("ClaimCountPage.vue pay patient isFirstLoad()", () => {
-  let store;
-  let wrapper;
-
-  afterEach(() => {
-    jest.resetModules();
-    jest.clearAllMocks();
-  });
-
-  it("returns true if application uuid present", () => {
-    store = new Vuex.Store(storeTemplate);
-    wrapper = mount(Page, {
-      localVue,
-      store,
-      mocks: {
-        $route: {
-          path: "/",
-        },
-        $router: {
-          push: jest.fn(),
-          currentRoute: {
-            path: "/potato-csr",
-          },
-        },
-      },
-    });
-
-    const result = wrapper.vm.isFirstLoad();
-    expect(result).toBe(true);
-  });
-
-  it("returns false if application uuid is null", () => {
-    store = new Vuex.Store(storeTemplate2);
-    wrapper = mount(Page, {
-      localVue,
-      store,
-      mocks: {
-        $route: {
-          path: "/",
-        },
-        $router: {
-          push: jest.fn(),
-          currentRoute: {
-            path: "/potato-csr",
-          },
-        },
-      },
-    });
-    const result = wrapper.vm.isFirstLoad();
-    expect(result).toBe(true);
-  });
-});
-
 describe("ClaimCountPage.vue pay patient validateFields() part 1 (invalid)", () => {
   let store;
   let wrapper;

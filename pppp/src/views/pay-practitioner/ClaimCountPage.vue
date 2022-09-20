@@ -104,45 +104,40 @@ export default {
     };
   },
   created() {
-    if (this.isFirstLoad() || isCSR(this.$router.currentRoute.path)) {
-      // Load environment variables, and route to maintenance page.
-      spaEnvService.loadEnvs()
-        .then(() => {
-          //if it's the first time the page is loading, check if it needs to redirect to Maintenance
-          if (this.isFirstLoad()) {
-            if (
-              spaEnvService.values &&
-              spaEnvService.values.SPA_ENV_OOP_MAINTENANCE_FLAG === "true"
-            ) {
-              const toPath = payPractitionerRoutes.MAINTENANCE_PAGE.path;
-              pageStateService.setPageComplete(toPath);
-              pageStateService.visitPage(toPath);
-              this.$router.push(toPath);
-            }
-          }
-          //if this is a CSR path, check if it needs to redirect to Page not found
-          if (
-            spaEnvService.values &&
-            spaEnvService.values.SPA_ENV_PPPP_IS_CSR_ENABLED === "false" &&
-            isCSR(this.$router.currentRoute.path)
-          ) {
-            const toPath = commonRoutes.SPECIFIC_PAGE_NOT_FOUND_PAGE.path ; //commonRoutes.PAGE_NOT_FOUND_PAGE.path
-            pageStateService.setPageComplete(toPath);
-            pageStateService.visitPage(toPath);
-            this.$router.push(toPath);
-          }
-        })
-        .catch((error) => {
-          logService.logError(this.applicationUuid, {
-            event: 'HTTP error getting values from spa-env-server',
-            status: error.response.status,
-          });
-          const toPath = commonRoutes.SPECIFIC_PAGE_NOT_FOUND_PAGE.path;
+    spaEnvService.loadEnvs()
+      .then(() => {
+        //check if it needs to redirect to maintenance page
+        if (
+          spaEnvService.values &&
+          spaEnvService.values.SPA_ENV_PPPP_MAINTENANCE_FLAG === "true"
+        ) {
+          const toPath = commonRoutes.MAINTENANCE_PAGE.path;
           pageStateService.setPageComplete(toPath);
           pageStateService.visitPage(toPath);
           this.$router.push(toPath);
+        //if this is a CSR path, check if it needs to redirect to page not found
+        } else if (
+          spaEnvService.values &&
+          spaEnvService.values.SPA_ENV_PPPP_IS_CSR_ENABLED === "false" &&
+          isCSR(this.$router.currentRoute.path)
+        ) {
+          const toPath = commonRoutes.SPECIFIC_PAGE_NOT_FOUND_PAGE.path ; //commonRoutes.PAGE_NOT_FOUND_PAGE.path
+          pageStateService.setPageComplete(toPath);
+          pageStateService.visitPage(toPath);
+          this.$router.push(toPath);
+        }
+      })
+      .catch((error) => {
+        logService.logError(this.applicationUuid, {
+          event: 'HTTP error getting values from spa-env-server',
+          status: error.response?.status || error,
         });
-    }
+        const toPath = commonRoutes.SPECIFIC_PAGE_NOT_FOUND_PAGE.path;
+        pageStateService.setPageComplete(toPath);
+        pageStateService.visitPage(toPath);
+        this.$router.push(toPath);
+      });
+
     this.applicationUuid = this.$store.state.payPractitionerForm.applicationUuid;
     this.medicalServiceClaimsCount = this.$store.state.payPractitionerForm.medicalServiceClaimsCount;
     this.hospitalVisitClaimsCount = this.$store.state.payPractitionerForm.hospitalVisitClaimsCount;
@@ -170,9 +165,6 @@ export default {
     return validations;
   },
   methods: {
-    isFirstLoad() {
-      return !this.$store.state.payPractitionerForm.applicationUuid;
-    },
     validateFields() {
       this.$v.$touch()
       if (this.$v.$invalid) {
