@@ -45,10 +45,10 @@ export default {
     }
   ],
 
-  practitionerLastName: 'GOTTNER',
-  practitionerFirstName: 'MICHAEL',
+  practitionerLastName: 'Green',
+  practitionerFirstName: 'Rachel',
   practitionerPaymentNumber: '00001',
-  practitionerPractitionerNumber: '00001',
+  practitionerPractitionerNumber: '22274',
   practitionerFacilityNumber: '12345',
   practitionerSpecialtyCode: '99',
 
