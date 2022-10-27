@@ -44,11 +44,16 @@ export default {
       notes: 'Notes here.',
     }
   ],
-
+  //Dev environment:
+  // practitionerLastName: 'GOTTNER',
+  // practitionerFirstName: 'MICHAEL',
+  // practitionerPractitionerNumber: '00001',
+  //Test environment:
   practitionerLastName: 'Green',
   practitionerFirstName: 'Rachel',
-  practitionerPaymentNumber: '00001',
   practitionerPractitionerNumber: '22274',
+
+  practitionerPaymentNumber: '00001',
   practitionerFacilityNumber: '12345',
   practitionerSpecialtyCode: '99',
 
