@@ -35,7 +35,7 @@ const spyOnSetPageIncomplete = jest
 
 jest.spyOn(window, "scrollTo").mockImplementation(jest.fn);
 
-describe("SubmissionPage.vue pay patient", () => {
+describe("SubmissionErrorPage pay patient", () => {
   let store;
   let wrapper;
   let $route;
@@ -79,7 +79,7 @@ describe("SubmissionPage.vue pay patient", () => {
   });
 });
 
-describe("SubmissionPage.vue pay patient created()", () => {
+describe("SubmissionErrorPage pay patient created()", () => {
   let store;
   let wrapper;
   let $route;
@@ -123,7 +123,7 @@ describe("SubmissionPage.vue pay patient created()", () => {
   });
 });
 
-describe("SubmissionPage.vue beforeRouteLeave(to, from, next)", () => {
+describe("SubmissionErrorPage.vue beforeRouteLeave(to, from, next)", () => {
   let store;
   let wrapper;
   let $route;
