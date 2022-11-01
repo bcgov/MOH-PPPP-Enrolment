@@ -1,4 +1,6 @@
-import { shallowMount } from "@vue/test-utils";
+import { shallowMount, mount } from "@vue/test-utils";
+import { createStore } from "vuex";
+import  router  from "@/router/index";
 import Vuex from "vuex";
 import { cloneDeep } from "lodash";
 import Page from "@/views/pay-patient/SubmissionErrorPage.vue";
@@ -42,7 +44,7 @@ describe("SubmissionErrorPage pay patient", () => {
   let $router;
 
   beforeEach(() => {
-    store = new Vuex.Store(storeTemplate);
+    store = createStore(storeTemplate);
     $route = {
       path: "/potato-csr",
     };
@@ -51,8 +53,10 @@ describe("SubmissionErrorPage pay patient", () => {
       currentRoute: $route,
       push: jest.fn(),
     };
-    wrapper = shallowMount(Page, {
-      store,
+    wrapper = mount(Page, {
+      global: {
+        plugins: [store],
+      },
       mocks: {
         $route,
         $router,
@@ -63,10 +67,6 @@ describe("SubmissionErrorPage pay patient", () => {
     jest
       .spyOn(spaEnvService, "loadEnvs")
       .mockImplementation(() => Promise.resolve("loaded"));
-
-    wrapper.vm.$options.created.forEach((hook) => {
-      hook.call(wrapper.vm);
-    });
   });
 
   afterEach(() => {
@@ -86,7 +86,7 @@ describe("SubmissionErrorPage pay patient created()", () => {
   let $router;
 
   beforeEach(() => {
-    store = new Vuex.Store(storeTemplate);
+    store = createStore(storeTemplate);
     $route = {
       path: "/potato-csr",
     };
@@ -96,7 +96,9 @@ describe("SubmissionErrorPage pay patient created()", () => {
       push: jest.fn(),
     };
     wrapper = shallowMount(Page, {
-      store,
+      global: {
+        plugins: [store],
+      },
       mocks: {
         $route,
         $router,
@@ -107,10 +109,6 @@ describe("SubmissionErrorPage pay patient created()", () => {
     jest
       .spyOn(spaEnvService, "loadEnvs")
       .mockImplementation(() => Promise.resolve("loaded"));
-
-    wrapper.vm.$options.created.forEach((hook) => {
-      hook.call(wrapper.vm);
-    });
   });
 
   afterEach(() => {
@@ -130,7 +128,7 @@ describe("SubmissionErrorPage.vue beforeRouteLeave(to, from, next)", () => {
   let $router;
 
   beforeEach(() => {
-    store = new Vuex.Store(storeTemplate);
+    store = createStore(storeTemplate);
     $route = {
       path: "/potato-csr",
     };
@@ -139,8 +137,10 @@ describe("SubmissionErrorPage.vue beforeRouteLeave(to, from, next)", () => {
       currentRoute: $route,
       push: jest.fn(),
     };
-    wrapper = shallowMount(Page, {
-      store,
+    wrapper = mount(Page, {
+      global: {
+        plugins: [store, router],
+      },
       mocks: {
         $route,
         $router,
