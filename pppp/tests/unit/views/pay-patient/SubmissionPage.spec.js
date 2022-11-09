@@ -1,5 +1,6 @@
-import { shallowMount, createLocalVue } from "@vue/test-utils";
-import Vuex from "vuex";
+import { shallowMount } from "@vue/test-utils";
+import { createStore } from "vuex";
+import { createRouter, createWebHistory } from "vue-router";
 import { cloneDeep } from "lodash";
 import Page from "@/views/pay-patient/SubmissionPage.vue";
 import * as module1 from "../../../../src/store/modules/app";
@@ -11,10 +12,16 @@ import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import pageStateService from "@/services/page-state-service";
 import { getConvertedPath } from "@/helpers/url";
 import { payPatientRoutes, payPatientRouteStepOrder } from "@/router/routes";
+import { routeCollection } from "@/router/index";
 
-const localVue = createLocalVue();
-localVue.use(Vuex);
-localVue.component("font-awesome-icon", FontAwesomeIcon);
+// const localVue = createLocalVue();
+// localVue.use(Vuex);
+// localVue.component("font-awesome-icon", FontAwesomeIcon);
+
+const router = createRouter({
+  history: createWebHistory(),
+  routes: routeCollection,
+});
 
 const next = jest.fn();
 const spyOnPrint = jest.spyOn(window, "print").mockImplementation(jest.fn);
@@ -48,7 +55,7 @@ describe("SubmissionPage.vue pay patient", () => {
   let $router;
 
   beforeEach(() => {
-    store = new Vuex.Store(storeTemplate);
+    store = createStore(storeTemplate);
     $route = {
       path: "/potato-csr",
     };
@@ -58,11 +65,8 @@ describe("SubmissionPage.vue pay patient", () => {
       push: jest.fn(),
     };
     wrapper = shallowMount(Page, {
-      localVue,
-      store,
-      mocks: {
-        $route,
-        $router,
+      global: {
+        plugins: [store, router],
       },
     });
     jest.spyOn(wrapper.vm.$store, "dispatch");
@@ -93,7 +97,7 @@ describe("SubmissionPage.vue pay patient created()", () => {
   let $router;
 
   beforeEach(() => {
-    store = new Vuex.Store(storeTemplate);
+    store = createStore(storeTemplate);
     $route = {
       path: "/potato-csr",
     };
@@ -103,11 +107,8 @@ describe("SubmissionPage.vue pay patient created()", () => {
       push: jest.fn(),
     };
     wrapper = shallowMount(Page, {
-      localVue,
-      store,
-      mocks: {
-        $route,
-        $router,
+      global: {
+        plugins: [store, router],
       },
     });
     jest.spyOn(wrapper.vm.$store, "dispatch");
@@ -138,7 +139,7 @@ describe("SubmissionPage.vue pay patient printPage()", () => {
   let $router;
 
   beforeEach(() => {
-    store = new Vuex.Store(storeTemplate);
+    store = createStore(storeTemplate);
     $route = {
       path: "/potato-csr",
     };
@@ -148,11 +149,8 @@ describe("SubmissionPage.vue pay patient printPage()", () => {
       push: jest.fn(),
     };
     wrapper = shallowMount(Page, {
-      localVue,
-      store,
-      mocks: {
-        $route,
-        $router,
+      global: {
+        plugins: [store, router],
       },
     });
     jest.spyOn(wrapper.vm.$store, "dispatch");
@@ -184,7 +182,7 @@ describe("SubmissionPage.vue beforeRouteLeave(to, from, next)", () => {
   let $router;
 
   beforeEach(() => {
-    store = new Vuex.Store(storeTemplate);
+    store = createStore(storeTemplate);
     $route = {
       path: "/potato-csr",
     };
@@ -194,11 +192,8 @@ describe("SubmissionPage.vue beforeRouteLeave(to, from, next)", () => {
       push: jest.fn(),
     };
     wrapper = shallowMount(Page, {
-      localVue,
-      store,
-      mocks: {
-        $route,
-        $router,
+      global: {
+        plugins: [store, router],
       },
     });
   });
