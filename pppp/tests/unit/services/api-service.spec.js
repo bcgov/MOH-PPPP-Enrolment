@@ -346,6 +346,7 @@ describe("APIService filterSpecialChar()", () => {
   });
 
   it("filters out slashes and quotes", () => {
+    // eslint-disable-next-line 
     const testText = `test text. should have: // should not have:\ ""`;
     const result = APIService.filterSpecialChar(testText);
     expect(result).toBe(`test text. should have: // should not have: `);

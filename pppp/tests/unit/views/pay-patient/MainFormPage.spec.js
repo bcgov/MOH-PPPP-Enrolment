@@ -9,7 +9,6 @@ import * as module1 from "../../../../src/store/modules/app";
 import * as module2 from "../../../../src/store/modules/pay-patient-form";
 import * as module3 from "../../../../src/store/modules/pay-practitioner-form";
 import * as dummyDataValid from "../../../../src/store/states/pay-patient-form-dummy-data";
-import apiService from "@/services/api-service";
 import { getConvertedPath } from "@/helpers/url";
 import { payPatientRoutes, payPatientRouteStepOrder } from "@/router/routes";
 
@@ -128,188 +127,6 @@ const mockBackendValidationResponse = {
   request: {},
 };
 
-const mockBackendValidationResponseFail = {
-  data: {
-    applicationUuid: "c440ae62-d591-40f8-b1fb-0f31bcb2def2",
-    requestUuid: "cb0984f6-6811-45bb-974e-e02689097557",
-    returnCode: "1",
-    returnMessage: "Not valid",
-    practitionerFirstName: "N",
-    practitionerLastName: "N",
-    practitionerNumber: "N",
-    serviceFeeItem1: "Y",
-    serviceFeeItem2: "",
-    serviceFeeItem3: "",
-    serviceFeeItem4: "",
-    serviceLocationCode1: "",
-    serviceLocationCode2: "",
-    serviceLocationCode3: "",
-    serviceLocationCode4: "",
-    hospitalFeeItem1: "",
-    hospitalFeeItem2: "",
-    hospitalLocationCode1: "",
-    hospitalLocationCode2: "",
-  },
-  status: 200,
-  statusText: "OK",
-  headers: {
-    accept: "application/json, text/plain, */*",
-    "accept-encoding": "gzip, deflate, br",
-    "accept-language": "en-US,en;q=0.9",
-    "access-control-allow-credentials": "true",
-    "access-control-allow-headers":
-      "Accept,Authorization,Cache-Control,Content-Type,DNT,If-Modified-Since,Keep-Alive,Origin,User-Agent,X-Requested-With",
-    "access-control-allow-methods": "GET, POST, PUT, DELETE, OPTIONS",
-    "access-control-allow-origin": "https://my.gov.bc.ca",
-    "access-control-expose-headers": "Authorization",
-    authorization: "Basic Z2NwZW1zcGRlOndlbGNvbWUx",
-    breadcrumbid: "ID-vs-dapp041-maximusbchealth-local-1636494389451-0-294",
-    "cache-control": "no-store",
-    connection: "close",
-    "content-security-policy":
-      "default-src * data: blob: filesystem: 'unsafe-inline' 'unsafe-eval'",
-    "content-type": "application/json",
-    date: "Wed, 17 Nov 2021 00:20:11 GMT",
-    forwarded:
-      "for=216.232.32.188;host=pppp-web-0752cb-dev.apps.silver.devops.gov.bc.ca;proto=https",
-    origin: "http://localhost:8080",
-    pragma: "no-cache",
-    referer: "http://localhost:8080/pppp/pay-patient/main-form",
-    "response-type": "application/json",
-    "sec-ch-ua":
-      '"Google Chrome";v="95", "Chromium";v="95", ";Not A Brand";v="99"',
-    "sec-ch-ua-mobile": "?0",
-    "sec-ch-ua-platform": '"Windows"',
-    "sec-fetch-dest": "empty",
-    "sec-fetch-mode": "cors",
-    "sec-fetch-site": "same-origin",
-    server: "nginx",
-    "strict-transport-security": "max-age=86400; includeSubDomains",
-    "transfer-encoding": "chunked",
-    "user-agent":
-      "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.69 Safari/537.36",
-    uuid: "c440ae62-d591-40f8-b1fb-0f31bcb2def2",
-    "x-content-type-options": "nosniff",
-    "x-forwarded-for": "127.0.0.1, 216.232.32.188",
-    "x-forwarded-host":
-      "localhost:8080, pppp-web-0752cb-dev.apps.silver.devops.gov.bc.ca",
-    "x-forwarded-port": "8080, 443",
-    "x-forwarded-proto": "http, https",
-    "x-frame-options": "DENY",
-    "x-powered-by": "Servlet/3.1 JSP/2.3",
-    "x-weblogic-request-clusterinfo": "true",
-    "x-xss-protection": "1",
-  },
-  config: {
-    url:
-      "/pppp/api/payformsIntegration/validateClaim/c440ae62-d591-40f8-b1fb-0f31bcb2def2",
-    method: "post",
-    data:
-      '{"applicationUuid":"c440ae62-d591-40f8-b1fb-0f31bcb2def2","practitionerFirstName":"a","practitionerLastName":"a","practitionerNumber":"00001","serviceFeeItem1":"00010","serviceFeeItem2":"","serviceFeeItem3":"","serviceFeeItem4":"","serviceLocationCode1":"","serviceLocationCode2":"","serviceLocationCode3":"","serviceLocationCode4":"","hospitalFeeItem1":"","hospitalFeeItem2":"","hospitalLocationCode1":"","hospitalLocationCode2":"","requestUuid":"cb0984f6-6811-45bb-974e-e02689097557"}',
-    headers: {
-      Accept: "application/json, text/plain, */*",
-      "Content-Type": "application/json",
-      "Response-Type": "application/json",
-      "X-Authorization":
-        "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7Im5vbmNlIjoiYzQ0MGFlNjItZDU5MS00MGY4LWIxZmItMGYzMWJjYjJkZWYyIn0sImlhdCI6MTYzNzEwODM2MSwiZXhwIjoxNjM3MTE5MTYxfQ.s8zdHDcg8mRfscBfypobqgKaU2SYyGQfcSIdBPFGeWM",
-    },
-    transformRequest: [null],
-    transformResponse: [null],
-    timeout: 0,
-    xsrfCookieName: "XSRF-TOKEN",
-    xsrfHeaderName: "X-XSRF-TOKEN",
-    maxContentLength: -1,
-    maxBodyLength: -1,
-    transitional: {
-      silentJSONParsing: true,
-      forcedJSONParsing: true,
-      clarifyTimeoutError: false,
-    },
-  },
-  request: {},
-};
-
-const mockBackendValidationResponseDefault = {
-  data: {},
-  status: 200,
-  statusText: "OK",
-  headers: {
-    accept: "application/json, text/plain, */*",
-    "accept-encoding": "gzip, deflate, br",
-    "accept-language": "en-US,en;q=0.9",
-    "access-control-allow-credentials": "true",
-    "access-control-allow-headers":
-      "Accept,Authorization,Cache-Control,Content-Type,DNT,If-Modified-Since,Keep-Alive,Origin,User-Agent,X-Requested-With",
-    "access-control-allow-methods": "GET, POST, PUT, DELETE, OPTIONS",
-    "access-control-allow-origin": "https://my.gov.bc.ca",
-    "access-control-expose-headers": "Authorization",
-    authorization: "Basic Z2NwZW1zcGRlOndlbGNvbWUx",
-    breadcrumbid: "ID-vs-dapp041-maximusbchealth-local-1636494389451-0-294",
-    "cache-control": "no-store",
-    connection: "close",
-    "content-security-policy":
-      "default-src * data: blob: filesystem: 'unsafe-inline' 'unsafe-eval'",
-    "content-type": "application/json",
-    date: "Wed, 17 Nov 2021 00:20:11 GMT",
-    forwarded:
-      "for=216.232.32.188;host=pppp-web-0752cb-dev.apps.silver.devops.gov.bc.ca;proto=https",
-    origin: "http://localhost:8080",
-    pragma: "no-cache",
-    referer: "http://localhost:8080/pppp/pay-patient/main-form",
-    "response-type": "application/json",
-    "sec-ch-ua":
-      '"Google Chrome";v="95", "Chromium";v="95", ";Not A Brand";v="99"',
-    "sec-ch-ua-mobile": "?0",
-    "sec-ch-ua-platform": '"Windows"',
-    "sec-fetch-dest": "empty",
-    "sec-fetch-mode": "cors",
-    "sec-fetch-site": "same-origin",
-    server: "nginx",
-    "strict-transport-security": "max-age=86400; includeSubDomains",
-    "transfer-encoding": "chunked",
-    "user-agent":
-      "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.69 Safari/537.36",
-    uuid: "c440ae62-d591-40f8-b1fb-0f31bcb2def2",
-    "x-content-type-options": "nosniff",
-    "x-forwarded-for": "127.0.0.1, 216.232.32.188",
-    "x-forwarded-host":
-      "localhost:8080, pppp-web-0752cb-dev.apps.silver.devops.gov.bc.ca",
-    "x-forwarded-port": "8080, 443",
-    "x-forwarded-proto": "http, https",
-    "x-frame-options": "DENY",
-    "x-powered-by": "Servlet/3.1 JSP/2.3",
-    "x-weblogic-request-clusterinfo": "true",
-    "x-xss-protection": "1",
-  },
-  config: {
-    url:
-      "/pppp/api/payformsIntegration/validateClaim/c440ae62-d591-40f8-b1fb-0f31bcb2def2",
-    method: "post",
-    data:
-      '{"applicationUuid":"c440ae62-d591-40f8-b1fb-0f31bcb2def2","practitionerFirstName":"a","practitionerLastName":"a","practitionerNumber":"00001","serviceFeeItem1":"00010","serviceFeeItem2":"","serviceFeeItem3":"","serviceFeeItem4":"","serviceLocationCode1":"","serviceLocationCode2":"","serviceLocationCode3":"","serviceLocationCode4":"","hospitalFeeItem1":"","hospitalFeeItem2":"","hospitalLocationCode1":"","hospitalLocationCode2":"","requestUuid":"cb0984f6-6811-45bb-974e-e02689097557"}',
-    headers: {
-      Accept: "application/json, text/plain, */*",
-      "Content-Type": "application/json",
-      "Response-Type": "application/json",
-      "X-Authorization":
-        "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7Im5vbmNlIjoiYzQ0MGFlNjItZDU5MS00MGY4LWIxZmItMGYzMWJjYjJkZWYyIn0sImlhdCI6MTYzNzEwODM2MSwiZXhwIjoxNjM3MTE5MTYxfQ.s8zdHDcg8mRfscBfypobqgKaU2SYyGQfcSIdBPFGeWM",
-    },
-    transformRequest: [null],
-    transformResponse: [null],
-    timeout: 0,
-    xsrfCookieName: "XSRF-TOKEN",
-    xsrfHeaderName: "X-XSRF-TOKEN",
-    maxContentLength: -1,
-    maxBodyLength: -1,
-    transitional: {
-      silentJSONParsing: true,
-      forcedJSONParsing: true,
-      clarifyTimeoutError: false,
-    },
-  },
-  request: {},
-};
-
 const passingData = {
   phn: "9999 999 998",
   dependentNumber: "66",
@@ -369,76 +186,12 @@ const passingData = {
   referredToPractitionerNumber: "22272",
 };
 
-const failingData = {
-  planReferenceNumber: "",
-  phn: "",
-  dependentNumber: "",
-  firstName: "",
-  middleInitial: "",
-  lastName: "",
-  birthDate: new Date("2000-01-01"),
-
-  addressOwner: "",
-  unitNumber: "",
-  streetNumber: "",
-  streetName: "",
-  city: "",
-  postalCode: "",
-
-  isVehicleAccident: "",
-  vehicleAccidentClaimNumber: "",
-
-  planReferenceNumberOfOriginalClaim: "",
-
-  medicalServiceClaims: [
-    {
-      serviceDate: new Date("2000-01-01"),
-      numberOfServices: "",
-      serviceClarificationCode: "",
-      feeItem: "",
-      amountBilled: "",
-      calledStartTime: {
-        hour: "",
-        minute: "",
-      },
-      renderedFinishTime: {
-        hour: "",
-        minute: "",
-      },
-      diagnosticCode: "",
-      locationOfService: "",
-      correspondenceAttached: null,
-      submissionCode: "",
-      notes: "",
-    },
-  ],
-
-  practitionerLastName: "",
-  practitionerFirstName: "",
-  practitionerPaymentNumber: "",
-  practitionerPractitionerNumber: "",
-  practitionerFacilityNumber: "",
-  practitionerSpecialtyCode: "",
-
-  referredByFirstNameInitial: "",
-  referredByLastName: "",
-  referredByPractitionerNumber: "",
-
-  referredToFirstNameInitial: "",
-  referredToLastName: "",
-  referredToPractitionerNumber: "",
-};
-
 jest.mock("axios", () => ({
   get: jest.fn(),
   post: jest.fn(() => {
     return Promise.resolve(mockBackendValidationResponse);
   }),
 }));
-
-const spyOnAPIService = jest
-  .spyOn(apiService, "validateApplication")
-  .mockImplementation(() => Promise.resolve(mockBackendValidationResponse));
 
 const scrollHelper = require("@/helpers/scroll");
 
@@ -450,7 +203,6 @@ jest.mock("@/helpers/scroll", () => ({
 
 jest.spyOn(window, "scrollTo").mockImplementation(jest.fn);
 
-const spyOnScrollToError = jest.spyOn(scrollHelper, "scrollToError");
 const spyOnScrollTo = jest.spyOn(scrollHelper, "scrollTo");
 
 const spyOnGetTopScrollPosition = jest
