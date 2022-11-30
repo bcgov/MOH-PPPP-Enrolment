@@ -16,12 +16,12 @@ env:
   IMAGE_NAME: pppp-web
   SOURCE_IMAGE_TAG: latest
   TARGET_IMAGE_TAG: dev
-defaults:
-  run:
-    working-directory: ./pppp
 jobs:
   test:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./pppp
     steps:
       - uses: actions/checkout@main
       - uses: actions/setup-node@main
@@ -37,6 +37,9 @@ jobs:
       #   run: npm run test:schema
   build:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./pppp
     needs: [test]
     strategy:
       matrix:
