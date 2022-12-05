@@ -6,6 +6,7 @@ on:
       - "pppp/src/**/*.ts"
       - "pppp/src/**/*.js"
       - "pppp/src/**/*.scss"
+      - "pppp/src/**/*.vue"
       - "pppp/package*.json"
   workflow_dispatch:
 env:
