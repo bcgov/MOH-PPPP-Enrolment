@@ -53,6 +53,7 @@ export const diagnosticCodes = [
   "I573",
   "I585",
   "K573",
+  "L23",
   "M04",
   "N250",
   "N414",
