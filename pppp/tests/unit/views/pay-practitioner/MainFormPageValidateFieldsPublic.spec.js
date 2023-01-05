@@ -10,7 +10,7 @@ import * as dummyDataValid from "../../../../src/store/states/pay-practitioner-f
 import apiService from "@/services/api-service";
 
 const testDate = new Date();
-const adjustedTestDateMonth = testDate.getMonth() + 1;
+const adjustedTestDateMonth = (testDate.getMonth() + 1).toString();
 //testDate.getMonth() returns 0 for January
 //but the hospital visit selector indexes January as 1, since it's the first item on the list
 //this constant adjusts for this difference
@@ -1617,7 +1617,7 @@ describe("MainFormPage.vue validateFields(), public", () => {
     Object.assign(wrapper.vm, cloneDeep(passingData));
     wrapper.vm.hospitalVisitClaims[0].dayFrom = "18";
     wrapper.vm.hospitalVisitClaims[0].dayTo = "19";
-    wrapper.vm.hospitalVisitClaims[0].month = testDatePastYear.getMonth().toString();
+    wrapper.vm.hospitalVisitClaims[0].month = adjustedTestDateMonth;
     wrapper.vm.hospitalVisitClaims[0].year = testDatePastYear
       .getFullYear()
       .toString();
