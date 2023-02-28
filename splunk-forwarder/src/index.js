@@ -225,6 +225,7 @@ var getLog = function (req) {
                     severity: "info"
                 };
                 winstonLogger.debug('sending payload');
+                console.log("check what's sent to splunk", payload)
                 splunkLogger.send(payload, function (err, resp, body) {
                     //TODO: Once sending to Splunk is setup, double check if err
                     //is falsy on success or if we have to modify the check
