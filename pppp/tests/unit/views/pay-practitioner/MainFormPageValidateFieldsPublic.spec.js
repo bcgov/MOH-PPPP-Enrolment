@@ -1450,7 +1450,7 @@ describe("MainFormPage.vue validateFields(), public", () => {
     expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
   });
 
-  it("(locationOfService, hospitalVisitClaims) flags valid if A and before Oct 1st 2021", async () => {
+  it.skip("(locationOfService, hospitalVisitClaims) flags valid if A and before Oct 1st 2021", async () => {
     Object.assign(wrapper.vm, cloneDeep(passingData));
     wrapper.vm.hospitalVisitClaims[0].locationOfService = "A";
     wrapper.vm.hospitalVisitClaims[0].dayTo = null;
@@ -1653,7 +1653,7 @@ describe("MainFormPage.vue validateFields(), public", () => {
     expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
   });
 
-  it("(each, hospitalVisitDateCutOffValidator, hospitalVisitClaims) flags valid if date is correct + before Oct 1 2021, and locationOfService is A", async () => {
+  it.skip("(each, hospitalVisitDateCutOffValidator, hospitalVisitClaims) flags valid if date is correct + before Oct 1 2021, and locationOfService is A", async () => {
     //there will come a time when this test fails
     //because it's been more than 18 months since Oct 1 2021
     //meaning that although this validator still works as intended, other validators will flag it as invalid
