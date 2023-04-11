@@ -25,11 +25,11 @@ jobs:
       - name: Install dependencies
         run: npm ci
       # - name: Unit tests w/ coverage
-        # run: npm run test:coverage
+      # run: npm run test:coverage
       - name: LINTing
         run: npm run test:lint
       # - name: OpenAPI Schema
-        # run: npm run test:schema
+      # run: npm run test:schema
   build:
     runs-on: ubuntu-latest
     defaults:
@@ -75,7 +75,7 @@ jobs:
       - name: Generate Build
         run: oc start-build ${BUILD_NAME} -n ${NAMESPACE} --follow
       - name: Time delay
-      #   # to give time for Openshift to process the build so it doesn't tag the wrong image
+        #   # to give time for Openshift to process the build so it doesn't tag the wrong image
         run: sleep 30s
       - name: Tag Image Build
         run: oc tag -n ${NAMESPACE} ${NAMESPACE}/${IMAGE_NAME}:${SOURCE_IMAGE_TAG} ${NAMESPACE}/${IMAGE_NAME}:${TARGET_IMAGE_TAG}
