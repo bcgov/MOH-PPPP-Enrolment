@@ -21,12 +21,3 @@ jobs:
         run: oc login --token=${{ secrets.OpenShiftToken }} --server=${{ secrets.OpenShiftServerURL}}
       - name: Deploy to Test
         run: oc tag -n ${NAMESPACE} ${NAMESPACE}/${IMAGE_NAME}:${SOURCE_IMAGE_TAG} ${NAMESPACE}/${IMAGE_NAME}:${TARGET_IMAGE_TAG}
-
-        # uses: redhat-developer/openshift-actions@v1.1
-        # with:
-        #   version: "latest"
-        #   openshift_server_url: ${{ secrets.OpenShiftServerURL}}
-        #   parameters: '{"apitoken": "${{ secrets.OpenShiftToken }}", "acceptUntrustedCerts": "true"}'
-        #   cmd: |
-        #     'version'
-        #     'tag -n ${NAMESPACE} ${NAMESPACE}/splunk-forwarder:${{github.event.inputs.source_tag}} ${NAMESPACE}/splunk-forwarder:${TARGET_IMAGE_TAG}'
