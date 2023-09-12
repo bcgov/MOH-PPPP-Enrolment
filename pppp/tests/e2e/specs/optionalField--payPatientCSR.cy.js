@@ -2,9 +2,13 @@
 /* eslint-disable jest/valid-expect */
 /* eslint-disable jest/valid-expect-in-promise */
 
+//you can replace the testUrl with https://dev.my.gov.bc.ca/pppp/pay-patient-csr if needed
+//you can also replace the "dev" with "test" to check the TEST environment
+const testUrl = "/pay-patient-csr";
+
 describe("Pay Patient-CSR", () => {
   it("submits with optional fields not filled", () => {
-    cy.visit("/pay-patient-csr");
+    cy.visit(testUrl);
     //Claim Count
     cy.location().should((loc) => {
       expect(loc.pathname).to.eq("/pppp/pay-patient-csr");

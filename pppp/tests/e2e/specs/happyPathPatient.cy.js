@@ -2,14 +2,25 @@
 /* eslint-disable jest/valid-expect */
 /* eslint-disable jest/valid-expect-in-promise */
 
-const testYear = new Date().getFullYear() - 1;
+//you can replace the testUrl with https://dev.my.gov.bc.ca/pppp/pay-patient if needed
+//you can also replace the "dev" with "test" to check the TEST environment
+const testUrl = "/pay-patient";
+
+//dev environment data
 const backendLastName = "GOTTNER";
 const backendFirstName = "MICHAEL";
 const backendPractitionerNumber = "00001";
 
+//test environment data
+// const backendLastName = "OPXUWPW";
+// const backendFirstName = "UJGIJPQ";
+// const backendPractitionerNumber = "B1419";
+
+const testYear = new Date().getFullYear() - 1;
+
 describe("Pay Patient-Public", () => {
   it("follows the happy path", () => {
-    cy.visit("/pay-patient");
+    cy.visit(testUrl);
     //Claim Count
     cy.location().should((loc) => {
       expect(loc.pathname).to.eq("/pppp/pay-patient");
