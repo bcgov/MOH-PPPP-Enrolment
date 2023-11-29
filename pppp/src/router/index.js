@@ -33,7 +33,7 @@ pageStateService.importPageRoutes(payPatientCSRRoutes);
 pageStateService.importPageRoutes(payPractitionerRoutes);
 pageStateService.importPageRoutes(payPractitionerCSRRoutes);
 
-const routeCollection = [
+export const routeCollection = [
   {
     path: commonRoutes.LANDING_PAGE.path,
     name: commonRoutes.LANDING_PAGE.name,

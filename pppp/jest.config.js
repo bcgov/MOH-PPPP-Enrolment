@@ -1,7 +1,8 @@
 module.exports = {
   preset: '@vue/cli-plugin-unit-jest',
   transformIgnorePatterns: ["node_modules/(?!vuelidate)/"],
-  collectCoverage: true,
+  setupFiles: ["<rootDir>/jest.setup.js"],
+  collectCoverage: false,
   collectCoverageFrom: [
     "src/**/*.{js,vue}",
     "!src/main.js", // No need to cover bootstrap file
