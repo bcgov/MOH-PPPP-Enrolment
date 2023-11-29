@@ -1,11 +1,5 @@
-import { mount, createLocalVue } from "@vue/test-utils";
-import Vuex from "vuex";
-import Vuelidate from "vuelidate";
+import { mount } from "@vue/test-utils";
 import Component from "@/components/ConsentModal.vue";
-
-const localVue = createLocalVue();
-localVue.use(Vuex);
-localVue.use(Vuelidate);
 
 jest.mock("axios", () => ({
   get: jest.fn(),
@@ -16,8 +10,7 @@ jest.mock("axios", () => ({
 
 describe("ConsentModal.vue", () => {
   const wrapper = mount(Component, {
-    localVue,
-    propsData: {
+    props: {
       applicationUuid: "11111",
     },
   });
@@ -32,7 +25,6 @@ describe("ConsentModal.vue getFocusableEls()", () => {
 
   beforeEach(() => {
     wrapper = mount(Component, {
-      localVue,
       propsData: {
         applicationUuid: "11111",
       },
@@ -62,7 +54,6 @@ describe("ConsentModal.vue handleCaptchaLoaded()", () => {
 
   beforeEach(() => {
     wrapper = mount(Component, {
-      localVue,
       propsData: {
         applicationUuid: "11111",
       },
@@ -95,7 +86,6 @@ describe("ConsentModal.vue handleCaptchaVerified()", () => {
 
   beforeEach(() => {
     wrapper = mount(Component, {
-      localVue,
       propsData: {
         applicationUuid: "11111",
       },
@@ -129,7 +119,6 @@ describe("ConsentModal.vue handleCaptchaVerified()", () => {
 
 describe("ConsentModal.vue closeModal()", () => {
   const wrapper = mount(Component, {
-    localVue,
     propsData: {
       applicationUuid: "11111",
     },
@@ -167,7 +156,6 @@ describe("ConsentModal.vue handleKeyDown()", () => {
 
   beforeEach(() => {
     wrapper = mount(Component, {
-      localVue,
       propsData: {
         applicationUuid: "11111",
       },
@@ -217,7 +205,6 @@ describe("ConsentModal.vue handleTab()", () => {
 
   beforeEach(() => {
     wrapper = mount(Component, {
-      localVue,
       propsData: {
         applicationUuid: "11111",
       },
@@ -292,7 +279,6 @@ describe("ConsentModal.vue handleTabBackwards()", () => {
 
   beforeEach(() => {
     wrapper = mount(Component, {
-      localVue,
       propsData: {
         applicationUuid: "11111",
       },
