@@ -1,16 +1,13 @@
-import { mount, createLocalVue } from "@vue/test-utils";
-import Vuex from "vuex";
-import Vuelidate from "vuelidate";
+import { mount } from "@vue/test-utils";
+import { createStore } from "vuex";
+import { createRouter, createWebHistory } from "vue-router";
 import Page from "@/components/pay-patient/ReviewTableList.vue";
 import { cloneDeep } from "lodash";
 import * as module1 from "../../../src/store/modules/app";
 import * as module2 from "../../../src/store/modules/pay-patient-form";
 import * as module3 from "../../../src/store/modules/pay-practitioner-form";
 import pageStateService from "@/services/page-state-service";
-
-const localVue = createLocalVue();
-localVue.use(Vuex);
-localVue.use(Vuelidate);
+import { routeCollection } from "@/router/index";
 
 const scrollHelper = require("@/helpers/scroll");
 
@@ -105,20 +102,14 @@ storeTemplate2.modules.payPatientForm.state = cloneDeep(patientState2);
 //-------COMPUTED-------
 describe("ReviewTableList patient", () => {
   it("renders", () => {
-    const store = new Vuex.Store(storeTemplate);
+    const router = createRouter({
+      history: createWebHistory(),
+      routes: routeCollection,
+    });
+    const store = createStore(storeTemplate);
     const wrapper = mount(Page, {
-      localVue,
-      store,
-      mocks: {
-        $route: {
-          path: "/",
-        },
-        $router: {
-          push: jest.fn(),
-          currentRoute: {
-            path: "/",
-          },
-        },
+      global: {
+        plugins: [store, router],
       },
     });
     expect(wrapper.element).toBeDefined();
@@ -131,18 +122,17 @@ describe("ReviewTableList patient planReferenceNumberData() CSR", () => {
 
   it("returns plan reference number in store when path isCSR", () => {
     //please note the route change between this and the next test
-    store = new Vuex.Store(storeTemplate);
+    store = createStore(storeTemplate);
     wrapper = mount(Page, {
-      localVue,
-      store,
-      mocks: {
-        $route: {
-          path: "/",
-        },
-        $router: {
-          push: jest.fn(),
-          currentRoute: {
-            path: "/potato-csr",
+      global: {
+        plugins: [store],
+        mocks: {
+          $router: {
+            currentRoute: {
+              value: {
+                path: "/potato-csr",
+              },
+            },
           },
         },
       },
@@ -155,18 +145,17 @@ describe("ReviewTableList patient planReferenceNumberData() CSR", () => {
   });
 
   it("does not render plan reference number when path is NOT CSR", () => {
-    store = new Vuex.Store(storeTemplate);
+    store = createStore(storeTemplate);
     wrapper = mount(Page, {
-      localVue,
-      store,
-      mocks: {
-        $route: {
-          path: "/",
-        },
-        $router: {
-          push: jest.fn(),
-          currentRoute: {
-            path: "/potato",
+      global: {
+        plugins: [store],
+        mocks: {
+          $router: {
+            currentRoute: {
+              value: {
+                path: "/potato",
+              },
+            },
           },
         },
       },
@@ -181,23 +170,18 @@ describe("ReviewTableList patient planReferenceNumberData() CSR", () => {
 
 describe("ReviewTableList patient patientData()", () => {
   let store;
+  let router;
   let wrapper;
 
   beforeEach(() => {
-    store = new Vuex.Store(storeTemplate);
+    store = createStore(storeTemplate);
+    router = createRouter({
+      history: createWebHistory(),
+      routes: routeCollection,
+    });
     wrapper = mount(Page, {
-      localVue,
-      store,
-      mocks: {
-        $route: {
-          path: "/",
-        },
-        $router: {
-          push: jest.fn(),
-          currentRoute: {
-            path: "/potato-csr",
-          },
-        },
+      global: {
+        plugins: [store, router],
       },
     });
   });
@@ -238,23 +222,18 @@ describe("ReviewTableList patient patientData()", () => {
 
 describe("ReviewTableList patient paymentMailAddressData()", () => {
   let store;
+  let router;
   let wrapper;
 
   beforeEach(() => {
-    store = new Vuex.Store(storeTemplate);
+    store = createStore(storeTemplate);
+    router = createRouter({
+      history: createWebHistory(),
+      routes: routeCollection,
+    });
     wrapper = mount(Page, {
-      localVue,
-      store,
-      mocks: {
-        $route: {
-          path: "/",
-        },
-        $router: {
-          push: jest.fn(),
-          currentRoute: {
-            path: "/potato-csr",
-          },
-        },
+      global: {
+        plugins: [store, router],
       },
     });
   });
@@ -309,23 +288,18 @@ describe("ReviewTableList patient paymentMailAddressData()", () => {
 
 describe("ReviewTableList patient vehicleAccidentData()", () => {
   let store;
+  let router;
   let wrapper;
 
   beforeEach(() => {
-    store = new Vuex.Store(storeTemplate);
+    store = createStore(storeTemplate);
+    router = createRouter({
+      history: createWebHistory(),
+      routes: routeCollection,
+    });
     wrapper = mount(Page, {
-      localVue,
-      store,
-      mocks: {
-        $route: {
-          path: "/",
-        },
-        $router: {
-          push: jest.fn(),
-          currentRoute: {
-            path: "/potato-csr",
-          },
-        },
+      global: {
+        plugins: [store, router],
       },
     });
   });
@@ -349,23 +323,18 @@ describe("ReviewTableList patient vehicleAccidentData()", () => {
 
 describe("ReviewTableList patient claimInfoData()", () => {
   let store;
+  let router;
   let wrapper;
 
   beforeEach(() => {
-    store = new Vuex.Store(storeTemplate);
+    store = createStore(storeTemplate);
+    router = createRouter({
+      history: createWebHistory(),
+      routes: routeCollection,
+    });
     wrapper = mount(Page, {
-      localVue,
-      store,
-      mocks: {
-        $route: {
-          path: "/",
-        },
-        $router: {
-          push: jest.fn(),
-          currentRoute: {
-            path: "/potato-csr",
-          },
-        },
+      global: {
+        plugins: [store, router],
       },
     });
   });
@@ -382,23 +351,18 @@ describe("ReviewTableList patient claimInfoData()", () => {
 
 describe("ReviewTableList patient medicalServiceClaims()", () => {
   let store;
+  let router;
   let wrapper;
 
   beforeEach(() => {
-    store = new Vuex.Store(storeTemplate);
+    store = createStore(storeTemplate);
+    router = createRouter({
+      history: createWebHistory(),
+      routes: routeCollection,
+    });
     wrapper = mount(Page, {
-      localVue,
-      store,
-      mocks: {
-        $route: {
-          path: "/",
-        },
-        $router: {
-          push: jest.fn(),
-          currentRoute: {
-            path: "/potato-csr",
-          },
-        },
+      global: {
+        plugins: [store, router],
       },
     });
   });
@@ -520,23 +484,18 @@ describe("ReviewTableList patient medicalServiceClaims()", () => {
 
 describe("ReviewTableList patient practitionerData()", () => {
   let store;
+  let router;
   let wrapper;
 
   beforeEach(() => {
-    store = new Vuex.Store(storeTemplate);
+    store = createStore(storeTemplate);
+    router = createRouter({
+      history: createWebHistory(),
+      routes: routeCollection,
+    });
     wrapper = mount(Page, {
-      localVue,
-      store,
-      mocks: {
-        $route: {
-          path: "/",
-        },
-        $router: {
-          push: jest.fn(),
-          currentRoute: {
-            path: "/potato-csr",
-          },
-        },
+      global: {
+        plugins: [store, router],
       },
     });
   });
@@ -602,23 +561,18 @@ describe("ReviewTableList patient practitionerData()", () => {
 
 describe("ReviewTableList patient referredByData()", () => {
   let store;
+  let router;
   let wrapper;
 
   beforeEach(() => {
-    store = new Vuex.Store(storeTemplate);
+    store = createStore(storeTemplate);
+    router = createRouter({
+      history: createWebHistory(),
+      routes: routeCollection,
+    });
     wrapper = mount(Page, {
-      localVue,
-      store,
-      mocks: {
-        $route: {
-          path: "/",
-        },
-        $router: {
-          push: jest.fn(),
-          currentRoute: {
-            path: "/potato-csr",
-          },
-        },
+      global: {
+        plugins: [store, router],
       },
     });
   });
@@ -657,23 +611,18 @@ describe("ReviewTableList patient referredByData()", () => {
 
 describe("ReviewTableList patient referredToData()", () => {
   let store;
+  let router;
   let wrapper;
 
   beforeEach(() => {
-    store = new Vuex.Store(storeTemplate);
+    store = createStore(storeTemplate);
+    router = createRouter({
+      history: createWebHistory(),
+      routes: routeCollection,
+    });
     wrapper = mount(Page, {
-      localVue,
-      store,
-      mocks: {
-        $route: {
-          path: "/",
-        },
-        $router: {
-          push: jest.fn(),
-          currentRoute: {
-            path: "/potato-csr",
-          },
-        },
+      global: {
+        plugins: [store, router],
       },
     });
   });
@@ -720,30 +669,34 @@ describe("ReviewTableList patient referredToData()", () => {
 describe("ReviewTableList patient navigateToClaimCountPage()", () => {
   let store;
   let wrapper;
-  let $route;
-  let $router;
+  let mockRoute;
+  let mockRouter;
   let spyOnRouter;
 
   beforeEach(() => {
-    $route = {
+    mockRoute = {
       path: "/potato",
     };
-    $router = {
-      $route,
-      currentRoute: $route,
+    mockRouter = {
       push: jest.fn(),
+      currentRoute: {
+        value: {
+          path: "/potato",
+        },
+      },
     };
-    store = new Vuex.Store(storeTemplate);
+    store = createStore(storeTemplate);
     wrapper = mount(Page, {
-      localVue,
-      store,
-      mocks: {
-        $route,
-        $router,
+      global: {
+        plugins: [store],
+        mocks: {
+          $route: mockRoute,
+          $router: mockRouter,
+        },
       },
     });
     spyOnRouter = jest
-      .spyOn($router, "push")
+      .spyOn(mockRouter, "push")
       .mockImplementation(() => Promise.resolve("pushed"));
   });
 
@@ -771,30 +724,34 @@ describe("ReviewTableList patient navigateToClaimCountPage()", () => {
 describe("ReviewTableList patient navigateToClaimCountPage() (part 2 CSR)", () => {
   let store;
   let wrapper;
-  let $route;
-  let $router;
+  let mockRoute;
+  let mockRouter;
   let spyOnRouter;
 
   beforeEach(() => {
-    $route = {
+    mockRoute = {
       path: "/potato-csr",
     };
-    $router = {
-      $route,
-      currentRoute: $route,
+    mockRouter = {
       push: jest.fn(),
+      currentRoute: {
+        value: {
+          path: "/potato-csr",
+        },
+      },
     };
-    store = new Vuex.Store(storeTemplate);
+    store = createStore(storeTemplate);
     wrapper = mount(Page, {
-      localVue,
-      store,
-      mocks: {
-        $route,
-        $router,
+      global: {
+        plugins: [store],
+        mocks: {
+          $route: mockRoute,
+          $router: mockRouter,
+        },
       },
     });
     spyOnRouter = jest
-      .spyOn($router, "push")
+      .spyOn(mockRouter, "push")
       .mockImplementation(() => Promise.resolve("pushed"));
   });
 
@@ -824,32 +781,36 @@ describe("ReviewTableList patient navigateToClaimCountPage() (part 2 CSR)", () =
 describe("ReviewTableList patient navigateToMainFormPage(anchorName)", () => {
   let store;
   let wrapper;
-  let $route;
-  let $router;
+  let mockRoute;
+  let mockRouter;
   let spyOnRouter;
 
   const anchorName = "anchorName";
 
   beforeEach(() => {
-    $route = {
+    mockRoute = {
       path: "/potato",
     };
-    $router = {
-      $route,
-      currentRoute: $route,
+    mockRouter = {
       push: jest.fn(),
+      currentRoute: {
+        value: {
+          path: "/potato",
+        },
+      },
     };
-    store = new Vuex.Store(storeTemplate);
+    store = createStore(storeTemplate);
     wrapper = mount(Page, {
-      localVue,
-      store,
-      mocks: {
-        $route,
-        $router,
+      global: {
+        plugins: [store],
+        mocks: {
+          $route: mockRoute,
+          $router: mockRouter,
+        },
       },
     });
     spyOnRouter = jest
-      .spyOn($router, "push")
+      .spyOn(mockRouter, "push")
       .mockImplementation(() => Promise.resolve("pushed"));
   });
 
@@ -878,32 +839,36 @@ describe("ReviewTableList patient navigateToMainFormPage(anchorName)", () => {
 describe("ReviewTableList patient navigateToMainFormPage(anchorName) (part 2 CSR)", () => {
   let store;
   let wrapper;
-  let $route;
-  let $router;
+  let mockRoute;
+  let mockRouter;
   let spyOnRouter;
 
   const anchorName = "anchorName";
 
   beforeEach(() => {
-    $route = {
+    mockRoute = {
       path: "/potato-csr",
     };
-    $router = {
-      $route,
-      currentRoute: $route,
+    mockRouter = {
       push: jest.fn(),
+      currentRoute: {
+        value: {
+          path: "/potato-csr",
+        },
+      },
     };
-    store = new Vuex.Store(storeTemplate);
+    store = createStore(storeTemplate);
     wrapper = mount(Page, {
-      localVue,
-      store,
-      mocks: {
-        $route,
-        $router,
+      global: {
+        plugins: [store],
+        mocks: {
+          $route: mockRoute,
+          $router: mockRouter,
+        },
       },
     });
     spyOnRouter = jest
-      .spyOn($router, "push")
+      .spyOn(mockRouter, "push")
       .mockImplementation(() => Promise.resolve("pushed"));
   });
 
@@ -933,24 +898,30 @@ describe("ReviewTableList patient navigateToMainFormPage(anchorName) (part 2 CSR
 
 describe("ReviewTableList patient getMedicalServiceClaimTitle(index)", () => {
   let store;
+  let router;
   let wrapper;
-  const $route = {
-    path: "/potato-csr",
+
+  const mockRoute = {
+    path: "/potato",
   };
-  const $router = {
-    $route,
-    currentRoute: $route,
+  const mockRouter = {
     push: jest.fn(),
+    currentRoute: {
+      value: {
+        path: "/potato",
+      },
+    },
   };
 
   it("returns 1", () => {
-    store = new Vuex.Store(storeTemplate);
+    store = createStore(storeTemplate);
     wrapper = mount(Page, {
-      localVue,
-      store,
-      mocks: {
-        $route,
-        $router,
+      global: {
+        plugins: [store],
+        mocks: {
+          $route: mockRoute,
+          $router: mockRouter,
+        },
       },
     });
     const result = wrapper.vm.getMedicalServiceClaimTitle(0);
@@ -958,13 +929,14 @@ describe("ReviewTableList patient getMedicalServiceClaimTitle(index)", () => {
   });
 
   it("returns 2", () => {
-    store = new Vuex.Store(storeTemplate2);
+    store = createStore(storeTemplate2);
     wrapper = mount(Page, {
-      localVue,
-      store,
-      mocks: {
-        $route,
-        $router,
+      global: {
+        plugins: [store],
+        mocks: {
+          $route: mockRoute,
+          $router: mockRouter,
+        },
       },
     });
     const result = wrapper.vm.getMedicalServiceClaimTitle(0);
