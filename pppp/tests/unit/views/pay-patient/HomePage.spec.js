@@ -1,6 +1,4 @@
 import { shallowMount, mount } from "@vue/test-utils";
-import Vuex from "vuex";
-import { cloneDeep } from "lodash";
 import Page from "@/views/pay-patient/HomePage.vue";
 import store from "../../../../src/store/index";
 import * as module2 from "../../../../src/store/modules/pay-patient-form";
