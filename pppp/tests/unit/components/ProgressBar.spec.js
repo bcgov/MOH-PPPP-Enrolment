@@ -1,8 +1,6 @@
-import { shallowMount, createLocalVue } from "@vue/test-utils";
-import Vuex from "vuex";
-import Vue from "vue";
-import VueRouter from "vue-router";
-import Vuelidate from "vuelidate";
+import { mount } from "@vue/test-utils";
+import { createStore } from "vuex";
+import { createRouter, createWebHistory } from "vue-router";
 import Component from "@/components/ProgressBar.vue";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import pageStateService from "@/services/page-state-service";
@@ -12,6 +10,7 @@ import { payPatientRouteStepOrder as routeStepOrder } from "@/router/routes";
 import * as module1 from "../../../src/store/modules/app";
 import * as module2 from "../../../src/store/modules/pay-patient-form";
 import * as module3 from "../../../src/store/modules/pay-practitioner-form";
+import { routeCollection } from "@/router/index";
 
 const storeTemplate = {
   modules: {
@@ -20,13 +19,6 @@ const storeTemplate = {
     payPractitionerForm: cloneDeep(module3),
   },
 };
-
-const localVue = createLocalVue();
-localVue.use(Vuex);
-localVue.use(VueRouter);
-Vue.use(Vuelidate);
-Vue.component("font-awesome-icon", FontAwesomeIcon);
-const router = new VueRouter();
 
 const scrollHelper = require("@/helpers/scroll");
 // const addressHelper = require("@/helpers/address");
@@ -47,6 +39,11 @@ jest.mock("@/helpers/scroll", () => ({
   scrollToError: jest.fn(),
 }));
 
+const router = createRouter({
+  history: createWebHistory(),
+  routes: routeCollection,
+});
+
 const spyOnRouter = jest
   .spyOn(router, "push")
   .mockImplementation(() => Promise.resolve("pushed"));
@@ -60,15 +57,15 @@ describe("ProgressBar.vue", () => {
   let store;
 
   beforeEach(() => {
-    store = new Vuex.Store(storeTemplate);
-    wrapper = shallowMount(Component, {
-      localVue,
-      store,
-      propsData: {
+    store = createStore(storeTemplate);
+    wrapper = mount(Component, {
+      global: {
+        plugins: [store, router],
+      },
+      props: {
         currentPath: routeStepOrder[1].path,
         routes: stepRoutes,
       },
-      router,
     });
   });
 
@@ -87,15 +84,15 @@ describe("ProgressBar.vue onClickLink()", () => {
   let store;
 
   beforeEach(() => {
-    store = new Vuex.Store(storeTemplate);
-    wrapper = shallowMount(Component, {
-      localVue,
-      store,
-      propsData: {
+    store = createStore(storeTemplate);
+    wrapper = mount(Component, {
+      global: {
+        plugins: [store, router],
+      },
+      props: {
         currentPath: routeStepOrder[1].path,
         routes: stepRoutes,
       },
-      router,
     });
   });
 
@@ -172,15 +169,15 @@ describe("ProgressBar.vue openDropdown() and closeDropdown()", () => {
   let store;
 
   beforeEach(() => {
-    store = new Vuex.Store(storeTemplate);
-    wrapper = shallowMount(Component, {
-      localVue,
-      store,
-      propsData: {
+    store = createStore(storeTemplate);
+    wrapper = mount(Component, {
+      global: {
+        plugins: [store, router],
+      },
+      props: {
         currentPath: routeStepOrder[1].path,
         routes: stepRoutes,
       },
-      router,
     });
   });
 
@@ -213,15 +210,15 @@ describe("ProgressBar.vue getLinkStyles()", () => {
   let store;
 
   beforeEach(() => {
-    store = new Vuex.Store(storeTemplate);
-    wrapper = shallowMount(Component, {
-      localVue,
-      store,
-      propsData: {
+    store = createStore(storeTemplate);
+    wrapper = mount(Component, {
+      global: {
+        plugins: [store, router],
+      },
+      props: {
         currentPath: routeStepOrder[1].path,
         routes: stepRoutes,
       },
-      router,
     });
   });
 

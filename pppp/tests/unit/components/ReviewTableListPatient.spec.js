@@ -898,7 +898,6 @@ describe("ReviewTableList patient navigateToMainFormPage(anchorName) (part 2 CSR
 
 describe("ReviewTableList patient getMedicalServiceClaimTitle(index)", () => {
   let store;
-  let router;
   let wrapper;
 
   const mockRoute = {
