@@ -2,7 +2,6 @@ import { mount } from "@vue/test-utils";
 import { createStore } from "vuex";
 import { createRouter, createWebHistory } from "vue-router";
 import Component from "@/components/ProgressBar.vue";
-import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import pageStateService from "@/services/page-state-service";
 import { cloneDeep } from "lodash";
 import { payPatientStepRoutes as stepRoutes } from "@/router/step-routes";
