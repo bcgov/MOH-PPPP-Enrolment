@@ -78,13 +78,13 @@
           @blur='handleBlurField(v$.feeItem)'
           @update:modelValue='handleInputServiceFeeItem($event)' />
     <div class="text-danger"
-        v-if="v$.feeItem.$dirty && !v$.feeItem.required"
+        v-if="v$.feeItem.$dirty && v$.feeItem.required.$invalid"
         aria-live="assertive">Fee Item is required.</div>
     <div class="text-danger"
-        v-if="v$.feeItem.$dirty && v$.feeItem.required && !v$.feeItem.intValidator"
+        v-if="v$.feeItem.$dirty && !v$.feeItem.required.$invalid && v$.feeItem.intValidator.$invalid"
         aria-live="assertive">Fee Item must be an integer.</div>
     <div class="text-danger"
-        v-if="v$.feeItem.$dirty && v$.feeItem.required && !v$.feeItem.positiveNumberValidator"
+        v-if="v$.feeItem.$dirty && v$.feeItem.required.$invalid && v$.feeItem.positiveNumberValidator.$invalid"
         aria-live="assertive">Fee Item must be a positive number.</div>
     <div class="text-danger"
         v-if="medicalServiceClaimsFeeItemValidationError"
