@@ -85,3 +85,31 @@ describe("MedicalServiceClaimsFormItem handleInputServiceFeeItem()", () => {
     expect(wrapper.emitted()).toHaveProperty('update:medicalServiceClaimsFeeItemValidationError')
   });
 });
+
+describe("MedicalServiceClaimsFormItem getServiceDateFutureErrorMessage()", () => {
+  let wrapper;
+
+  beforeEach(() => {
+    wrapper = mount(Component, {
+      global: {
+        mocks: mockRouter,
+        props: passingProps,
+      },
+    });
+  });
+
+  afterEach(() => {
+    jest.resetModules();
+    jest.clearAllMocks();
+  });
+
+  it("returns correct message when 1 claim", () => {
+    const result = wrapper.vm.getServiceDateFutureErrorMessage();
+    expect(result).not.toContain("90"); //eg. "90 days in the future"
+  });
+
+  it("returns correct message when more than 1 claim", async () => {
+    const result = wrapper.vm.getServiceDateFutureErrorMessage("03333");
+    expect(result).toContain("90"); //eg. "90 days in the future"
+  });
+});
