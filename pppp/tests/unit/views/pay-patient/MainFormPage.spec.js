@@ -1,4 +1,4 @@
-import { shallowMount, mount } from "@vue/test-utils";
+import { mount } from "@vue/test-utils";
 import { createStore } from "vuex";
 import { cloneDeep } from "lodash";
 import Page from "@/views/pay-patient/MainFormPage.vue";
@@ -368,66 +368,6 @@ const passingData = {
   referredToPractitionerNumber: "22272",
 };
 
-const failingData = {
-  planReferenceNumber: "",
-  phn: "",
-  dependentNumber: "",
-  firstName: "",
-  middleInitial: "",
-  lastName: "",
-  birthDate: new Date("2000-01-01"),
-
-  addressOwner: "",
-  unitNumber: "",
-  streetNumber: "",
-  streetName: "",
-  city: "",
-  postalCode: "",
-
-  isVehicleAccident: "",
-  vehicleAccidentClaimNumber: "",
-
-  planReferenceNumberOfOriginalClaim: "",
-
-  medicalServiceClaims: [
-    {
-      serviceDate: new Date("2000-01-01"),
-      numberOfServices: "",
-      serviceClarificationCode: "",
-      feeItem: "",
-      amountBilled: "",
-      calledStartTime: {
-        hour: "",
-        minute: "",
-      },
-      renderedFinishTime: {
-        hour: "",
-        minute: "",
-      },
-      diagnosticCode: "",
-      locationOfService: "",
-      correspondenceAttached: null,
-      submissionCode: "",
-      notes: "",
-    },
-  ],
-
-  practitionerLastName: "",
-  practitionerFirstName: "",
-  practitionerPaymentNumber: "",
-  practitionerPractitionerNumber: "",
-  practitionerFacilityNumber: "",
-  practitionerSpecialtyCode: "",
-
-  referredByFirstNameInitial: "",
-  referredByLastName: "",
-  referredByPractitionerNumber: "",
-
-  referredToFirstNameInitial: "",
-  referredToLastName: "",
-  referredToPractitionerNumber: "",
-};
-
 jest.mock("axios", () => ({
   get: jest.fn(),
   post: jest.fn(() => {
@@ -660,44 +600,6 @@ describe("MainFormPage.vue handleInputPractitioner()", () => {
     expect(wrapper.vm.isPractitionerErrorShown).toBe(true);
     wrapper.vm.handleInputPractitioner();
     expect(wrapper.vm.isPractitionerErrorShown).toBe(false);
-  });
-});
-
-describe.skip("MainFormPage.vue handleInputServiceFeeItem()", () => {
-  //The original function this test was made for seems to have been moved. 
-  //Skipping this test until I can check coverage for the new components
-  // eslint-disable-next-line
-  let state;
-  let store;
-  let wrapper;
-
-  beforeEach(() => {
-    state = {
-      applicationUuid: null,
-    };
-    store = createStore(storeTemplate);
-    wrapper = mount(Page, {
-      global: {
-        plugins: [store],
-        mocks: mockRouter,
-      },
-    });
-  });
-
-  afterEach(() => {
-    jest.resetModules();
-    jest.clearAllMocks();
-  });
-
-  it("sets fee item validation to false", () => {
-    wrapper.vm.medicalServiceClaimsFeeItemValidationError[0] = true;
-    expect(wrapper.vm.medicalServiceClaimsFeeItemValidationError[0]).toBe(
-      true
-    );
-    wrapper.vm.handleInputServiceFeeItem(0);
-    expect(wrapper.vm.medicalServiceClaimsFeeItemValidationError[0]).toBe(
-      false
-    );
   });
 });
 
@@ -1006,116 +908,6 @@ describe("MainFormPage.vue getMedicalServiceClaimTitle()", () => {
     const arrayLength = wrapper.vm.medicalServiceClaims.length;
     const result = wrapper.vm.getMedicalServiceClaimTitle(0);
     expect(result).toContain(`${arrayLength}`);
-  });
-});
-
-describe.skip("MainFormPage.vue getServiceDateFutureErrorMessage()", () => {
-  //function moved, skipping until I can check coverage
-  // eslint-disable-next-line
-  let state;
-  let store;
-  let wrapper;
-
-  beforeEach(() => {
-    state = {
-      applicationUuid: null,
-    };
-    store = createStore(storeTemplate);
-    wrapper = mount(Page, {
-      global: {
-        plugins: [store],
-        mocks: mockRouter,
-      },
-    });
-    Object.assign(wrapper.vm, cloneDeep(passingData));
-  });
-
-  afterEach(() => {
-    jest.resetModules();
-    jest.clearAllMocks();
-  });
-
-  it("returns correct message when 1 claim", () => {
-    const result = wrapper.vm.getServiceDateFutureErrorMessage();
-    expect(result).not.toContain("90"); //eg. "90 days in the future"
-  });
-
-  it("returns correct message when more than 1 claim", async () => {
-    const result = wrapper.vm.getServiceDateFutureErrorMessage("03333");
-    expect(result).toContain("90"); //eg. "90 days in the future"
-  });
-});
-
-describe.skip("MainFormPage.vue isSubmissionCodeRequired()", () => {
-  //function moved, skipping until I can check coverage
-  //consider moving the wrapper to the beforeEach and defining exceptions separately
-  // eslint-disable-next-line
-  let state;
-  let store;
-  let wrapper;
-
-  beforeEach(() => {
-    state = {
-      applicationUuid: null,
-    };
-    store = createStore(storeTemplate);
-  });
-
-  afterEach(() => {
-    jest.resetModules();
-    jest.clearAllMocks();
-  });
-
-  it("returns false when serviceDate is null", () => {
-    wrapper = mount(Page, {
-      global: {
-        plugins: [store],
-        mocks: mockRouter,
-      },
-    });
-    Object.assign(wrapper.vm, cloneDeep(passingData));
-    wrapper.vm.medicalServiceClaims[0].serviceDate = null;
-    const result = wrapper.vm.isSubmissionCodeRequired(0);
-    expect(result).toBe(false);
-  });
-
-  it("returns false when not service date is less than 90 days ago", () => {
-    wrapper = mount(Page, {
-      global: {
-        plugins: [store],
-        mocks: mockRouter,
-      },
-    });
-    Object.assign(wrapper.vm, cloneDeep(passingData));
-    wrapper.vm.medicalServiceClaims[0].serviceDate = testDatePast89Days;
-    const result = wrapper.vm.isSubmissionCodeRequired(0);
-    expect(result).toBe(false);
-  });
-
-  it("returns true when not service date is more than 90 days ago", () => {
-    wrapper = mount(Page, {
-      global: {
-        plugins: [store],
-        mocks: mockRouter,
-      },
-    });
-    Object.assign(wrapper.vm, cloneDeep(passingData));
-    wrapper.vm.medicalServiceClaims[0].serviceDate = testDatePast91Days;
-    const result = wrapper.vm.isSubmissionCodeRequired(0);
-    expect(result).toBe(true);
-  });
-
-  it("returns false when route is CSR", () => {
-    wrapper = mount(Page, {
-      global: {
-        plugins: [store],
-        mocks: mockRouterCSR,
-      },
-    });
-    Object.assign(wrapper.vm, cloneDeep(passingData));
-    wrapper.vm.medicalServiceClaims[0].serviceDate = testDatePast91Days;
-    const result = wrapper.vm.isSubmissionCodeRequired(0);
-    expect(result).toBe(false);
   });
 });
 
