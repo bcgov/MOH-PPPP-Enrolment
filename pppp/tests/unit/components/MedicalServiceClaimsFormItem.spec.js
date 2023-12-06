@@ -20,6 +20,20 @@ const mockRouter = {
   },
 };
 
+const mockRouterCSR = {
+  $route: {
+    path: "/",
+  },
+  $router: {
+    push: jest.fn(),
+    currentRoute: {
+      value: {
+        path: "/pay-patient-csr/main-form",
+      },
+    },
+  },
+};
+
 const passingClaim = cloneDeep(
   dummyDataPatient.default.medicalServiceClaims[0]
 );
@@ -40,7 +54,7 @@ const passingProps = {
   submissionCode: passingClaim.submissionCode,
   notes: passingClaim.notes,
   medicalServiceClaimsFeeItemValidationError: false,
-}
+};
 
 describe("MedicalServiceClaimsFormItem.vue", () => {
   let wrapper;
@@ -77,12 +91,16 @@ describe("MedicalServiceClaimsFormItem handleInputServiceFeeItem()", () => {
   });
 
   it("emits update:feeItem and update:medicalServiceClaimsFeeItemValidationError", async () => {
-    expect(wrapper.emitted()).not.toHaveProperty('update:feeItem')
-    expect(wrapper.emitted()).not.toHaveProperty('update:medicalServiceClaimsFeeItemValidationError')
+    expect(wrapper.emitted()).not.toHaveProperty("update:feeItem");
+    expect(wrapper.emitted()).not.toHaveProperty(
+      "update:medicalServiceClaimsFeeItemValidationError"
+    );
     wrapper.vm.handleInputServiceFeeItem(0);
     await wrapper.vm.$nextTick();
-    expect(wrapper.emitted()).toHaveProperty('update:feeItem')
-    expect(wrapper.emitted()).toHaveProperty('update:medicalServiceClaimsFeeItemValidationError')
+    expect(wrapper.emitted()).toHaveProperty("update:feeItem");
+    expect(wrapper.emitted()).toHaveProperty(
+      "update:medicalServiceClaimsFeeItemValidationError"
+    );
   });
 });
 
@@ -111,5 +129,62 @@ describe("MedicalServiceClaimsFormItem getServiceDateFutureErrorMessage()", () =
   it("returns correct message when more than 1 claim", async () => {
     const result = wrapper.vm.getServiceDateFutureErrorMessage("03333");
     expect(result).toContain("90"); //eg. "90 days in the future"
+  });
+});
+
+describe("MainFormPage.vue isSubmissionCodeRequired()", () => {
+  const testDatePast89Days = new Date();
+  testDatePast89Days.setDate(testDatePast89Days.getDate() - 89);
+
+  const testDatePast91Days = new Date();
+  testDatePast91Days.setDate(testDatePast91Days.getDate() - 91);
+  
+  let wrapper;
+
+  beforeEach(() => {
+    wrapper = mount(Component, {
+      global: {
+        mocks: mockRouter,
+        props: passingProps
+      },
+    });
+  });
+
+  afterEach(() => {
+    jest.resetModules();
+    jest.clearAllMocks();
+  });
+
+  it("returns false when service date is null", async () => {
+    await wrapper.setProps({ serviceDate: null })
+    expect(wrapper.vm.serviceDate).toBeNull();
+    const result = wrapper.vm.isSubmissionCodeRequired(0);
+    expect(result).toBe(false);
+  });
+
+  it("returns false when service date is less than 90 days ago", async () => {
+    await wrapper.setProps({ serviceDate: testDatePast89Days })
+    expect(wrapper.vm.serviceDate).toStrictEqual(testDatePast89Days);
+    const result = wrapper.vm.isSubmissionCodeRequired(0);
+    expect(result).toBe(false);
+  });
+
+  it("returns true when service date is more than 90 days ago", async () => {
+    await wrapper.setProps({ serviceDate: testDatePast91Days })
+    expect(wrapper.vm.serviceDate).toStrictEqual(testDatePast91Days);
+    const result = wrapper.vm.isSubmissionCodeRequired(0);
+    expect(result).toBe(true);
+  });
+
+  it("returns false when route is CSR", async () => {
+    wrapper = mount(Component, {
+      global: {
+        mocks: mockRouterCSR,
+      },
+    });
+    await wrapper.setProps({ serviceDate: testDatePast91Days })
+    expect(wrapper.vm.serviceDate).toStrictEqual(testDatePast91Days);
+    const result = wrapper.vm.isSubmissionCodeRequired(0);
+    expect(result).toBe(false);
   });
 });
