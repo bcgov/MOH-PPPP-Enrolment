@@ -61,9 +61,9 @@ describe("MedicalServiceClaimsFormItem.vue", () => {
 
   beforeEach(() => {
     wrapper = mount(Component, {
+      props: passingProps,
       global: {
         mocks: mockRouter,
-        props: passingProps,
       },
     });
   });
@@ -78,9 +78,9 @@ describe("MedicalServiceClaimsFormItem handleInputServiceFeeItem()", () => {
 
   beforeEach(() => {
     wrapper = mount(Component, {
+      props: passingProps,
       global: {
         mocks: mockRouter,
-        props: passingProps,
       },
     });
   });
@@ -109,9 +109,9 @@ describe("MedicalServiceClaimsFormItem getServiceDateFutureErrorMessage()", () =
 
   beforeEach(() => {
     wrapper = mount(Component, {
+      props: passingProps,
       global: {
         mocks: mockRouter,
-        props: passingProps,
       },
     });
   });
@@ -132,7 +132,7 @@ describe("MedicalServiceClaimsFormItem getServiceDateFutureErrorMessage()", () =
   });
 });
 
-describe("MainFormPage.vue isSubmissionCodeRequired()", () => {
+describe("MedicalServiceClaimsFormItem isSubmissionCodeRequired()", () => {
   const testDatePast89Days = new Date();
   testDatePast89Days.setDate(testDatePast89Days.getDate() - 89);
 
@@ -143,9 +143,9 @@ describe("MainFormPage.vue isSubmissionCodeRequired()", () => {
 
   beforeEach(() => {
     wrapper = mount(Component, {
+      props: passingProps,
       global: {
         mocks: mockRouter,
-        props: passingProps
       },
     });
   });
@@ -186,5 +186,26 @@ describe("MainFormPage.vue isSubmissionCodeRequired()", () => {
     expect(wrapper.vm.serviceDate).toStrictEqual(testDatePast91Days);
     const result = wrapper.vm.isSubmissionCodeRequired(0);
     expect(result).toBe(false);
+  });
+});
+
+describe("MedicalServiceClaimsFormItem validations", () => {
+  let wrapper;
+
+  beforeEach(() => {
+    wrapper = mount(Component, {
+      props: passingProps,
+      global: {
+        mocks: mockRouter,
+      },
+    });
+  });
+
+  it("(numberOfServices) flags invalid if not integer", async () => {
+    const testData = "a";
+    expect(wrapper.vm.v$.numberOfServices.$invalid).toBe(false);
+    await wrapper.setProps({ numberOfServices: testData })
+    expect(wrapper.vm.numberOfServices).toStrictEqual(testData);
+    expect(wrapper.vm.v$.numberOfServices.$invalid).toBe(true);
   });
 });
