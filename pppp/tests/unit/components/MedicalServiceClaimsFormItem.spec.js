@@ -6,6 +6,12 @@ import * as dummyDataPatient from "../../../src/store/states/pay-patient-form-du
 import Component from "@/views/pay-patient/MedicalServiceClaimsFormItem";
 // import Component from "@/components/MedicalServiceClaimsFormItem.vue";
 
+const testDateFutureYear = new Date();
+testDateFutureYear.setFullYear(testDateFutureYear.getFullYear() + 1);
+
+const testDateFutureMonth = new Date();
+testDateFutureMonth.setMonth(testDateFutureMonth.getMonth() + 1);
+
 const mockRouter = {
   $route: {
     path: "/",
@@ -69,6 +75,8 @@ describe("MedicalServiceClaimsFormItem.vue", () => {
   });
 
   it("renders", () => {
+    //example check that sample data is being passed down, mounted, and validated correctly
+    expect(wrapper.vm.v$.numberOfServices.$invalid).toBe(false);
     expect(wrapper.element).toBeDefined();
   });
 });
@@ -189,16 +197,96 @@ describe("MedicalServiceClaimsFormItem isSubmissionCodeRequired()", () => {
   });
 });
 
-describe("MedicalServiceClaimsFormItem validations", () => {
+describe("MedicalServiceClaimsFormItem validations (CSR)", () => {
   let wrapper;
 
   beforeEach(() => {
     wrapper = mount(Component, {
       props: passingProps,
       global: {
-        mocks: mockRouter,
+        mocks: mockRouterCSR,
       },
     });
+  });
+
+  it("(serviceDate) flags valid when passed valid data", async () => {
+    expect(wrapper.vm.v$.serviceDate.$invalid).toBe(false);
+  });
+
+  it("(serviceDate) flags valid if not present", async () => {
+    await wrapper.setProps({ serviceDate: null })
+    expect(wrapper.vm.serviceDate).toBeNull();
+    expect(wrapper.vm.v$.serviceDate.$invalid).toBe(false);
+  });
+
+  it("(serviceDate) flags valid if given date is far in the past", async () => {
+    const testData = new Date(1595, 11, 17);
+    await wrapper.setProps({ serviceDate: testData })
+    expect(wrapper.vm.serviceDate).toStrictEqual(testData);
+    expect(wrapper.vm.v$.serviceDate.$invalid).toBe(false);
+  });
+
+  it("(serviceDate) flags valid if given date is more than 90 days in future", async () => {
+    //see related tests at the end of this section for <90 day tests
+    //please note that a fee item of 03333 can affect whether future dates pass or not
+    await wrapper.setProps({ serviceDate: testDateFutureYear })
+    expect(wrapper.vm.serviceDate).toStrictEqual(testDateFutureYear);
+    expect(wrapper.vm.v$.serviceDate.$invalid).toBe(false);
+  });
+
+  it("(serviceDate) flags invalid if given invalid date", async () => {
+    const invalidDate = {
+      month: 0,
+      day: "32",
+      year: "2020",
+    };
+
+    expect(wrapper.vm.v$.serviceDate.$invalid).toBe(false);
+    await wrapper.setProps({ serviceDateData: invalidDate })
+    expect(wrapper.vm.serviceDateData).toStrictEqual(invalidDate);
+    expect(wrapper.vm.v$.serviceDate.$invalid).toBe(true);
+  });
+
+  it("(serviceDate) flags valid if given date is after Oct 1 2021 and location is A", async () => {
+    const testServiceDate = new Date(2021, 10, 3);
+    const testLocation = "A"
+    await wrapper.setProps({ serviceDate: testServiceDate });
+    await wrapper.setProps({ locationOfService: testLocation });
+    expect(wrapper.vm.serviceDate).toStrictEqual(testServiceDate);
+    expect(wrapper.vm.locationOfService).toStrictEqual(testLocation);
+    expect(wrapper.vm.v$.serviceDate.$invalid).toBe(false);
+    expect(wrapper.vm.v$.locationOfService.$invalid).toBe(false);
+  });
+
+  it("(serviceDate) flags valid if given date is before Oct 1 2021 and location is A", async () => {
+    const testServiceDate = new Date(2021, 8, 28);
+    const testLocation = "A"
+    await wrapper.setProps({ serviceDate: testServiceDate });
+    await wrapper.setProps({ locationOfService: testLocation });
+    expect(wrapper.vm.serviceDate).toStrictEqual(testServiceDate);
+    expect(wrapper.vm.locationOfService).toStrictEqual(testLocation);
+    expect(wrapper.vm.v$.serviceDate.$invalid).toBe(false);
+    expect(wrapper.vm.v$.locationOfService.$invalid).toBe(false);
+  });
+
+  it("(serviceDate) flags valid if date is within 90 days of the future and fee item is 03333", async () => {
+    const testFeeItem = "03333";
+    await wrapper.setProps({ serviceDate: testDateFutureMonth })
+    await wrapper.setProps({ feeItem: testFeeItem })
+    expect(wrapper.vm.serviceDate).toStrictEqual(testDateFutureMonth);
+    expect(wrapper.vm.feeItem).toStrictEqual(testFeeItem);
+    expect(wrapper.vm.v$.serviceDate.$invalid).toBe(false);
+    expect(wrapper.vm.v$.feeItem.$invalid).toBe(false);
+  });
+
+  it("(serviceDate) flags valid if date is within 90 days of the future and fee item is not 03333", async () => {
+    const testFeeItem = "11111";
+    await wrapper.setProps({ serviceDate: testDateFutureMonth })
+    await wrapper.setProps({ feeItem: testFeeItem })
+    expect(wrapper.vm.serviceDate).toStrictEqual(testDateFutureMonth);
+    expect(wrapper.vm.feeItem).toStrictEqual(testFeeItem);
+    expect(wrapper.vm.v$.serviceDate.$invalid).toBe(false);
+    expect(wrapper.vm.v$.feeItem.$invalid).toBe(false);
   });
 
   it("(numberOfServices) flags invalid if not integer", async () => {
