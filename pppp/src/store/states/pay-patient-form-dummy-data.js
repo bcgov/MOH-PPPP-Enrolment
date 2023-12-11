@@ -38,7 +38,7 @@ export default {
         minute: '05'
       },
       diagnosticCode: '001',
-      locationOfService: 'A',
+      locationOfService: 'B',
       correspondenceAttached: null,
       submissionCode: 'I',
       notes: 'Notes here.',
