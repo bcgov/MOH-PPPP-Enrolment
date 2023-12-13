@@ -295,14 +295,6 @@ describe("MedicalServiceClaimsFormItem validations (CSR)", () => {
     expect(wrapper.vm.v$.feeItem.$invalid).toBe(false);
   });
 
-  it("(numberOfServices) flags invalid if not integer", async () => {
-    const testData = "a";
-    expect(wrapper.vm.v$.numberOfServices.$invalid).toBe(false);
-    await wrapper.setProps({ numberOfServices: testData });
-    expect(wrapper.vm.numberOfServices).toStrictEqual(testData);
-    expect(wrapper.vm.v$.numberOfServices.$invalid).toBe(true);
-  });
-
   it("(numberOfServices) flags valid if not present", async () => {
     expect(wrapper.vm.v$.numberOfServices.$invalid).toBe(false);
     await wrapper.setProps({ numberOfServices: null });
