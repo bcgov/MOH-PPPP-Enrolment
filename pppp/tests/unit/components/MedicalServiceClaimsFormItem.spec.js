@@ -296,4 +296,187 @@ describe("MedicalServiceClaimsFormItem validations (CSR)", () => {
     expect(wrapper.vm.numberOfServices).toStrictEqual(testData);
     expect(wrapper.vm.v$.numberOfServices.$invalid).toBe(true);
   });
+
+  it("(numberOfServices) flags valid if not present", async () => {
+    expect(wrapper.vm.v$.numberOfServices.$invalid).toBe(false);
+    await wrapper.setProps({ numberOfServices: null })
+    expect(wrapper.vm.numberOfServices).toBeNull();
+    expect(wrapper.vm.v$.numberOfServices.$invalid).toBe(false);
+  });
+
+  it("(numberOfServices) flags invalid if not integer", async () => {
+    const testData = "a"; 
+    expect(wrapper.vm.v$.numberOfServices.$invalid).toBe(false);
+    await wrapper.setProps({ numberOfServices: testData })
+    expect(wrapper.vm.numberOfServices).toStrictEqual(testData);
+    expect(wrapper.vm.v$.numberOfServices.$invalid).toBe(true);
+  });
+
+  it("(numberOfServices) flags invalid if negative integer", async () => {
+    const testData = "-2"; 
+    expect(wrapper.vm.v$.numberOfServices.$invalid).toBe(false);
+    await wrapper.setProps({ numberOfServices: testData })
+    expect(wrapper.vm.numberOfServices).toStrictEqual(testData);
+    expect(wrapper.vm.v$.numberOfServices.$invalid).toBe(true);
+  });
+
+  it("(numberOfServices) flags valid if zero", async () => {
+    const testData = "0"; 
+    expect(wrapper.vm.v$.numberOfServices.$invalid).toBe(false);
+    await wrapper.setProps({ numberOfServices: testData })
+    expect(wrapper.vm.numberOfServices).toStrictEqual(testData);
+    expect(wrapper.vm.v$.numberOfServices.$invalid).toBe(false);
+  });
+
+  it("(feeItem) flags valid if not present", async () => { 
+    expect(wrapper.vm.v$.feeItem.$invalid).toBe(false);
+    await wrapper.setProps({ feeItem: null })
+    expect(wrapper.vm.feeItem).toBeNull();
+    expect(wrapper.vm.v$.feeItem.$invalid).toBe(false);
+  });
+
+  it("(feeItem) flags invalid if not integer", async () => {
+    const testData = "a";
+    expect(wrapper.vm.v$.feeItem.$invalid).toBe(false);
+    await wrapper.setProps({ feeItem: testData })
+    expect(wrapper.vm.feeItem).toStrictEqual(testData);
+    expect(wrapper.vm.v$.feeItem.$invalid).toBe(true);
+  });
+
+  it("(feeItem) flags invalid if negative integer", async () => {
+    const testData = "-2";
+    expect(wrapper.vm.v$.feeItem.$invalid).toBe(false);
+    await wrapper.setProps({ feeItem: testData })
+    expect(wrapper.vm.feeItem).toStrictEqual(testData);
+    expect(wrapper.vm.v$.feeItem.$invalid).toBe(true);
+  });
+
+  it("(amountBilled) flags valid if not present", async () => {
+    expect(wrapper.vm.v$.amountBilled.$invalid).toBe(false);
+    await wrapper.setProps({ amountBilled: null })
+    expect(wrapper.vm.amountBilled).toBeNull();
+    expect(wrapper.vm.v$.amountBilled.$invalid).toBe(false);
+  });
+
+  it("(amountBilled) flags invalid if negative integer", async () => {
+    const testData = "-2.00";
+    expect(wrapper.vm.v$.amountBilled.$invalid).toBe(false);
+    await wrapper.setProps({ amountBilled: testData })
+    expect(wrapper.vm.amountBilled).toStrictEqual(testData);
+    expect(wrapper.vm.v$.amountBilled.$invalid).toBe(true);
+  });
+
+  it("(amountBilled) flags invalid if it doesn't end in .00", async () => {
+    const testData = "2";
+    expect(wrapper.vm.v$.amountBilled.$invalid).toBe(false);
+    await wrapper.setProps({ amountBilled: testData })
+    expect(wrapper.vm.amountBilled).toStrictEqual(testData);
+    expect(wrapper.vm.v$.amountBilled.$invalid).toBe(true);
+  });
+
+  it("(amountBilled) flags valid if it does end in .00", async () => {
+    const testData = "2.00";
+    expect(wrapper.vm.v$.amountBilled.$invalid).toBe(false);
+    await wrapper.setProps({ amountBilled: testData })
+    expect(wrapper.vm.amountBilled).toStrictEqual(testData);
+    expect(wrapper.vm.v$.amountBilled.$invalid).toBe(false);
+  });
+
+  it("(amountBilled) flags invalid if value is correct but fee item is 03333", async () => {
+    const testAmountBilled = "2.00";
+    const testFeeItem = "03333";
+    expect(wrapper.vm.v$.amountBilled.$invalid).toBe(false);
+    expect(wrapper.vm.v$.feeItem.$invalid).toBe(false);
+    await wrapper.setProps({ amountBilled: testAmountBilled })
+    await wrapper.setProps({ feeItem: testFeeItem })
+    expect(wrapper.vm.amountBilled).toStrictEqual(testAmountBilled);
+    expect(wrapper.vm.feeItem).toStrictEqual(testFeeItem);
+    expect(wrapper.vm.v$.amountBilled.$invalid).toBe(true);
+  });
+
+  it("(calledStartTime) flags invalid if hour not present but minute is", async () => {
+    const testData = {hour: null, minute: "25"};
+    expect(wrapper.vm.v$.calledStartTime.$invalid).toBe(false);
+    await wrapper.setProps({ calledStartTime: testData })
+    expect(wrapper.vm.calledStartTime).toStrictEqual(testData);
+    expect(wrapper.vm.v$.calledStartTime.$invalid).toBe(true);
+  });
+
+  it("(calledStartTime) flags invalid if hour present but minute is not", async () => {
+    const testData = {hour: "12", minute: null};
+    expect(wrapper.vm.v$.calledStartTime.$invalid).toBe(false);
+    await wrapper.setProps({ calledStartTime: testData })
+    expect(wrapper.vm.calledStartTime).toStrictEqual(testData);
+    expect(wrapper.vm.v$.calledStartTime.$invalid).toBe(true);
+  });
+
+  it("(renderedFinishTime) flags invalid if hour not present but minute is", async () => {
+    const testData = {hour: null, minute: "25"};
+    expect(wrapper.vm.v$.renderedFinishTime.$invalid).toBe(false);
+    await wrapper.setProps({ renderedFinishTime: testData })
+    expect(wrapper.vm.renderedFinishTime).toStrictEqual(testData);
+    expect(wrapper.vm.v$.renderedFinishTime.$invalid).toBe(true);
+  });
+
+  it("(renderedFinishTime) flags invalid if hour present but minute is not", async () => {
+    const testData = {hour: "12", minute: null};
+    expect(wrapper.vm.v$.renderedFinishTime.$invalid).toBe(false);
+    await wrapper.setProps({ renderedFinishTime: testData })
+    expect(wrapper.vm.renderedFinishTime).toStrictEqual(testData);
+    expect(wrapper.vm.v$.renderedFinishTime.$invalid).toBe(true);
+  });
+
+  it("(diagnosticCode) flags valid if not present", async () => {
+    expect(wrapper.vm.v$.diagnosticCode.$invalid).toBe(false);
+    await wrapper.setProps({ diagnosticCode: null })
+    expect(wrapper.vm.diagnosticCode).toBeNull();
+    expect(wrapper.vm.v$.diagnosticCode.$invalid).toBe(false);
+  });
+
+  it("(diagnosticCode) flags invalid if not alphanumeric", async () => {
+    const testData = "a^^^";
+    expect(wrapper.vm.v$.diagnosticCode.$invalid).toBe(false);
+    await wrapper.setProps({ diagnosticCode: testData })
+    expect(wrapper.vm.diagnosticCode).toStrictEqual(testData);
+    expect(wrapper.vm.v$.diagnosticCode.$invalid).toBe(true);
+  });
+
+  it("(diagnosticCode) flags valid if not on diagnostic list", async () => {
+    const testData = "A111";
+    expect(wrapper.vm.v$.diagnosticCode.$invalid).toBe(false);
+    await wrapper.setProps({ diagnosticCode: testData })
+    expect(wrapper.vm.diagnosticCode).toStrictEqual(testData);
+    expect(wrapper.vm.v$.diagnosticCode.$invalid).toBe(false);
+  });
+
+  it("(locationOfService) flags valid if not present", async () => {
+    expect(wrapper.vm.v$.locationOfService.$invalid).toBe(false);
+    await wrapper.setProps({ locationOfService: null })
+    expect(wrapper.vm.locationOfService).toBeNull();
+    expect(wrapper.vm.v$.locationOfService.$invalid).toBe(false);
+  });
+
+  it("(locationOfService) flags valid if A and after Oct 1st 2021", async () => {
+    const testlocationOfService = "A";
+    const testserviceDate = new Date(2021, 10, 3);
+    expect(wrapper.vm.v$.locationOfService.$invalid).toBe(false);
+    expect(wrapper.vm.v$.serviceDate.$invalid).toBe(false);
+    await wrapper.setProps({ locationOfService: testlocationOfService })
+    await wrapper.setProps({ serviceDate: testserviceDate })
+    expect(wrapper.vm.locationOfService).toStrictEqual(testlocationOfService);
+    expect(wrapper.vm.serviceDate).toStrictEqual(testserviceDate);
+    expect(wrapper.vm.v$.locationOfService.$invalid).toBe(false);
+  });
+
+  it("(locationOfService) flags valid if A and before Oct 1st 2021", async () => {
+    const testlocationOfService = "A";
+    const testserviceDate = new Date(2021, 8, 28);
+    expect(wrapper.vm.v$.locationOfService.$invalid).toBe(false);
+    expect(wrapper.vm.v$.serviceDate.$invalid).toBe(false);
+    await wrapper.setProps({ locationOfService: testlocationOfService })
+    await wrapper.setProps({ serviceDate: testserviceDate })
+    expect(wrapper.vm.locationOfService).toStrictEqual(testlocationOfService);
+    expect(wrapper.vm.serviceDate).toStrictEqual(testserviceDate);
+    expect(wrapper.vm.v$.locationOfService.$invalid).toBe(false);
+  });
 });
