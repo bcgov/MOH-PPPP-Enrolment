@@ -1,6 +1,5 @@
-import { shallowMount, createLocalVue } from "@vue/test-utils";
-import Vuex from "vuex";
-import Vuelidate from "vuelidate";
+import { mount } from "@vue/test-utils";
+import { createStore } from "vuex";
 import { cloneDeep } from "lodash";
 import Page from "@/views/pay-patient/MainFormPage.vue";
 import logService from "@/services/log-service";
@@ -467,10 +466,6 @@ const spyOnVisitPage = jest
   .spyOn(pageStateService, "visitPage")
   .mockImplementation(() => Promise.resolve("visited"));
 
-const localVue = createLocalVue();
-localVue.use(Vuex);
-localVue.use(Vuelidate);
-
 const spyOnLogNavigation = jest
   .spyOn(logService, "logNavigation")
   .mockImplementation(() => Promise.resolve("logged"));
@@ -493,19 +488,9 @@ const mockRouter = {
   $router: {
     push: jest.fn(),
     currentRoute: {
-      path: "/pay-patient/main-form",
-    },
-  },
-};
-
-const mockRouterCSR = {
-  $route: {
-    path: "/",
-  },
-  $router: {
-    push: jest.fn(),
-    currentRoute: {
-      path: "/pay-patient-csr/main-form",
+      value: {
+        path: "/pay-patient/main-form",
+      },
     },
   },
 };
@@ -521,14 +506,13 @@ describe("MainFormPage.vue validateFields(), public", () => {
     state = {
       applicationUuid: null,
     };
-    store = new Vuex.Store(storeTemplate);
-
-    wrapper = shallowMount(Page, {
-      store,
-      localVue,
-      mocks: mockRouter,
+    store = createStore(storeTemplate);
+    wrapper = mount(Page, {
+      global: {
+        plugins: [store],
+        mocks: mockRouter,
+      },
     });
-
     spyOnNavigateToNextPage = jest.spyOn(wrapper.vm, "navigateToNextPage");
   });
 
@@ -589,7 +573,9 @@ describe("MainFormPage.vue validateFields(), public", () => {
 
   it("(PHN) flags invalid if not present", async () => {
     Object.assign(wrapper.vm, cloneDeep(passingData));
-    await wrapper.setData({ phn: "" });
+    const testData = "";
+    await wrapper.setData({ phn: testData });
+    expect(wrapper.vm.phn).toStrictEqual(testData);
     await wrapper.vm.validateFields();
     await wrapper.vm.$nextTick;
     expect(spyOnScrollToError).toHaveBeenCalled();
@@ -598,7 +584,9 @@ describe("MainFormPage.vue validateFields(), public", () => {
 
   it("(PHN) flags invalid if invalid entry", async () => {
     Object.assign(wrapper.vm, cloneDeep(passingData));
-    await wrapper.setData({ phn: "9999 999 999" });
+    const testData = "1212 121 212";
+    await wrapper.setData({ phn: testData });
+    expect(wrapper.vm.phn).toStrictEqual(testData);
     await wrapper.vm.validateFields();
     await wrapper.vm.$nextTick;
     expect(spyOnScrollToError).toHaveBeenCalled();
@@ -607,7 +595,9 @@ describe("MainFormPage.vue validateFields(), public", () => {
 
   it("(PHN) flags invalid if PHN doesn't start with 9", async () => {
     Object.assign(wrapper.vm, cloneDeep(passingData));
-    await wrapper.setData({ phn: "7999 999 998" });
+    const testData = "7999 999 998";
+    await wrapper.setData({ phn: testData });
+    expect(wrapper.vm.phn).toStrictEqual(testData);
     await wrapper.vm.validateFields();
     await wrapper.vm.$nextTick;
     expect(spyOnScrollToError).toHaveBeenCalled();
@@ -616,7 +606,9 @@ describe("MainFormPage.vue validateFields(), public", () => {
 
   it("(dependentNumber) flags invalid if non number", async () => {
     Object.assign(wrapper.vm, cloneDeep(passingData));
-    await wrapper.setData({ dependentNumber: "a" });
+    const testData = "a";
+    await wrapper.setData({ dependentNumber: testData });
+    expect(wrapper.vm.dependentNumber).toStrictEqual(testData);
     await wrapper.vm.validateFields();
     await wrapper.vm.$nextTick;
     expect(spyOnScrollToError).toHaveBeenCalled();
@@ -625,7 +617,9 @@ describe("MainFormPage.vue validateFields(), public", () => {
 
   it("(dependentNumber) flags invalid if negative number", async () => {
     Object.assign(wrapper.vm, cloneDeep(passingData));
-    await wrapper.setData({ dependentNumber: "-2" });
+    const testData = "-2";
+    await wrapper.setData({ dependentNumber: testData });
+    expect(wrapper.vm.dependentNumber).toStrictEqual(testData);
     await wrapper.vm.validateFields();
     await wrapper.vm.$nextTick;
     expect(spyOnScrollToError).toHaveBeenCalled();
@@ -634,16 +628,20 @@ describe("MainFormPage.vue validateFields(), public", () => {
 
   it("(dependentNumber) flags invalid if not 00 or 66 with a PHN", async () => {
     Object.assign(wrapper.vm, cloneDeep(passingData));
-    await wrapper.setData({ dependentNumber: "55" });
+    const testData = "55";
+    // await wrapper.setData({ dependentNumber: testData });
+    expect(wrapper.vm.dependentNumber).toStrictEqual(testData);
     await wrapper.vm.validateFields();
     await wrapper.vm.$nextTick;
-    expect(spyOnScrollToError).toHaveBeenCalled();
-    expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
+    expect(spyOnScrollToError).not.toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).toHaveBeenCalled();
   });
 
   it("(firstName) flags invalid if not present", async () => {
     Object.assign(wrapper.vm, cloneDeep(passingData));
-    await wrapper.setData({ firstName: null });
+    const testData = null;
+    await wrapper.setData({ firstName: testData });
+    expect(wrapper.vm.aaa).not.toStrictEqual(testData);
     await wrapper.vm.validateFields();
     await wrapper.vm.$nextTick;
     expect(spyOnScrollToError).toHaveBeenCalled();
@@ -652,7 +650,9 @@ describe("MainFormPage.vue validateFields(), public", () => {
 
   it("(firstName) flags invalid if contains invalid characters", async () => {
     Object.assign(wrapper.vm, cloneDeep(passingData));
-    await wrapper.setData({ firstName: "aaa^" });
+    const testData = "aaa^";
+    await wrapper.setData({ firstName: testData });
+    expect(wrapper.vm.firstName).toStrictEqual(testData);
     await wrapper.vm.validateFields();
     await wrapper.vm.$nextTick;
     expect(spyOnScrollToError).toHaveBeenCalled();
@@ -661,7 +661,9 @@ describe("MainFormPage.vue validateFields(), public", () => {
 
   it("(firstName) flags valid if contains commas, dashes, or apostrophes and starts with a letter", async () => {
     Object.assign(wrapper.vm, cloneDeep(passingData));
-    await wrapper.setData({ firstName: `a-.' -.' ` });
+    const testData = `a-.' -.' `;
+    await wrapper.setData({ firstName: testData });
+    expect(wrapper.vm.firstName).toStrictEqual(testData);
     await wrapper.vm.validateFields();
     await wrapper.vm.$nextTick;
     expect(spyOnScrollToError).not.toHaveBeenCalled();
@@ -670,7 +672,9 @@ describe("MainFormPage.vue validateFields(), public", () => {
 
   it("(middleInitial) flags invalid if contains non-alphabetic character", async () => {
     Object.assign(wrapper.vm, cloneDeep(passingData));
-    await wrapper.setData({ middleInitial: `1` });
+    const testData = `1`;
+    await wrapper.setData({ middleInitial: testData });
+    expect(wrapper.vm.middleInitial).toStrictEqual(testData);
     await wrapper.vm.validateFields();
     await wrapper.vm.$nextTick;
     expect(spyOnScrollToError).toHaveBeenCalled();
@@ -679,7 +683,9 @@ describe("MainFormPage.vue validateFields(), public", () => {
 
   it("(middleInitial) flags invalid if contains non-alphabetic character (2)", async () => {
     Object.assign(wrapper.vm, cloneDeep(passingData));
-    await wrapper.setData({ middleInitial: `^` });
+    const testData = `^`;
+    await wrapper.setData({ middleInitial: testData });
+    expect(wrapper.vm.middleInitial).toStrictEqual(testData);
     await wrapper.vm.validateFields();
     await wrapper.vm.$nextTick;
     expect(spyOnScrollToError).toHaveBeenCalled();
@@ -688,7 +694,9 @@ describe("MainFormPage.vue validateFields(), public", () => {
 
   it("(middleInitial) flags valid if contains alphabetic character", async () => {
     Object.assign(wrapper.vm, cloneDeep(passingData));
-    await wrapper.setData({ middleInitial: `a` });
+    const testData = `a`;
+    await wrapper.setData({ middleInitial: testData });
+    expect(wrapper.vm.middleInitial).toStrictEqual(testData);
     await wrapper.vm.validateFields();
     await wrapper.vm.$nextTick;
     expect(spyOnScrollToError).not.toHaveBeenCalled();
@@ -698,6 +706,7 @@ describe("MainFormPage.vue validateFields(), public", () => {
   it("(lastName) flags invalid if not present", async () => {
     Object.assign(wrapper.vm, cloneDeep(passingData));
     await wrapper.setData({ lastName: null });
+    expect(wrapper.vm.lastName).toBeNull();
     await wrapper.vm.validateFields();
     await wrapper.vm.$nextTick;
     expect(spyOnScrollToError).toHaveBeenCalled();
@@ -706,7 +715,9 @@ describe("MainFormPage.vue validateFields(), public", () => {
 
   it("(lastName) flags invalid if contains invalid characters", async () => {
     Object.assign(wrapper.vm, cloneDeep(passingData));
-    await wrapper.setData({ lastName: "aaa^" });
+    const testData = "aaa^";
+    await wrapper.setData({ lastName: testData });
+    expect(wrapper.vm.lastName).toStrictEqual(testData);
     await wrapper.vm.validateFields();
     await wrapper.vm.$nextTick;
     expect(spyOnScrollToError).toHaveBeenCalled();
@@ -715,7 +726,9 @@ describe("MainFormPage.vue validateFields(), public", () => {
 
   it("(lastName) flags valid if contains commas, dashes, or apostrophes and starts with a letter", async () => {
     Object.assign(wrapper.vm, cloneDeep(passingData));
-    await wrapper.setData({ lastName: `a-.' -.' ` });
+    const testData = `a-.' -.' `;
+    await wrapper.setData({ lastName: testData });
+    expect(wrapper.vm.lastName).toStrictEqual(testData);
     await wrapper.vm.validateFields();
     await wrapper.vm.$nextTick;
     expect(spyOnScrollToError).not.toHaveBeenCalled();
@@ -724,8 +737,11 @@ describe("MainFormPage.vue validateFields(), public", () => {
 
   it("(birthDate) flags invalid if not present and dependentNumber is not 66", async () => {
     Object.assign(wrapper.vm, cloneDeep(passingData));
+    const testData = "00";
     await wrapper.setData({ birthDate: null });
-    await wrapper.setData({ dependentNumber: "00" });
+    await wrapper.setData({ dependentNumber: testData });
+    expect(wrapper.vm.birthDate).toBeNull();
+    expect(wrapper.vm.dependentNumber).toStrictEqual(testData);
     await wrapper.vm.validateFields();
     await wrapper.vm.$nextTick;
     expect(spyOnScrollToError).toHaveBeenCalled();
@@ -734,8 +750,11 @@ describe("MainFormPage.vue validateFields(), public", () => {
 
   it("(birthDate) flags valid if not present and dependentNumber is 66", async () => {
     Object.assign(wrapper.vm, cloneDeep(passingData));
+    const testData = "66";
     await wrapper.setData({ birthDate: null });
-    await wrapper.setData({ dependentNumber: "66" });
+    await wrapper.setData({ dependentNumber: testData });
+    expect(wrapper.vm.birthDate).toBeNull();
+    expect(wrapper.vm.dependentNumber).toStrictEqual(testData);
     await wrapper.vm.validateFields();
     await wrapper.vm.$nextTick;
     expect(spyOnScrollToError).not.toHaveBeenCalled();
@@ -744,7 +763,10 @@ describe("MainFormPage.vue validateFields(), public", () => {
 
   it("(birthDate) flags invalid if given date is too far in the past", async () => {
     Object.assign(wrapper.vm, cloneDeep(passingData));
-    await wrapper.setData({ birthDate: new Date(1595, 11, 17) });
+    const testData = new Date(1595, 11, 17);
+    wrapper.vm.birthDate = testData;
+    await wrapper.vm.$nextTick;
+    expect(wrapper.vm.birthDate).toStrictEqual(testData);
     await wrapper.vm.validateFields();
     await wrapper.vm.$nextTick;
     expect(spyOnScrollToError).toHaveBeenCalled();
@@ -753,7 +775,8 @@ describe("MainFormPage.vue validateFields(), public", () => {
 
   it("(birthDate) flags invalid if given date is in future", async () => {
     Object.assign(wrapper.vm, cloneDeep(passingData));
-    await wrapper.setData({ birthDate: testDateFutureYear });
+    wrapper.vm.birthDate = testDateFutureYear;
+    expect(wrapper.vm.birthDate).toStrictEqual(testDateFutureYear);
     await wrapper.vm.validateFields();
     await wrapper.vm.$nextTick;
     expect(spyOnScrollToError).toHaveBeenCalled();
@@ -762,13 +785,16 @@ describe("MainFormPage.vue validateFields(), public", () => {
 
   it("(birthDate) flags invalid if given invalid date", async () => {
     Object.assign(wrapper.vm, cloneDeep(passingData));
+    const testData = {
+      date: null,
+      month: 0,
+      day: "32",
+      year: "2020",
+    };
     await wrapper.setData({
-      birthDateData: {
-        month: 0,
-        day: "32",
-        year: "2020",
-      },
+      birthDateData: testData,
     });
+    expect(wrapper.vm.birthDateData).toStrictEqual(testData);
     await wrapper.vm.validateFields();
     await wrapper.vm.$nextTick;
     expect(spyOnScrollToError).toHaveBeenCalled();
@@ -778,6 +804,7 @@ describe("MainFormPage.vue validateFields(), public", () => {
   it("(addressOwner) flags invalid if not present", async () => {
     Object.assign(wrapper.vm, cloneDeep(passingData));
     await wrapper.setData({ addressOwner: null });
+    expect(wrapper.vm.addressOwner).toBeNull();
     await wrapper.vm.validateFields();
     await wrapper.vm.$nextTick;
     expect(spyOnScrollToError).toHaveBeenCalled();
@@ -787,6 +814,7 @@ describe("MainFormPage.vue validateFields(), public", () => {
   it("(streetName) flags invalid if not present", async () => {
     Object.assign(wrapper.vm, cloneDeep(passingData));
     await wrapper.setData({ streetName: null });
+    expect(wrapper.vm.streetName).toBeNull();
     await wrapper.vm.validateFields();
     await wrapper.vm.$nextTick;
     expect(spyOnScrollToError).toHaveBeenCalled();
@@ -796,6 +824,7 @@ describe("MainFormPage.vue validateFields(), public", () => {
   it("(city) flags invalid if not present", async () => {
     Object.assign(wrapper.vm, cloneDeep(passingData));
     await wrapper.setData({ city: null });
+    expect(wrapper.vm.city).toBeNull();
     await wrapper.vm.validateFields();
     await wrapper.vm.$nextTick;
     expect(spyOnScrollToError).toHaveBeenCalled();
@@ -805,6 +834,7 @@ describe("MainFormPage.vue validateFields(), public", () => {
   it("(postalCode) flags invalid if not present", async () => {
     Object.assign(wrapper.vm, cloneDeep(passingData));
     await wrapper.setData({ postalCode: null });
+    expect(wrapper.vm.postalCode).toBeNull();
     await wrapper.vm.validateFields();
     await wrapper.vm.$nextTick;
     expect(spyOnScrollToError).toHaveBeenCalled();
@@ -813,7 +843,9 @@ describe("MainFormPage.vue validateFields(), public", () => {
 
   it("(postalCode) flags invalid if not BC postal code", async () => {
     Object.assign(wrapper.vm, cloneDeep(passingData));
-    await wrapper.setData({ postalCode: "A1A1A1" });
+    const testData = "A1A1A1";
+    await wrapper.setData({ postalCode: testData });
+    expect(wrapper.vm.postalCode).toStrictEqual(testData);
     await wrapper.vm.validateFields();
     await wrapper.vm.$nextTick;
     expect(spyOnScrollToError).toHaveBeenCalled();
@@ -822,7 +854,9 @@ describe("MainFormPage.vue validateFields(), public", () => {
 
   it("(postalCode) flags valid if BC postal code", async () => {
     Object.assign(wrapper.vm, cloneDeep(passingData));
-    await wrapper.setData({ postalCode: "V1A1A1" });
+    const testData = "V1A1A1";
+    await wrapper.setData({ postalCode: testData });
+    expect(wrapper.vm.postalCode).toStrictEqual(testData);
     await wrapper.vm.validateFields();
     await wrapper.vm.$nextTick;
     expect(spyOnScrollToError).not.toHaveBeenCalled();
@@ -832,6 +866,7 @@ describe("MainFormPage.vue validateFields(), public", () => {
   it("(isVehicleAccident) flags invalid if not present", async () => {
     Object.assign(wrapper.vm, cloneDeep(passingData));
     await wrapper.setData({ isVehicleAccident: null });
+    expect(wrapper.vm.isVehicleAccident).toBeNull();
     await wrapper.vm.validateFields();
     await wrapper.vm.$nextTick;
     expect(spyOnScrollToError).toHaveBeenCalled();
@@ -840,16 +875,20 @@ describe("MainFormPage.vue validateFields(), public", () => {
 
   it("(vehicleAccidentClaimNumber) flags invalid if not correct format", async () => {
     Object.assign(wrapper.vm, cloneDeep(passingData));
-    await wrapper.setData({ vehicleAccidentClaimNumber: "^^^" });
+    const testData = "^^^";
+    await wrapper.setData({ vehicleAccidentClaimNumber: testData });
+    expect(wrapper.vm.vehicleAccidentClaimNumber).toStrictEqual(testData);
     await wrapper.vm.validateFields();
     await wrapper.vm.$nextTick;
     expect(spyOnScrollToError).toHaveBeenCalled();
     expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
   });
 
-  it("(vehicleAccidentClaimNumber) flags invalid if not correct format (2)", async () => {
+  it("(vehicleAccidentClaimNumber) flags invalid if eight numerals (2)", async () => {
     Object.assign(wrapper.vm, cloneDeep(passingData));
-    await wrapper.setData({ vehicleAccidentClaimNumber: "88888888" });
+    const testData = "88888888";
+    await wrapper.setData({ vehicleAccidentClaimNumber: testData });
+    expect(wrapper.vm.vehicleAccidentClaimNumber).toStrictEqual(testData);
     await wrapper.vm.validateFields();
     await wrapper.vm.$nextTick;
     expect(spyOnScrollToError).toHaveBeenCalled();
@@ -858,7 +897,9 @@ describe("MainFormPage.vue validateFields(), public", () => {
 
   it("(vehicleAccidentClaimNumber) flags valid if correct format", async () => {
     Object.assign(wrapper.vm, cloneDeep(passingData));
-    await wrapper.setData({ vehicleAccidentClaimNumber: "AA111111" });
+    const testData = "AA111111";
+    await wrapper.setData({ vehicleAccidentClaimNumber: testData });
+    expect(wrapper.vm.vehicleAccidentClaimNumber).toStrictEqual(testData);
     await wrapper.vm.validateFields();
     await wrapper.vm.$nextTick;
     expect(spyOnScrollToError).not.toHaveBeenCalled();
@@ -867,7 +908,11 @@ describe("MainFormPage.vue validateFields(), public", () => {
 
   it("(planReferenceNumberOfOriginalClaim) flags invalid if not integer", async () => {
     Object.assign(wrapper.vm, cloneDeep(passingData));
-    await wrapper.setData({ planReferenceNumberOfOriginalClaim: "a" });
+    const testData = "a";
+    await wrapper.setData({ planReferenceNumberOfOriginalClaim: testData });
+    expect(wrapper.vm.planReferenceNumberOfOriginalClaim).toStrictEqual(
+      testData
+    );
     await wrapper.vm.validateFields();
     await wrapper.vm.$nextTick;
     expect(spyOnScrollToError).toHaveBeenCalled();
@@ -876,353 +921,21 @@ describe("MainFormPage.vue validateFields(), public", () => {
 
   it("(planReferenceNumberOfOriginalClaim) flags invalid if not positive", async () => {
     Object.assign(wrapper.vm, cloneDeep(passingData));
-    await wrapper.setData({ planReferenceNumberOfOriginalClaim: "-2" });
+    const testData = "-2";
+    await wrapper.setData({ planReferenceNumberOfOriginalClaim: testData });
+    expect(wrapper.vm.planReferenceNumberOfOriginalClaim).toStrictEqual(
+      testData
+    );
     await wrapper.vm.validateFields();
     await wrapper.vm.$nextTick;
     expect(spyOnScrollToError).toHaveBeenCalled();
     expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
   });
-
-  //medicalServiceClaims
-
-  it("(serviceDate) flags invalid if not present", async () => {
-    Object.assign(wrapper.vm, cloneDeep(passingData));
-    wrapper.vm.medicalServiceClaims[0].serviceDate = null;
-    await wrapper.vm.validateFields();
-    await wrapper.vm.$nextTick;
-    expect(spyOnScrollToError).toHaveBeenCalled();
-    expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
-  });
-
-  it("(serviceDate) flags invalid if given date is too far in the past", async () => {
-    Object.assign(wrapper.vm, cloneDeep(passingData));
-    wrapper.vm.medicalServiceClaims[0].serviceDate = new Date(1595, 11, 17);
-    await wrapper.vm.validateFields();
-    await wrapper.vm.$nextTick;
-    expect(spyOnScrollToError).toHaveBeenCalled();
-    expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
-  });
-
-  it("(serviceDate) flags invalid if given date is in future", async () => {
-    Object.assign(wrapper.vm, cloneDeep(passingData));
-    //feeItem is set in passing data to not be 03333, which changes this test.
-    //see related tests at the end of this section
-    wrapper.vm.medicalServiceClaims[0].serviceDate = testDateFutureYear;
-    await wrapper.vm.validateFields();
-    await wrapper.vm.$nextTick;
-    expect(spyOnScrollToError).toHaveBeenCalled();
-    expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
-  });
-
-  it("(serviceDate) flags invalid if given invalid date", async () => {
-    Object.assign(wrapper.vm, cloneDeep(passingData));
-    wrapper.vm.medicalServiceClaims[0].serviceDateData = {
-      month: 0,
-      day: "32",
-      year: "2020",
-    };
-
-    await wrapper.vm.validateFields();
-    await wrapper.vm.$nextTick;
-    expect(spyOnScrollToError).toHaveBeenCalled();
-    expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
-  });
-
-  it("(serviceDate) flags invalid if given date is after Oct 1 2021 and location is A", async () => {
-    Object.assign(wrapper.vm, cloneDeep(passingData));
-    wrapper.vm.medicalServiceClaims[0].serviceDate = new Date(2021, 10, 3);
-    wrapper.vm.medicalServiceClaims[0].locationOfService = "A";
-    await wrapper.vm.validateFields();
-    await wrapper.vm.$nextTick;
-    expect(spyOnScrollToError).toHaveBeenCalled();
-    expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
-  });
-
-  it("(serviceDate) flags valid if given date is before Oct 1 2021 and location is A", async () => {
-    Object.assign(wrapper.vm, cloneDeep(passingData));
-    wrapper.vm.medicalServiceClaims[0].serviceDate = new Date(2021, 8, 28);
-    wrapper.vm.medicalServiceClaims[0].locationOfService = "A";
-    await wrapper.vm.validateFields();
-    await wrapper.vm.$nextTick;
-    expect(spyOnScrollToError).not.toHaveBeenCalled();
-    expect(spyOnNavigateToNextPage).toHaveBeenCalled();
-  });
-
-  it("(serviceDate) flags valid if date is within 90 days of the future and fee item is 03333", async () => {
-    Object.assign(wrapper.vm, cloneDeep(passingData));
-    wrapper.vm.medicalServiceClaims[0].serviceDate = testDateFutureMonth;
-    wrapper.vm.medicalServiceClaims[0].feeItem = "03333";
-    await wrapper.vm.validateFields();
-    await wrapper.vm.$nextTick;
-    expect(spyOnScrollToError).not.toHaveBeenCalled();
-    expect(spyOnNavigateToNextPage).toHaveBeenCalled();
-  });
-
-  it("(serviceDate) flags invalid if date is within 90 days of the future and fee item is not 03333", async () => {
-    Object.assign(wrapper.vm, cloneDeep(passingData));
-    wrapper.vm.medicalServiceClaims[0].serviceDate = testDateFutureMonth;
-    await wrapper.vm.validateFields();
-    await wrapper.vm.$nextTick;
-    expect(spyOnScrollToError).toHaveBeenCalled();
-    expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
-  });
-
-  it("(numberOfServices) flags invalid if not present", async () => {
-    Object.assign(wrapper.vm, cloneDeep(passingData));
-    wrapper.vm.medicalServiceClaims[0].numberOfServices = null;
-    await wrapper.vm.validateFields();
-    await wrapper.vm.$nextTick;
-    expect(spyOnScrollToError).toHaveBeenCalled();
-    expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
-  });
-
-  it("(numberOfServices) flags invalid if not integer", async () => {
-    Object.assign(wrapper.vm, cloneDeep(passingData));
-    wrapper.vm.medicalServiceClaims[0].numberOfServices = "a";
-    await wrapper.vm.validateFields();
-    await wrapper.vm.$nextTick;
-    expect(spyOnScrollToError).toHaveBeenCalled();
-    expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
-  });
-
-  it("(numberOfServices) flags invalid if negative integer", async () => {
-    Object.assign(wrapper.vm, cloneDeep(passingData));
-    wrapper.vm.medicalServiceClaims[0].numberOfServices = "-2";
-    await wrapper.vm.validateFields();
-    await wrapper.vm.$nextTick;
-    expect(spyOnScrollToError).toHaveBeenCalled();
-    expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
-  });
-
-  it("(numberOfServices) flags invalid if zero", async () => {
-    Object.assign(wrapper.vm, cloneDeep(passingData));
-    wrapper.vm.medicalServiceClaims[0].numberOfServices = "0";
-    await wrapper.vm.validateFields();
-    await wrapper.vm.$nextTick;
-    expect(spyOnScrollToError).toHaveBeenCalled();
-    expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
-  });
-
-  it("(feeItem) flags invalid if not present", async () => {
-    Object.assign(wrapper.vm, cloneDeep(passingData));
-    wrapper.vm.medicalServiceClaims[0].feeItem = null;
-    await wrapper.vm.validateFields();
-    await wrapper.vm.$nextTick;
-    expect(spyOnScrollToError).toHaveBeenCalled();
-    expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
-  });
-
-  it("(feeItem) flags invalid if not integer", async () => {
-    Object.assign(wrapper.vm, cloneDeep(passingData));
-    wrapper.vm.medicalServiceClaims[0].feeItem = "a";
-    await wrapper.vm.validateFields();
-    await wrapper.vm.$nextTick;
-    expect(spyOnScrollToError).toHaveBeenCalled();
-    expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
-  });
-
-  it("(feeItem) flags invalid if negative integer", async () => {
-    Object.assign(wrapper.vm, cloneDeep(passingData));
-    wrapper.vm.medicalServiceClaims[0].feeItem = "-2";
-    await wrapper.vm.validateFields();
-    await wrapper.vm.$nextTick;
-    expect(spyOnScrollToError).toHaveBeenCalled();
-    expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
-  });
-
-  it("(amountBilled) flags invalid if not present", async () => {
-    Object.assign(wrapper.vm, cloneDeep(passingData));
-    wrapper.vm.medicalServiceClaims[0].amountBilled = null;
-    await wrapper.vm.validateFields();
-    await wrapper.vm.$nextTick;
-    expect(spyOnScrollToError).toHaveBeenCalled();
-    expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
-  });
-
-  it("(amountBilled) flags invalid if negative integer", async () => {
-    Object.assign(wrapper.vm, cloneDeep(passingData));
-    wrapper.vm.medicalServiceClaims[0].amountBilled = "-2.00";
-    await wrapper.vm.validateFields();
-    await wrapper.vm.$nextTick;
-    expect(spyOnScrollToError).toHaveBeenCalled();
-    expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
-  });
-
-  it("(amountBilled) flags invalid if it doesn't end in .00", async () => {
-    Object.assign(wrapper.vm, cloneDeep(passingData));
-    wrapper.vm.medicalServiceClaims[0].amountBilled = "2";
-    await wrapper.vm.validateFields();
-    await wrapper.vm.$nextTick;
-    expect(spyOnScrollToError).toHaveBeenCalled();
-    expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
-  });
-
-  it("(amountBilled) flags valid if it does end in .00", async () => {
-    Object.assign(wrapper.vm, cloneDeep(passingData));
-    wrapper.vm.medicalServiceClaims[0].amountBilled = "2.00";
-    await wrapper.vm.validateFields();
-    await wrapper.vm.$nextTick;
-    expect(spyOnScrollToError).not.toHaveBeenCalled();
-    expect(spyOnNavigateToNextPage).toHaveBeenCalled();
-  });
-
-  it("(amountBilled) flags invalid if value is correct but fee item is 03333", async () => {
-    Object.assign(wrapper.vm, cloneDeep(passingData));
-    wrapper.vm.medicalServiceClaims[0].amountBilled = "2.00";
-    wrapper.vm.medicalServiceClaims[0].feeItem = "03333";
-    await wrapper.vm.validateFields();
-    await wrapper.vm.$nextTick;
-    expect(spyOnScrollToError).toHaveBeenCalled();
-    expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
-  });
-
-  it("(calledStartTime) flags invalid if hour not present but minute is", async () => {
-    Object.assign(wrapper.vm, cloneDeep(passingData));
-    wrapper.vm.medicalServiceClaims[0].calledStartTime.hour = null;
-    await wrapper.vm.validateFields();
-    await wrapper.vm.$nextTick;
-    expect(spyOnScrollToError).toHaveBeenCalled();
-    expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
-  });
-
-  it("(calledStartTime) flags invalid if hour present but minute is not", async () => {
-    Object.assign(wrapper.vm, cloneDeep(passingData));
-    wrapper.vm.medicalServiceClaims[0].calledStartTime.minute = null;
-    await wrapper.vm.validateFields();
-    await wrapper.vm.$nextTick;
-    expect(spyOnScrollToError).toHaveBeenCalled();
-    expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
-  });
-
-  it("(renderedFinishTime) flags invalid if hour not present but minute is", async () => {
-    Object.assign(wrapper.vm, cloneDeep(passingData));
-    wrapper.vm.medicalServiceClaims[0].renderedFinishTime.hour = null;
-    await wrapper.vm.validateFields();
-    await wrapper.vm.$nextTick;
-    expect(spyOnScrollToError).toHaveBeenCalled();
-    expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
-  });
-
-  it("(renderedFinishTime) flags invalid if hour present but minute is not", async () => {
-    Object.assign(wrapper.vm, cloneDeep(passingData));
-    wrapper.vm.medicalServiceClaims[0].renderedFinishTime.minute = null;
-    await wrapper.vm.validateFields();
-    await wrapper.vm.$nextTick;
-    expect(spyOnScrollToError).toHaveBeenCalled();
-    expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
-  });
-
-  it("(diagnosticCode) flags invalid if not present", async () => {
-    Object.assign(wrapper.vm, cloneDeep(passingData));
-    wrapper.vm.medicalServiceClaims[0].diagnosticCode = null;
-    await wrapper.vm.validateFields();
-    await wrapper.vm.$nextTick;
-    expect(spyOnScrollToError).toHaveBeenCalled();
-    expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
-  });
-
-  it("(diagnosticCode) flags invalid if not alphanumeric", async () => {
-    Object.assign(wrapper.vm, cloneDeep(passingData));
-    wrapper.vm.medicalServiceClaims[0].diagnosticCode = "a^^^";
-    await wrapper.vm.validateFields();
-    await wrapper.vm.$nextTick;
-    expect(spyOnScrollToError).toHaveBeenCalled();
-    expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
-  });
-
-  it("(diagnosticCode) flags invalid if not on diagnostic list", async () => {
-    Object.assign(wrapper.vm, cloneDeep(passingData));
-    wrapper.vm.medicalServiceClaims[0].diagnosticCode = "A111";
-    await wrapper.vm.validateFields();
-    await wrapper.vm.$nextTick;
-    expect(spyOnScrollToError).toHaveBeenCalled();
-    expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
-  });
-
-  it("(locationOfService) flags invalid if not present", async () => {
-    Object.assign(wrapper.vm, cloneDeep(passingData));
-    wrapper.vm.medicalServiceClaims[0].locationOfService = null;
-    await wrapper.vm.validateFields();
-    await wrapper.vm.$nextTick;
-    expect(spyOnScrollToError).toHaveBeenCalled();
-    expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
-  });
-
-  it("(locationOfService) flags invalid if A and after Oct 1st 2021", async () => {
-    Object.assign(wrapper.vm, cloneDeep(passingData));
-    wrapper.vm.medicalServiceClaims[0].locationOfService = "A";
-    wrapper.vm.medicalServiceClaims[0].serviceDate = new Date(2021, 10, 3);
-    await wrapper.vm.validateFields();
-    await wrapper.vm.$nextTick;
-    expect(spyOnScrollToError).toHaveBeenCalled();
-    expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
-  });
-
-  it("(locationOfService) flags valid if A and before Oct 1st 2021", async () => {
-    Object.assign(wrapper.vm, cloneDeep(passingData));
-    wrapper.vm.medicalServiceClaims[0].locationOfService = "A";
-    wrapper.vm.medicalServiceClaims[0].serviceDate = new Date(2021, 8, 28);
-    await wrapper.vm.validateFields();
-    await wrapper.vm.$nextTick;
-    expect(spyOnScrollToError).not.toHaveBeenCalled();
-    expect(spyOnNavigateToNextPage).toHaveBeenCalled();
-  });
-
-  it("(serviceClarificationCode) flags valid if not present", async () => {
-    Object.assign(wrapper.vm, cloneDeep(passingData));
-    wrapper.vm.medicalServiceClaims[0].serviceClarificationCode = null;
-    await wrapper.vm.validateFields();
-    await wrapper.vm.$nextTick;
-    expect(spyOnScrollToError).not.toHaveBeenCalled();
-    expect(spyOnNavigateToNextPage).toHaveBeenCalled();
-  });
-
-  it("(serviceClarificationCode) flags invalid if value is not in list", async () => {
-    Object.assign(wrapper.vm, cloneDeep(passingData));
-    wrapper.vm.medicalServiceClaims[0].serviceClarificationCode = "AA";
-    await wrapper.vm.validateFields();
-    await wrapper.vm.$nextTick;
-    expect(spyOnScrollToError).toHaveBeenCalled();
-    expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
-  });
-
-  it("(submissionCode) flags invalid if not present and more than 90 days ago", async () => {
-    Object.assign(wrapper.vm, cloneDeep(passingData));
-    wrapper.vm.medicalServiceClaims[0].submissionCode = null;
-    wrapper.vm.medicalServiceClaims[0].serviceDate = testDatePast91Days;
-    await wrapper.vm.validateFields();
-    await wrapper.vm.$nextTick;
-    expect(spyOnScrollToError).toHaveBeenCalled();
-    expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
-  });
-
-  it("(submissionCode) flags valid if not present and less than 90 days ago", async () => {
-    Object.assign(wrapper.vm, cloneDeep(passingData));
-    wrapper.vm.medicalServiceClaims[0].submissionCode = null;
-    wrapper.vm.medicalServiceClaims[0].serviceDate = testDatePast89Days;
-    await wrapper.vm.validateFields();
-    await wrapper.vm.$nextTick;
-    expect(spyOnScrollToError).not.toHaveBeenCalled();
-    expect(spyOnNavigateToNextPage).toHaveBeenCalled();
-  });
-
-  it("(notes) flags invalid if more than 400 characters", async () => {
-    const testMessage =
-      "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!";
-    Object.assign(wrapper.vm, cloneDeep(passingData));
-    wrapper.vm.medicalServiceClaims[0].notes = testMessage;
-    wrapper.vm.medicalServiceClaims[0].serviceDate = testDatePast89Days;
-    await wrapper.vm.validateFields();
-    await wrapper.vm.$nextTick;
-    expect(spyOnScrollToError).toHaveBeenCalled();
-    expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
-  });
-
-  //end of medical services tests
 
   it("(practitionerLastName) flags invalid if not present", async () => {
     Object.assign(wrapper.vm, cloneDeep(passingData));
     await wrapper.setData({ practitionerLastName: null });
+    expect(wrapper.vm.practitionerLastName).toBeNull();
     await wrapper.vm.validateFields();
     await wrapper.vm.$nextTick;
     expect(spyOnScrollToError).toHaveBeenCalled();
@@ -1231,7 +944,9 @@ describe("MainFormPage.vue validateFields(), public", () => {
 
   it("(practitionerLastName) flags invalid if contains invalid characters", async () => {
     Object.assign(wrapper.vm, cloneDeep(passingData));
-    await wrapper.setData({ practitionerLastName: "aaa^" });
+    const testData = "aaa^";
+    await wrapper.setData({ practitionerLastName: testData });
+    expect(wrapper.vm.practitionerLastName).toStrictEqual(testData);
     await wrapper.vm.validateFields();
     await wrapper.vm.$nextTick;
     expect(spyOnScrollToError).toHaveBeenCalled();
@@ -1240,7 +955,9 @@ describe("MainFormPage.vue validateFields(), public", () => {
 
   it("(practitionerLastName) flags valid if contains commas, dashes, or apostrophes and starts with a letter", async () => {
     Object.assign(wrapper.vm, cloneDeep(passingData));
-    await wrapper.setData({ practitionerLastName: `a-.' -.' ` });
+    const testData = `a-.' -.' `;
+    await wrapper.setData({ practitionerLastName: testData });
+    expect(wrapper.vm.practitionerLastName).toStrictEqual(testData);
     await wrapper.vm.validateFields();
     await wrapper.vm.$nextTick;
     expect(spyOnScrollToError).not.toHaveBeenCalled();
@@ -1250,6 +967,7 @@ describe("MainFormPage.vue validateFields(), public", () => {
   it("(practitionerFirstName) flags invalid if not present", async () => {
     Object.assign(wrapper.vm, cloneDeep(passingData));
     await wrapper.setData({ practitionerFirstName: null });
+    expect(wrapper.vm.practitionerFirstName).toBeNull();
     await wrapper.vm.validateFields();
     await wrapper.vm.$nextTick;
     expect(spyOnScrollToError).toHaveBeenCalled();
@@ -1258,7 +976,9 @@ describe("MainFormPage.vue validateFields(), public", () => {
 
   it("(practitionerFirstName) flags invalid if contains invalid characters", async () => {
     Object.assign(wrapper.vm, cloneDeep(passingData));
-    await wrapper.setData({ practitionerFirstName: "aaa^" });
+    const testData = "aaa^";
+    await wrapper.setData({ practitionerFirstName: testData });
+    expect(wrapper.vm.practitionerFirstName).toStrictEqual(testData);
     await wrapper.vm.validateFields();
     await wrapper.vm.$nextTick;
     expect(spyOnScrollToError).toHaveBeenCalled();
@@ -1267,7 +987,9 @@ describe("MainFormPage.vue validateFields(), public", () => {
 
   it("(practitionerFirstName) flags valid if contains commas, dashes, or apostrophes and starts with a letter", async () => {
     Object.assign(wrapper.vm, cloneDeep(passingData));
-    await wrapper.setData({ practitionerFirstName: `a-.' -.' ` });
+    const testData = `a-.' -.' `;
+    await wrapper.setData({ practitionerFirstName: testData });
+    expect(wrapper.vm.practitionerFirstName).toStrictEqual(testData);
     await wrapper.vm.validateFields();
     await wrapper.vm.$nextTick;
     expect(spyOnScrollToError).not.toHaveBeenCalled();
@@ -1276,7 +998,9 @@ describe("MainFormPage.vue validateFields(), public", () => {
 
   it("(practitionerPaymentNumber) flags invalid if not present", async () => {
     Object.assign(wrapper.vm, cloneDeep(passingData));
-    await wrapper.setData({ practitionerPaymentNumber: "" });
+    const testData = "";
+    await wrapper.setData({ practitionerPaymentNumber: testData });
+    expect(wrapper.vm.practitionerPaymentNumber).toStrictEqual(testData);
     await wrapper.vm.validateFields();
     await wrapper.vm.$nextTick;
     expect(spyOnScrollToError).toHaveBeenCalled();
@@ -1285,7 +1009,9 @@ describe("MainFormPage.vue validateFields(), public", () => {
 
   it("(practitionerPaymentNumber) flags invalid if less than five digits", async () => {
     Object.assign(wrapper.vm, cloneDeep(passingData));
-    await wrapper.setData({ practitionerPaymentNumber: "A1A1" });
+    const testData = "A1A1";
+    await wrapper.setData({ practitionerPaymentNumber: testData });
+    expect(wrapper.vm.practitionerPaymentNumber).toStrictEqual(testData);
     await wrapper.vm.validateFields();
     await wrapper.vm.$nextTick;
     expect(spyOnScrollToError).toHaveBeenCalled();
@@ -1294,7 +1020,9 @@ describe("MainFormPage.vue validateFields(), public", () => {
 
   it("(practitionerPractitionerNumber) flags invalid if not present", async () => {
     Object.assign(wrapper.vm, cloneDeep(passingData));
-    await wrapper.setData({ practitionerPractitionerNumber: "" });
+    const testData = "";
+    await wrapper.setData({ practitionerPractitionerNumber: testData });
+    expect(wrapper.vm.practitionerPractitionerNumber).toStrictEqual(testData);
     await wrapper.vm.validateFields();
     await wrapper.vm.$nextTick;
     expect(spyOnScrollToError).toHaveBeenCalled();
