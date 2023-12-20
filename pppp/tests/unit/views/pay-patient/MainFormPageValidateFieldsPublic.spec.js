@@ -629,12 +629,12 @@ describe("MainFormPage.vue validateFields(), public", () => {
   it("(dependentNumber) flags invalid if not 00 or 66 with a PHN", async () => {
     Object.assign(wrapper.vm, cloneDeep(passingData));
     const testData = "55";
-    // await wrapper.setData({ dependentNumber: testData });
+    await wrapper.setData({ dependentNumber: testData });
     expect(wrapper.vm.dependentNumber).toStrictEqual(testData);
     await wrapper.vm.validateFields();
     await wrapper.vm.$nextTick;
-    expect(spyOnScrollToError).not.toHaveBeenCalled();
-    expect(spyOnNavigateToNextPage).toHaveBeenCalled();
+    expect(spyOnScrollToError).toHaveBeenCalled();
+    expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
   });
 
   it("(firstName) flags invalid if not present", async () => {
@@ -1031,7 +1031,9 @@ describe("MainFormPage.vue validateFields(), public", () => {
 
   it("(practitionerPractitionerNumber) flags invalid if less than five digits", async () => {
     Object.assign(wrapper.vm, cloneDeep(passingData));
-    await wrapper.setData({ practitionerPractitionerNumber: "A1A1" });
+    const testData = "A1A1";
+    await wrapper.setData({ practitionerPractitionerNumber: testData });
+    expect(wrapper.vm.practitionerPractitionerNumber).toStrictEqual(testData);
     await wrapper.vm.validateFields();
     await wrapper.vm.$nextTick;
     expect(spyOnScrollToError).toHaveBeenCalled();
@@ -1040,7 +1042,9 @@ describe("MainFormPage.vue validateFields(), public", () => {
 
   it("(practitionerFacilityNumber) flags valid if not present", async () => {
     Object.assign(wrapper.vm, cloneDeep(passingData));
-    await wrapper.setData({ practitionerFacilityNumber: "" });
+    const testData = "";
+    await wrapper.setData({ practitionerFacilityNumber: testData });
+    expect(wrapper.vm.practitionerFacilityNumber).toStrictEqual(testData);
     await wrapper.vm.validateFields();
     await wrapper.vm.$nextTick;
     expect(spyOnScrollToError).not.toHaveBeenCalled();
@@ -1049,7 +1053,9 @@ describe("MainFormPage.vue validateFields(), public", () => {
 
   it("(practitionerFacilityNumber) flags invalid if less than five digits", async () => {
     Object.assign(wrapper.vm, cloneDeep(passingData));
-    await wrapper.setData({ practitionerFacilityNumber: "A1A1" });
+    const testData = "A1A1";
+    await wrapper.setData({ practitionerFacilityNumber: testData });
+    expect(wrapper.vm.practitionerFacilityNumber).toStrictEqual(testData);
     await wrapper.vm.validateFields();
     await wrapper.vm.$nextTick;
     expect(spyOnScrollToError).toHaveBeenCalled();
@@ -1058,7 +1064,9 @@ describe("MainFormPage.vue validateFields(), public", () => {
 
   it("(practitionerSpecialtyCode) flags valid if not present", async () => {
     Object.assign(wrapper.vm, cloneDeep(passingData));
-    await wrapper.setData({ practitionerSpecialtyCode: "" });
+    const testData = "";
+    await wrapper.setData({ practitionerSpecialtyCode: testData });
+    expect(wrapper.vm.practitionerSpecialtyCode).toStrictEqual(testData);
     await wrapper.vm.validateFields();
     await wrapper.vm.$nextTick;
     expect(spyOnScrollToError).not.toHaveBeenCalled();
@@ -1067,7 +1075,9 @@ describe("MainFormPage.vue validateFields(), public", () => {
 
   it("(practitionerSpecialtyCode) flags invalid if alphanumeric but not on list", async () => {
     Object.assign(wrapper.vm, cloneDeep(passingData));
-    await wrapper.setData({ practitionerSpecialtyCode: "A1A1" });
+    const testData = "A1A1";
+    await wrapper.setData({ practitionerSpecialtyCode: testData });
+    expect(wrapper.vm.practitionerSpecialtyCode).toStrictEqual(testData);
     await wrapper.vm.validateFields();
     await wrapper.vm.$nextTick;
     expect(spyOnScrollToError).toHaveBeenCalled();
@@ -1076,7 +1086,9 @@ describe("MainFormPage.vue validateFields(), public", () => {
 
   it("(practitionerSpecialtyCode) flags invalid if not alphanumeric", async () => {
     Object.assign(wrapper.vm, cloneDeep(passingData));
-    await wrapper.setData({ practitionerSpecialtyCode: "a^^^" });
+    const testData = "a^^^";
+    await wrapper.setData({ practitionerSpecialtyCode: testData });
+    expect(wrapper.vm.practitionerSpecialtyCode).toStrictEqual(testData);
     await wrapper.vm.validateFields();
     await wrapper.vm.$nextTick;
     expect(spyOnScrollToError).toHaveBeenCalled();
@@ -1085,7 +1097,9 @@ describe("MainFormPage.vue validateFields(), public", () => {
 
   it("(practitionerSpecialtyCode) flags invalid if not the minimum length", async () => {
     Object.assign(wrapper.vm, cloneDeep(passingData));
-    await wrapper.setData({ practitionerSpecialtyCode: "0" });
+    const testData = "0";
+    await wrapper.setData({ practitionerSpecialtyCode: testData });
+    expect(wrapper.vm.practitionerSpecialtyCode).toStrictEqual(testData);
     await wrapper.vm.validateFields();
     await wrapper.vm.$nextTick;
     expect(spyOnScrollToError).toHaveBeenCalled();
@@ -1094,7 +1108,9 @@ describe("MainFormPage.vue validateFields(), public", () => {
 
   it("(practitionerSpecialtyCode) flags invalid if not on the list", async () => {
     Object.assign(wrapper.vm, cloneDeep(passingData));
-    await wrapper.setData({ practitionerSpecialtyCode: "98" });
+    const testData = "98";
+    await wrapper.setData({ practitionerSpecialtyCode: testData });
+    expect(wrapper.vm.practitionerSpecialtyCode).toStrictEqual(testData);
     await wrapper.vm.validateFields();
     await wrapper.vm.$nextTick;
     expect(spyOnScrollToError).toHaveBeenCalled();
@@ -1103,7 +1119,9 @@ describe("MainFormPage.vue validateFields(), public", () => {
 
   it("(referredByFirstNameInitial) flags invalid if not alphabetic", async () => {
     Object.assign(wrapper.vm, cloneDeep(passingData));
-    await wrapper.setData({ referredByFirstNameInitial: "1" });
+    const testData = "1";
+    await wrapper.setData({ referredByFirstNameInitial: testData });
+    expect(wrapper.vm.referredByFirstNameInitial).toStrictEqual(testData);
     await wrapper.vm.validateFields();
     await wrapper.vm.$nextTick;
     expect(spyOnScrollToError).toHaveBeenCalled();
@@ -1112,7 +1130,9 @@ describe("MainFormPage.vue validateFields(), public", () => {
 
   it("(referredByLastName) flags invalid if contains invalid characters", async () => {
     Object.assign(wrapper.vm, cloneDeep(passingData));
-    await wrapper.setData({ referredByLastName: "aaa^" });
+    const testData = "aaa^";
+    await wrapper.setData({ referredByLastName: testData });
+    expect(wrapper.vm.referredByLastName).toStrictEqual(testData);
     await wrapper.vm.validateFields();
     await wrapper.vm.$nextTick;
     expect(spyOnScrollToError).toHaveBeenCalled();
@@ -1121,7 +1141,9 @@ describe("MainFormPage.vue validateFields(), public", () => {
 
   it("(referredByLastName) flags valid if contains commas, dashes, or apostrophes and starts with a letter", async () => {
     Object.assign(wrapper.vm, cloneDeep(passingData));
-    await wrapper.setData({ referredByLastName: `a-.' -.' ` });
+    const testData = `a-.' -.' `;
+    await wrapper.setData({ referredByLastName: testData });
+    expect(wrapper.vm.referredByLastName).toStrictEqual(testData);
     await wrapper.vm.validateFields();
     await wrapper.vm.$nextTick;
     expect(spyOnScrollToError).not.toHaveBeenCalled();
@@ -1130,7 +1152,9 @@ describe("MainFormPage.vue validateFields(), public", () => {
 
   it("(referredByPractitionerNumber) flags invalid if not minimum length", async () => {
     Object.assign(wrapper.vm, cloneDeep(passingData));
-    await wrapper.setData({ referredByPractitionerNumber: `1111` });
+    const testData = `1111`;
+    await wrapper.setData({ referredByPractitionerNumber: testData });
+    expect(wrapper.vm.referredByPractitionerNumber).toStrictEqual(testData);
     await wrapper.vm.validateFields();
     await wrapper.vm.$nextTick;
     expect(spyOnScrollToError).toHaveBeenCalled();
@@ -1139,7 +1163,9 @@ describe("MainFormPage.vue validateFields(), public", () => {
 
   it("(referredToFirstNameInitial) flags invalid if not alphabetic", async () => {
     Object.assign(wrapper.vm, cloneDeep(passingData));
-    await wrapper.setData({ referredToFirstNameInitial: "1" });
+    const testData = "1";
+    await wrapper.setData({ referredToFirstNameInitial: testData });
+    expect(wrapper.vm.referredToFirstNameInitial).toStrictEqual(testData);
     await wrapper.vm.validateFields();
     await wrapper.vm.$nextTick;
     expect(spyOnScrollToError).toHaveBeenCalled();
@@ -1148,7 +1174,9 @@ describe("MainFormPage.vue validateFields(), public", () => {
 
   it("(referredToLastName) flags invalid if contains invalid characters", async () => {
     Object.assign(wrapper.vm, cloneDeep(passingData));
-    await wrapper.setData({ referredToLastName: "aaa^" });
+    const testData = "aaa^";
+    await wrapper.setData({ referredToLastName: testData });
+    expect(wrapper.vm.referredToLastName).toStrictEqual(testData);
     await wrapper.vm.validateFields();
     await wrapper.vm.$nextTick;
     expect(spyOnScrollToError).toHaveBeenCalled();
@@ -1157,7 +1185,9 @@ describe("MainFormPage.vue validateFields(), public", () => {
 
   it("(referredToLastName) flags valid if contains commas, dashes, or apostrophes and starts with a letter", async () => {
     Object.assign(wrapper.vm, cloneDeep(passingData));
-    await wrapper.setData({ referredToLastName: `a-.' -.' ` });
+    const testData = `a-.' -.' `;
+    await wrapper.setData({ referredToLastName: testData });
+    expect(wrapper.vm.referredToLastName).toStrictEqual(testData);
     await wrapper.vm.validateFields();
     await wrapper.vm.$nextTick;
     expect(spyOnScrollToError).not.toHaveBeenCalled();
@@ -1166,7 +1196,9 @@ describe("MainFormPage.vue validateFields(), public", () => {
 
   it("(referredToPractitionerNumber) flags invalid if not minimum length", async () => {
     Object.assign(wrapper.vm, cloneDeep(passingData));
-    await wrapper.setData({ referredToPractitionerNumber: `1111` });
+    const testData = `1111`;
+    await wrapper.setData({ referredToPractitionerNumber: testData });
+    expect(wrapper.vm.referredToPractitionerNumber).toStrictEqual(testData);
     await wrapper.vm.validateFields();
     await wrapper.vm.$nextTick;
     expect(spyOnScrollToError).toHaveBeenCalled();
@@ -1177,8 +1209,11 @@ describe("MainFormPage.vue validateFields(), public", () => {
 
   it("flags invalid if dependentNumber not 66 and birthdate not present", async () => {
     Object.assign(wrapper.vm, cloneDeep(passingData));
-    await wrapper.setData({ dependentNumber: `00` });
+    const testDependentNumber = `00`;
+    await wrapper.setData({ dependentNumber: testDependentNumber });
     await wrapper.setData({ birthDate: null });
+    expect(wrapper.vm.dependentNumber).toStrictEqual(testDependentNumber);
+    expect(wrapper.vm.birthDate).toBeNull();
     await wrapper.vm.validateFields();
     await wrapper.vm.$nextTick;
     expect(spyOnScrollToError).toHaveBeenCalled();
@@ -1187,9 +1222,13 @@ describe("MainFormPage.vue validateFields(), public", () => {
 
   it("flags invalid if referredBy first name initial present but not last name or prac number", async () => {
     Object.assign(wrapper.vm, cloneDeep(passingData));
-    await wrapper.setData({ referredByFirstNameInitial: `Q` });
+    const testData = `Q`;
+    await wrapper.setData({ referredByFirstNameInitial: testData });
     await wrapper.setData({ referredByLastName: null });
     await wrapper.setData({ referredByPractitionerNumber: null });
+    expect(wrapper.vm.referredByFirstNameInitial).toStrictEqual(testData);
+    expect(wrapper.vm.referredByLastName).toBeNull();
+    expect(wrapper.vm.referredByPractitionerNumber).toBeNull();
     await wrapper.vm.validateFields();
     await wrapper.vm.$nextTick;
     expect(spyOnScrollToError).toHaveBeenCalled();
@@ -1198,9 +1237,13 @@ describe("MainFormPage.vue validateFields(), public", () => {
 
   it("flags invalid if referredBy last name present but not first name initial or prac number", async () => {
     Object.assign(wrapper.vm, cloneDeep(passingData));
+    const testData = "Surname";
     await wrapper.setData({ referredByFirstNameInitial: null });
-    await wrapper.setData({ referredByLastName: "Surname" });
+    await wrapper.setData({ referredByLastName: testData });
     await wrapper.setData({ referredByPractitionerNumber: null });
+    expect(wrapper.vm.referredByFirstNameInitial).toBeNull();
+    expect(wrapper.vm.referredByLastName).toStrictEqual(testData);
+    expect(wrapper.vm.referredByPractitionerNumber).toBeNull();
     await wrapper.vm.validateFields();
     await wrapper.vm.$nextTick;
     expect(spyOnScrollToError).toHaveBeenCalled();
@@ -1209,9 +1252,13 @@ describe("MainFormPage.vue validateFields(), public", () => {
 
   it("flags invalid if referredBy prac number present but not first name initial or last name", async () => {
     Object.assign(wrapper.vm, cloneDeep(passingData));
+    const testData = "11111";
     await wrapper.setData({ referredByFirstNameInitial: null });
     await wrapper.setData({ referredByLastName: null });
-    await wrapper.setData({ referredByPractitionerNumber: "11111" });
+    await wrapper.setData({ referredByPractitionerNumber: testData });
+    expect(wrapper.vm.referredByFirstNameInitial).toBeNull();
+    expect(wrapper.vm.referredByLastName).toBeNull();
+    expect(wrapper.vm.referredByPractitionerNumber).toStrictEqual(testData);
     await wrapper.vm.validateFields();
     await wrapper.vm.$nextTick;
     expect(spyOnScrollToError).toHaveBeenCalled();
@@ -1223,6 +1270,9 @@ describe("MainFormPage.vue validateFields(), public", () => {
     await wrapper.setData({ referredByFirstNameInitial: null });
     await wrapper.setData({ referredByLastName: null });
     await wrapper.setData({ referredByPractitionerNumber: null });
+    expect(wrapper.vm.referredByFirstNameInitial).toBeNull();
+    expect(wrapper.vm.referredByLastName).toBeNull();
+    expect(wrapper.vm.referredByPractitionerNumber).toBeNull();
     await wrapper.vm.validateFields();
     await wrapper.vm.$nextTick;
     expect(spyOnScrollToError).not.toHaveBeenCalled();
@@ -1231,9 +1281,13 @@ describe("MainFormPage.vue validateFields(), public", () => {
 
   it("flags invalid if referredTo first name initial present but not last name or prac number", async () => {
     Object.assign(wrapper.vm, cloneDeep(passingData));
-    await wrapper.setData({ referredToFirstNameInitial: `Q` });
+    const testData = `Q`;
+    await wrapper.setData({ referredToFirstNameInitial: testData });
     await wrapper.setData({ referredToLastName: null });
     await wrapper.setData({ referredToPractitionerNumber: null });
+    expect(wrapper.vm.referredToFirstNameInitial).toStrictEqual(testData);
+    expect(wrapper.vm.referredToLastName).toBeNull();
+    expect(wrapper.vm.referredToPractitionerNumber).toBeNull();
     await wrapper.vm.validateFields();
     await wrapper.vm.$nextTick;
     expect(spyOnScrollToError).toHaveBeenCalled();
@@ -1242,9 +1296,13 @@ describe("MainFormPage.vue validateFields(), public", () => {
 
   it("flags invalid if referredTo last name present but not first name initial or prac number", async () => {
     Object.assign(wrapper.vm, cloneDeep(passingData));
+    const testData = "Surname";
     await wrapper.setData({ referredToFirstNameInitial: null });
-    await wrapper.setData({ referredToLastName: "Surname" });
+    await wrapper.setData({ referredToLastName: testData });
     await wrapper.setData({ referredToPractitionerNumber: null });
+    expect(wrapper.vm.referredToFirstNameInitial).toBeNull();
+    expect(wrapper.vm.referredToLastName).toStrictEqual(testData);
+    expect(wrapper.vm.referredToPractitionerNumber).toBeNull();
     await wrapper.vm.validateFields();
     await wrapper.vm.$nextTick;
     expect(spyOnScrollToError).toHaveBeenCalled();
@@ -1253,9 +1311,13 @@ describe("MainFormPage.vue validateFields(), public", () => {
 
   it("flags invalid if referredTo prac number present but not first name initial or last name", async () => {
     Object.assign(wrapper.vm, cloneDeep(passingData));
+    const testData = "11111";
     await wrapper.setData({ referredToFirstNameInitial: null });
     await wrapper.setData({ referredToLastName: null });
-    await wrapper.setData({ referredToPractitionerNumber: "11111" });
+    await wrapper.setData({ referredToPractitionerNumber: testData });
+    expect(wrapper.vm.referredToFirstNameInitial).toBeNull();
+    expect(wrapper.vm.referredToLastName).toBeNull();
+    expect(wrapper.vm.referredToPractitionerNumber).toStrictEqual(testData);
     await wrapper.vm.validateFields();
     await wrapper.vm.$nextTick;
     expect(spyOnScrollToError).toHaveBeenCalled();
@@ -1267,6 +1329,9 @@ describe("MainFormPage.vue validateFields(), public", () => {
     await wrapper.setData({ referredToFirstNameInitial: null });
     await wrapper.setData({ referredToLastName: null });
     await wrapper.setData({ referredToPractitionerNumber: null });
+    expect(wrapper.vm.referredToFirstNameInitial).toBeNull();
+    expect(wrapper.vm.referredToLastName).toBeNull();
+    expect(wrapper.vm.referredToPractitionerNumber).toBeNull();
     await wrapper.vm.validateFields();
     await wrapper.vm.$nextTick;
     expect(spyOnScrollToError).not.toHaveBeenCalled();
@@ -1276,6 +1341,7 @@ describe("MainFormPage.vue validateFields(), public", () => {
   it("flags valid if planReferenceNumber is null", async () => {
     Object.assign(wrapper.vm, cloneDeep(passingData));
     await wrapper.setData({ planReferenceNumber: null });
+    expect(wrapper.vm.planReferenceNumber).toBeNull();
     await wrapper.vm.validateFields();
     await wrapper.vm.$nextTick;
     expect(spyOnScrollToError).not.toHaveBeenCalled();
