@@ -465,16 +465,11 @@ const mockRouterCSR = {
 };
 
 describe("MainFormPage.vue validateFields(), CSR", () => {
-  // eslint-disable-next-line
-  let state;
   let store;
   let wrapper;
   let spyOnNavigateToNextPage;
 
   beforeEach(() => {
-    state = {
-      applicationUuid: null,
-    };
     store = createStore(storeTemplate);
     wrapper = mount(Page, {
       global: {
