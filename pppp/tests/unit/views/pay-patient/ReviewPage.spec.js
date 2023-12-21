@@ -1,6 +1,8 @@
-import { shallowMount, createLocalVue } from "@vue/test-utils";
-import Vuex from "vuex";
+import { mount } from "@vue/test-utils";
 import { cloneDeep } from "lodash";
+import { createStore } from "vuex";
+import { createRouter, createWebHistory } from "vue-router";
+import { routeCollection } from "@/router/index";
 import Page from "@/views/pay-patient/ReviewPage.vue";
 import * as module1 from "../../../../src/store/modules/app";
 import * as module2 from "../../../../src/store/modules/pay-patient-form";
@@ -12,9 +14,6 @@ import apiService from "@/services/api-service";
 import pageStateService from "@/services/page-state-service";
 import { getConvertedPath } from "@/helpers/url";
 import { payPatientRoutes, payPatientRouteStepOrder } from "@/router/routes";
-
-const localVue = createLocalVue();
-localVue.use(Vuex);
 
 const mockResponse = {
   data: {
@@ -75,11 +74,9 @@ const mockResponse = {
     "x-xss-protection": "1",
   },
   config: {
-    url:
-      "/pppp/api/payformsIntegration/patient/ed8fcf17-fb1f-4b3d-93aa-1ba5fbfb2898",
+    url: "/pppp/api/payformsIntegration/patient/ed8fcf17-fb1f-4b3d-93aa-1ba5fbfb2898",
     method: "post",
-    data:
-      '{"applicationUuid":"ed8fcf17-fb1f-4b3d-93aa-1ba5fbfb2898","requestUuid":"d88ecb3b-0ce5-4849-a349-e91fd7b11618","submissionDate":"2021-09-27","isCSR":"N","payPatient":{"claimCount":"1","planReferenceNumber":"","phn":"9353166544","dependentNumber":"00","firstName":"a","middleInitial":"","lastName":"a","birthDate":"2021-09-11","addressOwner":"PATIENT","unitNumber":"","streetNumber":"111 Fa","streetName":"Fake Street","city":"Edmonton","postalCode":"V1A1A1","isVehicleAccident":"N","vehicleAccidentClaimNumber":"","planReferenceNumberOfOriginalClaim":"","medicalServiceClaims":[{"serviceDate":"2021-09-18","numberOfServices":"1","serviceClarificationCode":"","feeItem":"00001","amountBilled":"1.00","calledStartTime":"","renderedFinishTime":"","diagnosticCode":"001","locationOfService":"Q","correspondenceAttached":"","submissionCode":"","notes":""}],"practitionerLastName":"a","practitionerFirstName":"a","practitionerPaymentNumber":"23442","practitionerPractitionerNumber":"A2222","practitionerFacilityNumber":"","practitionerSpecialtyCode":"","referredByFirstNameInitial":"","referredByLastName":"","referredByPractitionerNumber":"","referredToFirstNameInitial":"","referredToLastName":"","referredToPractitionerNumber":""}}',
+    data: '{"applicationUuid":"ed8fcf17-fb1f-4b3d-93aa-1ba5fbfb2898","requestUuid":"d88ecb3b-0ce5-4849-a349-e91fd7b11618","submissionDate":"2021-09-27","isCSR":"N","payPatient":{"claimCount":"1","planReferenceNumber":"","phn":"9353166544","dependentNumber":"00","firstName":"a","middleInitial":"","lastName":"a","birthDate":"2021-09-11","addressOwner":"PATIENT","unitNumber":"","streetNumber":"111 Fa","streetName":"Fake Street","city":"Edmonton","postalCode":"V1A1A1","isVehicleAccident":"N","vehicleAccidentClaimNumber":"","planReferenceNumberOfOriginalClaim":"","medicalServiceClaims":[{"serviceDate":"2021-09-18","numberOfServices":"1","serviceClarificationCode":"","feeItem":"00001","amountBilled":"1.00","calledStartTime":"","renderedFinishTime":"","diagnosticCode":"001","locationOfService":"Q","correspondenceAttached":"","submissionCode":"","notes":""}],"practitionerLastName":"a","practitionerFirstName":"a","practitionerPaymentNumber":"23442","practitionerPractitionerNumber":"A2222","practitionerFacilityNumber":"","practitionerSpecialtyCode":"","referredByFirstNameInitial":"","referredByLastName":"","referredByPractitionerNumber":"","referredToFirstNameInitial":"","referredToLastName":"","referredToPractitionerNumber":""}}',
     headers: {
       Accept: "application/json, text/plain, */*",
       "Content-Type": "application/json",
@@ -130,6 +127,40 @@ const mockResponseDBErrorPrnPresent = {
     planReferenceNumber: "1301900007",
   },
 };
+
+const mockRouter = {
+  $route: {
+    path: "/",
+  },
+  $router: {
+    push: jest.fn(),
+    currentRoute: {
+      value: {
+        path: "/potato",
+      },
+    },
+  },
+};
+
+const mockRouterCSR = {
+  $route: {
+    path: "/",
+  },
+  $router: {
+    push: jest.fn(),
+    currentRoute: {
+      value: {
+        path: "/potato-csr",
+      },
+    },
+  },
+};
+
+let router;
+router = createRouter({
+  history: createWebHistory(),
+  routes: routeCollection,
+});
 
 const next = jest.fn();
 const testDate = new Date();
@@ -203,27 +234,16 @@ jest.spyOn(window, "scrollTo").mockImplementation(jest.fn);
 describe("ReviewPage.vue pay patient", () => {
   let store;
   let wrapper;
-  let $route;
-  let $router;
 
   beforeEach(() => {
-    store = new Vuex.Store(storeTemplateC);
-    $route = {
-      path: "/potato-csr",
-    };
-    $router = {
-      $route,
-      currentRoute: $route,
-      push: jest.fn(),
-    };
-    wrapper = shallowMount(Page, {
-      localVue,
-      store,
-      mocks: {
-        $route,
-        $router,
+    store = createStore(storeTemplateC);
+    wrapper = mount(Page, {
+      global: {
+        plugins: [store],
+        mocks: mockRouter,
       },
     });
+
     jest.spyOn(wrapper.vm.$store, "dispatch");
 
     jest
@@ -234,9 +254,9 @@ describe("ReviewPage.vue pay patient", () => {
       .spyOn(logService, "logNavigation")
       .mockImplementation(() => Promise.resolve("logged"));
 
-    wrapper.vm.$options.created.forEach((hook) => {
-      hook.call(wrapper.vm);
-    });
+    // wrapper.vm.$options.created.forEach((hook) => {
+    //   hook.call(wrapper.vm);
+    // });
   });
 
   afterEach(() => {
@@ -252,25 +272,13 @@ describe("ReviewPage.vue pay patient", () => {
 describe("ReviewPage.vue pay patient created()", () => {
   let store;
   let wrapper;
-  let $route;
-  let $router;
 
   beforeEach(() => {
-    store = new Vuex.Store(storeTemplateC);
-    $route = {
-      path: "/potato-csr",
-    };
-    $router = {
-      $route,
-      currentRoute: $route,
-      push: jest.fn(),
-    };
-    wrapper = shallowMount(Page, {
-      localVue,
-      store,
-      mocks: {
-        $route,
-        $router,
+    store = createStore(storeTemplateC);
+    wrapper = mount(Page, {
+      global: {
+        plugins: [store],
+        mocks: mockRouter,
       },
     });
     jest.spyOn(wrapper.vm.$store, "dispatch");
@@ -278,10 +286,6 @@ describe("ReviewPage.vue pay patient created()", () => {
     jest
       .spyOn(spaEnvService, "loadEnvs")
       .mockImplementation(() => Promise.resolve("loaded"));
-
-    wrapper.vm.$options.created.forEach((hook) => {
-      hook.call(wrapper.vm);
-    });
   });
 
   afterEach(() => {
@@ -297,33 +301,6 @@ describe("ReviewPage.vue pay patient created()", () => {
 describe("ReviewPage.vue pay patient continueHandler()", () => {
   let store;
   let wrapper;
-  let $route;
-  let $router;
-
-  beforeEach(() => {
-    store = new Vuex.Store(storeTemplateC);
-    $route = {
-      path: "/potato-csr",
-    };
-    $router = {
-      $route,
-      currentRoute: $route,
-      push: jest.fn(),
-    };
-    wrapper = shallowMount(Page, {
-      localVue,
-      store,
-      mocks: {
-        $route,
-        $router,
-      },
-    });
-    jest.spyOn(wrapper.vm.$store, "dispatch");
-
-    jest
-      .spyOn(spaEnvService, "loadEnvs")
-      .mockImplementation(() => Promise.resolve("loaded"));
-  });
 
   afterEach(() => {
     jest.resetModules();
@@ -331,21 +308,11 @@ describe("ReviewPage.vue pay patient continueHandler()", () => {
   });
 
   it("calls submitForm if the store has correspondenceAttached = N", () => {
-    store = new Vuex.Store(storeTemplateN);
-    $route = {
-      path: "/potato",
-    };
-    $router = {
-      $route,
-      currentRoute: $route,
-      push: jest.fn(),
-    };
-    wrapper = shallowMount(Page, {
-      localVue,
-      store,
-      mocks: {
-        $route,
-        $router,
+    store = createStore(storeTemplateN);
+    wrapper = mount(Page, {
+      global: {
+        plugins: [store],
+        mocks: mockRouter,
       },
     });
     const spyOnSubmitForm = jest.spyOn(wrapper.vm, "submitForm");
@@ -354,21 +321,11 @@ describe("ReviewPage.vue pay patient continueHandler()", () => {
   });
 
   it("calls submit if the store has correspondenceAttached = C and the route ends in -csr", () => {
-    store = new Vuex.Store(storeTemplateC);
-    $route = {
-      path: "/potato-csr",
-    };
-    $router = {
-      $route,
-      currentRoute: $route,
-      push: jest.fn(),
-    };
-    wrapper = shallowMount(Page, {
-      localVue,
-      store,
-      mocks: {
-        $route,
-        $router,
+    store = createStore(storeTemplateC);
+    wrapper = mount(Page, {
+      global: {
+        plugins: [store],
+        mocks: mockRouterCSR,
       },
     });
     const spyOnSubmitForm = jest.spyOn(wrapper.vm, "submitForm");
@@ -377,21 +334,11 @@ describe("ReviewPage.vue pay patient continueHandler()", () => {
   });
 
   it("calls window.print if the store has correspondenceAttached = C", () => {
-    store = new Vuex.Store(storeTemplateC);
-    $route = {
-      path: "/potato",
-    };
-    $router = {
-      $route,
-      currentRoute: $route,
-      push: jest.fn(),
-    };
-    wrapper = shallowMount(Page, {
-      localVue,
-      store,
-      mocks: {
-        $route,
-        $router,
+    store = createStore(storeTemplateC);
+    wrapper = mount(Page, {
+      global: {
+        plugins: [store],
+        mocks: mockRouter,
       },
     });
     wrapper.vm.continueHandler();
@@ -404,30 +351,16 @@ describe("ReviewPage.vue pay patient continueHandler()", () => {
 describe("ReviewPage.vue pay patient submitForm()", () => {
   let store;
   let wrapper;
-  let $route;
-  let $router;
   let spyOnDispatch;
   let spyOnNavigateToSubmissionPage;
   let spyOnNavigateToSubmissionErrorPage;
 
   beforeEach(() => {
-    // jest.useFakeTimers("modern");
-    // jest.setSystemTime(testDate);
-    store = new Vuex.Store(storeTemplateN);
-    $route = {
-      path: "/potato-csr",
-    };
-    $router = {
-      $route,
-      currentRoute: $route,
-      push: jest.fn(),
-    };
-    wrapper = shallowMount(Page, {
-      localVue,
-      store,
-      mocks: {
-        $route,
-        $router,
+    store = createStore(storeTemplateN);
+    wrapper = mount(Page, {
+      global: {
+        plugins: [store],
+        mocks: mockRouter,
       },
     });
     spyOnDispatch = jest.spyOn(wrapper.vm.$store, "dispatch");
@@ -549,27 +482,14 @@ describe("ReviewPage.vue pay patient submitForm()", () => {
 describe("ReviewPage.vue pay patient navigateToSubmissionPage()", () => {
   let store;
   let wrapper;
-  let $route;
-  let $router;
   let spyOnRouter;
   let toPath;
 
   beforeEach(() => {
-    store = new Vuex.Store(storeTemplateC);
-    $route = {
-      path: "/potato-csr",
-    };
-    $router = {
-      $route,
-      currentRoute: $route,
-      push: jest.fn(),
-    };
-    wrapper = shallowMount(Page, {
-      localVue,
-      store,
-      mocks: {
-        $route,
-        $router,
+    store = createStore(storeTemplateC);
+    wrapper = mount(Page, {
+      global: {
+        plugins: [store, router],
       },
     });
     jest.spyOn(wrapper.vm.$store, "dispatch");
@@ -579,7 +499,7 @@ describe("ReviewPage.vue pay patient navigateToSubmissionPage()", () => {
       .mockImplementation(() => Promise.resolve("loaded"));
 
     spyOnRouter = jest
-      .spyOn($router, "push")
+      .spyOn(router, "push")
       .mockImplementation(() => Promise.resolve("pushed"));
 
     toPath = getConvertedPath(
@@ -615,27 +535,14 @@ describe("ReviewPage.vue pay patient navigateToSubmissionPage()", () => {
 describe("ReviewPage.vue pay patient navigateToSubmissionErrorPage()", () => {
   let store;
   let wrapper;
-  let $route;
-  let $router;
   let spyOnRouter;
   let toPath;
 
   beforeEach(() => {
-    store = new Vuex.Store(storeTemplateC);
-    $route = {
-      path: "/potato-csr",
-    };
-    $router = {
-      $route,
-      currentRoute: $route,
-      push: jest.fn(),
-    };
-    wrapper = shallowMount(Page, {
-      localVue,
-      store,
-      mocks: {
-        $route,
-        $router,
+    store = createStore(storeTemplateC);
+    wrapper = mount(Page, {
+      global: {
+        plugins: [store, router],
       },
     });
     jest.spyOn(wrapper.vm.$store, "dispatch");
@@ -645,7 +552,7 @@ describe("ReviewPage.vue pay patient navigateToSubmissionErrorPage()", () => {
       .mockImplementation(() => Promise.resolve("loaded"));
 
     spyOnRouter = jest
-      .spyOn($router, "push")
+      .spyOn(router, "push")
       .mockImplementation(() => Promise.resolve("pushed"));
 
     toPath = getConvertedPath(
@@ -681,25 +588,13 @@ describe("ReviewPage.vue pay patient navigateToSubmissionErrorPage()", () => {
 describe("ReviewPage.vue beforeRouteLeave(to, from, next)", () => {
   let store;
   let wrapper;
-  let $route;
-  let $router;
 
   beforeEach(() => {
-    store = new Vuex.Store(storeTemplateN);
-    $route = {
-      path: "/potato-csr",
-    };
-    $router = {
-      $route,
-      currentRoute: $route,
-      push: jest.fn(),
-    };
-    wrapper = shallowMount(Page, {
-      localVue,
-      store,
-      mocks: {
-        $route,
-        $router,
+    store = createStore(storeTemplateN);
+    wrapper = mount(Page, {
+      global: {
+        plugins: [store],
+        mocks: mockRouterCSR,
       },
     });
   });
