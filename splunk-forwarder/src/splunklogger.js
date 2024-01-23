@@ -439,7 +439,7 @@ SplunkLogger.prototype._sendEvents = function(context, callback) {
     requestOptions.body = this._validateMessage(context.message);
 
     // add splunk authorization
-    requestOptions.headers["Authorization"] = "Api-Token " + this.config.token;
+    requestOptions.headers["Authorization"] = "Splunk " + this.config.token;
 
     // add the server certificate
     requestOptions.ca = this.config.cacert;
