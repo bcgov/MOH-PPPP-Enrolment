@@ -418,6 +418,7 @@ SplunkLogger.prototype._makeBody = function(context) {
  * @private
  */
 SplunkLogger.prototype._post = function(requestOptions, callback) {
+    console.log("kumquat request options", requestOptions, callback)
     request.post(requestOptions, callback);
 };
 
