@@ -446,9 +446,9 @@ SplunkLogger.prototype._sendEvents = function(context, callback) {
 
     // Manually set the content-type header, the default is application/json
     // since json is set to true.
-    // Dynatrace requires the application/json default, so this has been commented out for now
+    // Dynatrace requires the application/json default, so this has been updated
     // requestOptions.headers["Content-Type"] = "application/x-www-form-urlencoded";
-    console.log("kumquat check default", requestOptions.headers["Content-Type"])
+    requestOptions.headers["Content-Type"] = "application/json";
     requestOptions.strictSSL = false;
     requestOptions.url = this.config.protocol + "://" + this.config.host + ":" + this.config.port + this.config.path;
 
