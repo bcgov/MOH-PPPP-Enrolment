@@ -491,7 +491,7 @@ SplunkLogger.prototype._sendEvents = function(context, callback) {
                 }
                 catch (err) {
                     _body = body;
-
+                    splunkError = new Error("Unexpected response from Splunk. Error body was: " + err);
                     splunkError = new Error("Unexpected response from Splunk. Request body was: " + _body);
                     splunkError.code = -1;
                 }
