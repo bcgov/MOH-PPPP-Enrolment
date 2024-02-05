@@ -487,7 +487,9 @@ SplunkLogger.prototype._sendEvents = function(context, callback) {
                 }
 
                 try {
-                    _body = JSON.parse(body);
+                    if (body) {
+                        _body = JSON.parse(body);
+                    }
                 }
                 catch (err) {
                     _body = body;
