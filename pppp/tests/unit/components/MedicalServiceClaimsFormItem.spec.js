@@ -3,7 +3,7 @@ import { cloneDeep } from "lodash";
 import * as dummyDataPatient from "../../../src/store/states/pay-patient-form-dummy-data";
 //in the long term, I want to move this into the components folder
 //but for now I'll import it from its current location in /views
-import Component from "@/views/pay-patient/MedicalServiceClaimsFormItem";
+import Component from "@/components/MedicalServiceClaimsFormItem";
 // import Component from "@/components/MedicalServiceClaimsFormItem.vue";
 
 const testDateFutureYear = new Date();
