@@ -203,6 +203,37 @@ describe("MedicalServiceClaimsFormItem isSubmissionCodeRequired()", () => {
   });
 });
 
+describe("MedicalServiceClaimsFormItem handleProcessServiceDate()", () => {
+  // eslint-disable-next-line
+  let state;
+  let wrapper;
+
+  beforeEach(() => {
+    state = {
+      applicationUuid: null,
+    };
+    wrapper = mount(Component, {
+      props: passingProps,
+      global: {
+        mocks: mockRouter,
+      },
+    });
+  });
+
+  afterEach(() => {
+    jest.resetModules();
+    jest.clearAllMocks();
+  });
+
+  it("emits serviceDateData", async () => {
+    expect(wrapper.emitted()).not.toHaveProperty("update:feeItem");
+    wrapper.vm.handleInputServiceFeeItem("data");
+    await wrapper.vm.$nextTick();
+    expect(wrapper.emitted()).toHaveProperty("update:feeItem");
+    expect(wrapper.emitted("update:feeItem")[0][0]).toBe("data");
+  });
+});
+
 describe("MedicalServiceClaimsFormItem validations (public)", () => {
   let wrapper;
 
