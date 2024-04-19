@@ -523,7 +523,7 @@ import {
 import ContinueBar from '@/components/ContinueBar.vue';
 import PageContent from '@/components/PageContent.vue';
 import TipBox from '@/components/TipBox.vue';
-import MedicalServiceClaimsFormItem from './MedicalServiceClaimsFormItem.vue';
+import MedicalServiceClaimsFormItem from '@/components/MedicalServiceClaimsFormItem.vue';
 import {
   MODULE_NAME as formModule,
   SET_PLAN_REFERENCE_NUMBER,

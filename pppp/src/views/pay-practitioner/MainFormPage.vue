@@ -490,7 +490,7 @@ import ContinueBar from '@/components/ContinueBar.vue';
 import PageContent from '@/components/PageContent.vue';
 import TipBox from '@/components/TipBox.vue';
 import MedicalServiceClaimsFormItem from '@/views/pay-practitioner/MedicalServiceClaimsFormItem.vue';
-import HospitalVisitClaimsFormItem from '@/views/pay-practitioner/HospitalVisitClaimsFormItem.vue';
+import HospitalVisitClaimsFormItem from '@/components/HospitalVisitClaimsFormItem.vue';
 import {
   MODULE_NAME as formModule,
   SET_PLAN_REFERENCE_NUMBER,
