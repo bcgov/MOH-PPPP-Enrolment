@@ -23,7 +23,6 @@
     <div class="text-danger"
         v-if="v$.serviceDate.$dirty
           && !v$.serviceDate.required.$invalid
-          && !v$.serviceDate.serviceDateFutureValidator.$invalid
           && v$.serviceDate.distantPastValidator.$invalid"
         aria-live="assertive">Service Date is too far in the past.</div>
     <div class="text-danger"
