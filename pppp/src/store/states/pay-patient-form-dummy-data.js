@@ -45,9 +45,9 @@ export default {
     }
   ],
   //Dev environment:
-  practitionerLastName: 'GOTTNER',
-  practitionerFirstName: 'MICHAEL',
-  practitionerPractitionerNumber: '00001',
+  practitionerLastName: 'OPXUWPW',
+  practitionerFirstName: 'UJGIJPQ',
+  practitionerPractitionerNumber: 'B1419',
   //Test environment:
   // practitionerLastName: 'Green',
   // practitionerFirstName: 'Rachel',
