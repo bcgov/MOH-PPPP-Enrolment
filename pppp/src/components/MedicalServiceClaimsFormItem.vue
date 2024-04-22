@@ -2,7 +2,7 @@
   <div>
     <DateInput label='Service Date:'
               :cypressId="'serviceDate' + index"
-              :id="'service-date-' + index"
+              :id="'msc-service-date-' + index"
               :modelValue='serviceDate'
               @blur="handleBlurField(v$.serviceDate)"
               @processDate='handleProcessServiceDate($event)'
@@ -31,7 +31,7 @@
           && v$.serviceDate.serviceDateCutOffValidator.$invalid"
         aria-live="assertive">Service Date is invalid for the Service Location Code.</div>
     <DigitInput label='Number of Services:'
-          :id='"number-of-services-" + index'
+          :id='"msc-number-of-services-" + index'
           :cypressId="'numberOfServices' + index"
           class='mt-3'
           :modelValue='numberOfServices'
@@ -56,7 +56,7 @@
         aria-live="assertive">Number of Services must be greater than 0.</div>
     <InputComponent 
           :label='"Service Clarification Code" + (isCSR ? "" : " (optional)") + ":"'
-          :id='"service-clarification-code-" + index'
+          :id='"msc-service-clarification-code-" + index'
           class='mt-3'
           :modelValue='serviceClarificationCode'
           maxlength='2'
@@ -68,7 +68,7 @@
         v-if="v$.serviceClarificationCode.$dirty && v$.serviceClarificationCode.clarificationCodeValidator.$invalid"
         aria-live="assertive">Service Clarification Code is invalid.</div>  
     <DigitInput label='Fee Item:'
-          :id='"fee-item-" + index'
+          :id='"msc-fee-item-" + index'
           :cypressId="'feeItem' + index"
           class='mt-3'
           :modelValue='feeItem'
@@ -83,13 +83,13 @@
         v-if="v$.feeItem.$dirty && !v$.feeItem.required.$invalid && v$.feeItem.intValidator.$invalid"
         aria-live="assertive">Fee Item must be an integer.</div>
     <div class="text-danger"
-        v-if="v$.feeItem.$dirty && v$.feeItem.required.$invalid && v$.feeItem.positiveNumberValidator.$invalid"
+        v-if="v$.feeItem.$dirty && !v$.feeItem.required.$invalid && v$.feeItem.positiveNumberValidator.$invalid"
         aria-live="assertive">Fee Item must be a positive number.</div>
     <div class="text-danger"
         v-if="medicalServiceClaimsFeeItemValidationError"
         aria-live="assertive">Fee Item does not match our records.</div>
     <NumberInput label='Amount Billed:'
-          :id='"amount-billed-" + index'
+          :id='"msc-amount-billed-" + index'
           :cypressId="'amountBilled' + index"
           class='mt-3'
           :modelValue='amountBilled'
@@ -111,7 +111,7 @@
         aria-live="assertive">Amount billed must be zero if Fee item is '03333'.</div>
     <TimeInput 
               :label='"Called Start Time" + (isCSR ? "" : " (optional)") + ":"'
-              :id='"called-start-time-" + index'
+              :id='"msc-called-start-time-" + index'
               className='mt-3'
               :modelValue='calledStartTime'
               :isHourTwoDigits='true'
@@ -122,7 +122,7 @@
         aria-live="assertive">Called start time must be an exact value.</div>
     <TimeInput 
               :label='"Rendered Finish Time" + (isCSR ? "" : " (optional)") + ":"'
-              :id='"rendered-finish-time-" + index'
+              :id='"msc-rendered-finish-time-" + index'
               className='mt-3'
               :modelValue='renderedFinishTime'
               :isHourTwoDigits='true'
@@ -132,7 +132,7 @@
         v-if="v$.renderedFinishTime.$dirty && v$.renderedFinishTime.partialTimeValidator.$invalid"
         aria-live="assertive">Rendered finish time must be an exact value.</div>
     <InputComponent label='Diagnostic Code:'
-          :id='"diagnostic-code-" + index'
+          :id='"msc-diagnostic-code-" + index'
           :cypressId="'diagnosticCode' + index"
           :isUpperCaseForced='true' 
           class='mt-3'
@@ -148,7 +148,7 @@
         v-if="v$.diagnosticCode.$dirty && ((!v$.diagnosticCode.required.$invalid && v$.diagnosticCode.diagnosticCodeValidator.$invalid) || v$.diagnosticCode.alphanumericValidator.$invalid)"
         aria-live="assertive">Diagnostic code must be valid.</div>
     <SelectComponent label='Service Location Code:'
-          :id='"location-of-service-" + index'
+          :id='"msc-location-of-service-" + index'
           :cypressId="'serviceLocationCode' + index"
           class='mt-3'
           :modelValue='locationOfService'
@@ -173,7 +173,7 @@
         aria-live="assertive">Service Location Code is invalid for the Service Date.</div>
     <SelectComponent 
         :label='"Correspondence Attached" + (isCSR ? "" : " (optional)") + ":"'
-        :id='"correspondence-attached-" + index'
+        :id='"msc-correspondence-attached-" + index'
         class='mt-3'
         :modelValue='correspondenceAttached'
         @update:modelValue="$emit('update:correspondenceAttached', $event)"
@@ -181,7 +181,7 @@
         defaultOptionLabel='None'
         :inputStyle='largeStyles' />
     <SelectComponent :label='"Submission Code" + ((isCSR || isSubmissionCodeRequired()) ? "" : " (optional)") + ":"'
-        :id='"submission-code-" + index'
+        :id='"msc-submission-code-" + index'
         :cypressId="'submissionCode' + index"
         class='mt-3'
         :modelValue='submissionCode'
@@ -195,8 +195,8 @@
         aria-live="assertive">Submission code is required.</div>
     <TextareaComponent
           :label='"Notes/Additional Information" + (isCSR ? "" : " (optional)") + ":"'
-          :id='"notes-" + index'
-          :cypressId="'notesAttach' + index"
+          :id='"msc-notes-" + index'
+          :cypressId="'medNotesAttach' + index"
           class='mt-3'
           :modelValue='notes'
           @update:modelValue="$emit('update:notes', $event)"
@@ -214,6 +214,7 @@ import {
   addDays,
   isBefore,
   subDays,
+  isValid,
 } from 'date-fns';
 import {
   extraSmallStyles,
@@ -458,7 +459,7 @@ export default {
     isSubmissionCodeRequired() {
       const past90Days = subDays(startOfToday(), 90);
       let serviceDate = this.serviceDate;
-      if (!serviceDate || isCSR(this.$router.currentRoute.value.path)) {
+      if (!isValid(serviceDate) || isCSR(this.$router.currentRoute.value.path)) {
         return false;
       }
       return isBefore(serviceDate, addDays(past90Days, 1));
