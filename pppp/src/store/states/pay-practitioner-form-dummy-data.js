@@ -44,7 +44,7 @@ export default {
       month: '12',
       dayFrom: '24',
       dayTo: '26',
-      year: '2021',
+      year: (new Date().getFullYear() - 1).toString(),
       numberOfServices: '1',
       serviceClarificationCode: 'A1',
       feeItem: '03333',
