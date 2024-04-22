@@ -1,4 +1,4 @@
-<template>
+<!-- USE COMPONENT <template>
   <div>
     <DateInput label='Service Date:'
               :cypressId="'serviceDate' + index"
@@ -465,4 +465,4 @@ export default {
     },
   }
 };
-</script>
+</script> -->
