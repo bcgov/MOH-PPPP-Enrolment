@@ -7,10 +7,23 @@ const testYear = new Date().getFullYear() - 1;
 const backendLastName = dummyData.practitionerLastName;
 const backendFirstName = dummyData.practitionerFirstName;
 const backendPractitionerNumber = dummyData.practitionerPractitionerNumber;
+//you can replace the testUrl with https://dev.my.gov.bc.ca/pppp/pay-practitioner if needed
+//you can also replace the "dev" with "test" to check the TEST environment
+const testUrl = "/pay-practitioner";
+
+//dev environment data
+// const backendLastName = "GOTTNER";
+// const backendFirstName = "MICHAEL";
+// const backendPractitionerNumber = "00001";
+
+//test environment data
+// const backendLastName = "OPXUWPW";
+// const backendFirstName = "UJGIJPQ";
+// const backendPractitionerNumber = "B1419";
 
 describe("Pay Practitioner-Public", () => {
   it("follows the happy path", () => {
-    cy.visit("/pay-practitioner");
+    cy.visit(testUrl);
     //Claim Count
     cy.location().should((loc) => {
       expect(loc.pathname).to.eq("/pppp/pay-practitioner");

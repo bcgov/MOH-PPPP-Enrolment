@@ -12,13 +12,11 @@ import {
 } from './routes';
 import pageStateService from '@/services/page-state-service';
 import LandingPage from '@/views/LandingPage.vue';
-// import PatientHomePage from '@/views/pay-patient/HomePage.vue';
 import PatientClaimCountPage from '@/views/pay-patient/ClaimCountPage.vue';
 import PatientMainFormPage from '@/views/pay-patient/MainFormPage.vue';
 import PatientReviewPage from '@/views/pay-patient/ReviewPage.vue';
 import PatientSubmissionPage from '@/views/pay-patient/SubmissionPage.vue';
 import PatientSubmissionErrorPage from '@/views/pay-patient/SubmissionErrorPage.vue';
-// import PractitionerHomePage from '@/views/pay-practitioner/HomePage.vue';
 import PractitionerClaimCountPage from '@/views/pay-practitioner/ClaimCountPage.vue';
 import PractitionerMainFormPage from '@/views/pay-practitioner/MainFormPage.vue';
 import PractitionerReviewPage from '@/views/pay-practitioner/ReviewPage.vue';
@@ -49,13 +47,11 @@ export const routeCollection = [
     name: commonRoutes.SPECIFIC_PAGE_NOT_FOUND_PAGE.name,
     component: PageNotFoundPage
   },
-  
-  // Pay Patient Routes.
-  // {
-  //   path: payPatientRoutes.HOME_PAGE.path,
-  //   name: payPatientRoutes.HOME_PAGE.name,
-  //   component: PatientHomePage
-  // },
+  {
+    path: commonRoutes.PAGE_NOT_FOUND_PAGE.path,
+    name: commonRoutes.PAGE_NOT_FOUND_PAGE.name,
+    component: PageNotFoundPage
+  },
   {
     path: payPatientRoutes.CLAIM_COUNT_PAGE.path,
     name: payPatientRoutes.CLAIM_COUNT_PAGE.name,
@@ -81,13 +77,6 @@ export const routeCollection = [
     name: payPatientRoutes.SUBMISSION_ERROR_PAGE.name,
     component: PatientSubmissionErrorPage
   },
-
-  // Pay Patient CSR routes.
-  // {
-  //   path: payPatientCSRRoutes.HOME_PAGE.path,
-  //   name: payPatientCSRRoutes.HOME_PAGE.name,
-  //   component: PatientHomePage
-  // },
   {
     path: payPatientCSRRoutes.CLAIM_COUNT_PAGE.path,
     name: payPatientCSRRoutes.CLAIM_COUNT_PAGE.name,
@@ -113,13 +102,6 @@ export const routeCollection = [
     name: payPatientCSRRoutes.SUBMISSION_ERROR_PAGE.name,
     component: PatientSubmissionErrorPage
   },
-
-  // Pay Practitioner routes.
-  // {
-  //   path: payPractitionerRoutes.HOME_PAGE.path,
-  //   name: payPractitionerRoutes.HOME_PAGE.name,
-  //   component: PractitionerHomePage
-  // },
   {
     path: payPractitionerRoutes.CLAIM_COUNT_PAGE.path,
     name: payPractitionerRoutes.CLAIM_COUNT_PAGE.name,
@@ -145,13 +127,6 @@ export const routeCollection = [
     name: payPractitionerRoutes.SUBMISSION_ERROR_PAGE.name,
     component: PractitionerSubmissionErrorPage
   },
-
-  // Pay Practitioner CSR routes.
-  // {
-  //   path: payPractitionerCSRRoutes.HOME_PAGE.path,
-  //   name: payPractitionerCSRRoutes.HOME_PAGE.name,
-  //   component: PractitionerHomePage
-  // },
   {
     path: payPractitionerCSRRoutes.CLAIM_COUNT_PAGE.path,
     name: payPractitionerCSRRoutes.CLAIM_COUNT_PAGE.name,

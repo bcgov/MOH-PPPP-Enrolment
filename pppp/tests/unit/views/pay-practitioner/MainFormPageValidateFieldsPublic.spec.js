@@ -2,21 +2,14 @@ import { mount } from "@vue/test-utils";
 import { createStore } from "vuex";
 import { cloneDeep } from "lodash";
 import Page from "@/views/pay-practitioner/MainFormPage.vue";
-import logService from "@/services/log-service";
-import pageStateService from "@/services/page-state-service";
 import * as module1 from "../../../../src/store/modules/app";
 import * as module2 from "../../../../src/store/modules/pay-patient-form";
 import * as module3 from "../../../../src/store/modules/pay-practitioner-form";
 import * as dummyDataValid from "../../../../src/store/states/pay-practitioner-form-dummy-data";
 import apiService from "@/services/api-service";
-import { getConvertedPath } from "@/helpers/url";
-import {
-  payPractitionerRoutes,
-  payPractitionerRouteStepOrder,
-} from "@/router/routes";
 
 const testDate = new Date();
-const adjustedTestDateMonth = testDate.getMonth() + 1;
+const adjustedTestDateMonth = (testDate.getMonth() + 1).toString();
 //testDate.getMonth() returns 0 for January
 //but the hospital visit selector indexes January as 1, since it's the first item on the list
 //this constant adjusts for this difference
@@ -38,8 +31,6 @@ testDatePast89Days.setDate(testDatePast89Days.getDate() - 89);
 
 const testDatePast91Days = new Date();
 testDatePast91Days.setDate(testDatePast91Days.getDate() - 91);
-
-const next = jest.fn();
 
 const mockBackendValidationResponse = {
   data: {
@@ -273,25 +264,10 @@ jest.mock("@/helpers/scroll", () => ({
 jest.spyOn(window, "scrollTo").mockImplementation(jest.fn);
 
 const spyOnScrollToError = jest.spyOn(scrollHelper, "scrollToError");
-const spyOnScrollTo = jest.spyOn(scrollHelper, "scrollTo");
 
-const spyOnGetTopScrollPosition = jest
-  .spyOn(scrollHelper, "getTopScrollPosition")
-  .mockImplementation(() => Promise.resolve("top scroll position returned"));
-
-const spyOnSetPageComplete = jest
-  .spyOn(pageStateService, "setPageComplete")
-  .mockImplementation(() => Promise.resolve("set"));
-const spyOnSetPageIncomplete = jest
-  .spyOn(pageStateService, "setPageIncomplete")
-  .mockImplementation(() => Promise.resolve("set"));
-const spyOnVisitPage = jest
-  .spyOn(pageStateService, "visitPage")
-  .mockImplementation(() => Promise.resolve("visited"));
-
-const spyOnLogNavigation = jest
-  .spyOn(logService, "logNavigation")
-  .mockImplementation(() => Promise.resolve("logged"));
+// const spyOnLogNavigation = jest
+//   .spyOn(logService, "logNavigation")
+//   .mockImplementation(() => Promise.resolve("logged"));
 
 const storeTemplate = {
   modules: {

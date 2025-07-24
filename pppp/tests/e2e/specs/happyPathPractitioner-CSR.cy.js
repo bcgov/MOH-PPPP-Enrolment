@@ -7,13 +7,26 @@ const testYear = new Date().getFullYear() - 1;
 const backendLastName = dummyData.practitionerLastName;
 const backendFirstName = dummyData.practitionerFirstName;
 const backendPractitionerNumber = dummyData.practitionerPractitionerNumber;
+//you can replace the testUrl with https://dev.my.gov.bc.ca/pppp/pay-practitioner-csr if needed
+//you can also replace the "dev" with "test" to check the TEST environment
+const testUrl = "/pay-practitioner-csr";
 
-describe("Pay Patient-CSR", () => {
+//dev environment data
+// const backendLastName = "GOTTNER";
+// const backendFirstName = "MICHAEL";
+// const backendPractitionerNumber = "00001";
+
+//test environment data
+// const backendLastName = "OPXUWPW";
+// const backendFirstName = "UJGIJPQ";
+// const backendPractitionerNumber = "B1419";
+
+describe("Pay Practitioner-CSR", () => {
   it("follows the happy path", () => {
-    cy.visit("/pay-patient-csr");
+    cy.visit(testUrl);
     //Claim Count
     cy.location().should((loc) => {
-      expect(loc.pathname).to.eq("/pppp/pay-patient-csr");
+      expect(loc.pathname).to.eq("/pppp/pay-practitioner-csr");
     });
 
     cy.get("[data-cy=captchaInput]").type("irobot");
@@ -26,11 +39,17 @@ describe("Pay Patient-CSR", () => {
       .parent()
       .trigger("change");
 
+    cy.get("select")
+      .find("option[data-cy=HospitalClaim1]")
+      .then(($el) => $el.get(0).setAttribute("selected", "selected"))
+      .parent()
+      .trigger("change");
+
     cy.get("[data-cy=continueBar]").click();
 
     //Main Form
     cy.location().should((loc) => {
-      expect(loc.pathname).to.eq("/pppp/pay-patient-csr/main-form");
+      expect(loc.pathname).to.eq("/pppp/pay-practitioner-csr/main-form");
     });
 
     cy.get("[data-cy=PRN]").type("1111111111");
@@ -76,13 +95,33 @@ describe("Pay Patient-CSR", () => {
 
     cy.get("[data-cy=medNotesAttach0]").type(`aabb""//\\ `);
 
-    cy.get("[data-cy=addressOwneraddress-owner-patient]").click({
-      force: true,
-    });
+    //hospital claim section
+    cy.get("select")
+      .find("option[data-cy=hospitalClaimMonth010]")
+      .then(($el) => $el.get(0).setAttribute("selected", "selected"))
+      .parent()
+      .trigger("change");
 
-    cy.get("[data-cy=streetName]").type("Fake street");
-    cy.get("[data-cy=cityName]").type("Fakesville");
-    cy.get("[data-cy=postalCode]").type("V1A1A1");
+    cy.get("[data-cy=hospitalClaimDayFrom0]").type("11");
+    cy.get("[data-cy=hospitalClaimYear0]").type(testYear);
+    cy.get("[data-cy=hospitalClaimNumberOfServices0]").type("1");
+    cy.get("[data-cy=hospitalClaimFeeItem0]").type("00010");
+    cy.get("[data-cy=hospitalClaimAmountBilled0]").type("1.00");
+    cy.get("[data-cy=hospitalClaimDiagnosticCode0]").type("001");
+
+    cy.get("select")
+      .find("option[data-cy=hospitalClaimServiceLocation01]")
+      .then(($el) => $el.get(0).setAttribute("selected", "selected"))
+      .parent()
+      .trigger("change");
+
+    cy.get("select")
+      .find("option[data-cy=hospitalClaimSubmissionCode0]")
+      .then(($el) => $el.get(0).setAttribute("selected", "selected"))
+      .parent()
+      .trigger("change");
+
+    cy.get("[data-cy=hospitalNotesAttach0]").type(`aabb""//\\ `);
 
     cy.get("[data-cy=practitionerLastName]").type(backendLastName);
     cy.get("[data-cy=practitionerFirstName]").type(backendFirstName);
@@ -93,19 +132,19 @@ describe("Pay Patient-CSR", () => {
 
     //Review page
     cy.location().should((loc) => {
-      expect(loc.pathname).to.eq("/pppp/pay-patient-csr/review");
+      expect(loc.pathname).to.eq("/pppp/pay-practitioner-csr/review");
     });
 
     cy.get("[data-cy=continueBar]").click();
 
     cy.location().should((loc) => {
-      expect(loc.pathname).to.eq("/pppp/pay-patient-csr/submission");
+      expect(loc.pathname).to.eq("/pppp/pay-practitioner-csr/submission");
     });
-
+    
     cy.get("[data-cy=newForm]").click();
 
     cy.location().should((loc) => {
-      expect(loc.pathname).to.eq("/pppp/pay-patient-csr");
+      expect(loc.pathname).to.eq("/pppp/pay-practitioner-csr");
     });
   });
 });

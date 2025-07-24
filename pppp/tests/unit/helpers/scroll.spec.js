@@ -43,13 +43,13 @@ describe.skip("Helper scroll.js scrollToError()", () => {
 });
 
 describe.skip("Helper scroll.js scrollToElement()", () => {
-  const fakeElement = {
-    getBoundingClientRect: () => {
-      return {
-        top: 100,
-      };
-    },
-  };
+  // const fakeElement = {
+  //   getBoundingClientRect: () => {
+  //     return {
+  //       top: 100,
+  //     };
+  //   },
+  // };
 
   afterEach(() => {
     jest.resetModules();

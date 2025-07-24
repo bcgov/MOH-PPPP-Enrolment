@@ -7,13 +7,26 @@ const testYear = new Date().getFullYear() - 1;
 const backendLastName = dummyData.practitionerLastName;
 const backendFirstName = dummyData.practitionerFirstName;
 const backendPractitionerNumber = dummyData.practitionerPractitionerNumber;
+//you can replace the testUrl with https://dev.my.gov.bc.ca/pppp/pay-patient-csr if needed
+//you can also replace the "dev" with "test" to check the TEST environment
+const testUrl = "/pay-patient-csr";
 
-describe("Pay Patient-Public", () => {
+//dev environment data
+// const backendLastName = "GOTTNER";
+// const backendFirstName = "MICHAEL";
+// const backendPractitionerNumber = "00001";
+
+//test environment data
+// const backendLastName = "OPXUWPW";
+// const backendFirstName = "UJGIJPQ";
+// const backendPractitionerNumber = "B1419";
+
+describe("Pay Patient-CSR", () => {
   it("follows the happy path", () => {
-    cy.visit("/pay-patient");
+    cy.visit(testUrl);
     //Claim Count
     cy.location().should((loc) => {
-      expect(loc.pathname).to.eq("/pppp/pay-patient");
+      expect(loc.pathname).to.eq("/pppp/pay-patient-csr");
     });
 
     cy.get("[data-cy=captchaInput]").type("irobot");
@@ -30,9 +43,10 @@ describe("Pay Patient-Public", () => {
 
     //Main Form
     cy.location().should((loc) => {
-      expect(loc.pathname).to.eq("/pppp/pay-patient/main-form");
+      expect(loc.pathname).to.eq("/pppp/pay-patient-csr/main-form");
     });
 
+    cy.get("[data-cy=PRN]").type("1111111111");
     cy.get("[data-cy=PHN]").type("9353 166 544");
     cy.get("[data-cy=patientFirstName]").type("Firstname");
     cy.get("[data-cy=patientLastName]").type("Lastname");
@@ -73,6 +87,8 @@ describe("Pay Patient-Public", () => {
       .parent()
       .trigger("change");
 
+    cy.get("[data-cy=medNotesAttach0]").type(`aabb""//\\ `);
+
     cy.get("[data-cy=addressOwneraddress-owner-patient]").click({
       force: true,
     });
@@ -90,19 +106,19 @@ describe("Pay Patient-Public", () => {
 
     //Review page
     cy.location().should((loc) => {
-      expect(loc.pathname).to.eq("/pppp/pay-patient/review");
+      expect(loc.pathname).to.eq("/pppp/pay-patient-csr/review");
     });
 
     cy.get("[data-cy=continueBar]").click();
 
     cy.location().should((loc) => {
-      expect(loc.pathname).to.eq("/pppp/pay-patient/submission");
+      expect(loc.pathname).to.eq("/pppp/pay-patient-csr/submission");
     });
-    
+
     cy.get("[data-cy=newForm]").click();
 
     cy.location().should((loc) => {
-      expect(loc.pathname).to.eq("/pppp/pay-patient");
+      expect(loc.pathname).to.eq("/pppp/pay-patient-csr");
     });
   });
 });

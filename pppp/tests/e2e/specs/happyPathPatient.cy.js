@@ -7,13 +7,26 @@ const testYear = new Date().getFullYear() - 1;
 const backendLastName = dummyData.practitionerLastName;
 const backendFirstName = dummyData.practitionerFirstName;
 const backendPractitionerNumber = dummyData.practitionerPractitionerNumber;
+//you can replace the testUrl with https://dev.my.gov.bc.ca/pppp/pay-patient if needed
+//you can also replace the "dev" with "test" to check the TEST environment
+const testUrl = "/pay-patient";
 
-describe("Pay Practitioner-CSR", () => {
+//dev environment data
+// const backendLastName = "GOTTNER";
+// const backendFirstName = "MICHAEL";
+// const backendPractitionerNumber = "00001";
+
+//test environment data
+// const backendLastName = "OPXUWPW";
+// const backendFirstName = "UJGIJPQ";
+// const backendPractitionerNumber = "B1419";
+
+describe("Pay Patient-Public", () => {
   it("follows the happy path", () => {
-    cy.visit("/pay-practitioner-csr");
+    cy.visit(testUrl);
     //Claim Count
     cy.location().should((loc) => {
-      expect(loc.pathname).to.eq("/pppp/pay-practitioner-csr");
+      expect(loc.pathname).to.eq("/pppp/pay-patient");
     });
 
     cy.get("[data-cy=captchaInput]").type("irobot");
@@ -26,20 +39,13 @@ describe("Pay Practitioner-CSR", () => {
       .parent()
       .trigger("change");
 
-    cy.get("select")
-      .find("option[data-cy=HospitalClaim1]")
-      .then(($el) => $el.get(0).setAttribute("selected", "selected"))
-      .parent()
-      .trigger("change");
-
     cy.get("[data-cy=continueBar]").click();
 
     //Main Form
     cy.location().should((loc) => {
-      expect(loc.pathname).to.eq("/pppp/pay-practitioner-csr/main-form");
+      expect(loc.pathname).to.eq("/pppp/pay-patient/main-form");
     });
 
-    cy.get("[data-cy=PRN]").type("1111111111");
     cy.get("[data-cy=PHN]").type("9353 166 544");
     cy.get("[data-cy=patientFirstName]").type("Firstname");
     cy.get("[data-cy=patientLastName]").type("Lastname");
@@ -80,35 +86,13 @@ describe("Pay Practitioner-CSR", () => {
       .parent()
       .trigger("change");
 
-    cy.get("[data-cy=medNotesAttach0]").type(`aabb""//\\ `);
+    cy.get("[data-cy=addressOwneraddress-owner-patient]").click({
+      force: true,
+    });
 
-    //hospital claim section
-    cy.get("select")
-      .find("option[data-cy=hospitalClaimMonth010]")
-      .then(($el) => $el.get(0).setAttribute("selected", "selected"))
-      .parent()
-      .trigger("change");
-
-    cy.get("[data-cy=hospitalClaimDayFrom0]").type("11");
-    cy.get("[data-cy=hospitalClaimYear0]").type(testYear);
-    cy.get("[data-cy=hospitalClaimNumberOfServices0]").type("1");
-    cy.get("[data-cy=hospitalClaimFeeItem0]").type("00010");
-    cy.get("[data-cy=hospitalClaimAmountBilled0]").type("1.00");
-    cy.get("[data-cy=hospitalClaimDiagnosticCode0]").type("001");
-
-    cy.get("select")
-      .find("option[data-cy=hospitalClaimServiceLocation01]")
-      .then(($el) => $el.get(0).setAttribute("selected", "selected"))
-      .parent()
-      .trigger("change");
-
-    cy.get("select")
-      .find("option[data-cy=hospitalClaimSubmissionCode0]")
-      .then(($el) => $el.get(0).setAttribute("selected", "selected"))
-      .parent()
-      .trigger("change");
-
-    cy.get("[data-cy=hospitalNotesAttach0]").type(`aabb""//\\ `);
+    cy.get("[data-cy=streetName]").type("Fake street");
+    cy.get("[data-cy=cityName]").type("Fakesville");
+    cy.get("[data-cy=postalCode]").type("V1A1A1");
 
     cy.get("[data-cy=practitionerLastName]").type(backendLastName);
     cy.get("[data-cy=practitionerFirstName]").type(backendFirstName);
@@ -119,19 +103,19 @@ describe("Pay Practitioner-CSR", () => {
 
     //Review page
     cy.location().should((loc) => {
-      expect(loc.pathname).to.eq("/pppp/pay-practitioner-csr/review");
+      expect(loc.pathname).to.eq("/pppp/pay-patient/review");
     });
 
     cy.get("[data-cy=continueBar]").click();
 
     cy.location().should((loc) => {
-      expect(loc.pathname).to.eq("/pppp/pay-practitioner-csr/submission");
+      expect(loc.pathname).to.eq("/pppp/pay-patient/submission");
     });
     
     cy.get("[data-cy=newForm]").click();
 
     cy.location().should((loc) => {
-      expect(loc.pathname).to.eq("/pppp/pay-practitioner-csr");
+      expect(loc.pathname).to.eq("/pppp/pay-patient");
     });
   });
 });

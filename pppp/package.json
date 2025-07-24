@@ -1,6 +1,6 @@
 {
   "name": "pppp",
-  "version": "1.1.6",
+  "version": "1.1.9",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
@@ -10,6 +10,7 @@
     "test:unit": "vue-cli-service test:unit",
     "test:unit:watch": "vue-cli-service test:unit --watch",
     "test:e2e": "vue-cli-service test:e2e",
+    "test:e2e-headless": "vue-cli-service test:e2e --headless",
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
@@ -44,7 +45,7 @@
     "@vue/test-utils": "^2.0.2",
     "@vue/vue3-jest": "^28.0.1",
     "babel-eslint": "^10.1.0",
-    "cypress": "^9.6.1",
+    "cypress": "^11.2.0",
     "eslint": "^8.10.0",
     "eslint-plugin-jest": "^26.1.2",
     "eslint-plugin-jest-formatting": "^3.1.0",

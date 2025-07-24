@@ -8,7 +8,6 @@ import * as module1 from "../../../../src/store/modules/app";
 import * as module2 from "../../../../src/store/modules/pay-patient-form";
 import * as module3 from "../../../../src/store/modules/pay-practitioner-form";
 import * as dummyDataValid from "../../../../src/store/states/pay-patient-form-dummy-data";
-import apiService from "@/services/api-service";
 import { getConvertedPath } from "@/helpers/url";
 import { payPatientRoutes, payPatientRouteStepOrder } from "@/router/routes";
 
@@ -150,10 +149,6 @@ jest.mock("axios", () => ({
   }),
 }));
 
-const spyOnAPIService = jest
-  .spyOn(apiService, "validateApplication")
-  .mockImplementation(() => Promise.resolve(mockBackendValidationResponse));
-
 const scrollHelper = require("@/helpers/scroll");
 
 jest.mock("@/helpers/scroll", () => ({
@@ -164,7 +159,6 @@ jest.mock("@/helpers/scroll", () => ({
 
 jest.spyOn(window, "scrollTo").mockImplementation(jest.fn);
 
-const spyOnScrollToError = jest.spyOn(scrollHelper, "scrollToError");
 const spyOnScrollTo = jest.spyOn(scrollHelper, "scrollTo");
 
 const spyOnGetTopScrollPosition = jest

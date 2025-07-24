@@ -220,6 +220,10 @@ jest.spyOn(window, "scrollTo").mockImplementation(jest.fn);
 
 const spyOnScrollToError = jest.spyOn(scrollHelper, "scrollToError");
 
+// const localVue = createLocalVue();
+// localVue.use(Vuex);
+// localVue.use(Vuelidate);
+
 const storeTemplate = {
   modules: {
     app: cloneDeep(module1.default),

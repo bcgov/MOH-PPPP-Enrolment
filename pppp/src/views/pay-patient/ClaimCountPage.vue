@@ -77,61 +77,54 @@ export default {
       applicationUuid: null,
     };
   },
-  created() {
-    if (this.isFirstLoad() || isCSR(this.$router.currentRoute.value.path)) {
-      spaEnvService.loadEnvs()
-        .then(() => {
-
-          //if it's the first time the page is loading, check if it needs to redirect to Maintenance
-          if (this.isFirstLoad()) {
-            if (
-              spaEnvService.values &&
-              spaEnvService.values.SPA_ENV_PPPP_MAINTENANCE_FLAG === "true"
-            ) {
-              const toPath = payPatientRoutes.MAINTENANCE_PAGE.path;
-              pageStateService.setPageComplete(toPath);
-              pageStateService.visitPage(toPath);
-              this.$router.push(toPath);
-            }
-          }
-
-          //if this is a CSR path, check if it needs to redirect to Page not found
-          if (
-            spaEnvService.values &&
-            spaEnvService.values.SPA_ENV_PPPP_IS_CSR_ENABLED === "false" &&
-            isCSR(this.$router.currentRoute.value.path)
-          ) {
-            const toPath = commonRoutes.SPECIFIC_PAGE_NOT_FOUND_PAGE.path ; //commonRoutes.PAGE_NOT_FOUND_PAGE.path
-            pageStateService.setPageComplete(toPath);
-            pageStateService.visitPage(toPath);
-            this.$router.push(toPath);
-          }
-        })
-        .catch((error) => {
-          logService.logError(this.applicationUuid, {
-            event: 'HTTP error getting values from spa-env-server',
-            status: error.response.status,
-          });
-
-          const toPath = commonRoutes.SPECIFIC_PAGE_NOT_FOUND_PAGE.path;
+  created() {  
+    spaEnvService.loadEnvs()
+      .then(() => {
+        // check if it needs to redirect to maintenance page
+        if (
+          spaEnvService.values &&
+          spaEnvService.values.SPA_ENV_PPPP_MAINTENANCE_FLAG === "true"
+        ) {
+          const toPath = commonRoutes.MAINTENANCE_PAGE.path;
           pageStateService.setPageComplete(toPath);
           pageStateService.visitPage(toPath);
           this.$router.push(toPath);
+        //else if this is a CSR path, check if it needs to redirect to page not found
+        } else if (
+          spaEnvService.values &&
+          spaEnvService.values.SPA_ENV_PPPP_IS_CSR_ENABLED === "false" &&
+          isCSR(this.$router.currentRoute.path)
+        ) {
+          const toPath = commonRoutes.SPECIFIC_PAGE_NOT_FOUND_PAGE.path ; //commonRoutes.PAGE_NOT_FOUND_PAGE.path
+          pageStateService.setPageComplete(toPath);
+          pageStateService.visitPage(toPath);
+          this.$router.push(toPath);
+        }
+      })
+      .catch((error) => {
+        logService.logError(this.applicationUuid, {
+          event: 'HTTP error getting values from spa-env-server',
+          status: error.response?.status || error,
         });
 
-      this.applicationUuid = this.$store.state.payPatientForm.applicationUuid;
-      this.claimCount = this.$store.state.payPatientForm.claimCount;
-      
-      setTimeout(() => {
-        this.isPageLoaded = true;
-      }, 0);
+        const toPath = commonRoutes.SPECIFIC_PAGE_NOT_FOUND_PAGE.path;
+        pageStateService.setPageComplete(toPath);
+        pageStateService.visitPage(toPath);
+        this.$router.push(toPath);
+      });
 
-      logService.logNavigation(
-        this.$store.state.payPatientForm.applicationUuid,
-        payPatientRoutes.CLAIM_COUNT_PAGE.path,
-        payPatientRoutes.CLAIM_COUNT_PAGE.title
-      );
-    }
+    this.applicationUuid = this.$store.state.payPatientForm.applicationUuid;
+    this.claimCount = this.$store.state.payPatientForm.claimCount;
+    
+    setTimeout(() => {
+      this.isPageLoaded = true;
+    }, 0);
+
+    logService.logNavigation(
+      this.$store.state.payPatientForm.applicationUuid,
+      payPatientRoutes.CLAIM_COUNT_PAGE.path,
+      payPatientRoutes.CLAIM_COUNT_PAGE.title
+    );
   },
   validations() {
     const validations = {
@@ -142,9 +135,6 @@ export default {
     return validations;
   },
   methods: {
-    isFirstLoad() {
-      return !this.$store.state.payPatientForm.applicationUuid;
-    },
     validateFields() {
       this.v$.$touch()
       if (this.v$.$invalid) {

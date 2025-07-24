@@ -10,12 +10,20 @@ on:
       - "pppp/tests/unit/**/*.spec.js"
       - "pppp/package*.json"
   workflow_dispatch:
-defaults:
-  run:
-    working-directory: ./pppp
+env:
+  NAMESPACE: 0752cb-tools
+  ARTIFACT_BUILD_NAME: pppp-web-artifact-build
+  ARTIFACT_IMAGE_NAME: pppp-web-artifacts
+  BUILD_NAME: pppp-web-image-build
+  IMAGE_NAME: pppp-web
+  SOURCE_IMAGE_TAG: latest
+  TARGET_IMAGE_TAG: dev
 jobs:
   test:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./pppp
     steps:
       - uses: actions/checkout@main
       - uses: actions/setup-node@main
@@ -25,12 +33,17 @@ jobs:
         run: npm ci
       - name: Unit tests
         run: npm run test
-      # - name: LINTing
-      #   run: npm run test:lint
+      - name: E2E tests
+        run: npm run test:e2e-headless
+      - name: LINTing
+        run: npm run lint
       # - name: OpenAPI Schema
       #   run: npm run test:schema
   build:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./pppp
     needs: [test]
     strategy:
       matrix:
@@ -56,35 +69,25 @@ jobs:
         env:
           CI: "true"
   image-build:
-    # if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
     runs-on: ubuntu-latest
     needs: [test, build]
     steps:
-      - name: Artifact Build
-        env:
-          NAMESPACE: 0752cb-tools
-          BUILD_NAME: pppp-web-artifact-build
-          IMAGE_NAME: pppp-web-artifacts
-        uses: redhat-developer/openshift-actions@v1.1
+      - uses: redhat-actions/openshift-tools-installer@v1
         with:
-          version: "latest"
-          openshift_server_url: ${{ secrets.OpenShiftServerURL}}
-          parameters: '{"apitoken": "${{ secrets.OpenShiftToken }}", "acceptUntrustedCerts": "true"}'
-          cmd: |
-            'version'
-            'start-build ${BUILD_NAME} -n ${NAMESPACE} --follow'
-            'tag -n ${NAMESPACE} ${NAMESPACE}/${IMAGE_NAME}:latest ${NAMESPACE}/${IMAGE_NAME}:dev'
-      - name: Image Build
-        env:
-          NAMESPACE: 0752cb-tools
-          BUILD_NAME: pppp-web-image-build
-          IMAGE_NAME: pppp-web
-        uses: redhat-developer/openshift-actions@v1.1
-        with:
-          version: "latest"
-          openshift_server_url: ${{ secrets.OpenShiftServerURL}}
-          parameters: '{"apitoken": "${{ secrets.OpenShiftToken }}", "acceptUntrustedCerts": "true"}'
-          cmd: |
-            'version'
-            'start-build ${BUILD_NAME} -n ${NAMESPACE} --follow'
-            'tag -n ${NAMESPACE} ${NAMESPACE}/${IMAGE_NAME}:latest ${NAMESPACE}/${IMAGE_NAME}:dev'
+          source: "mirror"
+          oc: "latest"
+      - name: Log in to Openshift
+        run: oc login --token=${{ secrets.OpenShiftToken }} --server=${{ secrets.OpenShiftServerURL}}
+      - name: Generate Artifact Build
+        run: oc start-build ${ARTIFACT_BUILD_NAME} -n ${NAMESPACE} --follow
+      - name: Tag Artifact Build
+        run: oc tag -n ${NAMESPACE} ${NAMESPACE}/${ARTIFACT_IMAGE_NAME}:${SOURCE_IMAGE_TAG} ${NAMESPACE}/${ARTIFACT_IMAGE_NAME}:${TARGET_IMAGE_TAG}
+      - name: Generate Image Build
+        run: oc start-build ${BUILD_NAME} -n ${NAMESPACE} --follow
+      - name: Time delay
+        # to give time for Openshift to process the build so it doesn't tag the wrong image
+        run: sleep 20s
+      - name: Tag Image Build
+        run: oc tag -n ${NAMESPACE} ${NAMESPACE}/${IMAGE_NAME}:${SOURCE_IMAGE_TAG} ${NAMESPACE}/${IMAGE_NAME}:${TARGET_IMAGE_TAG}
+      
