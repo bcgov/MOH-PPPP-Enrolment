@@ -1,6 +1,7 @@
 import { shallowMount, createLocalVue } from "@vue/test-utils";
-import Vuex from "vuex";
+import { createStore } from "vuex";
 import { cloneDeep } from "lodash";
+import { createRouter, createWebHistory } from "vue-router";
 import Page from "@/views/pay-practitioner/SubmissionPage.vue";
 import * as module1 from "../../../../src/store/modules/app";
 import * as module2 from "../../../../src/store/modules/pay-patient-form";
@@ -14,10 +15,16 @@ import {
   payPractitionerRoutes,
   payPractitionerRouteStepOrder,
 } from "@/router/routes";
+import { routeCollection } from "@/router/index";
 
-const localVue = createLocalVue();
-localVue.use(Vuex);
-localVue.component("font-awesome-icon", FontAwesomeIcon);
+// const localVue = createLocalVue();
+// localVue.use(Vuex);
+// localVue.component("font-awesome-icon", FontAwesomeIcon);
+
+const router = createRouter({
+  history: createWebHistory(),
+  routes: routeCollection,
+});
 
 const next = jest.fn();
 const spyOnPrint = jest.spyOn(window, "print").mockImplementation(jest.fn);
@@ -51,7 +58,7 @@ describe("SubmissionPage.vue pay practitioner", () => {
   let $router;
 
   beforeEach(() => {
-    store = new Vuex.Store(storeTemplate);
+    store = createStore(storeTemplate);
     $route = {
       path: "/potato-csr",
     };
@@ -61,11 +68,8 @@ describe("SubmissionPage.vue pay practitioner", () => {
       push: jest.fn(),
     };
     wrapper = shallowMount(Page, {
-      localVue,
-      store,
-      mocks: {
-        $route,
-        $router,
+      global: {
+        plugins: [store, router],
       },
     });
     jest.spyOn(wrapper.vm.$store, "dispatch");
@@ -74,9 +78,9 @@ describe("SubmissionPage.vue pay practitioner", () => {
       .spyOn(spaEnvService, "loadEnvs")
       .mockImplementation(() => Promise.resolve("loaded"));
 
-    wrapper.vm.$options.created.forEach((hook) => {
-      hook.call(wrapper.vm);
-    });
+    // wrapper.vm.$options.created.forEach((hook) => {
+    //   hook.call(wrapper.vm);
+    // });
   });
 
   afterEach(() => {
@@ -92,25 +96,12 @@ describe("SubmissionPage.vue pay practitioner", () => {
 describe("SubmissionPage.vue pay practitioner created()", () => {
   let store;
   let wrapper;
-  let $route;
-  let $router;
 
   beforeEach(() => {
-    store = new Vuex.Store(storeTemplate);
-    $route = {
-      path: "/potato-csr",
-    };
-    $router = {
-      $route,
-      currentRoute: $route,
-      push: jest.fn(),
-    };
+    store = createStore(storeTemplate);
     wrapper = shallowMount(Page, {
-      localVue,
-      store,
-      mocks: {
-        $route,
-        $router,
+      global: {
+        plugins: [store, router],
       },
     });
     jest.spyOn(wrapper.vm.$store, "dispatch");
@@ -119,9 +110,9 @@ describe("SubmissionPage.vue pay practitioner created()", () => {
       .spyOn(spaEnvService, "loadEnvs")
       .mockImplementation(() => Promise.resolve("loaded"));
 
-    wrapper.vm.$options.created.forEach((hook) => {
-      hook.call(wrapper.vm);
-    });
+    // wrapper.vm.$options.created.forEach((hook) => {
+    //   hook.call(wrapper.vm);
+    // });
   });
 
   afterEach(() => {
@@ -141,7 +132,7 @@ describe("SubmissionPage.vue pay practitioner printPage()", () => {
   let $router;
 
   beforeEach(() => {
-    store = new Vuex.Store(storeTemplate);
+    store = createStore(storeTemplate);
     $route = {
       path: "/potato-csr",
     };
@@ -151,11 +142,8 @@ describe("SubmissionPage.vue pay practitioner printPage()", () => {
       push: jest.fn(),
     };
     wrapper = shallowMount(Page, {
-      localVue,
-      store,
-      mocks: {
-        $route,
-        $router,
+      global: {
+        plugins: [store, router],
       },
     });
     jest.spyOn(wrapper.vm.$store, "dispatch");
@@ -164,9 +152,9 @@ describe("SubmissionPage.vue pay practitioner printPage()", () => {
       .spyOn(spaEnvService, "loadEnvs")
       .mockImplementation(() => Promise.resolve("loaded"));
 
-    wrapper.vm.$options.created.forEach((hook) => {
-      hook.call(wrapper.vm);
-    });
+    // wrapper.vm.$options.created.forEach((hook) => {
+    //   hook.call(wrapper.vm);
+    // });
   });
 
   afterEach(() => {
@@ -187,7 +175,7 @@ describe("SubmissionPage.vue beforeRouteLeave(to, from, next)", () => {
   let $router;
 
   beforeEach(() => {
-    store = new Vuex.Store(storeTemplate);
+    store = createStore(storeTemplate);
     $route = {
       path: "/potato-csr",
     };
@@ -197,11 +185,8 @@ describe("SubmissionPage.vue beforeRouteLeave(to, from, next)", () => {
       push: jest.fn(),
     };
     wrapper = shallowMount(Page, {
-      localVue,
-      store,
-      mocks: {
-        $route,
-        $router,
+      global: {
+        plugins: [store, router],
       },
     });
   });

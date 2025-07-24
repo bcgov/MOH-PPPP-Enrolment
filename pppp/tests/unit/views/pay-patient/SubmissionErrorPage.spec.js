@@ -1,6 +1,6 @@
 import { shallowMount, mount } from "@vue/test-utils";
 import { createStore } from "vuex";
-import  router  from "@/router/index";
+import { createRouter, createWebHistory } from "vue-router";
 import Vuex from "vuex";
 import { cloneDeep } from "lodash";
 import Page from "@/views/pay-patient/SubmissionErrorPage.vue";
@@ -12,6 +12,7 @@ import logService from "@/services/log-service";
 import pageStateService from "@/services/page-state-service";
 import { getConvertedPath } from "@/helpers/url";
 import { payPatientRoutes, payPatientRouteStepOrder } from "@/router/routes";
+import { routeCollection } from "@/router/index";
 
 const next = jest.fn();
 
@@ -22,6 +23,11 @@ const storeTemplate = {
     payPractitionerForm: cloneDeep(module3.default),
   },
 };
+
+const router = createRouter({
+  history: createWebHistory(),
+  routes: routeCollection,
+});
 
 const scrollHelper = require("@/helpers/scroll");
 

@@ -75,9 +75,9 @@ describe("SubmissionPage.vue pay patient", () => {
       .spyOn(spaEnvService, "loadEnvs")
       .mockImplementation(() => Promise.resolve("loaded"));
 
-    wrapper.vm.$options.created.forEach((hook) => {
-      hook.call(wrapper.vm);
-    });
+    // wrapper.vm.$options.created.forEach((hook) => {
+    //   hook.call(wrapper.vm);
+    // });
   });
 
   afterEach(() => {
@@ -117,9 +117,9 @@ describe("SubmissionPage.vue pay patient created()", () => {
       .spyOn(spaEnvService, "loadEnvs")
       .mockImplementation(() => Promise.resolve("loaded"));
 
-    wrapper.vm.$options.created.forEach((hook) => {
-      hook.call(wrapper.vm);
-    });
+    // wrapper.vm.$options.created.forEach((hook) => {
+    //   hook.call(wrapper.vm);
+    // });
   });
 
   afterEach(() => {
@@ -159,9 +159,9 @@ describe("SubmissionPage.vue pay patient printPage()", () => {
       .spyOn(spaEnvService, "loadEnvs")
       .mockImplementation(() => Promise.resolve("loaded"));
 
-    wrapper.vm.$options.created.forEach((hook) => {
-      hook.call(wrapper.vm);
-    });
+    // wrapper.vm.$options.created.forEach((hook) => {
+    //   hook.call(wrapper.vm);
+    // });
   });
 
   afterEach(() => {

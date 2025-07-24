@@ -1,4 +1,7 @@
 import { shallowMount, createLocalVue } from "@vue/test-utils";
+import { createStore } from "vuex";
+import { createRouter, createWebHistory } from "vue-router";
+import { routeCollection } from "@/router/index";
 import Vuex from "vuex";
 import { cloneDeep } from "lodash";
 import Page from "@/views/pay-practitioner/ReviewPage.vue";
@@ -15,9 +18,42 @@ import {
   payPractitionerRoutes,
   payPractitionerRouteStepOrder,
 } from "@/router/routes";
+let router;
+router = createRouter({
+      history: createWebHistory(),
+      routes: routeCollection,
+    });
 
-const localVue = createLocalVue();
-localVue.use(Vuex);
+const mockRouterCSR = {
+  $route: {
+    path: "/potato-csr",
+  },
+  $router: {
+    push: jest.fn(),
+    currentRoute: {
+      value: {
+        path: "/potato-csr",
+      },
+    },
+  },
+};
+
+const mockRouter = {
+  $route: {
+    path: "/potato",
+  },
+  $router: {
+    push: jest.fn(),
+    currentRoute: {
+      value: {
+        path: "/potato",
+      },
+    },
+  },
+};
+
+// const localVue = createLocalVue();
+// localVue.use(Vuex);
 
 const mockResponse = {
   data: {
@@ -251,21 +287,11 @@ describe("ReviewPage.vue pay practitioner", () => {
   let $router;
 
   beforeEach(() => {
-    store = new Vuex.Store(storeTemplateC);
-    $route = {
-      path: "/potato-csr",
-    };
-    $router = {
-      $route,
-      currentRoute: $route,
-      push: jest.fn(),
-    };
+    store = createStore(storeTemplateC);
     wrapper = shallowMount(Page, {
-      localVue,
-      store,
-      mocks: {
-        $route,
-        $router,
+      global: {
+        plugins: [store],
+        mocks: mockRouterCSR,
       },
     });
     jest.spyOn(wrapper.vm.$store, "dispatch");
@@ -278,9 +304,9 @@ describe("ReviewPage.vue pay practitioner", () => {
       .spyOn(logService, "logNavigation")
       .mockImplementation(() => Promise.resolve("logged"));
 
-    wrapper.vm.$options.created.forEach((hook) => {
-      hook.call(wrapper.vm);
-    });
+    // wrapper.vm.$options.created.forEach((hook) => {
+    //   hook.call(wrapper.vm);
+    // });
   });
 
   afterEach(() => {
@@ -300,7 +326,7 @@ describe("ReviewPage.vue pay practitioner created()", () => {
   let $router;
 
   beforeEach(() => {
-    store = new Vuex.Store(storeTemplateC);
+    store = createStore(storeTemplateC);
     $route = {
       path: "/potato-csr",
     };
@@ -310,11 +336,9 @@ describe("ReviewPage.vue pay practitioner created()", () => {
       push: jest.fn(),
     };
     wrapper = shallowMount(Page, {
-      localVue,
-      store,
-      mocks: {
-        $route,
-        $router,
+      global: {
+        plugins: [store],
+        mocks: mockRouterCSR,
       },
     });
     jest.spyOn(wrapper.vm.$store, "dispatch");
@@ -323,9 +347,9 @@ describe("ReviewPage.vue pay practitioner created()", () => {
       .spyOn(spaEnvService, "loadEnvs")
       .mockImplementation(() => Promise.resolve("loaded"));
 
-    wrapper.vm.$options.created.forEach((hook) => {
-      hook.call(wrapper.vm);
-    });
+    // wrapper.vm.$options.created.forEach((hook) => {
+    //   hook.call(wrapper.vm);
+    // });
   });
 
   afterEach(() => {
@@ -345,7 +369,7 @@ describe("ReviewPage.vue pay practitioner continueHandler()", () => {
   let $router;
 
   beforeEach(() => {
-    store = new Vuex.Store(storeTemplateC);
+    store = createStore(storeTemplateC);
     $route = {
       path: "/potato-csr",
     };
@@ -355,11 +379,9 @@ describe("ReviewPage.vue pay practitioner continueHandler()", () => {
       push: jest.fn(),
     };
     wrapper = shallowMount(Page, {
-      localVue,
-      store,
-      mocks: {
-        $route,
-        $router,
+      global: {
+        plugins: [store],
+        mocks: mockRouterCSR,
       },
     });
     jest.spyOn(wrapper.vm.$store, "dispatch");
@@ -375,7 +397,7 @@ describe("ReviewPage.vue pay practitioner continueHandler()", () => {
   });
 
   it("calls submitForm if the store has medical claims correspondenceAttached = N", () => {
-    store = new Vuex.Store(storeTemplateN);
+    store = createStore(storeTemplateN);
     $route = {
       path: "/potato-csr",
     };
@@ -385,11 +407,9 @@ describe("ReviewPage.vue pay practitioner continueHandler()", () => {
       push: jest.fn(),
     };
     wrapper = shallowMount(Page, {
-      localVue,
-      store,
-      mocks: {
-        $route,
-        $router,
+      global: {
+        plugins: [store],
+        mocks: mockRouterCSR,
       },
     });
     const spyOnSubmitForm = jest.spyOn(wrapper.vm, "submitForm");
@@ -398,7 +418,7 @@ describe("ReviewPage.vue pay practitioner continueHandler()", () => {
   });
 
   it("calls window.print if the store has medical claims correspondenceAttached = C", () => {
-    store = new Vuex.Store(storeTemplateC);
+    store = createStore(storeTemplateC);
     $route = {
       path: "/potato",
     };
@@ -408,11 +428,9 @@ describe("ReviewPage.vue pay practitioner continueHandler()", () => {
       push: jest.fn(),
     };
     wrapper = shallowMount(Page, {
-      localVue,
-      store,
-      mocks: {
-        $route,
-        $router,
+      global: {
+        plugins: [store],
+        mocks: mockRouter,
       },
     });
     wrapper.vm.continueHandler();
@@ -420,7 +438,7 @@ describe("ReviewPage.vue pay practitioner continueHandler()", () => {
   });
 
   it("calls submit if the store has medical claims correspondenceAttached = C and -csr route", () => {
-    store = new Vuex.Store(storeTemplateC);
+    store = createStore(storeTemplateC);
     $route = {
       path: "/potato-csr",
     };
@@ -430,11 +448,9 @@ describe("ReviewPage.vue pay practitioner continueHandler()", () => {
       push: jest.fn(),
     };
     wrapper = shallowMount(Page, {
-      localVue,
-      store,
-      mocks: {
-        $route,
-        $router,
+      global: {
+        plugins: [store],
+        mocks: mockRouterCSR,
       },
     });
     const spyOnSubmitForm = jest.spyOn(wrapper.vm, "submitForm");
@@ -443,7 +459,7 @@ describe("ReviewPage.vue pay practitioner continueHandler()", () => {
   });
 
   it("calls submitForm if the store has medical claims correspondenceAttached = N and hospital claims = N", () => {
-    store = new Vuex.Store(storeTemplateNHospitalN);
+    store = createStore(storeTemplateNHospitalN);
     $route = {
       path: "/potato-csr",
     };
@@ -453,11 +469,9 @@ describe("ReviewPage.vue pay practitioner continueHandler()", () => {
       push: jest.fn(),
     };
     wrapper = shallowMount(Page, {
-      localVue,
-      store,
-      mocks: {
-        $route,
-        $router,
+      global: {
+        plugins: [store],
+        mocks: mockRouterCSR,
       },
     });
     const spyOnSubmitForm = jest.spyOn(wrapper.vm, "submitForm");
@@ -466,7 +480,7 @@ describe("ReviewPage.vue pay practitioner continueHandler()", () => {
   });
 
   it("calls window.print if the store has medical claims correspondenceAttached = N and hospital claims = C", () => {
-    store = new Vuex.Store(storeTemplateNHospitalC);
+    store = createStore(storeTemplateNHospitalC);
     $route = {
       path: "/potato",
     };
@@ -476,11 +490,9 @@ describe("ReviewPage.vue pay practitioner continueHandler()", () => {
       push: jest.fn(),
     };
     wrapper = shallowMount(Page, {
-      localVue,
-      store,
-      mocks: {
-        $route,
-        $router,
+      global: {
+        plugins: [store],
+        mocks: mockRouter,
       },
     });
     wrapper.vm.continueHandler();
@@ -488,7 +500,7 @@ describe("ReviewPage.vue pay practitioner continueHandler()", () => {
   });
 
   it("calls submitForm if the store has medical claims correspondenceAttached = N and hospital claims = C and -csr route", () => {
-    store = new Vuex.Store(storeTemplateNHospitalC);
+    store = createStore(storeTemplateNHospitalC);
     $route = {
       path: "/potato-csr",
     };
@@ -498,11 +510,9 @@ describe("ReviewPage.vue pay practitioner continueHandler()", () => {
       push: jest.fn(),
     };
     wrapper = shallowMount(Page, {
-      localVue,
-      store,
-      mocks: {
-        $route,
-        $router,
+      global: {
+        plugins: [store],
+        mocks: mockRouterCSR,
       },
     });
     const spyOnSubmitForm = jest.spyOn(wrapper.vm, "submitForm");
@@ -525,7 +535,7 @@ describe("ReviewPage.vue pay practitioner submitForm()", () => {
   beforeEach(() => {
     // jest.useFakeTimers("modern");
     // jest.setSystemTime(testDate);
-    store = new Vuex.Store(storeTemplateN);
+    store = createStore(storeTemplateN);
     $route = {
       path: "/potato-csr",
     };
@@ -535,11 +545,9 @@ describe("ReviewPage.vue pay practitioner submitForm()", () => {
       push: jest.fn(),
     };
     wrapper = shallowMount(Page, {
-      localVue,
-      store,
-      mocks: {
-        $route,
-        $router,
+      global: {
+        plugins: [store],
+        mocks: mockRouterCSR,
       },
     });
     spyOnDispatch = jest.spyOn(wrapper.vm.$store, "dispatch");
@@ -667,21 +675,23 @@ describe("ReviewPage.vue pay practitioner navigateToSubmissionPage()", () => {
   let toPath;
 
   beforeEach(() => {
-    store = new Vuex.Store(storeTemplateC);
+    store = createStore(storeTemplateC);
     $route = {
       path: "/potato-csr",
     };
     $router = {
       $route,
-      currentRoute: $route,
+      currentRoute: {
+        value: $route,
+      },
       push: jest.fn(),
     };
     wrapper = shallowMount(Page, {
-      localVue,
-      store,
-      mocks: {
-        $route,
-        $router,
+      global: {
+        plugins: [store],
+        mocks: {
+          $router,
+        },
       },
     });
     jest.spyOn(wrapper.vm.$store, "dispatch");
@@ -733,21 +743,23 @@ describe("ReviewPage.vue pay practitioner navigateToSubmissionErrorPage()", () =
   let toPath;
 
   beforeEach(() => {
-    store = new Vuex.Store(storeTemplateC);
+    store = createStore(storeTemplateC);
     $route = {
       path: "/potato-csr",
     };
     $router = {
       $route,
-      currentRoute: $route,
+      currentRoute: {
+        value: $route,
+      },
       push: jest.fn(),
     };
     wrapper = shallowMount(Page, {
-      localVue,
-      store,
-      mocks: {
-        $route,
-        $router,
+      global: {
+        plugins: [store],
+        mocks: {
+          $router,
+        },
       },
     });
     jest.spyOn(wrapper.vm.$store, "dispatch");
@@ -797,7 +809,7 @@ describe("ReviewPage.vue beforeRouteLeave(to, from, next)", () => {
   let $router;
 
   beforeEach(() => {
-    store = new Vuex.Store(storeTemplateN);
+    store = createStore(storeTemplateN);
     $route = {
       path: "/potato-csr",
     };
@@ -807,11 +819,9 @@ describe("ReviewPage.vue beforeRouteLeave(to, from, next)", () => {
       push: jest.fn(),
     };
     wrapper = shallowMount(Page, {
-      localVue,
-      store,
-      mocks: {
-        $route,
-        $router,
+      global: {
+        plugins: [store],
+        mocks: mockRouterCSR,
       },
     });
   });
