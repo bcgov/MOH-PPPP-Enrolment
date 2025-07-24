@@ -118,7 +118,7 @@ export default {
           if (this.isFirstLoad()) {
             if (
               spaEnvService.values &&
-              spaEnvService.values.SPA_ENV_OOP_MAINTENANCE_FLAG === "true"
+              spaEnvService.values.SPA_ENV_PPPP_MAINTENANCE_FLAG === "true"
             ) {
               const toPath = payPractitionerRoutes.MAINTENANCE_PAGE.path;
               pageStateService.setPageComplete(toPath);
