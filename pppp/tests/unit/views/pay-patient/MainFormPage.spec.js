@@ -23,7 +23,7 @@ testDatePast89Days.setDate(testDatePast89Days.getDate() - 89);
 const testDatePast91Days = new Date();
 testDatePast91Days.setDate(testDatePast91Days.getDate() - 91);
 
-const next = jest.fn();
+const next = vi.fn();
 
 const mockBackendValidationResponse = {
   data: {
@@ -142,40 +142,40 @@ const passingData = {
   referredToPractitionerNumber: "22272",
 };
 
-jest.mock("axios", () => ({
-  get: jest.fn(),
-  post: jest.fn(() => {
+vi.mock("axios", () => ({
+  get: vi.fn(),
+  post: vi.fn(() => {
     return Promise.resolve(mockBackendValidationResponse);
   }),
 }));
 
 const scrollHelper = require("@/helpers/scroll");
 
-jest.mock("@/helpers/scroll", () => ({
-  scrollTo: jest.fn(),
-  scrollToError: jest.fn(),
-  getTopScrollPosition: jest.fn(),
+vi.mock("@/helpers/scroll", () => ({
+  scrollTo: vi.fn(),
+  scrollToError: vi.fn(),
+  getTopScrollPosition: vi.fn(),
 }));
 
-jest.spyOn(window, "scrollTo").mockImplementation(jest.fn);
+vi.spyOn(window, "scrollTo").mockImplementation(vi.fn);
 
-const spyOnScrollTo = jest.spyOn(scrollHelper, "scrollTo");
+const spyOnScrollTo = vi.spyOn(scrollHelper, "scrollTo");
 
-const spyOnGetTopScrollPosition = jest
+const spyOnGetTopScrollPosition = vi
   .spyOn(scrollHelper, "getTopScrollPosition")
   .mockImplementation(() => Promise.resolve("top scroll position returned"));
 
-const spyOnSetPageComplete = jest
+const spyOnSetPageComplete = vi
   .spyOn(pageStateService, "setPageComplete")
   .mockImplementation(() => Promise.resolve("set"));
-const spyOnSetPageIncomplete = jest
+const spyOnSetPageIncomplete = vi
   .spyOn(pageStateService, "setPageIncomplete")
   .mockImplementation(() => Promise.resolve("set"));
-const spyOnVisitPage = jest
+const spyOnVisitPage = vi
   .spyOn(pageStateService, "visitPage")
   .mockImplementation(() => Promise.resolve("visited"));
 
-const spyOnLogNavigation = jest
+const spyOnLogNavigation = vi
   .spyOn(logService, "logNavigation")
   .mockImplementation(() => Promise.resolve("logged"));
 
@@ -195,7 +195,7 @@ const mockRouter = {
     path: "/",
   },
   $router: {
-    push: jest.fn(),
+    push: vi.fn(),
     currentRoute: {
       value: {
         path: "/pay-patient/main-form",
@@ -209,7 +209,7 @@ const mockRouterCSR = {
     path: "/",
   },
   $router: {
-    push: jest.fn(),
+    push: vi.fn(),
     currentRoute: {
       value: {
         path: "/pay-patient-csr/main-form",
@@ -247,7 +247,7 @@ describe("MainFormPage.vue pay patient created()", () => {
   let state;
   let store;
   let wrapper;
-  jest.useFakeTimers();
+  vi.useFakeTimers();
 
   beforeEach(() => {
     state = {
@@ -263,8 +263,8 @@ describe("MainFormPage.vue pay patient created()", () => {
   });
 
   afterEach(() => {
-    jest.resetModules();
-    jest.clearAllMocks();
+    vi.resetModules();
+    vi.clearAllMocks();
   });
 
   it("assigns data the values in the store", () => {
@@ -294,7 +294,7 @@ describe("MainFormPage.vue pay patient created()", () => {
   });
 
   it("sets page loaded to true", async () => {
-    jest.advanceTimersByTime(5);
+    vi.advanceTimersByTime(5);
     await wrapper.vm.$nextTick;
     expect(wrapper.vm.isPageLoaded).toBe(true);
   });
@@ -307,9 +307,9 @@ describe("MainFormPage.vue handleBlurField()", () => {
   let wrapper;
 
   const fakeTrueValidation = {
-    $touch: jest.fn,
+    $touch: vi.fn,
   };
-  const spyOnTrueTouch = jest.spyOn(fakeTrueValidation, "$touch");
+  const spyOnTrueTouch = vi.spyOn(fakeTrueValidation, "$touch");
 
   beforeEach(() => {
     state = {
@@ -325,8 +325,8 @@ describe("MainFormPage.vue handleBlurField()", () => {
   });
 
   afterEach(() => {
-    jest.resetModules();
-    jest.clearAllMocks();
+    vi.resetModules();
+    vi.clearAllMocks();
   });
 
   it("calls $touch when passed a validation", () => {
@@ -360,8 +360,8 @@ describe("MainFormPage.vue handleInputPractitioner()", () => {
   });
 
   afterEach(() => {
-    jest.resetModules();
-    jest.clearAllMocks();
+    vi.resetModules();
+    vi.clearAllMocks();
   });
 
   it("sets isPractitionerErrorShown to false", () => {
@@ -392,8 +392,8 @@ describe("MainFormPage.vue handleProcessBirthDate()", () => {
   });
 
   afterEach(() => {
-    jest.resetModules();
-    jest.clearAllMocks();
+    vi.resetModules();
+    vi.clearAllMocks();
   });
 
   it("sets data to equal value passed", () => {
@@ -424,8 +424,8 @@ describe("MainFormPage.vue handleProcessServiceDate()", () => {
   });
 
   afterEach(() => {
-    jest.resetModules();
-    jest.clearAllMocks();
+    vi.resetModules();
+    vi.clearAllMocks();
   });
 
   it("sets serviceDateData to value passed", () => {
@@ -458,12 +458,12 @@ describe("MainFormPage.vue validationModal handlers", () => {
         mocks: mockRouter,
       },
     });
-    spyOnNavigateToNextPage = jest.spyOn(wrapper.vm, "navigateToNextPage");
+    spyOnNavigateToNextPage = vi.spyOn(wrapper.vm, "navigateToNextPage");
   });
 
   afterEach(() => {
-    jest.resetModules();
-    jest.clearAllMocks();
+    vi.resetModules();
+    vi.clearAllMocks();
   });
 
   it("calls navigateToNextPage() on Yes", () => {
@@ -499,8 +499,8 @@ describe("MainFormPage.vue navigateToNextPage()", () => {
   });
 
   afterEach(() => {
-    jest.resetModules();
-    jest.clearAllMocks();
+    vi.resetModules();
+    vi.clearAllMocks();
   });
 
   it("calls pageStateService.setPageComplete", async () => {
@@ -547,13 +547,13 @@ describe("MainFormPage.vue saveData()", () => {
       },
     });
 
-    spyOnDispatch = jest.spyOn(store, "dispatch");
+    spyOnDispatch = vi.spyOn(store, "dispatch");
     Object.assign(wrapper.vm, cloneDeep(passingData));
   });
 
   afterEach(() => {
-    jest.resetModules();
-    jest.clearAllMocks();
+    vi.resetModules();
+    vi.clearAllMocks();
   });
 
   it("dispatches correctly", async () => {
@@ -595,8 +595,8 @@ describe("MainFormPage.vue getMedicalServiceClaimTitle()", () => {
   });
 
   afterEach(() => {
-    jest.resetModules();
-    jest.clearAllMocks();
+    vi.resetModules();
+    vi.clearAllMocks();
   });
 
   it("returns correct title when 1 claim", () => {
@@ -701,8 +701,8 @@ describe("MainFormPage.vue isReferredByRequired()", () => {
   });
 
   afterEach(() => {
-    jest.resetModules();
-    jest.clearAllMocks();
+    vi.resetModules();
+    vi.clearAllMocks();
   });
 
   it("returns false if all three conditions are null", async () => {
@@ -756,8 +756,8 @@ describe("MainFormPage.vue isReferredToRequired()", () => {
   });
 
   afterEach(() => {
-    jest.resetModules();
-    jest.clearAllMocks();
+    vi.resetModules();
+    vi.clearAllMocks();
   });
 
   it("returns true if the first is not null", async () => {
@@ -912,8 +912,8 @@ describe("MainFormPage.vue isContainingNoChargeFeeItem()", () => {
   });
 
   afterEach(() => {
-    jest.resetModules();
-    jest.clearAllMocks();
+    vi.resetModules();
+    vi.clearAllMocks();
   });
 
   it("returns true if one of the feeItems is 03333", () => {
@@ -951,8 +951,8 @@ describe("MainFormPage.vue isCSR()", () => {
   });
 
   afterEach(() => {
-    jest.resetModules();
-    jest.clearAllMocks();
+    vi.resetModules();
+    vi.clearAllMocks();
   });
 
   it("returns false if not CSR route", () => {
@@ -995,7 +995,7 @@ describe("MainFormPage.vue beforeRouteLeave(to, from, next)", () => {
     $router = {
       $route,
       currentRoute: $route,
-      push: jest.fn(),
+      push: vi.fn(),
     };
     wrapper = mount(Page, {
       global: {
@@ -1009,20 +1009,20 @@ describe("MainFormPage.vue beforeRouteLeave(to, from, next)", () => {
   });
   
   afterEach(() => {
-    jest.resetModules();
-    jest.clearAllMocks();
+    vi.resetModules();
+    vi.clearAllMocks();
   });
 
   it("calls scrollTo() and getTopScrollPosition() when given invalid route", async () => {
     //to, from, next
-    jest.useFakeTimers();
+    vi.useFakeTimers();
     Page.beforeRouteLeave.call(
       wrapper.vm,
       payPatientRouteStepOrder[1],
       payPatientRouteStepOrder[0],
       next
     );
-    jest.advanceTimersByTime(5);
+    vi.advanceTimersByTime(5);
     await wrapper.vm.$nextTick;
     expect(spyOnGetTopScrollPosition).toHaveBeenCalled();
     expect(spyOnScrollTo).toHaveBeenCalled();
@@ -1030,14 +1030,14 @@ describe("MainFormPage.vue beforeRouteLeave(to, from, next)", () => {
 
   it("calls next() with proper arguments when given invalid route", async () => {
     //to, from, next
-    jest.useFakeTimers();
+    vi.useFakeTimers();
     Page.beforeRouteLeave.call(
       wrapper.vm,
       payPatientRouteStepOrder[3],
       payPatientRouteStepOrder[0],
       next
     );
-    jest.advanceTimersByTime(5);
+    vi.advanceTimersByTime(5);
     await wrapper.vm.$nextTick;
     const testPath = getConvertedPath(
       wrapper.vm.$router.currentRoute.value.path,
@@ -1051,7 +1051,7 @@ describe("MainFormPage.vue beforeRouteLeave(to, from, next)", () => {
 
   it("calls next() when passed a route that has been completed in pageStateService", async () => {
     //to, from, next
-    jest.useFakeTimers();
+    vi.useFakeTimers();
     await pageStateService.importPageRoutes(payPatientRouteStepOrder);
     await wrapper.vm.$nextTick;
     await pageStateService.setPageComplete(payPatientRouteStepOrder[0].path);
@@ -1062,7 +1062,7 @@ describe("MainFormPage.vue beforeRouteLeave(to, from, next)", () => {
       payPatientRouteStepOrder[1],
       next
     );
-    jest.advanceTimersByTime(5);
+    vi.advanceTimersByTime(5);
     await wrapper.vm.$nextTick;
     expect(next).toHaveBeenCalled();
     expect(spyOnSetPageIncomplete).toHaveBeenCalled();
@@ -1072,14 +1072,14 @@ describe("MainFormPage.vue beforeRouteLeave(to, from, next)", () => {
 
   it("calls spyOnSetPageIncomplete (valid route)", async () => {
     //to, from, next
-    jest.useFakeTimers();
+    vi.useFakeTimers();
     Page.beforeRouteLeave.call(
       wrapper.vm,
       payPatientRouteStepOrder[0],
       payPatientRouteStepOrder[1],
       next
     );
-    jest.advanceTimersByTime(5);
+    vi.advanceTimersByTime(5);
     await wrapper.vm.$nextTick;
     expect(spyOnSetPageIncomplete).toHaveBeenCalled();
   });

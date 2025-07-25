@@ -14,7 +14,7 @@ import { getConvertedPath } from "@/helpers/url";
 import { payPatientRoutes, payPatientRouteStepOrder } from "@/router/routes";
 import { routeCollection } from "@/router/index";
 
-const next = jest.fn();
+const next = vi.fn();
 
 const storeTemplate = {
   modules: {
@@ -31,17 +31,17 @@ const router = createRouter({
 
 const scrollHelper = require("@/helpers/scroll");
 
-const spyOnScrollTo = jest.spyOn(scrollHelper, "scrollTo");
+const spyOnScrollTo = vi.spyOn(scrollHelper, "scrollTo");
 
-const spyOnLogNavigation = jest
+const spyOnLogNavigation = vi
   .spyOn(logService, "logNavigation")
   .mockImplementation(() => Promise.resolve("logged"));
 
-const spyOnSetPageIncomplete = jest
+const spyOnSetPageIncomplete = vi
   .spyOn(pageStateService, "setPageIncomplete")
   .mockImplementation(() => Promise.resolve("set"));
 
-jest.spyOn(window, "scrollTo").mockImplementation(jest.fn);
+vi.spyOn(window, "scrollTo").mockImplementation(vi.fn);
 
 describe("SubmissionErrorPage pay patient", () => {
   let store;
@@ -57,7 +57,7 @@ describe("SubmissionErrorPage pay patient", () => {
     $router = {
       $route,
       currentRoute: $route,
-      push: jest.fn(),
+      push: vi.fn(),
     };
     wrapper = mount(Page, {
       global: {
@@ -68,16 +68,16 @@ describe("SubmissionErrorPage pay patient", () => {
         $router,
       },
     });
-    jest.spyOn(wrapper.vm.$store, "dispatch");
+    vi.spyOn(wrapper.vm.$store, "dispatch");
 
-    jest
+    vi
       .spyOn(spaEnvService, "loadEnvs")
       .mockImplementation(() => Promise.resolve("loaded"));
   });
 
   afterEach(() => {
-    jest.resetModules();
-    jest.clearAllMocks();
+    vi.resetModules();
+    vi.clearAllMocks();
   });
 
   it("renders", () => {
@@ -99,7 +99,7 @@ describe("SubmissionErrorPage pay patient created()", () => {
     $router = {
       $route,
       currentRoute: $route,
-      push: jest.fn(),
+      push: vi.fn(),
     };
     wrapper = shallowMount(Page, {
       global: {
@@ -110,16 +110,16 @@ describe("SubmissionErrorPage pay patient created()", () => {
         $router,
       },
     });
-    jest.spyOn(wrapper.vm.$store, "dispatch");
+    vi.spyOn(wrapper.vm.$store, "dispatch");
 
-    jest
+    vi
       .spyOn(spaEnvService, "loadEnvs")
       .mockImplementation(() => Promise.resolve("loaded"));
   });
 
   afterEach(() => {
-    jest.resetModules();
-    jest.clearAllMocks();
+    vi.resetModules();
+    vi.clearAllMocks();
   });
 
   it("calls logNavigation", () => {
@@ -141,7 +141,7 @@ describe("SubmissionErrorPage.vue beforeRouteLeave(to, from, next)", () => {
     $router = {
       $route,
       currentRoute: $route,
-      push: jest.fn(),
+      push: vi.fn(),
     };
     wrapper = mount(Page, {
       global: {
@@ -155,34 +155,34 @@ describe("SubmissionErrorPage.vue beforeRouteLeave(to, from, next)", () => {
   });
 
   afterEach(() => {
-    jest.resetModules();
-    jest.clearAllMocks();
+    vi.resetModules();
+    vi.clearAllMocks();
   });
 
   it("calls scrollTo()", async () => {
     //to, from, next
-    jest.useFakeTimers();
+    vi.useFakeTimers();
     Page.beforeRouteLeave.call(
       wrapper.vm,
       payPatientRouteStepOrder[1],
       payPatientRouteStepOrder[0],
       next
     );
-    jest.advanceTimersByTime(5);
+    vi.advanceTimersByTime(5);
     await wrapper.vm.$nextTick;
     expect(spyOnScrollTo).toHaveBeenCalled();
   });
 
   it("calls next() with proper arguments when passed route other than Home", async () => {
     //to, from, next
-    jest.useFakeTimers();
+    vi.useFakeTimers();
     Page.beforeRouteLeave.call(
       wrapper.vm,
       payPatientRoutes.REVIEW_PAGE,
       payPatientRouteStepOrder[0],
       next
     );
-    jest.advanceTimersByTime(5);
+    vi.advanceTimersByTime(5);
     await wrapper.vm.$nextTick;
     const testPath = getConvertedPath(
       wrapper.vm.$router.currentRoute.value.path,
@@ -195,42 +195,42 @@ describe("SubmissionErrorPage.vue beforeRouteLeave(to, from, next)", () => {
 
   it("calls next() with proper arguments when given to route of Home", async () => {
     //to, from, next
-    jest.useFakeTimers();
+    vi.useFakeTimers();
     Page.beforeRouteLeave.call(
       wrapper.vm,
       payPatientRoutes.HOME_PAGE,
       payPatientRouteStepOrder[1],
       next
     );
-    jest.advanceTimersByTime(5);
+    vi.advanceTimersByTime(5);
     await wrapper.vm.$nextTick;
     expect(next).toHaveBeenCalled();
   });
 
   it("calls spyOnSetPageIncomplete (valid route)", async () => {
     //to, from, next
-    jest.useFakeTimers();
+    vi.useFakeTimers();
     Page.beforeRouteLeave.call(
       wrapper.vm,
       payPatientRouteStepOrder[0],
       payPatientRouteStepOrder[1],
       next
     );
-    jest.advanceTimersByTime(5);
+    vi.advanceTimersByTime(5);
     await wrapper.vm.$nextTick;
     expect(spyOnSetPageIncomplete).toHaveBeenCalled();
   });
 
   it("calls spyOnSetPageIncomplete (invalid route)", async () => {
     //to, from, next
-    jest.useFakeTimers();
+    vi.useFakeTimers();
     Page.beforeRouteLeave.call(
       wrapper.vm,
       payPatientRouteStepOrder[1],
       payPatientRouteStepOrder[0],
       next
     );
-    jest.advanceTimersByTime(5);
+    vi.advanceTimersByTime(5);
     await wrapper.vm.$nextTick;
     expect(spyOnSetPageIncomplete).toHaveBeenCalled();
   });

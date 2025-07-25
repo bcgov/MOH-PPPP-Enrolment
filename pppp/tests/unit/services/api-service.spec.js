@@ -2,36 +2,36 @@ import APIService from "@/services/api-service";
 import { v4 as uuidv4 } from "uuid";
 import axios from "axios";
 
-jest.mock("axios", () => ({
-  get: jest.fn(),
-  post: jest.fn(() => {
+vi.mock("axios", () => ({
+  get: vi.fn(),
+  post: vi.fn(() => {
     return Promise.resolve();
   }),
 }));
 
-jest.mock("uuid");
+vi.mock("uuid");
 uuidv4.mockImplementation(() => {
   return "uuid-123";
 });
 
 const testDate = new Date("2000-01-01T03:24:00").toDateString();
 
-const spyOnSendPostRequest = jest.spyOn(APIService, "_sendPostRequest");
+const spyOnSendPostRequest = vi.spyOn(APIService, "_sendPostRequest");
 
 const mockResponse = {};
 
 axios.post.mockImplementation(() => Promise.resolve(mockResponse));
-const spyOnAxiosPost = jest.spyOn(axios, "post");
+const spyOnAxiosPost = vi.spyOn(axios, "post");
 
 describe("APIService", () => {
   afterEach(() => {
-    jest.resetModules();
-    jest.clearAllMocks();
+    vi.resetModules();
+    vi.clearAllMocks();
   });
 
   it("validateApplication() calls axios with correct arguments", () => {
     const fakeArgument = {
-      requestUuid: jest.fn,
+      requestUuid: vi.fn,
       applicationUuid: 1111111,
     };
     APIService.validateApplication("1", fakeArgument);
@@ -322,8 +322,8 @@ describe("APIService", () => {
 
 describe("APIService filterSpecialChar()", () => {
   afterEach(() => {
-    jest.resetModules();
-    jest.clearAllMocks();
+    vi.resetModules();
+    vi.clearAllMocks();
   });
 
   it("returns alphanumeric strings + approved special characters unchanged", () => {
@@ -361,8 +361,8 @@ describe("APIService filterSpecialChar()", () => {
 
 describe("APIService _sendPostRequest", () => {
   afterEach(() => {
-    jest.resetModules();
-    jest.clearAllMocks();
+    vi.resetModules();
+    vi.clearAllMocks();
   });
 
   it("calls axios with correct arguments", () => {

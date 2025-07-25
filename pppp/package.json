@@ -38,6 +38,7 @@
     "@babel/core": "^7.12.16",
     "@babel/eslint-parser": "^7.17.0",
     "@vitejs/plugin-vue": "^6.0.0",
+    "@vitest/coverage-v8": "^3.2.4",
     "@vue/compiler-sfc": "^3.1.0",
     "@vue/test-utils": "^2.0.2",
     "cypress": "^11.2.0",

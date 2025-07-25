@@ -14,7 +14,7 @@ const mockRoute = {
   }
 }
 const mockRouter = {
-  push: jest.fn()
+  push: vi.fn()
 }
 
 const payPatientTemplate = shallowMount(Page, {

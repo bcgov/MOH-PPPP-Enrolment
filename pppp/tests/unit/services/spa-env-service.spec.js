@@ -1,9 +1,9 @@
 import spaEnvService from "@/services/spa-env-service";
 import axios from "axios";
 
-jest.mock("axios", () => ({
-  get: jest.fn(),
-  post: jest.fn(() => {
+vi.mock("axios", () => ({
+  get: vi.fn(),
+  post: vi.fn(() => {
     return Promise.resolve();
   }),
 }));
@@ -66,8 +66,8 @@ axios.post.mockImplementation(() => Promise.resolve(mockResponse));
 
 describe("SpaEnvService test", () => {
   afterEach(() => {
-    jest.resetModules();
-    jest.clearAllMocks();
+    vi.resetModules();
+    vi.clearAllMocks();
   });
 
   it("renders", () => {
@@ -77,8 +77,8 @@ describe("SpaEnvService test", () => {
 
 describe("SpaEnvService loadEnvs()", () => {
   afterEach(() => {
-    jest.resetModules();
-    jest.clearAllMocks();
+    vi.resetModules();
+    vi.clearAllMocks();
   });
 
   it("returns an object", async () => {

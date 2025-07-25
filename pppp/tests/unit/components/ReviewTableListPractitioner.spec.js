@@ -11,22 +11,22 @@ import { routeCollection } from "@/router/index";
 
 const scrollHelper = require("@/helpers/scroll");
 
-const spyOnSetPageComplete = jest
+const spyOnSetPageComplete = vi
   .spyOn(pageStateService, "setPageComplete")
   .mockImplementation(() => Promise.resolve("set"));
-jest
+vi
   .spyOn(pageStateService, "visitPage")
   .mockImplementation(() => Promise.resolve("visited"));
 
-jest.mock("@/helpers/scroll", () => ({
-  scrollTo: jest.fn(),
-  scrollToElement: jest.fn(),
+vi.mock("@/helpers/scroll", () => ({
+  scrollTo: vi.fn(),
+  scrollToElement: vi.fn(),
 }));
 
-const spyOnScrollTo = jest
+const spyOnScrollTo = vi
   .spyOn(scrollHelper, "scrollTo")
   .mockImplementation(() => Promise.resolve("scrolled"));
-const spyOnScrollToElement = jest
+const spyOnScrollToElement = vi
   .spyOn(scrollHelper, "scrollToElement")
   .mockImplementation(() => Promise.resolve("scrolled"));
 
@@ -884,7 +884,7 @@ describe("ReviewTableList practitioner navigateToClaimCountPage()", () => {
       path: "/potato",
     };
     mockRouter = {
-      push: jest.fn(),
+      push: vi.fn(),
       currentRoute: {
         value: {
           path: "/potato",
@@ -902,14 +902,14 @@ describe("ReviewTableList practitioner navigateToClaimCountPage()", () => {
         },
       },
     });
-    spyOnRouter = jest
+    spyOnRouter = vi
       .spyOn(mockRouter, "push")
       .mockImplementation(() => Promise.resolve("pushed"));
   });
 
   afterEach(() => {
-    jest.resetModules();
-    jest.clearAllMocks();
+    vi.resetModules();
+    vi.clearAllMocks();
   });
 
   it("calls router push", () => {
@@ -940,7 +940,7 @@ describe("ReviewTableList practitioner navigateToClaimCountPage() (part 2 CSR)",
       path: "/potato-csr",
     };
     mockRouter = {
-      push: jest.fn(),
+      push: vi.fn(),
       currentRoute: {
         value: {
           path: "/potato-csr",
@@ -957,14 +957,14 @@ describe("ReviewTableList practitioner navigateToClaimCountPage() (part 2 CSR)",
         },
       },
     });
-    spyOnRouter = jest
+    spyOnRouter = vi
       .spyOn(mockRouter, "push")
       .mockImplementation(() => Promise.resolve("pushed"));
   });
 
   afterEach(() => {
-    jest.resetModules();
-    jest.clearAllMocks();
+    vi.resetModules();
+    vi.clearAllMocks();
   });
 
   it("calls router push", async () => {
@@ -999,7 +999,7 @@ describe("ReviewTableList practitioner navigateToMainFormPage(anchorName)", () =
       path: "/potato",
     };
     mockRouter = {
-      push: jest.fn(),
+      push: vi.fn(),
       currentRoute: {
         value: {
           path: "/potato",
@@ -1016,14 +1016,14 @@ describe("ReviewTableList practitioner navigateToMainFormPage(anchorName)", () =
         },
       },
     });
-    spyOnRouter = jest
+    spyOnRouter = vi
       .spyOn(mockRouter, "push")
       .mockImplementation(() => Promise.resolve("pushed"));
   });
 
   afterEach(() => {
-    jest.resetModules();
-    jest.clearAllMocks();
+    vi.resetModules();
+    vi.clearAllMocks();
   });
 
   it("calls router push", () => {
@@ -1059,7 +1059,7 @@ describe("ReviewTableList practitioner navigateToMainFormPage(anchorName) (part 
       path: "/potato-csr",
     };
     mockRouter = {
-      push: jest.fn(),
+      push: vi.fn(),
       currentRoute: {
         value: {
           path: "/potato-csr",
@@ -1076,14 +1076,14 @@ describe("ReviewTableList practitioner navigateToMainFormPage(anchorName) (part 
         },
       },
     });
-    spyOnRouter = jest
+    spyOnRouter = vi
       .spyOn(mockRouter, "push")
       .mockImplementation(() => Promise.resolve("pushed"));
   });
 
   afterEach(() => {
-    jest.resetModules();
-    jest.clearAllMocks();
+    vi.resetModules();
+    vi.clearAllMocks();
   });
 
   it("calls router push", () => {
@@ -1112,7 +1112,7 @@ describe("ReviewTableList practitioner getMedicalServiceClaimTitle(index)", () =
     path: "/potato-csr",
   };
   const mockRouter = {
-    push: jest.fn(),
+    push: vi.fn(),
     currentRoute: {
       value: {
         path: "/potato-csr",

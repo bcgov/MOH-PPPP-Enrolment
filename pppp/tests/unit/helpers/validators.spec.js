@@ -11,7 +11,7 @@ import { phnNineValidator } from "../../../src/helpers/validators";
 
 describe("validators.js bcPostalCodeValidator()", () => {
   afterEach(() => {
-    jest.resetModules();
+    vi.resetModules();
   });
 
   it("returns false if not given a value", () => {
@@ -37,7 +37,7 @@ describe("validators.js bcPostalCodeValidator()", () => {
 
 describe("validators.js clinicNameValidator()", () => {
   afterEach(() => {
-    jest.resetModules();
+    vi.resetModules();
   });
 
   it("returns true if given an empty value", () => {
@@ -71,7 +71,7 @@ describe("validators.js clarificationCodeValidator()", () => {
   const isNotCSRFunction = clarificationCodeValidator(false);
 
   afterEach(() => {
-    jest.resetModules();
+    vi.resetModules();
   });
 
   it("returns false if given an empty value (not CSR)", () => { 
@@ -117,7 +117,7 @@ describe("validators.js clarificationCodeValidator()", () => {
 
 describe("validators.js diagnosticCodeValidator()", () => {
   afterEach(() => {
-    jest.resetModules();
+    vi.resetModules();
   });
 
   it("returns false if given an empty value", () => {
@@ -138,7 +138,7 @@ describe("validators.js diagnosticCodeValidator()", () => {
 
 describe("validators.js birthDateValidator()", () => {
   afterEach(() => {
-    jest.resetModules();
+    vi.resetModules();
   });
 
   it("returns true if given an empty value", () => {
@@ -223,7 +223,7 @@ describe("validators.js birthDateValidator()", () => {
 
 describe("validators.js serviceDateValidator()", () => {
   afterEach(() => {
-    jest.resetModules();
+    vi.resetModules();
   });
 
   it("returns true if given an empty value", () => {
@@ -308,7 +308,7 @@ describe("validators.js serviceDateValidator()", () => {
 
 describe("validators.js motorVehicleAccidentClaimNumberMaskValidator()", () => {
   afterEach(() => {
-    jest.resetModules();
+    vi.resetModules();
   });
 
   it("returns false if given an empty value", () => {
@@ -369,7 +369,7 @@ describe("validators.js motorVehicleAccidentClaimNumberMaskValidator()", () => {
 
 describe("validators.js phnNineValidator()", () => {
   afterEach(() => {
-    jest.resetModules();
+    vi.resetModules();
   });
 
   it("returns true if given a string that starts with 9", () => {

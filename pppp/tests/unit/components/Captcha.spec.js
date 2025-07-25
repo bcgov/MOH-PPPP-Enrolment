@@ -306,9 +306,9 @@ const mockAPIError = {
   request: {},
 };
 
-jest.mock("axios", () => ({
-  get: jest.fn(),
-  post: jest.fn(() => {
+vi.mock("axios", () => ({
+  get: vi.fn(),
+  post: vi.fn(() => {
     return Promise.resolve();
   }),
 }));
@@ -372,7 +372,7 @@ describe("Captcha.vue fetchNewCaptcha()", () => {
   });
 
   it("emits captchaLoaded signal on function call", async () => {
-    jest.useFakeTimers();
+    vi.useFakeTimers();
     const wrapper = mount(Component, {
       propsData: {
         apiBasePath: "/oop/api/captcha",
@@ -397,7 +397,7 @@ describe("Captcha.vue fetchNewCaptcha()", () => {
 
     await wrapper.vm.fetchNewCaptcha();
 
-    jest.advanceTimersByTime(5);
+    vi.advanceTimersByTime(5);
 
     expect(wrapper.emitted().captchaLoaded).toBeTruthy();
   });
@@ -484,7 +484,7 @@ describe("Captcha.vue handleInputChange()", () => {
         };
       },
     });
-    const spyOnFetch = jest.spyOn(wrapper.vm, "fetchNewCaptcha");
+    const spyOnFetch = vi.spyOn(wrapper.vm, "fetchNewCaptcha");
     const fakeEvent = { target: { value: "potato" } };
     axios.post.mockImplementationOnce(() =>
       Promise.resolve(mockInputResponseInvalid)
@@ -605,7 +605,7 @@ describe("Captcha.vue handleTryAnotherImageClick()", () => {
         };
       },
     });
-    const spyOnFetchNewCaptcha = jest.spyOn(wrapper.vm, "fetchNewCaptcha");
+    const spyOnFetchNewCaptcha = vi.spyOn(wrapper.vm, "fetchNewCaptcha");
     await wrapper.vm.handleTryAnotherImageClick();
     expect(spyOnFetchNewCaptcha).toHaveBeenCalled();
     spyOnFetchNewCaptcha.mockReset();

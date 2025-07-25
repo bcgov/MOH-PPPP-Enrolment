@@ -1,16 +1,16 @@
 import logService from "@/services/log-service";
 import axios from "axios";
 
-jest.mock("axios", () => ({
-  get: jest.fn(),
-  post: jest.fn(() => {
+vi.mock("axios", () => ({
+  get: vi.fn(),
+  post: vi.fn(() => {
     return Promise.resolve();
   }),
 }));
 
-const spyOnAxiosPost = jest.spyOn(axios, "post");
+const spyOnAxiosPost = vi.spyOn(axios, "post");
 
-const spyOnSendLog = jest.spyOn(logService, "_sendLog");
+const spyOnSendLog = vi.spyOn(logService, "_sendLog");
 
 const mockResponse = {};
 
@@ -18,8 +18,8 @@ axios.post.mockImplementation(() => Promise.resolve(mockResponse));
 
 describe("LogService", () => {
   afterEach(() => {
-    jest.resetModules();
-    jest.clearAllMocks();
+    vi.resetModules();
+    vi.clearAllMocks();
   });
 
   it("logSubmission calls _sendLog()", () => {
@@ -45,8 +45,8 @@ describe("LogService", () => {
 
 describe("LogService _sendLog", () => {
   afterEach(() => {
-    jest.resetModules();
-    jest.clearAllMocks();
+    vi.resetModules();
+    vi.clearAllMocks();
   });
 
   it("calls axios", () => {

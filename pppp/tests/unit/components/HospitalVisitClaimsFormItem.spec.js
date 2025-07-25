@@ -84,7 +84,7 @@ const mockRouter = {
     path: "/",
   },
   $router: {
-    push: jest.fn(),
+    push: vi.fn(),
     currentRoute: {
       value: {
         path: "/pay-patient/main-form",
@@ -98,7 +98,7 @@ const mockRouterCSR = {
     path: "/",
   },
   $router: {
-    push: jest.fn(),
+    push: vi.fn(),
     currentRoute: {
       value: {
         path: "/pay-patient-csr/main-form",
@@ -116,45 +116,45 @@ const passingProps = {
   index: 0,
 };
 
-jest.mock("axios", () => ({
-  get: jest.fn(),
-  post: jest.fn(() => {
+vi.mock("axios", () => ({
+  get: vi.fn(),
+  post: vi.fn(() => {
     return Promise.resolve(mockBackendValidationResponse);
   }),
 }));
 
-const spyOnAPIService = jest
+const spyOnAPIService = vi
   .spyOn(apiService, "validateApplication")
   .mockImplementation(() => Promise.resolve(mockBackendValidationResponse));
 
 const scrollHelper = require("@/helpers/scroll");
 
-jest.mock("@/helpers/scroll", () => ({
-  scrollTo: jest.fn(),
-  scrollToError: jest.fn(),
-  getTopScrollPosition: jest.fn(),
+vi.mock("@/helpers/scroll", () => ({
+  scrollTo: vi.fn(),
+  scrollToError: vi.fn(),
+  getTopScrollPosition: vi.fn(),
 }));
 
-jest.spyOn(window, "scrollTo").mockImplementation(jest.fn);
+vi.spyOn(window, "scrollTo").mockImplementation(vi.fn);
 
-const spyOnScrollToError = jest.spyOn(scrollHelper, "scrollToError");
-const spyOnScrollTo = jest.spyOn(scrollHelper, "scrollTo");
+const spyOnScrollToError = vi.spyOn(scrollHelper, "scrollToError");
+const spyOnScrollTo = vi.spyOn(scrollHelper, "scrollTo");
 
-const spyOnGetTopScrollPosition = jest
+const spyOnGetTopScrollPosition = vi
   .spyOn(scrollHelper, "getTopScrollPosition")
   .mockImplementation(() => Promise.resolve("top scroll position returned"));
 
-const spyOnSetPageComplete = jest
+const spyOnSetPageComplete = vi
   .spyOn(pageStateService, "setPageComplete")
   .mockImplementation(() => Promise.resolve("set"));
-const spyOnSetPageIncomplete = jest
+const spyOnSetPageIncomplete = vi
   .spyOn(pageStateService, "setPageIncomplete")
   .mockImplementation(() => Promise.resolve("set"));
-const spyOnVisitPage = jest
+const spyOnVisitPage = vi
   .spyOn(pageStateService, "visitPage")
   .mockImplementation(() => Promise.resolve("visited"));
 
-const spyOnLogNavigation = jest
+const spyOnLogNavigation = vi
   .spyOn(logService, "logNavigation")
   .mockImplementation(() => Promise.resolve("logged"));
 
@@ -198,8 +198,8 @@ describe("HospitalVisitClaimsFormItem.vue handleInputHospitalVisitFeeItem()", ()
   });
 
   afterEach(() => {
-    jest.resetModules();
-    jest.clearAllMocks();
+    vi.resetModules();
+    vi.clearAllMocks();
   });
 
   it("emits update vue model events", async () => {
@@ -235,8 +235,8 @@ describe("HospitalVisitClaimsFormItem.vue isHospitalVisitSubmissionCodeRequired(
   });
 
   afterEach(() => {
-    jest.resetModules();
-    jest.clearAllMocks();
+    vi.resetModules();
+    vi.clearAllMocks();
   });
 
   it("returns false when serviceDate is null", async () => {
@@ -312,7 +312,7 @@ describe("HospitalVisitClaimsFormItem.vue validations (public)", () => {
   });
 
   afterEach(() => {    
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it("(month) flags valid when passed valid data", async () => {

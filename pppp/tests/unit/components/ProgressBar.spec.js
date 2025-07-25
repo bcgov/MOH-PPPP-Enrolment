@@ -23,19 +23,19 @@ const scrollHelper = require("@/helpers/scroll");
 // const addressHelper = require("@/helpers/address");
 // const stringHelper = require("@/helpers/string");
 
-jest
+vi
   .spyOn(pageStateService, "setPageComplete")
   .mockImplementation(() => Promise.resolve("set"));
-jest
+vi
   .spyOn(pageStateService, "setPageIncomplete")
   .mockImplementation(() => Promise.resolve("set"));
-jest
+vi
   .spyOn(pageStateService, "visitPage")
   .mockImplementation(() => Promise.resolve("visited"));
 
-jest.mock("@/helpers/scroll", () => ({
-  scrollTo: jest.fn(),
-  scrollToError: jest.fn(),
+vi.mock("@/helpers/scroll", () => ({
+  scrollTo: vi.fn(),
+  scrollToError: vi.fn(),
 }));
 
 const router = createRouter({
@@ -43,13 +43,13 @@ const router = createRouter({
   routes: routeCollection,
 });
 
-const spyOnRouter = jest
+const spyOnRouter = vi
   .spyOn(router, "push")
   .mockImplementation(() => Promise.resolve("pushed"));
 
-const spyOnScrollTo = jest.spyOn(scrollHelper, "scrollTo");
+const spyOnScrollTo = vi.spyOn(scrollHelper, "scrollTo");
 
-// const spyOnScrollToError = jest.spyOn(scrollHelper, "scrollToError");
+// const spyOnScrollToError = vi.spyOn(scrollHelper, "scrollToError");
 
 describe("ProgressBar.vue", () => {
   let wrapper;
@@ -69,8 +69,8 @@ describe("ProgressBar.vue", () => {
   });
 
   afterEach(() => {
-    jest.resetModules();
-    jest.clearAllMocks();
+    vi.resetModules();
+    vi.clearAllMocks();
   });
 
   it("renders", async () => {
@@ -96,8 +96,8 @@ describe("ProgressBar.vue onClickLink()", () => {
   });
 
   afterEach(() => {
-    jest.resetModules();
-    jest.clearAllMocks();
+    vi.resetModules();
+    vi.clearAllMocks();
   });
 
   it("calls pageStateService.setPageComplete when passed valid path", async () => {
@@ -181,23 +181,23 @@ describe("ProgressBar.vue openDropdown() and closeDropdown()", () => {
   });
 
   afterEach(() => {
-    jest.resetModules();
-    jest.clearAllMocks();
+    vi.resetModules();
+    vi.clearAllMocks();
   });
 
   it("dispatches with true when openDropdown() is called", async () => {
-    const spyOnDispatch = jest
+    const spyOnDispatch = vi
       .spyOn(wrapper.vm.$store, "dispatch")
-      .mockImplementation(jest.fn());
+      .mockImplementation(vi.fn());
     await wrapper.vm.openDropdown();
     await wrapper.vm.$nextTick();
     expect(spyOnDispatch).toHaveBeenCalledWith(stringCall, true);
   });
 
   it("dispatches with false when closeDropdown() is called", async () => {
-    const spyOnDispatch = jest
+    const spyOnDispatch = vi
       .spyOn(wrapper.vm.$store, "dispatch")
-      .mockImplementation(jest.fn());
+      .mockImplementation(vi.fn());
     await wrapper.vm.closeDropdown();
     await wrapper.vm.$nextTick();
     expect(spyOnDispatch).toHaveBeenCalledWith(stringCall, false);
@@ -222,8 +222,8 @@ describe("ProgressBar.vue getLinkStyles()", () => {
   });
 
   afterEach(() => {
-    jest.resetModules();
-    jest.clearAllMocks();
+    vi.resetModules();
+    vi.clearAllMocks();
   });
 
   it("returns an object", async () => {

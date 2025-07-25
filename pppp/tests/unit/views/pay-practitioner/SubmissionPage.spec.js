@@ -26,8 +26,8 @@ const router = createRouter({
   routes: routeCollection,
 });
 
-const next = jest.fn();
-const spyOnPrint = jest.spyOn(window, "print").mockImplementation(jest.fn);
+const next = vi.fn();
+const spyOnPrint = vi.spyOn(window, "print").mockImplementation(vi.fn);
 
 const storeTemplate = {
   modules: {
@@ -39,17 +39,17 @@ const storeTemplate = {
 
 const scrollHelper = require("@/helpers/scroll");
 
-const spyOnScrollTo = jest.spyOn(scrollHelper, "scrollTo");
+const spyOnScrollTo = vi.spyOn(scrollHelper, "scrollTo");
 
-const spyOnLogNavigation = jest
+const spyOnLogNavigation = vi
   .spyOn(logService, "logNavigation")
   .mockImplementation(() => Promise.resolve("logged"));
 
-const spyOnSetPageIncomplete = jest
+const spyOnSetPageIncomplete = vi
   .spyOn(pageStateService, "setPageIncomplete")
   .mockImplementation(() => Promise.resolve("set"));
 
-jest.spyOn(window, "scrollTo").mockImplementation(jest.fn);
+vi.spyOn(window, "scrollTo").mockImplementation(vi.fn);
 
 describe("SubmissionPage.vue pay practitioner", () => {
   let store;
@@ -65,16 +65,16 @@ describe("SubmissionPage.vue pay practitioner", () => {
     $router = {
       $route,
       currentRoute: $route,
-      push: jest.fn(),
+      push: vi.fn(),
     };
     wrapper = shallowMount(Page, {
       global: {
         plugins: [store, router],
       },
     });
-    jest.spyOn(wrapper.vm.$store, "dispatch");
+    vi.spyOn(wrapper.vm.$store, "dispatch");
 
-    jest
+    vi
       .spyOn(spaEnvService, "loadEnvs")
       .mockImplementation(() => Promise.resolve("loaded"));
 
@@ -84,8 +84,8 @@ describe("SubmissionPage.vue pay practitioner", () => {
   });
 
   afterEach(() => {
-    jest.resetModules();
-    jest.clearAllMocks();
+    vi.resetModules();
+    vi.clearAllMocks();
   });
 
   it("renders", () => {
@@ -104,9 +104,9 @@ describe("SubmissionPage.vue pay practitioner created()", () => {
         plugins: [store, router],
       },
     });
-    jest.spyOn(wrapper.vm.$store, "dispatch");
+    vi.spyOn(wrapper.vm.$store, "dispatch");
 
-    jest
+    vi
       .spyOn(spaEnvService, "loadEnvs")
       .mockImplementation(() => Promise.resolve("loaded"));
 
@@ -116,8 +116,8 @@ describe("SubmissionPage.vue pay practitioner created()", () => {
   });
 
   afterEach(() => {
-    jest.resetModules();
-    jest.clearAllMocks();
+    vi.resetModules();
+    vi.clearAllMocks();
   });
 
   it("calls logNavigation", () => {
@@ -139,16 +139,16 @@ describe("SubmissionPage.vue pay practitioner printPage()", () => {
     $router = {
       $route,
       currentRoute: $route,
-      push: jest.fn(),
+      push: vi.fn(),
     };
     wrapper = shallowMount(Page, {
       global: {
         plugins: [store, router],
       },
     });
-    jest.spyOn(wrapper.vm.$store, "dispatch");
+    vi.spyOn(wrapper.vm.$store, "dispatch");
 
-    jest
+    vi
       .spyOn(spaEnvService, "loadEnvs")
       .mockImplementation(() => Promise.resolve("loaded"));
 
@@ -158,8 +158,8 @@ describe("SubmissionPage.vue pay practitioner printPage()", () => {
   });
 
   afterEach(() => {
-    jest.resetModules();
-    jest.clearAllMocks();
+    vi.resetModules();
+    vi.clearAllMocks();
   });
 
   it("calls window.print()", () => {
@@ -182,7 +182,7 @@ describe("SubmissionPage.vue beforeRouteLeave(to, from, next)", () => {
     $router = {
       $route,
       currentRoute: $route,
-      push: jest.fn(),
+      push: vi.fn(),
     };
     wrapper = shallowMount(Page, {
       global: {
@@ -192,34 +192,34 @@ describe("SubmissionPage.vue beforeRouteLeave(to, from, next)", () => {
   });
 
   afterEach(() => {
-    jest.resetModules();
-    jest.clearAllMocks();
+    vi.resetModules();
+    vi.clearAllMocks();
   });
 
   it("calls scrollTo()", async () => {
     //to, from, next
-    jest.useFakeTimers();
+    vi.useFakeTimers();
     Page.beforeRouteLeave.call(
       wrapper.vm,
       payPractitionerRouteStepOrder[1],
       payPractitionerRouteStepOrder[0],
       next
     );
-    jest.advanceTimersByTime(5);
+    vi.advanceTimersByTime(5);
     await wrapper.vm.$nextTick;
     expect(spyOnScrollTo).toHaveBeenCalled();
   });
 
   it("calls next() with proper arguments when passed route other than Home", async () => {
     //to, from, next
-    jest.useFakeTimers();
+    vi.useFakeTimers();
     Page.beforeRouteLeave.call(
       wrapper.vm,
       payPractitionerRoutes.REVIEW_PAGE,
       payPractitionerRouteStepOrder[0],
       next
     );
-    jest.advanceTimersByTime(5);
+    vi.advanceTimersByTime(5);
     await wrapper.vm.$nextTick;
     const testPath = getConvertedPath(
       wrapper.vm.$router.currentRoute.value.path,
@@ -232,42 +232,42 @@ describe("SubmissionPage.vue beforeRouteLeave(to, from, next)", () => {
 
   it("calls next() with proper arguments when given to route of Home", async () => {
     //to, from, next
-    jest.useFakeTimers();
+    vi.useFakeTimers();
     Page.beforeRouteLeave.call(
       wrapper.vm,
       payPractitionerRoutes.HOME_PAGE,
       payPractitionerRouteStepOrder[1],
       next
     );
-    jest.advanceTimersByTime(5);
+    vi.advanceTimersByTime(5);
     await wrapper.vm.$nextTick;
     expect(next).toHaveBeenCalled();
   });
 
   it("calls spyOnSetPageIncomplete (valid route)", async () => {
     //to, from, next
-    jest.useFakeTimers();
+    vi.useFakeTimers();
     Page.beforeRouteLeave.call(
       wrapper.vm,
       payPractitionerRouteStepOrder[0],
       payPractitionerRouteStepOrder[1],
       next
     );
-    jest.advanceTimersByTime(5);
+    vi.advanceTimersByTime(5);
     await wrapper.vm.$nextTick;
     expect(spyOnSetPageIncomplete).toHaveBeenCalled();
   });
 
   it("calls spyOnSetPageIncomplete (invalid route)", async () => {
     //to, from, next
-    jest.useFakeTimers();
+    vi.useFakeTimers();
     Page.beforeRouteLeave.call(
       wrapper.vm,
       payPractitionerRouteStepOrder[1],
       payPractitionerRouteStepOrder[0],
       next
     );
-    jest.advanceTimersByTime(5);
+    vi.advanceTimersByTime(5);
     await wrapper.vm.$nextTick;
     expect(spyOnSetPageIncomplete).toHaveBeenCalled();
   });

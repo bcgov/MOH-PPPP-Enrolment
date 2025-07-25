@@ -65,7 +65,7 @@ const mockRouter = {
     path: "/",
   },
   $router: {
-    push: jest.fn(),
+    push: vi.fn(),
     currentRoute: {
       value: {
         path: "/potato",
@@ -79,7 +79,7 @@ const mockRouterCSR = {
     path: "/",
   },
   $router: {
-    push: jest.fn(),
+    push: vi.fn(),
     currentRoute: {
       value: {
         path: "/potato-csr",
@@ -94,7 +94,7 @@ router = createRouter({
   routes: routeCollection,
 });
 
-const next = jest.fn();
+const next = vi.fn();
 const testDate = new Date();
 
 const storeTemplateC = {
@@ -124,44 +124,44 @@ storeTemplateN.modules.payPatientForm.state = cloneDeep(patientStateN);
 //later versions of Jest use a function called "jest.setSystemTime"
 //but since this project is using Jest 24.x
 //I've instead mocked the function below
-jest.spyOn(global, "Date").mockImplementation(() => testDate);
+vi.spyOn(global, "Date").mockImplementation(() => testDate);
 
-jest
+vi
   .spyOn(apiService, "submitPayPatientApplication")
   .mockImplementation(() => Promise.resolve(mockResponse));
 
 const scrollHelper = require("@/helpers/scroll");
 
-const spyOnScrollTo = jest.spyOn(scrollHelper, "scrollTo");
-const spyOnScrollToError = jest.spyOn(scrollHelper, "scrollToError");
+const spyOnScrollTo = vi.spyOn(scrollHelper, "scrollTo");
+const spyOnScrollToError = vi.spyOn(scrollHelper, "scrollToError");
 
-const spyOnGetTopScrollPosition = jest
+const spyOnGetTopScrollPosition = vi
   .spyOn(scrollHelper, "getTopScrollPosition")
   .mockImplementation(() => Promise.resolve("top scroll position returned"));
 
-const spyOnVisitPage = jest.spyOn(pageStateService, "visitPage");
+const spyOnVisitPage = vi.spyOn(pageStateService, "visitPage");
 
-const spyOnSetPageComplete = jest.spyOn(pageStateService, "setPageComplete");
+const spyOnSetPageComplete = vi.spyOn(pageStateService, "setPageComplete");
 
-const spyOnSetPageIncomplete = jest
+const spyOnSetPageIncomplete = vi
   .spyOn(pageStateService, "setPageIncomplete")
   .mockImplementation(() => Promise.resolve("set"));
 
-const spyOnLogService = jest
+const spyOnLogService = vi
   .spyOn(logService, "logNavigation")
   .mockImplementation(() => Promise.resolve("logged"));
 
-const spyOnLogServiceSubmission = jest
+const spyOnLogServiceSubmission = vi
   .spyOn(logService, "logSubmission")
   .mockImplementation(() => Promise.resolve("logged"));
 
-const spyOnLogServiceError = jest
+const spyOnLogServiceError = vi
   .spyOn(logService, "logError")
   .mockImplementation(() => Promise.resolve("logged"));
 
-const spyOnPrint = jest.spyOn(window, "print").mockImplementation(jest.fn);
+const spyOnPrint = vi.spyOn(window, "print").mockImplementation(vi.fn);
 
-jest.spyOn(window, "scrollTo").mockImplementation(jest.fn);
+vi.spyOn(window, "scrollTo").mockImplementation(vi.fn);
 
 describe("ReviewPage.vue pay patient", () => {
   let store;
@@ -176,13 +176,13 @@ describe("ReviewPage.vue pay patient", () => {
       },
     });
 
-    jest.spyOn(wrapper.vm.$store, "dispatch");
+    vi.spyOn(wrapper.vm.$store, "dispatch");
 
-    jest
+    vi
       .spyOn(spaEnvService, "loadEnvs")
       .mockImplementation(() => Promise.resolve("loaded"));
 
-    jest
+    vi
       .spyOn(logService, "logNavigation")
       .mockImplementation(() => Promise.resolve("logged"));
 
@@ -192,8 +192,8 @@ describe("ReviewPage.vue pay patient", () => {
   });
 
   afterEach(() => {
-    jest.resetModules();
-    jest.clearAllMocks();
+    vi.resetModules();
+    vi.clearAllMocks();
   });
 
   it("renders", () => {
@@ -213,16 +213,16 @@ describe("ReviewPage.vue pay patient created()", () => {
         mocks: mockRouter,
       },
     });
-    jest.spyOn(wrapper.vm.$store, "dispatch");
+    vi.spyOn(wrapper.vm.$store, "dispatch");
 
-    jest
+    vi
       .spyOn(spaEnvService, "loadEnvs")
       .mockImplementation(() => Promise.resolve("loaded"));
   });
 
   afterEach(() => {
-    jest.resetModules();
-    jest.clearAllMocks();
+    vi.resetModules();
+    vi.clearAllMocks();
   });
 
   it("calls logService", () => {
@@ -235,8 +235,8 @@ describe("ReviewPage.vue pay patient continueHandler()", () => {
   let wrapper;
 
   afterEach(() => {
-    jest.resetModules();
-    jest.clearAllMocks();
+    vi.resetModules();
+    vi.clearAllMocks();
   });
 
   it("calls submitForm if the store has correspondenceAttached = N", () => {
@@ -247,7 +247,7 @@ describe("ReviewPage.vue pay patient continueHandler()", () => {
         mocks: mockRouter,
       },
     });
-    const spyOnSubmitForm = jest.spyOn(wrapper.vm, "submitForm");
+    const spyOnSubmitForm = vi.spyOn(wrapper.vm, "submitForm");
     wrapper.vm.continueHandler();
     expect(spyOnSubmitForm).toHaveBeenCalled();
   });
@@ -260,7 +260,7 @@ describe("ReviewPage.vue pay patient continueHandler()", () => {
         mocks: mockRouterCSR,
       },
     });
-    const spyOnSubmitForm = jest.spyOn(wrapper.vm, "submitForm");
+    const spyOnSubmitForm = vi.spyOn(wrapper.vm, "submitForm");
     wrapper.vm.continueHandler();
     expect(spyOnSubmitForm).toHaveBeenCalled();
   });
@@ -295,26 +295,26 @@ describe("ReviewPage.vue pay patient submitForm()", () => {
         mocks: mockRouter,
       },
     });
-    spyOnDispatch = jest.spyOn(wrapper.vm.$store, "dispatch");
+    spyOnDispatch = vi.spyOn(wrapper.vm.$store, "dispatch");
 
-    spyOnNavigateToSubmissionPage = jest.spyOn(
+    spyOnNavigateToSubmissionPage = vi.spyOn(
       wrapper.vm,
       "navigateToSubmissionPage"
     );
 
-    spyOnNavigateToSubmissionErrorPage = jest.spyOn(
+    spyOnNavigateToSubmissionErrorPage = vi.spyOn(
       wrapper.vm,
       "navigateToSubmissionErrorPage"
     );
 
-    jest
+    vi
       .spyOn(spaEnvService, "loadEnvs")
       .mockImplementation(() => Promise.resolve("loaded"));
   });
 
   afterEach(() => {
-    jest.resetModules();
-    jest.clearAllMocks();
+    vi.resetModules();
+    vi.clearAllMocks();
   });
 
   it("dispatches the submission date", async () => {
@@ -348,7 +348,7 @@ describe("ReviewPage.vue pay patient submitForm()", () => {
   });
 
   it("calls scrollToError on error code 3", async () => {
-    jest
+    vi
       .spyOn(apiService, "submitPayPatientApplication")
       .mockImplementationOnce(() => Promise.resolve(mockResponse3));
     wrapper.vm.submitForm();
@@ -357,7 +357,7 @@ describe("ReviewPage.vue pay patient submitForm()", () => {
   });
 
   it("calls logServiceError on error code 3", async () => {
-    jest
+    vi
       .spyOn(apiService, "submitPayPatientApplication")
       .mockImplementationOnce(() => Promise.resolve(mockResponse3));
     wrapper.vm.submitForm();
@@ -366,7 +366,7 @@ describe("ReviewPage.vue pay patient submitForm()", () => {
   });
 
   it("calls navigateToSubmissionErrorPage on misc error", async () => {
-    jest
+    vi
       .spyOn(apiService, "submitPayPatientApplication")
       .mockImplementationOnce(() => Promise.resolve(mockResponseMisc));
     wrapper.vm.submitForm();
@@ -376,7 +376,7 @@ describe("ReviewPage.vue pay patient submitForm()", () => {
   });
 
   it("calls logServiceError on misc error", async () => {
-    jest
+    vi
       .spyOn(apiService, "submitPayPatientApplication")
       .mockImplementationOnce(() => Promise.resolve(mockResponseMisc));
     wrapper.vm.submitForm();
@@ -385,7 +385,7 @@ describe("ReviewPage.vue pay patient submitForm()", () => {
   });
 
   it("calls logServiceError on DB Error PRN Present error", async () => {
-    jest
+    vi
       .spyOn(apiService, "submitPayPatientApplication")
       .mockImplementationOnce(() =>
         Promise.resolve(mockResponseDBErrorPrnPresent)
@@ -396,7 +396,7 @@ describe("ReviewPage.vue pay patient submitForm()", () => {
   });
 
   it("calls spyOnNavigateToSubmissionPage on DB Error PRN Present error", async () => {
-    jest
+    vi
       .spyOn(apiService, "submitPayPatientApplication")
       .mockImplementationOnce(() =>
         Promise.resolve(mockResponseDBErrorPrnPresent)
@@ -424,13 +424,13 @@ describe("ReviewPage.vue pay patient navigateToSubmissionPage()", () => {
         plugins: [store, router],
       },
     });
-    jest.spyOn(wrapper.vm.$store, "dispatch");
+    vi.spyOn(wrapper.vm.$store, "dispatch");
 
-    jest
+    vi
       .spyOn(spaEnvService, "loadEnvs")
       .mockImplementation(() => Promise.resolve("loaded"));
 
-    spyOnRouter = jest
+    spyOnRouter = vi
       .spyOn(router, "push")
       .mockImplementation(() => Promise.resolve("pushed"));
 
@@ -443,8 +443,8 @@ describe("ReviewPage.vue pay patient navigateToSubmissionPage()", () => {
   });
 
   afterEach(() => {
-    jest.resetModules();
-    jest.clearAllMocks();
+    vi.resetModules();
+    vi.clearAllMocks();
   });
 
   it("pushes to the router with correct argument", () => {
@@ -477,13 +477,13 @@ describe("ReviewPage.vue pay patient navigateToSubmissionErrorPage()", () => {
         plugins: [store, router],
       },
     });
-    jest.spyOn(wrapper.vm.$store, "dispatch");
+    vi.spyOn(wrapper.vm.$store, "dispatch");
 
-    jest
+    vi
       .spyOn(spaEnvService, "loadEnvs")
       .mockImplementation(() => Promise.resolve("loaded"));
 
-    spyOnRouter = jest
+    spyOnRouter = vi
       .spyOn(router, "push")
       .mockImplementation(() => Promise.resolve("pushed"));
 
@@ -496,8 +496,8 @@ describe("ReviewPage.vue pay patient navigateToSubmissionErrorPage()", () => {
   });
 
   afterEach(() => {
-    jest.resetModules();
-    jest.clearAllMocks();
+    vi.resetModules();
+    vi.clearAllMocks();
   });
 
   it("pushes to the router with correct argument", () => {
@@ -532,20 +532,20 @@ describe("ReviewPage.vue beforeRouteLeave(to, from, next)", () => {
   });
 
   afterEach(() => {
-    jest.resetModules();
-    jest.clearAllMocks();
+    vi.resetModules();
+    vi.clearAllMocks();
   });
 
   it("calls scrollTo() and getTopScrollPosition() when given invalid route", async () => {
     //to, from, next
-    jest.useFakeTimers();
+    vi.useFakeTimers();
     Page.beforeRouteLeave.call(
       wrapper.vm,
       payPatientRouteStepOrder[1],
       payPatientRouteStepOrder[0],
       next
     );
-    jest.advanceTimersByTime(5);
+    vi.advanceTimersByTime(5);
     await wrapper.vm.$nextTick;
     expect(spyOnGetTopScrollPosition).toHaveBeenCalled();
     expect(spyOnScrollTo).toHaveBeenCalled();
@@ -553,14 +553,14 @@ describe("ReviewPage.vue beforeRouteLeave(to, from, next)", () => {
 
   it("calls next() with proper arguments when given invalid route", async () => {
     //to, from, next
-    jest.useFakeTimers();
+    vi.useFakeTimers();
     Page.beforeRouteLeave.call(
       wrapper.vm,
       payPatientRouteStepOrder[1],
       payPatientRouteStepOrder[0],
       next
     );
-    jest.advanceTimersByTime(5);
+    vi.advanceTimersByTime(5);
     await wrapper.vm.$nextTick;
     const testPath = getConvertedPath(
       wrapper.vm.$router.currentRoute.value.path,
@@ -574,14 +574,14 @@ describe("ReviewPage.vue beforeRouteLeave(to, from, next)", () => {
 
   it("calls next() with proper arguments when given valid route", async () => {
     //to, from, next
-    jest.useFakeTimers();
+    vi.useFakeTimers();
     Page.beforeRouteLeave.call(
       wrapper.vm,
       payPatientRouteStepOrder[0],
       payPatientRouteStepOrder[1],
       next
     );
-    jest.advanceTimersByTime(5);
+    vi.advanceTimersByTime(5);
     await wrapper.vm.$nextTick;
     expect(next).toHaveBeenCalled();
     expect(spyOnGetTopScrollPosition).not.toHaveBeenCalled();
@@ -590,28 +590,28 @@ describe("ReviewPage.vue beforeRouteLeave(to, from, next)", () => {
 
   it("calls spyOnSetPageIncomplete (valid route)", async () => {
     //to, from, next
-    jest.useFakeTimers();
+    vi.useFakeTimers();
     Page.beforeRouteLeave.call(
       wrapper.vm,
       payPatientRouteStepOrder[0],
       payPatientRouteStepOrder[1],
       next
     );
-    jest.advanceTimersByTime(5);
+    vi.advanceTimersByTime(5);
     await wrapper.vm.$nextTick;
     expect(spyOnSetPageIncomplete).toHaveBeenCalled();
   });
 
   it("calls spyOnSetPageIncomplete (invalid route)", async () => {
     //to, from, next
-    jest.useFakeTimers();
+    vi.useFakeTimers();
     Page.beforeRouteLeave.call(
       wrapper.vm,
       payPatientRouteStepOrder[1],
       payPatientRouteStepOrder[0],
       next
     );
-    jest.advanceTimersByTime(5);
+    vi.advanceTimersByTime(5);
     await wrapper.vm.$nextTick;
     expect(spyOnSetPageIncomplete).toHaveBeenCalled();
   });

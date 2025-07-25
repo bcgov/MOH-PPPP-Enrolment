@@ -14,16 +14,16 @@ import {
 import { getConvertedPath } from "@/helpers/url";
 import { cloneDeep } from 'common-lib-vue';
 
-jest.mock("axios", () => ({
-  get: jest.fn(),
-  post: jest.fn(() => {
+vi.mock("axios", () => ({
+  get: vi.fn(),
+  post: vi.fn(() => {
     return Promise.resolve();
   }),
 }));
 
 const testDate = new Date();
 testDate.setFullYear(testDate.getFullYear() - 1);
-const next = jest.fn();
+const next = vi.fn();
 
 const dummyDataValid = {
   default: {
@@ -132,30 +132,30 @@ storeTemplate2.modules.payPractitionerForm.state = cloneDeep(
   practitionerState2
 );
 
-const spyOnLogService = jest
+const spyOnLogService = vi
   .spyOn(logService, "logNavigation")
   .mockImplementation(() => Promise.resolve("logged"));
 
 const scrollHelper = require("@/helpers/scroll");
 
-const spyOnScrollTo = jest.spyOn(scrollHelper, "scrollTo");
-const spyOnScrollToError = jest.spyOn(scrollHelper, "scrollToError");
+const spyOnScrollTo = vi.spyOn(scrollHelper, "scrollTo");
+const spyOnScrollToError = vi.spyOn(scrollHelper, "scrollToError");
 
-jest.spyOn(window, "scrollTo").mockImplementation(jest.fn);
+vi.spyOn(window, "scrollTo").mockImplementation(vi.fn);
 
-const spyOnGetTopScrollPosition = jest
+const spyOnGetTopScrollPosition = vi
   .spyOn(scrollHelper, "getTopScrollPosition")
   .mockImplementation(() => Promise.resolve("top scroll position returned"));
 
-const spyOnVisitPage = jest
+const spyOnVisitPage = vi
   .spyOn(pageStateService, "visitPage")
   .mockImplementation(() => Promise.resolve("visited"));
 
-const spyOnSetPageComplete = jest
+const spyOnSetPageComplete = vi
   .spyOn(pageStateService, "setPageComplete")
   .mockImplementation(() => Promise.resolve("set"));
 
-const spyOnSetPageIncomplete = jest
+const spyOnSetPageIncomplete = vi
   .spyOn(pageStateService, "setPageIncomplete")
   .mockImplementation(() => Promise.resolve("set"));
 
@@ -172,7 +172,7 @@ describe("ClaimCountPage.vue render test", () => {
       }
     };
     $router = {
-      push: jest.fn(),
+      push: vi.fn(),
       currentRoute: $route,
     };
     $store = {
@@ -192,8 +192,8 @@ describe("ClaimCountPage.vue render test", () => {
   });
 
   afterEach(() => {
-    jest.resetModules();
-    jest.clearAllMocks();
+    vi.resetModules();
+    vi.clearAllMocks();
   });
 
   it("renders", () => {
@@ -214,7 +214,7 @@ describe("ClaimCountPage.vue pay practitioner created()", () => {
       }
     };
     $router = {
-      push: jest.fn(),
+      push: vi.fn(),
       currentRoute: $route,
     };
     $store = {
@@ -234,8 +234,8 @@ describe("ClaimCountPage.vue pay practitioner created()", () => {
   });
 
   afterEach(() => {
-    jest.resetModules();
-    jest.clearAllMocks();
+    vi.resetModules();
+    vi.clearAllMocks();
   });
 
   it("calls logService", () => {
@@ -260,17 +260,17 @@ describe("ClaimCountPage.vue pay practitioner validateFields() part 1 (invalid)"
     $router = {
       $route,
       currentRoute: $route,
-      push: jest.fn(),
+      push: vi.fn(),
     };
     $store = {
       state: {
         payPractitionerForm: {},
       },
-      dispatch: jest.fn(),
+      dispatch: vi.fn(),
     };
-    spyOnDispatch = jest.spyOn($store, "dispatch");
+    spyOnDispatch = vi.spyOn($store, "dispatch");
 
-    spyOnRouter = jest
+    spyOnRouter = vi
       .spyOn($router, "push")
       .mockImplementation(() => Promise.resolve("pushed"));
     
@@ -286,8 +286,8 @@ describe("ClaimCountPage.vue pay practitioner validateFields() part 1 (invalid)"
   });
 
   afterEach(() => {
-    jest.resetModules();
-    jest.clearAllMocks();
+    vi.resetModules();
+    vi.clearAllMocks();
   });
 
   it("calls scrollToError", () => {
@@ -334,7 +334,7 @@ describe("ClaimCountPage.vue pay practitioner validateFields() part 2 (valid)", 
       state: {
         payPractitionerForm: cloneDeep(dummyDataValid.default),
       },
-      dispatch: jest.fn(),
+      dispatch: vi.fn(),
     };
     $route = {
       value: {
@@ -344,11 +344,11 @@ describe("ClaimCountPage.vue pay practitioner validateFields() part 2 (valid)", 
     $router = {
       $route,
       currentRoute: $route,
-      push: jest.fn(),
+      push: vi.fn(),
     };
-    spyOnDispatch = jest.spyOn($store, "dispatch");
+    spyOnDispatch = vi.spyOn($store, "dispatch");
 
-    spyOnRouter = jest
+    spyOnRouter = vi
       .spyOn($router, "push")
       .mockImplementation(() => Promise.resolve("pushed"));
     
@@ -364,8 +364,8 @@ describe("ClaimCountPage.vue pay practitioner validateFields() part 2 (valid)", 
   });
 
   afterEach(() => {
-    jest.resetModules();
-    jest.clearAllMocks();
+    vi.resetModules();
+    vi.clearAllMocks();
   });
 
   it("does not call scrollToError()", () => {
@@ -484,7 +484,7 @@ describe("ClaimCountPage.vue pay practitioner beforeRouteLeave(to, from, next)",
       state: {
         payPractitionerForm: {},
       },
-      dispatch: jest.fn(),
+      dispatch: vi.fn(),
     };
     $route = {
       value: {
@@ -494,11 +494,11 @@ describe("ClaimCountPage.vue pay practitioner beforeRouteLeave(to, from, next)",
     $router = {
       $route,
       currentRoute: $route,
-      push: jest.fn(),
+      push: vi.fn(),
     };
-    jest.spyOn($store, "dispatch");
+    vi.spyOn($store, "dispatch");
 
-    jest
+    vi
       .spyOn($router, "push")
       .mockImplementation(() => Promise.resolve("pushed"));
     
@@ -514,20 +514,20 @@ describe("ClaimCountPage.vue pay practitioner beforeRouteLeave(to, from, next)",
   });
 
   afterEach(() => {
-    jest.resetModules();
-    jest.clearAllMocks();
+    vi.resetModules();
+    vi.clearAllMocks();
   });
 
   it("calls scrollTo() and getTopScrollPosition() when given invalid route", async () => {
     //to, from, next
-    jest.useFakeTimers();
+    vi.useFakeTimers();
     Page.beforeRouteLeave.call(
       wrapper.vm,
       payPractitionerRouteStepOrder[1],
       payPractitionerRouteStepOrder[0],
       next
     );
-    jest.advanceTimersByTime(5);
+    vi.advanceTimersByTime(5);
     await wrapper.vm.$nextTick;
     expect(spyOnGetTopScrollPosition).toHaveBeenCalled();
     expect(spyOnScrollTo).toHaveBeenCalled();
@@ -535,14 +535,14 @@ describe("ClaimCountPage.vue pay practitioner beforeRouteLeave(to, from, next)",
 
   it("calls next() with proper arguments when given invalid route", async () => {
     //to, from, next
-    jest.useFakeTimers();
+    vi.useFakeTimers();
     Page.beforeRouteLeave.call(
       wrapper.vm,
       payPractitionerRouteStepOrder[1],
       payPractitionerRouteStepOrder[0],
       next
     );
-    jest.advanceTimersByTime(5);
+    vi.advanceTimersByTime(5);
     await wrapper.vm.$nextTick;
     const testPath = getConvertedPath(
       wrapper.vm.$router.currentRoute.value.path,
@@ -556,14 +556,14 @@ describe("ClaimCountPage.vue pay practitioner beforeRouteLeave(to, from, next)",
 
   it("calls next() with proper arguments when given valid route", async () => {
     //to, from, next
-    jest.useFakeTimers();
+    vi.useFakeTimers();
     Page.beforeRouteLeave.call(
       wrapper.vm,
       payPractitionerRouteStepOrder[0],
       payPractitionerRouteStepOrder[1],
       next
     );
-    jest.advanceTimersByTime(5);
+    vi.advanceTimersByTime(5);
     await wrapper.vm.$nextTick;
     expect(next).toHaveBeenCalled();
     expect(spyOnGetTopScrollPosition).not.toHaveBeenCalled();
@@ -572,28 +572,28 @@ describe("ClaimCountPage.vue pay practitioner beforeRouteLeave(to, from, next)",
 
   it("calls spyOnSetPageIncomplete (valid route)", async () => {
     //to, from, next
-    jest.useFakeTimers();
+    vi.useFakeTimers();
     Page.beforeRouteLeave.call(
       wrapper.vm,
       payPractitionerRouteStepOrder[0],
       payPractitionerRouteStepOrder[1],
       next
     );
-    jest.advanceTimersByTime(5);
+    vi.advanceTimersByTime(5);
     await wrapper.vm.$nextTick;
     expect(spyOnSetPageIncomplete).toHaveBeenCalled();
   });
 
   it("calls spyOnSetPageIncomplete (invalid route)", async () => {
     //to, from, next
-    jest.useFakeTimers();
+    vi.useFakeTimers();
     Page.beforeRouteLeave.call(
       wrapper.vm,
       payPractitionerRouteStepOrder[1],
       payPractitionerRouteStepOrder[0],
       next
     );
-    jest.advanceTimersByTime(5);
+    vi.advanceTimersByTime(5);
     await wrapper.vm.$nextTick;
     expect(spyOnSetPageIncomplete).toHaveBeenCalled();
   });

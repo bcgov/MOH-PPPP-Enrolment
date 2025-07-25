@@ -245,28 +245,28 @@ const failingData = {
   referredToPractitionerNumber: "",
 };
 
-jest.mock("axios", () => ({
-  get: jest.fn(),
-  post: jest.fn(() => {
+vi.mock("axios", () => ({
+  get: vi.fn(),
+  post: vi.fn(() => {
     return Promise.resolve(mockBackendValidationResponse);
   }),
 }));
 
-const spyOnAPIService = jest
+const spyOnAPIService = vi
   .spyOn(apiService, "validateApplication")
   .mockImplementation(() => Promise.resolve(mockBackendValidationResponse));
 
 const scrollHelper = require("@/helpers/scroll");
 
-jest.mock("@/helpers/scroll", () => ({
-  scrollTo: jest.fn(),
-  scrollToError: jest.fn(),
-  getTopScrollPosition: jest.fn(),
+vi.mock("@/helpers/scroll", () => ({
+  scrollTo: vi.fn(),
+  scrollToError: vi.fn(),
+  getTopScrollPosition: vi.fn(),
 }));
 
-jest.spyOn(window, "scrollTo").mockImplementation(jest.fn);
+vi.spyOn(window, "scrollTo").mockImplementation(vi.fn);
 
-const spyOnScrollToError = jest.spyOn(scrollHelper, "scrollToError");
+const spyOnScrollToError = vi.spyOn(scrollHelper, "scrollToError");
 
 // const localVue = createLocalVue();
 // localVue.use(Vuex);
@@ -284,7 +284,7 @@ const practitionerState = cloneDeep(dummyDataValid.default);
 storeTemplate.modules.payPractitionerForm.state = cloneDeep(practitionerState);
 
 const mockRouterCSR = {
-  push: jest.fn(),
+  push: vi.fn(),
   currentRoute: {
     value: {
       path: "/pay-practitioner-csr/main-form",
@@ -315,12 +315,12 @@ describe("MainFormPage.vue validateFields(), CSR", () => {
       },
     });
 
-    spyOnNavigateToNextPage = jest.spyOn(wrapper.vm, "navigateToNextPage");
+    spyOnNavigateToNextPage = vi.spyOn(wrapper.vm, "navigateToNextPage");
   });
 
   afterEach(() => {
-    jest.resetModules();
-    jest.clearAllMocks();
+    vi.resetModules();
+    vi.clearAllMocks();
   });
 
   it("navigates successfully when data is good", async () => {

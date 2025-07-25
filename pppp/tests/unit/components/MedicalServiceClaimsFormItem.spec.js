@@ -23,7 +23,7 @@ const mockRouter = {
     path: "/",
   },
   $router: {
-    push: jest.fn(),
+    push: vi.fn(),
     currentRoute: {
       value: {
         path: "/pay-patient/main-form",
@@ -37,7 +37,7 @@ const mockRouterCSR = {
     path: "/",
   },
   $router: {
-    push: jest.fn(),
+    push: vi.fn(),
     currentRoute: {
       value: {
         path: "/pay-patient-csr/main-form",
@@ -100,8 +100,8 @@ describe("MedicalServiceClaimsFormItem handleInputServiceFeeItem()", () => {
   });
 
   afterEach(() => {
-    jest.resetModules();
-    jest.clearAllMocks();
+    vi.resetModules();
+    vi.clearAllMocks();
   });
 
   it("emits update:feeItem and update:medicalServiceClaimsFeeItemValidationError", async () => {
@@ -131,8 +131,8 @@ describe("MedicalServiceClaimsFormItem getServiceDateFutureErrorMessage()", () =
   });
 
   afterEach(() => {
-    jest.resetModules();
-    jest.clearAllMocks();
+    vi.resetModules();
+    vi.clearAllMocks();
   });
 
   it("returns correct message when 1 claim", () => {
@@ -165,8 +165,8 @@ describe("MedicalServiceClaimsFormItem isSubmissionCodeRequired()", () => {
   });
 
   afterEach(() => {
-    jest.resetModules();
-    jest.clearAllMocks();
+    vi.resetModules();
+    vi.clearAllMocks();
   });
 
   it("returns false when service date is null", async () => {
@@ -221,8 +221,8 @@ describe("MedicalServiceClaimsFormItem handleProcessServiceDate()", () => {
   });
 
   afterEach(() => {
-    jest.resetModules();
-    jest.clearAllMocks();
+    vi.resetModules();
+    vi.clearAllMocks();
   });
 
   it("emits serviceDateData", async () => {

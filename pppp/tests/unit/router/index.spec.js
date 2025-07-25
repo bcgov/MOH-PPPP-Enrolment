@@ -2,17 +2,17 @@ import router from "@/router";
 import { commonRoutes } from "@/router/routes";
 import * as stepRoutes from "@/router/step-routes";
 import pageStateService from "@/services/page-state-service";
-//using jest to mock
+//using vi to mock
 
-const mockPageStateService = jest
+const mockPageStateService = vi
   .spyOn(pageStateService, "isPageVisited")
   .mockReturnValue(false);
 
 describe.skip("router.beforeEach() specific page not found", () => {
   it("routes specific page not found to destination", () => {
     const to = commonRoutes.SPECIFIC_PAGE_NOT_FOUND_PAGE;
-    const from = jest.fn();
-    const next = jest.fn();
+    const from = vi.fn();
+    const next = vi.fn();
     // router.beforeHooks.forEach((hook) => {
     //   hook(to, from, next);
     // });
@@ -26,8 +26,8 @@ describe.skip("router.beforeEach() pay patient CSR", () => {
     const testRoutes = stepRoutes.payPatientCSRStepRoutes;
     const lastIndex = testRoutes.length - 1;
     const to = testRoutes[lastIndex];
-    const from = jest.fn();
-    const next = jest.fn();
+    const from = vi.fn();
+    const next = vi.fn();
 
     // router.beforeHooks.forEach((hook) => {
     //   hook(to, from, next);
@@ -41,8 +41,8 @@ describe.skip("router.beforeEach() pay patient CSR", () => {
   it("routes pay patient CSR routes to home if they ARE home", () => {
     const testRoutes = stepRoutes.payPatientCSRStepRoutes;
     const to = testRoutes[0];
-    const from = jest.fn();
-    const next = jest.fn();
+    const from = vi.fn();
+    const next = vi.fn();
 
     // router.beforeHooks.forEach((hook) => {
     //   hook(to, from, next);
@@ -56,8 +56,8 @@ describe.skip("router.beforeEach() pay patient CSR", () => {
     const testRoutes = stepRoutes.payPatientCSRStepRoutes;
     const lastIndex = testRoutes.length - 1;
     const to = testRoutes[lastIndex];
-    const from = jest.fn();
-    const next = jest.fn();
+    const from = vi.fn();
+    const next = vi.fn();
 
     // router.beforeHooks.forEach((hook) => {
     //   hook(to, from, next);
@@ -72,8 +72,8 @@ describe.skip("router.beforeEach() pay practitioner CSR", () => {
     const testRoutes = stepRoutes.payPractitionerCSRStepRoutes;
     const lastIndex = testRoutes.length - 1;
     const to = testRoutes[lastIndex];
-    const from = jest.fn();
-    const next = jest.fn();
+    const from = vi.fn();
+    const next = vi.fn();
 
     // router.beforeHooks.forEach((hook) => {
     //   hook(to, from, next);
@@ -87,8 +87,8 @@ describe.skip("router.beforeEach() pay practitioner CSR", () => {
   it("routes pay practitioner CSR routes to home if they ARE home", () => {
     const testRoutes = stepRoutes.payPractitionerCSRStepRoutes;
     const to = testRoutes[0];
-    const from = jest.fn();
-    const next = jest.fn();
+    const from = vi.fn();
+    const next = vi.fn();
 
     // router.beforeHooks.forEach((hook) => {
     //   hook(to, from, next);
@@ -102,8 +102,8 @@ describe.skip("router.beforeEach() pay practitioner CSR", () => {
     const testRoutes = stepRoutes.payPractitionerCSRStepRoutes;
     const lastIndex = testRoutes.length - 1;
     const to = testRoutes[lastIndex];
-    const from = jest.fn();
-    const next = jest.fn();
+    const from = vi.fn();
+    const next = vi.fn();
 
     // router.beforeHooks.forEach((hook) => {
     //   hook(to, from, next);
@@ -118,8 +118,8 @@ describe.skip("router.beforeEach() pay patient public", () => {
     const testRoutes = stepRoutes.payPatientStepRoutes;
     const lastIndex = testRoutes.length - 1;
     const to = testRoutes[lastIndex];
-    const from = jest.fn();
-    const next = jest.fn();
+    const from = vi.fn();
+    const next = vi.fn();
 
     // router.beforeHooks.forEach((hook) => {
     //   hook(to, from, next);
@@ -133,8 +133,8 @@ describe.skip("router.beforeEach() pay patient public", () => {
   it("routes pay patient public routes to home if they ARE home", () => {
     const testRoutes = stepRoutes.payPatientStepRoutes;
     const to = testRoutes[0];
-    const from = jest.fn();
-    const next = jest.fn();
+    const from = vi.fn();
+    const next = vi.fn();
 
     // router.beforeHooks.forEach((hook) => {
     //   hook(to, from, next);
@@ -148,8 +148,8 @@ describe.skip("router.beforeEach() pay patient public", () => {
     const testRoutes = stepRoutes.payPatientStepRoutes;
     const lastIndex = testRoutes.length - 1;
     const to = testRoutes[lastIndex];
-    const from = jest.fn();
-    const next = jest.fn();
+    const from = vi.fn();
+    const next = vi.fn();
 
     // router.beforeHooks.forEach((hook) => {
     //   hook(to, from, next);
@@ -164,8 +164,8 @@ describe.skip("router.beforeEach() pay practitioner public", () => {
     const testRoutes = stepRoutes.payPractitionerStepRoutes;
     const lastIndex = testRoutes.length - 1;
     const to = testRoutes[lastIndex];
-    const from = jest.fn();
-    const next = jest.fn();
+    const from = vi.fn();
+    const next = vi.fn();
 
     // router.beforeHooks.forEach((hook) => {
     //   hook(to, from, next);
@@ -179,8 +179,8 @@ describe.skip("router.beforeEach() pay practitioner public", () => {
   it("routes pay practitioner public routes to home if they ARE home", () => {
     const testRoutes = stepRoutes.payPractitionerStepRoutes;
     const to = testRoutes[0];
-    const from = jest.fn();
-    const next = jest.fn();
+    const from = vi.fn();
+    const next = vi.fn();
 
     // router.beforeHooks.forEach((hook) => {
     //   hook(to, from, next);
@@ -194,8 +194,8 @@ describe.skip("router.beforeEach() pay practitioner public", () => {
     const testRoutes = stepRoutes.payPractitionerStepRoutes;
     const lastIndex = testRoutes.length - 1;
     const to = testRoutes[lastIndex];
-    const from = jest.fn();
-    const next = jest.fn();
+    const from = vi.fn();
+    const next = vi.fn();
 
     // router.beforeHooks.forEach((hook) => {
     //   hook(to, from, next);
