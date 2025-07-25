@@ -45,13 +45,13 @@
 </template>
 
 <script>
-import { Button } from "common-lib-vue";
+import { ButtonComponent } from "common-lib-vue";
 import Captcha from '../components/Captcha';
 
 export default {
   name: "ConsentModal",
   components: {
-    ButtonComponent: Button,
+    ButtonComponent: ButtonComponent,
     Captcha,
   },
   props: {

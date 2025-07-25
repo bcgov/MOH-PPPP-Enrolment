@@ -162,7 +162,7 @@ export const routeCollection = [
 ];
 
 const router = createRouter({
-  history: createWebHistory(process.env.BASE_URL),
+  history: createWebHistory("pppp"),
   routes: routeCollection
 });
 

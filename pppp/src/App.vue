@@ -25,15 +25,15 @@
 </template>
 
 <script>
-import "@bcgov/bootstrap-theme/dist/css/bootstrap-theme.min.css";
+import "@bcgov/bootstrap-v5-theme/css/bootstrap-theme.min.css";
 import 'common-lib-vue/dist/common-lib-vue.css';
 import './styles/styles.css';
 
 import { v4 as uuidv4 } from 'uuid';
 import project from '../package.json';
 import {
-  Header,
-  Footer,
+  HeaderComponent,
+  FooterComponent,
   PageStepper,
 } from 'common-lib-vue';
 import {
@@ -68,8 +68,8 @@ export default {
   name: 'App',
   components: {
     ConsentModal,
-    FooterComponent: Footer,
-    HeaderComponent: Header,
+    FooterComponent: FooterComponent,
+    HeaderComponent: HeaderComponent,
     PageStepper,
   },
   data: () => {

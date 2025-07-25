@@ -129,7 +129,7 @@
 
         <a name='vehicle-accident'></a>
         <div class="section-container p-3 mt-5">
-          <Radio label='Is this claim related to a motor vehicle accident?'
+          <RadioComponent label='Is this claim related to a motor vehicle accident?'
                 v-model='isVehicleAccident'
                 cypressId="motorVehicleAccident"
                 :items='isVehicleAccidentOptions'
@@ -520,17 +520,17 @@ import {
   SET_PRACTITIONER_FACILITY_NUMBER
 } from '@/store/modules/pay-practitioner-form';
 import logService from '@/services/log-service';
-import { required, requiredIf, minLength } from '@vuelidate/validators/dist/raw.esm';
+import { required, requiredIf, minLength } from '@vuelidate/validators';
 import useVuelidate from '@vuelidate/core';
 import {
   DateInput,
   DigitInput,
   FacilityNumberInput,
-  Input,
+  InputComponent,
   PhnInput,
   PractitionerNumberInput,
   PromptModal,
-  Radio,
+  RadioComponent,
   alphanumericValidator,
   alphaValidator,
   cloneDeep,
@@ -581,13 +581,13 @@ export default {
     DigitInput,
     FacilityNumberInput,
     HospitalVisitClaimsFormItem,
-    InputComponent: Input,
+    InputComponent: InputComponent,
     MedicalServiceClaimsFormItem,
     PageContent,
     PhnInput,
     PractitionerNumberInput,
     PromptModal,
-    Radio,
+    RadioComponent,
     TipBox,
   },
   data: () => {

@@ -71,7 +71,7 @@
 import PageContent from '@/components/PageContent.vue';
 import ReviewTableList from '@/components/pay-patient/ReviewTableList.vue';
 import {
-  Button,
+  ButtonComponent,
   IconCheckCircle,
   IconInfoCircle,
   IconPrint,
@@ -98,7 +98,7 @@ export default {
     IconPrint,
     PageContent,
     ReviewTableList,
-    ButtonComponent: Button,
+    ButtonComponent: ButtonComponent,
   },
   data: () => {
     return {

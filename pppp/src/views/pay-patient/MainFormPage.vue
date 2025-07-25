@@ -129,7 +129,7 @@
         
         <a name='vehicle-accident'></a>
         <div class="section-container p-3 mt-5">
-          <Radio label='Is this claim related to a motor vehicle accident?'
+          <RadioComponent label='Is this claim related to a motor vehicle accident?'
                 v-model='isVehicleAccident'
                 cypressId="motorVehicleAccident"
                 :items='isVehicleAccidentOptions'
@@ -205,7 +205,7 @@
         <a name='mailing-address'></a>
         <h2 class="mt-5">Payment Mailing Address</h2>
         <div class="section-container p-3">
-          <Radio label='Whose address is this?'
+          <RadioComponent label='Whose address is this?'
                 cypressId="addressOwner"
                 v-model='addressOwner'
                 :items='addressOwnerOptions'
@@ -557,19 +557,19 @@ import {
   SET_REFERRED_TO_PRACTITIONER_NUMBER,
 } from '@/store/modules/pay-patient-form';
 import logService from '@/services/log-service';
-import { required, requiredIf, maxLength, minLength } from '@vuelidate/validators/dist/raw.esm';
+import { required, requiredIf, maxLength, minLength } from '@vuelidate/validators';
 import useVuelidate from '@vuelidate/core';
 import {
   DateInput,
   DigitInput,
   FacilityNumberInput,
-  Input,
+  InputComponent,
   // NumberInput,
   PhnInput,
   PostalCodeInput,
   PractitionerNumberInput,
   PromptModal,
-  Radio,
+  RadioComponent,
   // Select,
   // Textarea,
   // TimeInput,
@@ -662,7 +662,7 @@ export default {
     DateInput,
     DigitInput,
     FacilityNumberInput,
-    InputComponent: Input,
+    InputComponent: InputComponent,
     MedicalServiceClaimsFormItem,
     // NumberInput,
     PageContent,
@@ -670,7 +670,7 @@ export default {
     PostalCodeInput,
     PractitionerNumberInput,
     PromptModal,
-    Radio,
+    RadioComponent,
     // Select,
     // Textarea,
     // TimeInput,

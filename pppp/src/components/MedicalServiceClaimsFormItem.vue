@@ -242,9 +242,9 @@ import {
 import {
   DateInput,
   DigitInput,
-  Input,
+  InputComponent,
   NumberInput,
-  Select,
+  SelectComponent,
   Textarea,
   TimeInput,
   alphanumericValidator,
@@ -290,9 +290,9 @@ export default {
   components: {
     DateInput,
     DigitInput,
-    InputComponent: Input,
+    InputComponent: InputComponent,
     NumberInput,
-    SelectComponent: Select,
+    SelectComponent: SelectComponent,
     TextareaComponent: Textarea,
     TimeInput,
   },

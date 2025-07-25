@@ -10,12 +10,12 @@
 </template>
 
 <script>
-import { Button } from 'common-lib-vue';
+import { ButtonComponent } from 'common-lib-vue';
 
 export default {
   name: 'ContinueBar',
   components: {
-    ButtonComponent: Button,
+    ButtonComponent: ButtonComponent,
   },
   props: {
     hasLoader: {

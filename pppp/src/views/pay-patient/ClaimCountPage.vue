@@ -93,7 +93,7 @@ export default {
         } else if (
           spaEnvService.values &&
           spaEnvService.values.SPA_ENV_PPPP_IS_CSR_ENABLED === "false" &&
-          isCSR(this.$router.currentRoute.path)
+          isCSR(this.$router.currentRoute.value.path)
         ) {
           const toPath = commonRoutes.SPECIFIC_PAGE_NOT_FOUND_PAGE.path ; //commonRoutes.PAGE_NOT_FOUND_PAGE.path
           pageStateService.setPageComplete(toPath);

@@ -293,12 +293,12 @@
 
 <script>
 import useVuelidate from '@vuelidate/core';
-import { requiredIf, maxLength } from '@vuelidate/validators/dist/raw.esm';
+import { requiredIf, maxLength } from '@vuelidate/validators';
 import {
   DigitInput,
-  Input,
+  InputComponent,
   NumberInput,
-  Select,
+  SelectComponent,
   Textarea,
   alphanumericValidator,
   dollarNumberValidator,
@@ -494,9 +494,9 @@ export default {
   name: 'HospitalVisitClaimsFormItem',
   components: {
     DigitInput,
-    InputComponent: Input,
+    InputComponent: InputComponent,
     NumberInput,
-    SelectComponent: Select,
+    SelectComponent: SelectComponent,
     TextareaComponent: Textarea,
   },
   props: {

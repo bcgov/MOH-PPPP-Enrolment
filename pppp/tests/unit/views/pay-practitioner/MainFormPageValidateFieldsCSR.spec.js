@@ -2,7 +2,7 @@ import { shallowMount, createLocalVue } from "@vue/test-utils";
 import { mount } from "@vue/test-utils";
 import { createStore } from "vuex";
 import Vuex from "vuex";
-import Vuelidate from "vuelidate";
+// import Vuelidate from "vuelidate";
 import { cloneDeep } from "lodash";
 import Page from "@/views/pay-practitioner/MainFormPage.vue";
 import * as module1 from "../../../../src/store/modules/app";
