@@ -7,6 +7,7 @@ import * as module2 from "../../../../src/store/modules/pay-patient-form";
 import * as module3 from "../../../../src/store/modules/pay-practitioner-form";
 import * as dummyDataValid from "../../../../src/store/states/pay-practitioner-form-dummy-data";
 import apiService from "@/services/api-service";
+import * as scrollHelper from "@/helpers/scroll";
 
 const testDate = new Date();
 const adjustedTestDateMonth = (testDate.getMonth() + 1).toString();
@@ -242,32 +243,28 @@ const failingData = {
   referredToPractitionerNumber: "",
 };
 
+//to prevent ECONNREFUSED errors
 vi.mock("axios", () => ({
-  get: vi.fn(),
-  post: vi.fn(() => {
-    return Promise.resolve(mockBackendValidationResponse);
-  }),
+  default: {
+    get: vi.fn(),
+    post: vi.fn(() => {
+      return Promise.resolve();
+    }),
+  },
 }));
 
 const spyOnAPIService = vi
   .spyOn(apiService, "validateApplication")
   .mockImplementation(() => Promise.resolve(mockBackendValidationResponse));
 
-const scrollHelper = require("@/helpers/scroll");
+//to prevent console errors
+vi.spyOn(scrollHelper, "scrollTo").mockImplementation(() =>
+  Promise.resolve("scrolled")
+);
 
-vi.mock("@/helpers/scroll", () => ({
-  scrollTo: vi.fn(),
-  scrollToError: vi.fn(),
-  getTopScrollPosition: vi.fn(),
-}));
-
-vi.spyOn(window, "scrollTo").mockImplementation(vi.fn);
-
-const spyOnScrollToError = vi.spyOn(scrollHelper, "scrollToError");
-
-// const spyOnLogNavigation = vi
-//   .spyOn(logService, "logNavigation")
-//   .mockImplementation(() => Promise.resolve("logged"));
+const spyOnScrollToError = vi
+  .spyOn(scrollHelper, "scrollToError")
+  .mockImplementation(() => Promise.resolve("scrolled to error"));
 
 const storeTemplate = {
   modules: {
@@ -285,28 +282,17 @@ const mockRouter = {
   currentRoute: {
     value: {
       path: "/pay-practitioner/main-form",
-    }
-  },
-};
-
-const mockRouterCSR = {
-  push: vi.fn(),
-  currentRoute: {
-    path: "/pay-practitioner-csr/main-form",
+    },
   },
 };
 
 describe("MainFormPage.vue validateFields(), public", () => {
   // eslint-disable-next-line
-  let state;
   let store;
   let wrapper;
   let spyOnNavigateToNextPage;
 
   beforeEach(() => {
-    state = {
-      applicationUuid: null,
-    };
     store = createStore(storeTemplate);
     wrapper = mount(Page, {
       global: {
@@ -348,7 +334,6 @@ describe("MainFormPage.vue validateFields(), public", () => {
     );
     await wrapper.vm.validateFields();
     await wrapper.vm.$nextTick;
-
     expect(spyOnScrollToError).toHaveBeenCalled();
     expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
   });
@@ -360,7 +345,6 @@ describe("MainFormPage.vue validateFields(), public", () => {
     );
     await wrapper.vm.validateFields();
     await wrapper.vm.$nextTick;
-
     expect(spyOnScrollToError).toHaveBeenCalled();
     expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
   });
@@ -370,7 +354,6 @@ describe("MainFormPage.vue validateFields(), public", () => {
     spyOnAPIService.mockImplementationOnce(() => Promise.resolve("potato"));
     await wrapper.vm.validateFields();
     await wrapper.vm.$nextTick;
-
     expect(spyOnScrollToError).toHaveBeenCalled();
     expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
   });
@@ -770,7 +753,6 @@ describe("MainFormPage.vue validateFields(), public", () => {
     expect(spyOnNavigateToNextPage).not.toHaveBeenCalled();
   });
 
-  //coveragePreAuthNumber tests (new)
   it("(coveragePreAuthNumber) flags invalid if not numeric", async () => {
     Object.assign(wrapper.vm, cloneDeep(passingData));
     await wrapper.setData({ coveragePreAuthNumber: "a" });
@@ -880,7 +862,6 @@ describe("MainFormPage.vue validateFields(), public", () => {
   });
 
   //miscellaneous conditions
-
   it("flags invalid if dependentNumber not 66 and birthdate not present", async () => {
     Object.assign(wrapper.vm, cloneDeep(passingData));
     await wrapper.setData({ dependentNumber: `00` });

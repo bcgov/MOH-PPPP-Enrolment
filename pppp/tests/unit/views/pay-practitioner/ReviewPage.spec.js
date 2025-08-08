@@ -1,15 +1,11 @@
-import { shallowMount, createLocalVue } from "@vue/test-utils";
+import { shallowMount } from "@vue/test-utils";
 import { createStore } from "vuex";
-import { createRouter, createWebHistory } from "vue-router";
-import { routeCollection } from "@/router/index";
-import Vuex from "vuex";
 import { cloneDeep } from "lodash";
 import Page from "@/views/pay-practitioner/ReviewPage.vue";
 import * as module1 from "../../../../src/store/modules/app";
 import * as module2 from "../../../../src/store/modules/pay-patient-form";
 import * as module3 from "../../../../src/store/modules/pay-practitioner-form";
 import * as dummyDataValid from "../../../../src/store/states/pay-practitioner-form-dummy-data";
-import spaEnvService from "@/services/spa-env-service";
 import logService from "@/services/log-service";
 import apiService from "@/services/api-service";
 import pageStateService from "@/services/page-state-service";
@@ -18,16 +14,9 @@ import {
   payPractitionerRoutes,
   payPractitionerRouteStepOrder,
 } from "@/router/routes";
-let router;
-router = createRouter({
-      history: createWebHistory(),
-      routes: routeCollection,
-    });
+import * as scrollHelper from "@/helpers/scroll";
 
 const mockRouterCSR = {
-  $route: {
-    path: "/potato-csr",
-  },
   $router: {
     push: vi.fn(),
     currentRoute: {
@@ -39,9 +28,6 @@ const mockRouterCSR = {
 };
 
 const mockRouter = {
-  $route: {
-    path: "/potato",
-  },
   $router: {
     push: vi.fn(),
     currentRoute: {
@@ -51,9 +37,6 @@ const mockRouter = {
     },
   },
 };
-
-// const localVue = createLocalVue();
-// localVue.use(Vuex);
 
 const mockResponse = {
   data: {
@@ -155,12 +138,10 @@ practitionerStateNHospitalN.medicalServiceClaims[0].correspondenceAttached =
 practitionerStateNHospitalC.hospitalVisitClaims[0].correspondenceAttached = "C";
 practitionerStateNHospitalN.hospitalVisitClaims[0].correspondenceAttached = "N";
 
-storeTemplateC.modules.payPractitionerForm.state = cloneDeep(
-  practitionerStateC
-);
-storeTemplateN.modules.payPractitionerForm.state = cloneDeep(
-  practitionerStateN
-);
+storeTemplateC.modules.payPractitionerForm.state =
+  cloneDeep(practitionerStateC);
+storeTemplateN.modules.payPractitionerForm.state =
+  cloneDeep(practitionerStateN);
 storeTemplateNHospitalC.modules.payPractitionerForm.state = cloneDeep(
   practitionerStateNHospitalC
 );
@@ -168,23 +149,12 @@ storeTemplateNHospitalN.modules.payPractitionerForm.state = cloneDeep(
   practitionerStateNHospitalN
 );
 
-//later versions of Jest use a function called "jest.setSystemTime"
-//but since this project is using Jest 24.x
-//I've instead mocked the function below
+//required to prevent date errors
 vi.spyOn(global, "Date").mockImplementation(() => testDate);
 
-vi
-  .spyOn(apiService, "submitPayPractitionerApplication")
-  .mockImplementation(() => Promise.resolve(mockResponse));
-
-const scrollHelper = require("@/helpers/scroll");
-
-const spyOnScrollTo = vi.spyOn(scrollHelper, "scrollTo");
-const spyOnScrollToError = vi.spyOn(scrollHelper, "scrollToError");
-
-const spyOnGetTopScrollPosition = vi
-  .spyOn(scrollHelper, "getTopScrollPosition")
-  .mockImplementation(() => Promise.resolve("top scroll position returned"));
+vi.spyOn(apiService, "submitPayPractitionerApplication").mockImplementation(
+  () => Promise.resolve(mockResponse)
+);
 
 const spyOnVisitPage = vi.spyOn(pageStateService, "visitPage");
 
@@ -208,13 +178,21 @@ const spyOnLogServiceError = vi
 
 const spyOnPrint = vi.spyOn(window, "print").mockImplementation(vi.fn);
 
-vi.spyOn(window, "scrollTo").mockImplementation(vi.fn);
+const spyOnScrollTo = vi
+  .spyOn(scrollHelper, "scrollTo")
+  .mockImplementation(() => Promise.resolve("scrolled"));
+  
+const spyOnScrollToError = vi
+  .spyOn(scrollHelper, "scrollToError")
+  .mockImplementation(() => Promise.resolve("scrolled to error"));
+
+const spyOnGetTopScrollPosition = vi
+  .spyOn(scrollHelper, "getTopScrollPosition")
+  .mockImplementation(() => Promise.resolve("top scroll position returned"));
 
 describe("ReviewPage.vue pay practitioner", () => {
   let store;
   let wrapper;
-  let $route;
-  let $router;
 
   beforeEach(() => {
     store = createStore(storeTemplateC);
@@ -224,19 +202,6 @@ describe("ReviewPage.vue pay practitioner", () => {
         mocks: mockRouterCSR,
       },
     });
-    vi.spyOn(wrapper.vm.$store, "dispatch");
-
-    vi
-      .spyOn(spaEnvService, "loadEnvs")
-      .mockImplementation(() => Promise.resolve("loaded"));
-
-    vi
-      .spyOn(logService, "logNavigation")
-      .mockImplementation(() => Promise.resolve("logged"));
-
-    // wrapper.vm.$options.created.forEach((hook) => {
-    //   hook.call(wrapper.vm);
-    // });
   });
 
   afterEach(() => {
@@ -252,34 +217,15 @@ describe("ReviewPage.vue pay practitioner", () => {
 describe("ReviewPage.vue pay practitioner created()", () => {
   let store;
   let wrapper;
-  let $route;
-  let $router;
 
   beforeEach(() => {
     store = createStore(storeTemplateC);
-    $route = {
-      path: "/potato-csr",
-    };
-    $router = {
-      $route,
-      currentRoute: $route,
-      push: vi.fn(),
-    };
     wrapper = shallowMount(Page, {
       global: {
         plugins: [store],
         mocks: mockRouterCSR,
       },
     });
-    vi.spyOn(wrapper.vm.$store, "dispatch");
-
-    vi
-      .spyOn(spaEnvService, "loadEnvs")
-      .mockImplementation(() => Promise.resolve("loaded"));
-
-    // wrapper.vm.$options.created.forEach((hook) => {
-    //   hook.call(wrapper.vm);
-    // });
   });
 
   afterEach(() => {
@@ -295,31 +241,8 @@ describe("ReviewPage.vue pay practitioner created()", () => {
 describe("ReviewPage.vue pay practitioner continueHandler()", () => {
   let store;
   let wrapper;
-  let $route;
-  let $router;
 
-  beforeEach(() => {
-    store = createStore(storeTemplateC);
-    $route = {
-      path: "/potato-csr",
-    };
-    $router = {
-      $route,
-      currentRoute: $route,
-      push: vi.fn(),
-    };
-    wrapper = shallowMount(Page, {
-      global: {
-        plugins: [store],
-        mocks: mockRouterCSR,
-      },
-    });
-    vi.spyOn(wrapper.vm.$store, "dispatch");
-
-    vi
-      .spyOn(spaEnvService, "loadEnvs")
-      .mockImplementation(() => Promise.resolve("loaded"));
-  });
+  beforeEach(() => {});
 
   afterEach(() => {
     vi.resetModules();
@@ -328,14 +251,6 @@ describe("ReviewPage.vue pay practitioner continueHandler()", () => {
 
   it("calls submitForm if the store has medical claims correspondenceAttached = N", () => {
     store = createStore(storeTemplateN);
-    $route = {
-      path: "/potato-csr",
-    };
-    $router = {
-      $route,
-      currentRoute: $route,
-      push: vi.fn(),
-    };
     wrapper = shallowMount(Page, {
       global: {
         plugins: [store],
@@ -349,14 +264,6 @@ describe("ReviewPage.vue pay practitioner continueHandler()", () => {
 
   it("calls window.print if the store has medical claims correspondenceAttached = C", () => {
     store = createStore(storeTemplateC);
-    $route = {
-      path: "/potato",
-    };
-    $router = {
-      $route,
-      currentRoute: $route,
-      push: vi.fn(),
-    };
     wrapper = shallowMount(Page, {
       global: {
         plugins: [store],
@@ -369,14 +276,6 @@ describe("ReviewPage.vue pay practitioner continueHandler()", () => {
 
   it("calls submit if the store has medical claims correspondenceAttached = C and -csr route", () => {
     store = createStore(storeTemplateC);
-    $route = {
-      path: "/potato-csr",
-    };
-    $router = {
-      $route,
-      currentRoute: $route,
-      push: vi.fn(),
-    };
     wrapper = shallowMount(Page, {
       global: {
         plugins: [store],
@@ -390,14 +289,6 @@ describe("ReviewPage.vue pay practitioner continueHandler()", () => {
 
   it("calls submitForm if the store has medical claims correspondenceAttached = N and hospital claims = N", () => {
     store = createStore(storeTemplateNHospitalN);
-    $route = {
-      path: "/potato-csr",
-    };
-    $router = {
-      $route,
-      currentRoute: $route,
-      push: vi.fn(),
-    };
     wrapper = shallowMount(Page, {
       global: {
         plugins: [store],
@@ -411,14 +302,6 @@ describe("ReviewPage.vue pay practitioner continueHandler()", () => {
 
   it("calls window.print if the store has medical claims correspondenceAttached = N and hospital claims = C", () => {
     store = createStore(storeTemplateNHospitalC);
-    $route = {
-      path: "/potato",
-    };
-    $router = {
-      $route,
-      currentRoute: $route,
-      push: vi.fn(),
-    };
     wrapper = shallowMount(Page, {
       global: {
         plugins: [store],
@@ -431,14 +314,6 @@ describe("ReviewPage.vue pay practitioner continueHandler()", () => {
 
   it("calls submitForm if the store has medical claims correspondenceAttached = N and hospital claims = C and -csr route", () => {
     store = createStore(storeTemplateNHospitalC);
-    $route = {
-      path: "/potato-csr",
-    };
-    $router = {
-      $route,
-      currentRoute: $route,
-      push: vi.fn(),
-    };
     wrapper = shallowMount(Page, {
       global: {
         plugins: [store],
@@ -456,24 +331,12 @@ describe("ReviewPage.vue pay practitioner continueHandler()", () => {
 describe("ReviewPage.vue pay practitioner submitForm()", () => {
   let store;
   let wrapper;
-  let $route;
-  let $router;
   let spyOnDispatch;
   let spyOnNavigateToSubmissionPage;
   let spyOnNavigateToSubmissionErrorPage;
 
   beforeEach(() => {
-    // vi.useFakeTimers("modern");
-    // vi.setSystemTime(testDate);
     store = createStore(storeTemplateN);
-    $route = {
-      path: "/potato-csr",
-    };
-    $router = {
-      $route,
-      currentRoute: $route,
-      push: vi.fn(),
-    };
     wrapper = shallowMount(Page, {
       global: {
         plugins: [store],
@@ -491,10 +354,6 @@ describe("ReviewPage.vue pay practitioner submitForm()", () => {
       wrapper.vm,
       "navigateToSubmissionErrorPage"
     );
-
-    vi
-      .spyOn(spaEnvService, "loadEnvs")
-      .mockImplementation(() => Promise.resolve("loaded"));
   });
 
   afterEach(() => {
@@ -533,27 +392,30 @@ describe("ReviewPage.vue pay practitioner submitForm()", () => {
   });
 
   it("calls scrollToError on error code 3", async () => {
-    vi
-      .spyOn(apiService, "submitPayPractitionerApplication")
-      .mockImplementationOnce(() => Promise.resolve(mockResponse3));
+    vi.spyOn(
+      apiService,
+      "submitPayPractitionerApplication"
+    ).mockImplementationOnce(() => Promise.resolve(mockResponse3));
     wrapper.vm.submitForm();
     await wrapper.vm.$nextTick;
     expect(spyOnScrollToError).toHaveBeenCalled();
   });
 
   it("calls logServiceError on error code 3", async () => {
-    vi
-      .spyOn(apiService, "submitPayPractitionerApplication")
-      .mockImplementationOnce(() => Promise.resolve(mockResponse3));
+    vi.spyOn(
+      apiService,
+      "submitPayPractitionerApplication"
+    ).mockImplementationOnce(() => Promise.resolve(mockResponse3));
     wrapper.vm.submitForm();
     await wrapper.vm.$nextTick;
     expect(spyOnLogServiceError).toHaveBeenCalled();
   });
 
   it("calls navigateToSubmissionErrorPage on misc error", async () => {
-    vi
-      .spyOn(apiService, "submitPayPractitionerApplication")
-      .mockImplementationOnce(() => Promise.resolve(mockResponseMisc));
+    vi.spyOn(
+      apiService,
+      "submitPayPractitionerApplication"
+    ).mockImplementationOnce(() => Promise.resolve(mockResponseMisc));
     wrapper.vm.submitForm();
     await wrapper.vm.$nextTick;
     expect(spyOnNavigateToSubmissionErrorPage).toHaveBeenCalled();
@@ -561,31 +423,34 @@ describe("ReviewPage.vue pay practitioner submitForm()", () => {
   });
 
   it("calls logServiceError on misc error", async () => {
-    vi
-      .spyOn(apiService, "submitPayPractitionerApplication")
-      .mockImplementationOnce(() => Promise.resolve(mockResponseMisc));
+    vi.spyOn(
+      apiService,
+      "submitPayPractitionerApplication"
+    ).mockImplementationOnce(() => Promise.resolve(mockResponseMisc));
     wrapper.vm.submitForm();
     await wrapper.vm.$nextTick;
     expect(spyOnLogServiceError).toHaveBeenCalled();
   });
 
   it("calls logServiceError on DB Error PRN Present error", async () => {
-    vi
-      .spyOn(apiService, "submitPayPractitionerApplication")
-      .mockImplementationOnce(() =>
-        Promise.resolve(mockResponseDBErrorPrnPresent)
-      );
+    vi.spyOn(
+      apiService,
+      "submitPayPractitionerApplication"
+    ).mockImplementationOnce(() =>
+      Promise.resolve(mockResponseDBErrorPrnPresent)
+    );
     wrapper.vm.submitForm();
     await wrapper.vm.$nextTick;
     expect(spyOnLogServiceError).toHaveBeenCalled();
   });
 
   it("calls spyOnNavigateToSubmissionPage on DB Error PRN Present error", async () => {
-    vi
-      .spyOn(apiService, "submitPayPractitionerApplication")
-      .mockImplementationOnce(() =>
-        Promise.resolve(mockResponseDBErrorPrnPresent)
-      );
+    vi.spyOn(
+      apiService,
+      "submitPayPractitionerApplication"
+    ).mockImplementationOnce(() =>
+      Promise.resolve(mockResponseDBErrorPrnPresent)
+    );
     wrapper.vm.submitForm();
     await wrapper.vm.$nextTick;
     expect(spyOnNavigateToSubmissionPage).toHaveBeenCalled();
@@ -599,20 +464,18 @@ describe("ReviewPage.vue pay practitioner submitForm()", () => {
 describe("ReviewPage.vue pay practitioner navigateToSubmissionPage()", () => {
   let store;
   let wrapper;
-  let $route;
   let $router;
   let spyOnRouter;
   let toPath;
 
   beforeEach(() => {
     store = createStore(storeTemplateC);
-    $route = {
-      path: "/potato-csr",
-    };
+    //declared a separate $router to make mocking/spying easier
     $router = {
-      $route,
       currentRoute: {
-        value: $route,
+        value: {
+          path: "/potato-csr",
+        },
       },
       push: vi.fn(),
     };
@@ -624,11 +487,6 @@ describe("ReviewPage.vue pay practitioner navigateToSubmissionPage()", () => {
         },
       },
     });
-    vi.spyOn(wrapper.vm.$store, "dispatch");
-
-    vi
-      .spyOn(spaEnvService, "loadEnvs")
-      .mockImplementation(() => Promise.resolve("loaded"));
 
     spyOnRouter = vi
       .spyOn($router, "push")
@@ -674,13 +532,12 @@ describe("ReviewPage.vue pay practitioner navigateToSubmissionErrorPage()", () =
 
   beforeEach(() => {
     store = createStore(storeTemplateC);
-    $route = {
-      path: "/potato-csr",
-    };
     $router = {
       $route,
       currentRoute: {
-        value: $route,
+        value: {
+          path: "/potato-csr",
+        },
       },
       push: vi.fn(),
     };
@@ -692,12 +549,6 @@ describe("ReviewPage.vue pay practitioner navigateToSubmissionErrorPage()", () =
         },
       },
     });
-    vi.spyOn(wrapper.vm.$store, "dispatch");
-
-    vi
-      .spyOn(spaEnvService, "loadEnvs")
-      .mockImplementation(() => Promise.resolve("loaded"));
-
     spyOnRouter = vi
       .spyOn($router, "push")
       .mockImplementation(() => Promise.resolve("pushed"));
@@ -735,19 +586,9 @@ describe("ReviewPage.vue pay practitioner navigateToSubmissionErrorPage()", () =
 describe("ReviewPage.vue beforeRouteLeave(to, from, next)", () => {
   let store;
   let wrapper;
-  let $route;
-  let $router;
 
   beforeEach(() => {
     store = createStore(storeTemplateN);
-    $route = {
-      path: "/potato-csr",
-    };
-    $router = {
-      $route,
-      currentRoute: $route,
-      push: vi.fn(),
-    };
     wrapper = shallowMount(Page, {
       global: {
         plugins: [store],

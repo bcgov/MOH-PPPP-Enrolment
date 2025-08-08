@@ -512,7 +512,6 @@ import {
   serviceLocationCodeValidator,
   specialtyCodeValidator,
   submissionCodeValidator,
-  validateIf,
   phnNineValidator
 } from '@/helpers/validators';
 import {
@@ -811,6 +810,8 @@ export default {
     );
   },
   validations() {
+    const isCSRRoute = isCSR(this.$router.currentRoute.value.path)
+    const alwaysValidValidator = () => { return true}
     const validations = {
       planReferenceNumber: {},
       phn: {
@@ -821,7 +822,7 @@ export default {
       dependentNumber: {
         intValidator: optionalValidator(intValidator),
         positiveNumberValidator: optionalValidator(positiveNumberValidator),
-        dependentNumberValidator: optionalValidator(validateIf(!isCSR(this.$router.currentRoute.value.path), dependentNumberValidator)),
+        dependentNumberValidator: optionalValidator(isCSRRoute ? alwaysValidValidator : dependentNumberValidator)
       },
       firstName: {
         required: requiredIf(() => !isCSR(this.$router.currentRoute.value.path)),
@@ -839,9 +840,9 @@ export default {
           return !isCSR(this.$router.currentRoute.value.path)
               && this.dependentNumber !== '66';
         }),
-        birthDatePastValidator: optionalValidator(validateIf(!isCSR(this.$router.currentRoute.value.path), birthDatePastValidator)),
+        birthDatePastValidator: optionalValidator(isCSRRoute ? alwaysValidValidator : birthDatePastValidator),
         birthDateValidator,
-        distantPastValidator: optionalValidator(validateIf(!isCSR(this.$router.currentRoute.value.path), distantPastValidator)),
+        distantPastValidator: optionalValidator(isCSRRoute ? alwaysValidValidator : distantPastValidator),
       },
       addressOwner: {
         required: requiredIf(() => !isCSR(this.$router.currentRoute.value.path)),
@@ -861,8 +862,8 @@ export default {
       },
       vehicleAccidentClaimNumber: {
         alphanumericValidator: optionalValidator(alphanumericValidator),
-        motorVehicleAccidentClaimNumberValidator: optionalValidator(validateIf(!isCSR(this.$router.currentRoute.value.path), motorVehicleAccidentClaimNumberValidator)),
-        motorVehicleAccidentClaimNumberMaskValidator: optionalValidator(validateIf(!isCSR(this.$router.currentRoute.value.path), motorVehicleAccidentClaimNumberMaskValidator)),
+        motorVehicleAccidentClaimNumberValidator: optionalValidator(isCSRRoute ? alwaysValidValidator : motorVehicleAccidentClaimNumberValidator),
+        motorVehicleAccidentClaimNumberMaskValidator: optionalValidator(isCSRRoute ? alwaysValidValidator : motorVehicleAccidentClaimNumberMaskValidator),
       },
       planReferenceNumberOfOriginalClaim: {
         intValidator: optionalValidator(intValidator),
@@ -885,12 +886,12 @@ export default {
         minLength: minLength(5),
       },
       practitionerFacilityNumber: {
-        minLength: optionalValidator(validateIf(!isCSR(this.$router.currentRoute.value.path), minLength(5))),
+        minLength: (isCSRRoute || !this.practitionerFacilityNumber) ? alwaysValidValidator : minLength(5),
       },
       practitionerSpecialtyCode: {
         alphanumericValidator: optionalValidator(alphanumericValidator),
-        minLengthValue: optionalValidator(validateIf(!isCSR(this.$router.currentRoute.value.path), minLength(2))),
-        specialtyCodeValidator: optionalValidator(validateIf(!isCSR(this.$router.currentRoute.value.path), specialtyCodeValidator)),
+        minLengthValue: (isCSRRoute || !this.practitionerSpecialtyCode) ? alwaysValidValidator : minLength(2),
+        specialtyCodeValidator: optionalValidator(isCSRRoute ? alwaysValidValidator : specialtyCodeValidator),
       },
       referredByFirstNameInitial: {
         alphaValidator: optionalValidator(alphaValidator),
@@ -899,7 +900,7 @@ export default {
         nameValidator: optionalValidator(nameValidator),
       },
       referredByPractitionerNumber: {
-        minLength: optionalValidator(minLength(5)),
+        minLength: !this.referredByPractitionerNumber ? alwaysValidValidator :minLength(5),
       },
       referredToFirstNameInitial: {
         alphaValidator: optionalValidator(alphaValidator),
@@ -908,7 +909,8 @@ export default {
         nameValidator: optionalValidator(nameValidator),
       },
       referredToPractitionerNumber: {
-        minLength: optionalValidator(minLength(5)),
+        // minLength: optionalValidator(minLength(5)),
+        minLength: !this.referredToPractitionerNumber ? alwaysValidValidator : minLength(5),
       },
     };
     if (this.dependentNumber !== '66' && !isCSR(this.$router.currentRoute.value.path)) {
@@ -1135,17 +1137,6 @@ export default {
       }
       return 'Service';
     },
-  },
-  computed: {
-    isReferredByRequired() {
-      return (!!this.referredByFirstNameInitial || !!this.referredByLastName || !!this.referredByPractitionerNumber) 
-      && !isCSR(this.$router.currentRoute.value.path);
-    },
-    isReferredToRequired() {
-      return (!!this.referredToFirstNameInitial || !!this.referredToLastName 
-      || !!this.referredToPractitionerNumber || this.isContainingNoChargeFeeItem) 
-      && !isCSR(this.$router.currentRoute.value.path);
-    },
     isContainingNoChargeFeeItem() {
       for (let i=0; i<this.medicalServiceClaims.length; i++) {
         if (this.medicalServiceClaims[i].feeItem === '03333') {
@@ -1153,6 +1144,18 @@ export default {
         }
       }
       return false;
+    },
+  },
+  computed: {
+    isReferredByRequired() {
+      return (!!this.referredByFirstNameInitial || !!this.referredByLastName || !!this.referredByPractitionerNumber) 
+      && !isCSR(this.$router.currentRoute.value.path);
+    },
+    isReferredToRequired() {
+      const result = (!!this.referredToFirstNameInitial || !!this.referredToLastName 
+      || !!this.referredToPractitionerNumber || this.isContainingNoChargeFeeItem()) 
+      && !isCSR(this.$router.currentRoute.value.path)
+      return result;
     },
     isCSR() {
       return isCSR(this.$router.currentRoute.value.path);
@@ -1162,58 +1165,58 @@ export default {
       result.push('Placeholder field name');
       return result;
     },
-    medicalServiceClaimsValidations() {
-      return {
-        serviceDate: {
-          required: requiredIf(() => !isCSR(this.$router.currentRoute.value.path)),
-          serviceDateValidator: optionalValidator(serviceDateValidator),
-          serviceDateFutureValidator: optionalValidator(validateIf(!isCSR(this.$router.currentRoute.value.path), serviceDateFutureValidator)),
-          distantPastValidator: optionalValidator(validateIf(!isCSR(this.$router.currentRoute.value.path), distantPastValidator)),
-          serviceDateCutOffValidator: optionalValidator(validateIf(!isCSR(this.$router.currentRoute.value.path), serviceDateCutOffValidator)),
-        },
-        numberOfServices: {
-          required: requiredIf(() => !isCSR(this.$router.currentRoute.value.path)),
-          intValidator: optionalValidator(intValidator),
-          positiveNumberValidator: optionalValidator(positiveNumberValidator),
-          nonZeroNumberValidator: optionalValidator(validateIf(!isCSR(this.$router.currentRoute.value.path), nonZeroNumberValidator)),
-        },
-        feeItem: {
-          required: requiredIf(() => !isCSR(this.$router.currentRoute.value.path)),
-          intValidator: optionalValidator(intValidator),
-          positiveNumberValidator: optionalValidator(positiveNumberValidator),
-        },
-        amountBilled: {
-          required: requiredIf(() => !isCSR(this.$router.currentRoute.value.path)),
-          dollarNumberValidator: optionalValidator(dollarNumberValidator),
-          positiveNumberValidator: optionalValidator(positiveNumberValidator),
-          amountBilledZeroValidator: optionalValidator(amountBilledZeroValidator),
-        },
-        calledStartTime: {
-          partialTimeValidator: optionalValidator(partialTimeValidator),
-        },
-        renderedFinishTime: {
-          partialTimeValidator: optionalValidator(partialTimeValidator),
-        },
-        diagnosticCode: {
-          required: requiredIf(() => !isCSR(this.$router.currentRoute.value.path)),
-          alphanumericValidator: optionalValidator(alphanumericValidator),
-          diagnosticCodeValidator: optionalValidator(validateIf(!isCSR(this.$router.currentRoute.value.path), diagnosticCodeValidator)),
-        },
-        locationOfService: {
-          required: requiredIf(() => !isCSR(this.$router.currentRoute.value.path)),
-          serviceLocationCodeValidator: validateIf(!isCSR(this.$router.currentRoute.value.path), serviceLocationCodeValidator),
-        },
-        serviceClarificationCode: {
-          clarificationCodeValidator: optionalValidator(clarificationCodeValidator(isCSR(this.$router.currentRoute.value.path))),
-        },
-        submissionCode: {
-          submissionCodeValidator: validateIf(!isCSR(this.$router.currentRoute.value.path), submissionCodeValidator),
-        },
-        notes: {
-          maxLength: maxLength(400),
-        },
-      };
-    }
+    // medicalServiceClaimsValidations() {
+    //   return {
+    //     serviceDate: {
+    //       required: requiredIf(() => !isCSR(this.$router.currentRoute.value.path)),
+    //       serviceDateValidator: optionalValidator(serviceDateValidator),
+    //       serviceDateFutureValidator: optionalValidator(validateIf(!isCSR(this.$router.currentRoute.value.path), serviceDateFutureValidator)),
+    //       distantPastValidator: optionalValidator(validateIf(!isCSR(this.$router.currentRoute.value.path), distantPastValidator)),
+    //       serviceDateCutOffValidator: optionalValidator(validateIf(!isCSR(this.$router.currentRoute.value.path), serviceDateCutOffValidator)),
+    //     },
+    //     numberOfServices: {
+    //       required: requiredIf(() => !isCSR(this.$router.currentRoute.value.path)),
+    //       intValidator: optionalValidator(intValidator),
+    //       positiveNumberValidator: optionalValidator(positiveNumberValidator),
+    //       nonZeroNumberValidator: optionalValidator(validateIf(!isCSR(this.$router.currentRoute.value.path), nonZeroNumberValidator)),
+    //     },
+    //     feeItem: {
+    //       required: requiredIf(() => !isCSR(this.$router.currentRoute.value.path)),
+    //       intValidator: optionalValidator(intValidator),
+    //       positiveNumberValidator: optionalValidator(positiveNumberValidator),
+    //     },
+    //     amountBilled: {
+    //       required: requiredIf(() => !isCSR(this.$router.currentRoute.value.path)),
+    //       dollarNumberValidator: optionalValidator(dollarNumberValidator),
+    //       positiveNumberValidator: optionalValidator(positiveNumberValidator),
+    //       amountBilledZeroValidator: optionalValidator(amountBilledZeroValidator),
+    //     },
+    //     calledStartTime: {
+    //       partialTimeValidator: optionalValidator(partialTimeValidator),
+    //     },
+    //     renderedFinishTime: {
+    //       partialTimeValidator: optionalValidator(partialTimeValidator),
+    //     },
+    //     diagnosticCode: {
+    //       required: requiredIf(() => !isCSR(this.$router.currentRoute.value.path)),
+    //       alphanumericValidator: optionalValidator(alphanumericValidator),
+    //       diagnosticCodeValidator: optionalValidator(validateIf(!isCSR(this.$router.currentRoute.value.path), diagnosticCodeValidator)),
+    //     },
+    //     locationOfService: {
+    //       required: requiredIf(() => !isCSR(this.$router.currentRoute.value.path)),
+    //       serviceLocationCodeValidator: validateIf(!isCSR(this.$router.currentRoute.value.path), serviceLocationCodeValidator),
+    //     },
+    //     serviceClarificationCode: {
+    //       clarificationCodeValidator: optionalValidator(clarificationCodeValidator(isCSR(this.$router.currentRoute.value.path))),
+    //     },
+    //     submissionCode: {
+    //       submissionCodeValidator: validateIf(!isCSR(this.$router.currentRoute.value.path), submissionCodeValidator),
+    //     },
+    //     notes: {
+    //       maxLength: maxLength(400),
+    //     },
+    //   };
+    // }
   },
   // Required in order to block back navigation.
   beforeRouteLeave(to, from, next) {

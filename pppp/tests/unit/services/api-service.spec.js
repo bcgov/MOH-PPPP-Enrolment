@@ -3,10 +3,12 @@ import { v4 as uuidv4 } from "uuid";
 import axios from "axios";
 
 vi.mock("axios", () => ({
-  get: vi.fn(),
-  post: vi.fn(() => {
-    return Promise.resolve();
-  }),
+  default: {
+    get: vi.fn(),
+    post: vi.fn(() => {
+      return Promise.resolve();
+    }),
+  } 
 }));
 
 vi.mock("uuid");

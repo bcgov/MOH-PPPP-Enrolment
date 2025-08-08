@@ -237,7 +237,6 @@ import {
   serviceDateCutOffValidator,
   serviceLocationCodeValidator,
   submissionCodeValidator,
-  validateIf,
 } from '@/helpers/validators';
 import {
   DateInput,
@@ -386,19 +385,21 @@ export default {
     }
   },
   validations() {
-    return {
+    const isCSRRoute = isCSR(this.$router.currentRoute.value.path);
+    const alwaysValidValidator = () => { return true};
+    const validationObject = {
       serviceDate: {
         required: requiredIf(() => !isCSR(this.$router.currentRoute.value.path)),
         serviceDateValidator: optionalValidator(serviceDateValidator),
-        serviceDateFutureValidator: optionalValidator(validateIf(!isCSR(this.$router.currentRoute.value.path), serviceDateFutureValidator)),
-        distantPastValidator: optionalValidator(validateIf(!isCSR(this.$router.currentRoute.value.path), distantPastValidator)),
-        serviceDateCutOffValidator: optionalValidator(validateIf(!isCSR(this.$router.currentRoute.value.path), serviceDateCutOffValidator)),
+        serviceDateFutureValidator: optionalValidator(isCSRRoute ? alwaysValidValidator : serviceDateFutureValidator),
+        distantPastValidator: optionalValidator(isCSRRoute ? alwaysValidValidator : distantPastValidator),
+        serviceDateCutOffValidator: optionalValidator(isCSRRoute ? alwaysValidValidator : serviceDateCutOffValidator),
       },
       numberOfServices: {
         required: requiredIf(() => !isCSR(this.$router.currentRoute.value.path)),
         intValidator: optionalValidator(intValidator),
         positiveNumberValidator: optionalValidator(positiveNumberValidator),
-        nonZeroNumberValidator: optionalValidator(validateIf(!isCSR(this.$router.currentRoute.value.path), nonZeroNumberValidator)),
+        nonZeroNumberValidator: optionalValidator(isCSRRoute ? alwaysValidValidator : nonZeroNumberValidator),           
       },
       feeItem: {
         required: requiredIf(() => !isCSR(this.$router.currentRoute.value.path)),
@@ -420,22 +421,24 @@ export default {
       diagnosticCode: {
         required: requiredIf(() => !isCSR(this.$router.currentRoute.value.path)),
         alphanumericValidator: optionalValidator(alphanumericValidator),
-        diagnosticCodeValidator: optionalValidator(validateIf(!isCSR(this.$router.currentRoute.value.path), diagnosticCodeValidator)),
+        diagnosticCodeValidator: optionalValidator(isCSRRoute ? alwaysValidValidator : diagnosticCodeValidator),
       },
       locationOfService: {
         required: requiredIf(() => !isCSR(this.$router.currentRoute.value.path)),
-        serviceLocationCodeValidator: validateIf(!isCSR(this.$router.currentRoute.value.path), serviceLocationCodeValidator),
+        serviceLocationCodeValidator: optionalValidator(isCSRRoute ? alwaysValidValidator : serviceLocationCodeValidator),
       },
       serviceClarificationCode: {
         clarificationCodeValidator: optionalValidator(clarificationCodeValidator(isCSR(this.$router.currentRoute.value.path))),
       },
       submissionCode: {
-        submissionCodeValidator: validateIf(!isCSR(this.$router.currentRoute.value.path), submissionCodeValidator),
+        submissionCodeValidator: isCSRRoute ? alwaysValidValidator : submissionCodeValidator
       },
       notes: {
         maxLength: maxLength(400),
       },
     };
+
+    return validationObject;
   },
   methods: {
     handleBlurField(validationObj) {

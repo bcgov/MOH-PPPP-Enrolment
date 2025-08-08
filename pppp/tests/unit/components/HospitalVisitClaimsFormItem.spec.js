@@ -5,6 +5,7 @@ import Component from "@/components/HospitalVisitClaimsFormItem.vue";
 import apiService from "@/services/api-service";
 import logService from "@/services/log-service";
 import pageStateService from "@/services/page-state-service";
+import * as scrollHelper from "@/helpers/scroll"; 
 
 const testDateFutureYear = new Date();
 testDateFutureYear.setFullYear(testDateFutureYear.getFullYear() + 1);
@@ -80,9 +81,6 @@ const mockBackendValidationResponseDefault = {
 };
 
 const mockRouter = {
-  $route: {
-    path: "/",
-  },
   $router: {
     push: vi.fn(),
     currentRoute: {
@@ -94,9 +92,6 @@ const mockRouter = {
 };
 
 const mockRouterCSR = {
-  $route: {
-    path: "/",
-  },
   $router: {
     push: vi.fn(),
     currentRoute: {
@@ -116,33 +111,19 @@ const passingProps = {
   index: 0,
 };
 
+//required to prevent ECONNREFUSED errors
 vi.mock("axios", () => ({
-  get: vi.fn(),
-  post: vi.fn(() => {
-    return Promise.resolve(mockBackendValidationResponse);
-  }),
+  default: {
+    get: vi.fn(),
+    post: vi.fn(() => {
+      return Promise.resolve();
+    }),
+  } 
 }));
 
 const spyOnAPIService = vi
   .spyOn(apiService, "validateApplication")
   .mockImplementation(() => Promise.resolve(mockBackendValidationResponse));
-
-const scrollHelper = require("@/helpers/scroll");
-
-vi.mock("@/helpers/scroll", () => ({
-  scrollTo: vi.fn(),
-  scrollToError: vi.fn(),
-  getTopScrollPosition: vi.fn(),
-}));
-
-vi.spyOn(window, "scrollTo").mockImplementation(vi.fn);
-
-const spyOnScrollToError = vi.spyOn(scrollHelper, "scrollToError");
-const spyOnScrollTo = vi.spyOn(scrollHelper, "scrollTo");
-
-const spyOnGetTopScrollPosition = vi
-  .spyOn(scrollHelper, "getTopScrollPosition")
-  .mockImplementation(() => Promise.resolve("top scroll position returned"));
 
 const spyOnSetPageComplete = vi
   .spyOn(pageStateService, "setPageComplete")
@@ -182,7 +163,6 @@ describe("HospitalVisitClaimsFormItem.vue", () => {
 describe("HospitalVisitClaimsFormItem.vue handleInputHospitalVisitFeeItem()", () => {
   // eslint-disable-next-line
   let state;
-  let store;
   let wrapper;
 
   beforeEach(() => {
@@ -218,14 +198,9 @@ describe("HospitalVisitClaimsFormItem.vue handleInputHospitalVisitFeeItem()", ()
 
 describe("HospitalVisitClaimsFormItem.vue isHospitalVisitSubmissionCodeRequired()", () => {
   // eslint-disable-next-line
-  let state;
-  let store;
   let wrapper;
 
   beforeEach(() => {
-    state = {
-      applicationUuid: null,
-    };
     wrapper = mount(Component, {
       props: passingProps,
       global: {

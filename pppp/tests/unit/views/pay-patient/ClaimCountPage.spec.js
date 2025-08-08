@@ -6,14 +6,29 @@ import logService from "@/services/log-service";
 import pageStateService from "@/services/page-state-service";
 import { payPatientRoutes, payPatientRouteStepOrder } from "@/router/routes";
 import { getConvertedPath } from "@/helpers/url";
-import { cloneDeep } from 'common-lib-vue';
+import { cloneDeep } from "common-lib-vue";
+import * as scrollHelper from "@/helpers/scroll";
 
+//required to prevent ECONNREFUSED errors
 vi.mock("axios", () => ({
-  get: vi.fn(),
-  post: vi.fn(() => {
-    return Promise.resolve();
-  }),
+  default: {
+    get: vi.fn(),
+    post: vi.fn(() => {
+      return Promise.resolve();
+    }),
+  },
 }));
+
+const mockRouterCSR = {
+  $router: {
+    push: vi.fn(),
+    currentRoute: {
+      value: {
+        path: "/pay-patient",
+      },
+    },
+  },
+};
 
 const testDate = new Date();
 testDate.setFullYear(testDate.getFullYear() - 1);
@@ -89,12 +104,12 @@ const spyOnLogService = vi
   .spyOn(logService, "logNavigation")
   .mockImplementation(() => Promise.resolve("logged"));
 
-const scrollHelper = require("@/helpers/scroll");
-
-const spyOnScrollTo = vi.spyOn(scrollHelper, "scrollTo");
-const spyOnScrollToError = vi.spyOn(scrollHelper, "scrollToError");
-
-vi.spyOn(window, "scrollTo").mockImplementation(vi.fn);
+const spyOnScrollTo = vi
+  .spyOn(scrollHelper, "scrollTo")
+  .mockImplementation(() => Promise.resolve("scrolled"));
+const spyOnScrollToError = vi
+  .spyOn(scrollHelper, "scrollToError")
+  .mockImplementation(() => Promise.resolve("scrolled to error"));
 
 const spyOnGetTopScrollPosition = vi
   .spyOn(scrollHelper, "getTopScrollPosition")
@@ -114,27 +129,12 @@ const spyOnSetPageIncomplete = vi
 
 describe("ClaimCountPage.vue pay patient render test", () => {
   let wrapper;
-  let $route;
-  let $router;
 
   beforeEach(() => {
-    $route = {
-      value: {
-        path: "/potato-csr",
-      },
-    };
-    $router = {
-      $route,
-      currentRoute: $route,
-      push: vi.fn(),
-    };
     wrapper = mount(Page, {
       global: {
         plugins: [store],
-        mocks: {
-          $route,
-          $router,
-        }
+        mocks: mockRouterCSR,
       },
     });
   });
@@ -151,27 +151,12 @@ describe("ClaimCountPage.vue pay patient render test", () => {
 
 describe("ClaimCountPage.vue pay patient created()", () => {
   let wrapper;
-  let $route;
-  let $router;
 
   beforeEach(() => {
-    $route = {
-      value: {
-        path: "/potato-csr",
-      },
-    };
-    $router = {
-      $route,
-      currentRoute: $route,
-      push: vi.fn(),
-    };
     wrapper = mount(Page, {
       global: {
         plugins: [store],
-        mocks: {
-          $route,
-          $router,
-        }
+        mocks: mockRouterCSR,
       },
     });
   });
@@ -189,29 +174,26 @@ describe("ClaimCountPage.vue pay patient created()", () => {
 
 describe("ClaimCountPage.vue pay patient validateFields() part 1 (invalid)", () => {
   let wrapper;
-  let $route;
   let $router;
   let spyOnRouter;
   let spyOnDispatch;
 
   beforeEach(() => {
-    $route = {
-      value: {
-        path: "/potato-csr",
-      },
-    };
+    //using a local mock router to make spying easier
     $router = {
-      $route,
-      currentRoute: $route,
+      currentRoute: {
+        value: {
+          path: "/potato-csr",
+        },
+      },
       push: vi.fn(),
     };
     wrapper = mount(Page, {
       global: {
         plugins: [store],
         mocks: {
-          $route,
           $router,
-        }
+        },
       },
     });
     spyOnDispatch = vi.spyOn(wrapper.vm.$store, "dispatch");
@@ -259,21 +241,19 @@ describe("ClaimCountPage.vue pay patient validateFields() part 1 (invalid)", () 
 
 describe("ClaimCountPage.vue pay patient validateFields() part 2 (valid)", () => {
   let wrapper;
-  let $route;
   let $router;
   let $store;
   let spyOnRouter;
   let spyOnDispatch;
 
   beforeEach(() => {
-    $route = {
-      value: {
-        path: "/potato-csr",
-      }
-    };
+    //using local mocks to make spying easier
     $router = {
-      $route,
-      currentRoute: $route,
+      currentRoute: {
+        value: {
+          path: "/potato-csr",
+        },
+      },
       push: vi.fn(),
     };
     $store = {
@@ -282,6 +262,7 @@ describe("ClaimCountPage.vue pay patient validateFields() part 2 (valid)", () =>
       },
       dispatch: vi.fn(),
     };
+
     spyOnDispatch = vi.spyOn($store, "dispatch");
     spyOnRouter = vi
       .spyOn($router, "push")
@@ -289,7 +270,6 @@ describe("ClaimCountPage.vue pay patient validateFields() part 2 (valid)", () =>
     wrapper = mount(Page, {
       global: {
         mocks: {
-          $route,
           $router,
           $store,
         },
@@ -361,27 +341,23 @@ describe("ClaimCountPage.vue pay patient validateFields() part 2 (valid)", () =>
 
 describe("ClaimCountPage.vue pay patient beforeRouteLeave(to, from, next)", () => {
   let wrapper;
-  let $route;
   let $router;
 
   beforeEach(() => {
-    $route = {
-      value: {
-        path: "/potato-csr",
-      }
-    };
     $router = {
-      $route,
-      currentRoute: $route,
+      currentRoute: {
+        value: {
+          path: "/potato-csr",
+        },
+      },
       push: vi.fn(),
     };
     wrapper = mount(Page, {
       global: {
         plugins: [store],
         mocks: {
-          $route,
           $router,
-        }
+        },
       },
     });
   });

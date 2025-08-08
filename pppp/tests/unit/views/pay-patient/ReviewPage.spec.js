@@ -14,6 +14,7 @@ import apiService from "@/services/api-service";
 import pageStateService from "@/services/page-state-service";
 import { getConvertedPath } from "@/helpers/url";
 import { payPatientRoutes, payPatientRouteStepOrder } from "@/router/routes";
+import * as scrollHelper from "@/helpers/scroll"; 
 
 const mockResponse = {
   data: {
@@ -61,9 +62,6 @@ const mockResponseDBErrorPrnPresent = {
 };
 
 const mockRouter = {
-  $route: {
-    path: "/",
-  },
   $router: {
     push: vi.fn(),
     currentRoute: {
@@ -75,9 +73,6 @@ const mockRouter = {
 };
 
 const mockRouterCSR = {
-  $route: {
-    path: "/",
-  },
   $router: {
     push: vi.fn(),
     currentRoute: {
@@ -130,10 +125,8 @@ vi
   .spyOn(apiService, "submitPayPatientApplication")
   .mockImplementation(() => Promise.resolve(mockResponse));
 
-const scrollHelper = require("@/helpers/scroll");
-
-const spyOnScrollTo = vi.spyOn(scrollHelper, "scrollTo");
-const spyOnScrollToError = vi.spyOn(scrollHelper, "scrollToError");
+const spyOnScrollTo = vi.spyOn(scrollHelper, "scrollTo").mockImplementation(() => Promise.resolve("scrolled"));;
+const spyOnScrollToError = vi.spyOn(scrollHelper, "scrollToError").mockImplementation(() => Promise.resolve("scrolled to error"));;
 
 const spyOnGetTopScrollPosition = vi
   .spyOn(scrollHelper, "getTopScrollPosition")
@@ -171,24 +164,9 @@ describe("ReviewPage.vue pay patient", () => {
     store = createStore(storeTemplateC);
     wrapper = mount(Page, {
       global: {
-        plugins: [store],
-        mocks: mockRouter,
+        plugins: [store, router],
       },
     });
-
-    vi.spyOn(wrapper.vm.$store, "dispatch");
-
-    vi
-      .spyOn(spaEnvService, "loadEnvs")
-      .mockImplementation(() => Promise.resolve("loaded"));
-
-    vi
-      .spyOn(logService, "logNavigation")
-      .mockImplementation(() => Promise.resolve("logged"));
-
-    // wrapper.vm.$options.created.forEach((hook) => {
-    //   hook.call(wrapper.vm);
-    // });
   });
 
   afterEach(() => {
@@ -209,15 +187,9 @@ describe("ReviewPage.vue pay patient created()", () => {
     store = createStore(storeTemplateC);
     wrapper = mount(Page, {
       global: {
-        plugins: [store],
-        mocks: mockRouter,
+        plugins: [store, router],
       },
     });
-    vi.spyOn(wrapper.vm.$store, "dispatch");
-
-    vi
-      .spyOn(spaEnvService, "loadEnvs")
-      .mockImplementation(() => Promise.resolve("loaded"));
   });
 
   afterEach(() => {
@@ -291,8 +263,7 @@ describe("ReviewPage.vue pay patient submitForm()", () => {
     store = createStore(storeTemplateN);
     wrapper = mount(Page, {
       global: {
-        plugins: [store],
-        mocks: mockRouter,
+        plugins: [store, router],
       },
     });
     spyOnDispatch = vi.spyOn(wrapper.vm.$store, "dispatch");
@@ -306,10 +277,6 @@ describe("ReviewPage.vue pay patient submitForm()", () => {
       wrapper.vm,
       "navigateToSubmissionErrorPage"
     );
-
-    vi
-      .spyOn(spaEnvService, "loadEnvs")
-      .mockImplementation(() => Promise.resolve("loaded"));
   });
 
   afterEach(() => {
@@ -426,10 +393,6 @@ describe("ReviewPage.vue pay patient navigateToSubmissionPage()", () => {
     });
     vi.spyOn(wrapper.vm.$store, "dispatch");
 
-    vi
-      .spyOn(spaEnvService, "loadEnvs")
-      .mockImplementation(() => Promise.resolve("loaded"));
-
     spyOnRouter = vi
       .spyOn(router, "push")
       .mockImplementation(() => Promise.resolve("pushed"));
@@ -477,11 +440,6 @@ describe("ReviewPage.vue pay patient navigateToSubmissionErrorPage()", () => {
         plugins: [store, router],
       },
     });
-    vi.spyOn(wrapper.vm.$store, "dispatch");
-
-    vi
-      .spyOn(spaEnvService, "loadEnvs")
-      .mockImplementation(() => Promise.resolve("loaded"));
 
     spyOnRouter = vi
       .spyOn(router, "push")
@@ -525,8 +483,7 @@ describe("ReviewPage.vue beforeRouteLeave(to, from, next)", () => {
     store = createStore(storeTemplateN);
     wrapper = mount(Page, {
       global: {
-        plugins: [store],
-        mocks: mockRouterCSR,
+        plugins: [store, router],
       },
     });
   });

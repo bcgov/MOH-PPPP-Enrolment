@@ -8,15 +8,11 @@ import * as module2 from "../../../src/store/modules/pay-patient-form";
 import * as module3 from "../../../src/store/modules/pay-practitioner-form";
 import pageStateService from "@/services/page-state-service";
 import { routeCollection } from "@/router/index";
-
-const scrollHelper = require("@/helpers/scroll");
+import * as scrollHelper from "@/helpers/scroll";
 
 const spyOnSetPageComplete = vi
   .spyOn(pageStateService, "setPageComplete")
   .mockImplementation(() => Promise.resolve("set"));
-vi
-  .spyOn(pageStateService, "visitPage")
-  .mockImplementation(() => Promise.resolve("visited"));
 
 vi.mock("@/helpers/scroll", () => ({
   scrollTo: vi.fn(),
@@ -26,9 +22,10 @@ vi.mock("@/helpers/scroll", () => ({
 const spyOnScrollTo = vi
   .spyOn(scrollHelper, "scrollTo")
   .mockImplementation(() => Promise.resolve("scrolled"));
+
 const spyOnScrollToElement = vi
   .spyOn(scrollHelper, "scrollToElement")
-  .mockImplementation(() => Promise.resolve("scrolled"));
+  .mockImplementation(() => Promise.resolve("scrolled to element"));
 
 const storeTemplate = {
   modules: {
@@ -99,13 +96,35 @@ const patientState2 = {
 storeTemplate.modules.payPatientForm.state = cloneDeep(patientState);
 storeTemplate2.modules.payPatientForm.state = cloneDeep(patientState2);
 
+const router = createRouter({
+  history: createWebHistory(),
+  routes: routeCollection,
+});
+
+const mockRouter = {
+  $router: {
+    push: vi.fn(),
+    currentRoute: {
+      value: {
+        path: "/pay-patient/review",
+      },
+    },
+  },
+};
+
+const mockRouterCSR = {
+  $router: {
+    push: vi.fn(),
+    currentRoute: {
+      value: {
+        path: "/pay-patient-csr/review",
+      },
+    },
+  },
+};
 //-------COMPUTED-------
 describe("ReviewTableList patient", () => {
   it("renders", () => {
-    const router = createRouter({
-      history: createWebHistory(),
-      routes: routeCollection,
-    });
     const store = createStore(storeTemplate);
     const wrapper = mount(Page, {
       global: {
@@ -126,15 +145,7 @@ describe("ReviewTableList patient planReferenceNumberData() CSR", () => {
     wrapper = mount(Page, {
       global: {
         plugins: [store],
-        mocks: {
-          $router: {
-            currentRoute: {
-              value: {
-                path: "/potato-csr",
-              },
-            },
-          },
-        },
+        mocks: mockRouterCSR,
       },
     });
     const result = wrapper.vm.$store.state.payPatientForm.planReferenceNumber;
@@ -149,15 +160,7 @@ describe("ReviewTableList patient planReferenceNumberData() CSR", () => {
     wrapper = mount(Page, {
       global: {
         plugins: [store],
-        mocks: {
-          $router: {
-            currentRoute: {
-              value: {
-                path: "/potato",
-              },
-            },
-          },
-        },
+        mocks: mockRouter,
       },
     });
     const result = wrapper.vm.$store.state.payPatientForm.planReferenceNumber;
@@ -222,15 +225,10 @@ describe("ReviewTableList patient patientData()", () => {
 
 describe("ReviewTableList patient paymentMailAddressData()", () => {
   let store;
-  let router;
   let wrapper;
 
   beforeEach(() => {
     store = createStore(storeTemplate);
-    router = createRouter({
-      history: createWebHistory(),
-      routes: routeCollection,
-    });
     wrapper = mount(Page, {
       global: {
         plugins: [store, router],
@@ -288,15 +286,10 @@ describe("ReviewTableList patient paymentMailAddressData()", () => {
 
 describe("ReviewTableList patient vehicleAccidentData()", () => {
   let store;
-  let router;
   let wrapper;
 
   beforeEach(() => {
     store = createStore(storeTemplate);
-    router = createRouter({
-      history: createWebHistory(),
-      routes: routeCollection,
-    });
     wrapper = mount(Page, {
       global: {
         plugins: [store, router],
@@ -323,15 +316,10 @@ describe("ReviewTableList patient vehicleAccidentData()", () => {
 
 describe("ReviewTableList patient claimInfoData()", () => {
   let store;
-  let router;
   let wrapper;
 
   beforeEach(() => {
     store = createStore(storeTemplate);
-    router = createRouter({
-      history: createWebHistory(),
-      routes: routeCollection,
-    });
     wrapper = mount(Page, {
       global: {
         plugins: [store, router],
@@ -351,15 +339,10 @@ describe("ReviewTableList patient claimInfoData()", () => {
 
 describe("ReviewTableList patient medicalServiceClaims()", () => {
   let store;
-  let router;
   let wrapper;
 
   beforeEach(() => {
     store = createStore(storeTemplate);
-    router = createRouter({
-      history: createWebHistory(),
-      routes: routeCollection,
-    });
     wrapper = mount(Page, {
       global: {
         plugins: [store, router],
@@ -484,15 +467,10 @@ describe("ReviewTableList patient medicalServiceClaims()", () => {
 
 describe("ReviewTableList patient practitionerData()", () => {
   let store;
-  let router;
   let wrapper;
 
   beforeEach(() => {
     store = createStore(storeTemplate);
-    router = createRouter({
-      history: createWebHistory(),
-      routes: routeCollection,
-    });
     wrapper = mount(Page, {
       global: {
         plugins: [store, router],
@@ -561,15 +539,10 @@ describe("ReviewTableList patient practitionerData()", () => {
 
 describe("ReviewTableList patient referredByData()", () => {
   let store;
-  let router;
   let wrapper;
 
   beforeEach(() => {
     store = createStore(storeTemplate);
-    router = createRouter({
-      history: createWebHistory(),
-      routes: routeCollection,
-    });
     wrapper = mount(Page, {
       global: {
         plugins: [store, router],
@@ -611,15 +584,10 @@ describe("ReviewTableList patient referredByData()", () => {
 
 describe("ReviewTableList patient referredToData()", () => {
   let store;
-  let router;
   let wrapper;
 
   beforeEach(() => {
     store = createStore(storeTemplate);
-    router = createRouter({
-      history: createWebHistory(),
-      routes: routeCollection,
-    });
     wrapper = mount(Page, {
       global: {
         plugins: [store, router],
@@ -669,34 +637,18 @@ describe("ReviewTableList patient referredToData()", () => {
 describe("ReviewTableList patient navigateToClaimCountPage()", () => {
   let store;
   let wrapper;
-  let mockRoute;
-  let mockRouter;
   let spyOnRouter;
 
   beforeEach(() => {
-    mockRoute = {
-      path: "/potato",
-    };
-    mockRouter = {
-      push: vi.fn(),
-      currentRoute: {
-        value: {
-          path: "/potato",
-        },
-      },
-    };
     store = createStore(storeTemplate);
     wrapper = mount(Page, {
       global: {
         plugins: [store],
-        mocks: {
-          $route: mockRoute,
-          $router: mockRouter,
-        },
+        mocks: mockRouter,
       },
     });
     spyOnRouter = vi
-      .spyOn(mockRouter, "push")
+      .spyOn(mockRouter.$router, "push")
       .mockImplementation(() => Promise.resolve("pushed"));
   });
 
@@ -724,34 +676,18 @@ describe("ReviewTableList patient navigateToClaimCountPage()", () => {
 describe("ReviewTableList patient navigateToClaimCountPage() (part 2 CSR)", () => {
   let store;
   let wrapper;
-  let mockRoute;
-  let mockRouter;
   let spyOnRouter;
 
   beforeEach(() => {
-    mockRoute = {
-      path: "/potato-csr",
-    };
-    mockRouter = {
-      push: vi.fn(),
-      currentRoute: {
-        value: {
-          path: "/potato-csr",
-        },
-      },
-    };
     store = createStore(storeTemplate);
     wrapper = mount(Page, {
       global: {
         plugins: [store],
-        mocks: {
-          $route: mockRoute,
-          $router: mockRouter,
-        },
+        mocks: mockRouterCSR,
       },
     });
     spyOnRouter = vi
-      .spyOn(mockRouter, "push")
+      .spyOn(mockRouterCSR.$router, "push")
       .mockImplementation(() => Promise.resolve("pushed"));
   });
 
@@ -781,36 +717,20 @@ describe("ReviewTableList patient navigateToClaimCountPage() (part 2 CSR)", () =
 describe("ReviewTableList patient navigateToMainFormPage(anchorName)", () => {
   let store;
   let wrapper;
-  let mockRoute;
-  let mockRouter;
   let spyOnRouter;
 
   const anchorName = "anchorName";
 
   beforeEach(() => {
-    mockRoute = {
-      path: "/potato",
-    };
-    mockRouter = {
-      push: vi.fn(),
-      currentRoute: {
-        value: {
-          path: "/potato",
-        },
-      },
-    };
     store = createStore(storeTemplate);
     wrapper = mount(Page, {
       global: {
         plugins: [store],
-        mocks: {
-          $route: mockRoute,
-          $router: mockRouter,
-        },
+        mocks: mockRouter,
       },
     });
     spyOnRouter = vi
-      .spyOn(mockRouter, "push")
+      .spyOn(mockRouter.$router, "push")
       .mockImplementation(() => Promise.resolve("pushed"));
   });
 
@@ -839,36 +759,20 @@ describe("ReviewTableList patient navigateToMainFormPage(anchorName)", () => {
 describe("ReviewTableList patient navigateToMainFormPage(anchorName) (part 2 CSR)", () => {
   let store;
   let wrapper;
-  let mockRoute;
-  let mockRouter;
   let spyOnRouter;
 
   const anchorName = "anchorName";
 
   beforeEach(() => {
-    mockRoute = {
-      path: "/potato-csr",
-    };
-    mockRouter = {
-      push: vi.fn(),
-      currentRoute: {
-        value: {
-          path: "/potato-csr",
-        },
-      },
-    };
     store = createStore(storeTemplate);
     wrapper = mount(Page, {
       global: {
         plugins: [store],
-        mocks: {
-          $route: mockRoute,
-          $router: mockRouter,
-        },
+        mocks: mockRouterCSR,
       },
     });
     spyOnRouter = vi
-      .spyOn(mockRouter, "push")
+      .spyOn(mockRouterCSR.$router, "push")
       .mockImplementation(() => Promise.resolve("pushed"));
   });
 
@@ -900,27 +804,12 @@ describe("ReviewTableList patient getMedicalServiceClaimTitle(index)", () => {
   let store;
   let wrapper;
 
-  const mockRoute = {
-    path: "/potato",
-  };
-  const mockRouter = {
-    push: vi.fn(),
-    currentRoute: {
-      value: {
-        path: "/potato",
-      },
-    },
-  };
-
   it("returns 1", () => {
     store = createStore(storeTemplate);
     wrapper = mount(Page, {
       global: {
         plugins: [store],
-        mocks: {
-          $route: mockRoute,
-          $router: mockRouter,
-        },
+        mocks: mockRouter,
       },
     });
     const result = wrapper.vm.getMedicalServiceClaimTitle(0);
@@ -932,10 +821,7 @@ describe("ReviewTableList patient getMedicalServiceClaimTitle(index)", () => {
     wrapper = mount(Page, {
       global: {
         plugins: [store],
-        mocks: {
-          $route: mockRoute,
-          $router: mockRouter,
-        },
+        mocks: mockRouter,
       },
     });
     const result = wrapper.vm.getMedicalServiceClaimTitle(0);

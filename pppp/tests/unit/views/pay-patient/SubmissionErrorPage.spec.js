@@ -1,7 +1,6 @@
 import { shallowMount, mount } from "@vue/test-utils";
 import { createStore } from "vuex";
 import { createRouter, createWebHistory } from "vue-router";
-import Vuex from "vuex";
 import { cloneDeep } from "lodash";
 import Page from "@/views/pay-patient/SubmissionErrorPage.vue";
 import * as module1 from "../../../../src/store/modules/app";
@@ -13,6 +12,7 @@ import pageStateService from "@/services/page-state-service";
 import { getConvertedPath } from "@/helpers/url";
 import { payPatientRoutes, payPatientRouteStepOrder } from "@/router/routes";
 import { routeCollection } from "@/router/index";
+import * as scrollHelper from "@/helpers/scroll"; 
 
 const next = vi.fn();
 
@@ -29,9 +29,7 @@ const router = createRouter({
   routes: routeCollection,
 });
 
-const scrollHelper = require("@/helpers/scroll");
-
-const spyOnScrollTo = vi.spyOn(scrollHelper, "scrollTo");
+const spyOnScrollTo = vi.spyOn(scrollHelper, "scrollTo").mockImplementation(() => Promise.resolve("scrolled"));;
 
 const spyOnLogNavigation = vi
   .spyOn(logService, "logNavigation")
@@ -46,33 +44,14 @@ vi.spyOn(window, "scrollTo").mockImplementation(vi.fn);
 describe("SubmissionErrorPage pay patient", () => {
   let store;
   let wrapper;
-  let $route;
-  let $router;
 
   beforeEach(() => {
     store = createStore(storeTemplate);
-    $route = {
-      path: "/potato-csr",
-    };
-    $router = {
-      $route,
-      currentRoute: $route,
-      push: vi.fn(),
-    };
     wrapper = mount(Page, {
       global: {
-        plugins: [store],
-      },
-      mocks: {
-        $route,
-        $router,
+        plugins: [store, router],
       },
     });
-    vi.spyOn(wrapper.vm.$store, "dispatch");
-
-    vi
-      .spyOn(spaEnvService, "loadEnvs")
-      .mockImplementation(() => Promise.resolve("loaded"));
   });
 
   afterEach(() => {
@@ -88,33 +67,14 @@ describe("SubmissionErrorPage pay patient", () => {
 describe("SubmissionErrorPage pay patient created()", () => {
   let store;
   let wrapper;
-  let $route;
-  let $router;
 
   beforeEach(() => {
     store = createStore(storeTemplate);
-    $route = {
-      path: "/potato-csr",
-    };
-    $router = {
-      $route,
-      currentRoute: $route,
-      push: vi.fn(),
-    };
     wrapper = shallowMount(Page, {
       global: {
-        plugins: [store],
-      },
-      mocks: {
-        $route,
-        $router,
+        plugins: [store, router],
       },
     });
-    vi.spyOn(wrapper.vm.$store, "dispatch");
-
-    vi
-      .spyOn(spaEnvService, "loadEnvs")
-      .mockImplementation(() => Promise.resolve("loaded"));
   });
 
   afterEach(() => {
@@ -130,26 +90,12 @@ describe("SubmissionErrorPage pay patient created()", () => {
 describe("SubmissionErrorPage.vue beforeRouteLeave(to, from, next)", () => {
   let store;
   let wrapper;
-  let $route;
-  let $router;
 
   beforeEach(() => {
     store = createStore(storeTemplate);
-    $route = {
-      path: "/potato-csr",
-    };
-    $router = {
-      $route,
-      currentRoute: $route,
-      push: vi.fn(),
-    };
     wrapper = mount(Page, {
       global: {
         plugins: [store, router],
-      },
-      mocks: {
-        $route,
-        $router,
       },
     });
   });

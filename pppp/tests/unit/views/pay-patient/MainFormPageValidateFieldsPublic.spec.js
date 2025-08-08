@@ -1,12 +1,20 @@
 import { mount } from "@vue/test-utils";
 import { createStore } from "vuex";
 import { cloneDeep } from "lodash";
+import { createRouter, createWebHistory } from "vue-router";
+import { routeCollection } from "@/router/index";
 import Page from "@/views/pay-patient/MainFormPage.vue";
 import * as module1 from "../../../../src/store/modules/app";
 import * as module2 from "../../../../src/store/modules/pay-patient-form";
 import * as module3 from "../../../../src/store/modules/pay-practitioner-form";
 import * as dummyDataValid from "../../../../src/store/states/pay-patient-form-dummy-data";
 import apiService from "@/services/api-service";
+import * as scrollHelper from "@/helpers/scroll";
+
+const router = createRouter({
+  history: createWebHistory(),
+  routes: routeCollection,
+});
 
 const testDateFutureYear = new Date();
 testDateFutureYear.setFullYear(testDateFutureYear.getFullYear() + 1);
@@ -197,32 +205,24 @@ const failingData = {
   referredToPractitionerNumber: "",
 };
 
+//required to prevent ECONNREFUSED errors
 vi.mock("axios", () => ({
-  get: vi.fn(),
-  post: vi.fn(() => {
-    return Promise.resolve(mockBackendValidationResponse);
-  }),
+  default: {
+    get: vi.fn(),
+    post: vi.fn(() => {
+      return Promise.resolve();
+    }),
+  } 
 }));
 
 const spyOnAPIService = vi
   .spyOn(apiService, "validateApplication")
   .mockImplementation(() => Promise.resolve(mockBackendValidationResponse));
 
-const scrollHelper = require("@/helpers/scroll");
+//required to prevent "error: not implemented: window.scrollTo" errors
+  vi.spyOn(scrollHelper, "scrollTo").mockImplementation(() => Promise.resolve("scrolled"));;
 
-vi.mock("@/helpers/scroll", () => ({
-  scrollTo: vi.fn(),
-  scrollToError: vi.fn(),
-  getTopScrollPosition: vi.fn(),
-}));
-
-vi.spyOn(window, "scrollTo").mockImplementation(vi.fn);
-
-const spyOnScrollToError = vi.spyOn(scrollHelper, "scrollToError");
-
-// const localVue = createLocalVue();
-// localVue.use(Vuex);
-// localVue.use(Vuelidate);
+const spyOnScrollToError = vi.spyOn(scrollHelper, "scrollToError").mockImplementation(() => Promise.resolve("scrolled to error"));
 
 const storeTemplate = {
   modules: {
@@ -235,20 +235,6 @@ const storeTemplate = {
 const patientState = cloneDeep(dummyDataValid.default);
 storeTemplate.modules.payPatientForm.state = cloneDeep(patientState);
 
-const mockRouter = {
-  $route: {
-    path: "/",
-  },
-  $router: {
-    push: vi.fn(),
-    currentRoute: {
-      value: {
-        path: "/pay-patient/main-form",
-      },
-    },
-  },
-};
-
 describe("MainFormPage.vue validateFields(), public", () => {
   let store;
   let wrapper;
@@ -258,8 +244,7 @@ describe("MainFormPage.vue validateFields(), public", () => {
     store = createStore(storeTemplate);
     wrapper = mount(Page, {
       global: {
-        plugins: [store],
-        mocks: mockRouter,
+        plugins: [store, router],
       },
     });
     spyOnNavigateToNextPage = vi.spyOn(wrapper.vm, "navigateToNextPage");

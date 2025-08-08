@@ -1,8 +1,6 @@
-import { shallowMount, createLocalVue } from "@vue/test-utils";
 import { mount } from "@vue/test-utils";
 import { createStore } from "vuex";
 import Vuex from "vuex";
-// import Vuelidate from "vuelidate";
 import { cloneDeep } from "lodash";
 import Page from "@/views/pay-practitioner/MainFormPage.vue";
 import * as module1 from "../../../../src/store/modules/app";
@@ -10,6 +8,7 @@ import * as module2 from "../../../../src/store/modules/pay-patient-form";
 import * as module3 from "../../../../src/store/modules/pay-practitioner-form";
 import * as dummyDataValid from "../../../../src/store/states/pay-practitioner-form-dummy-data";
 import apiService from "@/services/api-service";
+import * as scrollHelper from "@/helpers/scroll"; 
 
 const testDate = new Date();
 const adjustedTestDateMonth = testDate.getMonth() + 1;
@@ -245,32 +244,24 @@ const failingData = {
   referredToPractitionerNumber: "",
 };
 
+//required to prevent ECONNREFUSED errors
 vi.mock("axios", () => ({
-  get: vi.fn(),
-  post: vi.fn(() => {
-    return Promise.resolve(mockBackendValidationResponse);
-  }),
+  default: {
+    get: vi.fn(),
+    post: vi.fn(() => {
+      return Promise.resolve();
+    }),
+  } 
 }));
 
 const spyOnAPIService = vi
   .spyOn(apiService, "validateApplication")
   .mockImplementation(() => Promise.resolve(mockBackendValidationResponse));
 
-const scrollHelper = require("@/helpers/scroll");
+//required to prevent console errors
+vi.spyOn(scrollHelper, "scrollTo").mockImplementation(() => Promise.resolve("scrolled"));;
 
-vi.mock("@/helpers/scroll", () => ({
-  scrollTo: vi.fn(),
-  scrollToError: vi.fn(),
-  getTopScrollPosition: vi.fn(),
-}));
-
-vi.spyOn(window, "scrollTo").mockImplementation(vi.fn);
-
-const spyOnScrollToError = vi.spyOn(scrollHelper, "scrollToError");
-
-// const localVue = createLocalVue();
-// localVue.use(Vuex);
-// localVue.use(Vuelidate);
+const spyOnScrollToError = vi.spyOn(scrollHelper, "scrollToError").mockImplementation(() => Promise.resolve("scrolled to error"));;
 
 const storeTemplate = {
   modules: {
@@ -294,17 +285,11 @@ const mockRouterCSR = {
 
 describe("MainFormPage.vue validateFields(), CSR", () => {
   // eslint-disable-next-line
-  let state;
   let store;
   let wrapper;
   let spyOnNavigateToNextPage;
 
   beforeEach(() => {
-    state = {
-      applicationUuid: null,
-    };
-    store = new Vuex.Store(storeTemplate);
-
     store = createStore(storeTemplate);
     wrapper = mount(Page, {
       global: {

@@ -2,10 +2,12 @@ import logService from "@/services/log-service";
 import axios from "axios";
 
 vi.mock("axios", () => ({
-  get: vi.fn(),
-  post: vi.fn(() => {
-    return Promise.resolve();
-  }),
+  default: {
+    get: vi.fn(),
+    post: vi.fn(() => {
+      return Promise.resolve();
+    }),
+  } 
 }));
 
 const spyOnAxiosPost = vi.spyOn(axios, "post");

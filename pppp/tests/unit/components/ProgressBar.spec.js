@@ -1,4 +1,4 @@
-import { mount } from "@vue/test-utils";
+import { shallowMount } from "@vue/test-utils";
 import { createStore } from "vuex";
 import { createRouter, createWebHistory } from "vue-router";
 import Component from "@/components/ProgressBar.vue";
@@ -10,6 +10,7 @@ import * as module1 from "../../../src/store/modules/app";
 import * as module2 from "../../../src/store/modules/pay-patient-form";
 import * as module3 from "../../../src/store/modules/pay-practitioner-form";
 import { routeCollection } from "@/router/index";
+import * as scrollHelper from "@/helpers/scroll"; 
 
 const storeTemplate = {
   modules: {
@@ -18,10 +19,6 @@ const storeTemplate = {
     payPractitionerForm: cloneDeep(module3),
   },
 };
-
-const scrollHelper = require("@/helpers/scroll");
-// const addressHelper = require("@/helpers/address");
-// const stringHelper = require("@/helpers/string");
 
 vi
   .spyOn(pageStateService, "setPageComplete")
@@ -47,9 +44,7 @@ const spyOnRouter = vi
   .spyOn(router, "push")
   .mockImplementation(() => Promise.resolve("pushed"));
 
-const spyOnScrollTo = vi.spyOn(scrollHelper, "scrollTo");
-
-// const spyOnScrollToError = vi.spyOn(scrollHelper, "scrollToError");
+const spyOnScrollTo = vi.spyOn(scrollHelper, "scrollTo").mockImplementation(() => Promise.resolve("scrolled"));
 
 describe("ProgressBar.vue", () => {
   let wrapper;
@@ -57,9 +52,12 @@ describe("ProgressBar.vue", () => {
 
   beforeEach(() => {
     store = createStore(storeTemplate);
-    wrapper = mount(Component, {
+    wrapper = shallowMount(Component, {
       global: {
         plugins: [store, router],
+        stubs: {
+          FontAwesomeIcon:{ template: '<div>Stubbed Global Component</div>' }
+        }
       },
       props: {
         currentPath: routeStepOrder[1].path,
@@ -84,9 +82,12 @@ describe("ProgressBar.vue onClickLink()", () => {
 
   beforeEach(() => {
     store = createStore(storeTemplate);
-    wrapper = mount(Component, {
+    wrapper = shallowMount(Component, {
       global: {
         plugins: [store, router],
+        stubs: {
+          FontAwesomeIcon:{ template: '<div>Stubbed Global Component</div>' }
+        }
       },
       props: {
         currentPath: routeStepOrder[1].path,
@@ -169,9 +170,12 @@ describe("ProgressBar.vue openDropdown() and closeDropdown()", () => {
 
   beforeEach(() => {
     store = createStore(storeTemplate);
-    wrapper = mount(Component, {
+    wrapper = shallowMount(Component, {
       global: {
         plugins: [store, router],
+        stubs: {
+          FontAwesomeIcon:{ template: '<div>Stubbed Global Component</div>' }
+        }
       },
       props: {
         currentPath: routeStepOrder[1].path,
@@ -210,9 +214,12 @@ describe("ProgressBar.vue getLinkStyles()", () => {
 
   beforeEach(() => {
     store = createStore(storeTemplate);
-    wrapper = mount(Component, {
+    wrapper = shallowMount(Component, {
       global: {
         plugins: [store, router],
+        stubs: {
+          FontAwesomeIcon:{ template: '<div>Stubbed Global Component</div>' }
+        }
       },
       props: {
         currentPath: routeStepOrder[1].path,

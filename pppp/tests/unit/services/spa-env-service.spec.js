@@ -2,10 +2,12 @@ import spaEnvService from "@/services/spa-env-service";
 import axios from "axios";
 
 vi.mock("axios", () => ({
-  get: vi.fn(),
-  post: vi.fn(() => {
-    return Promise.resolve();
-  }),
+  default: {
+    get: vi.fn(),
+    post: vi.fn(() => {
+      return Promise.resolve();
+    }),
+  } 
 }));
 
 const mockResponse = {
@@ -18,48 +20,6 @@ const mockResponse = {
   },
   status: 200,
   statusText: "OK",
-  headers: {
-    "access-control-allow-credentials": "true",
-    "access-control-allow-headers":
-      "Accept,Authorization,Cache-Control,Content-Type,DNT,If-Modified-Since,Keep-Alive,Origin,User-Agent,X-Requested-With",
-    "access-control-allow-methods": "GET, POST, PUT, DELETE, OPTIONS",
-    "access-control-allow-origin": "https://my.gov.bc.ca",
-    "access-control-expose-headers": "Authorization",
-    "cache-control": "no-store",
-    connection: "close",
-    "content-length": "234",
-    "content-security-policy":
-      "default-src * data: blob: filesystem: 'unsafe-inline' 'unsafe-eval'",
-    "content-type": "application/json; charset=utf-8",
-    date: "Fri, 01 Oct 2021 22:57:39 GMT",
-    etag: 'W/"ea-tzf3/NWQkLPWx1npl0ySoE7ObH0"',
-    pragma: "no-cache",
-    server: "nginx",
-    "strict-transport-security": "max-age=86400; includeSubDomains",
-    "x-content-type-options": "nosniff",
-    "x-frame-options": "DENY",
-    "x-powered-by": "Express",
-    "x-xss-protection": "1",
-  },
-  config: {
-    url: "/pppp/api/env",
-    method: "post",
-    data: null,
-    headers: {
-      Accept: "application/json, text/plain, */*",
-      "Content-Type": "application/x-www-form-urlencoded",
-      SPA_ENV_NAME:
-        '{"SPA_ENV_PPPP_MAINTENANCE_FLAG":"","SPA_ENV_PPPP_MAINTENANCE_START":"","SPA_ENV_PPPP_MAINTENANCE_END":"","SPA_ENV_PPPP_MAINTENANCE_MESSAGE":""}',
-    },
-    transformRequest: [null],
-    transformResponse: [null],
-    timeout: 0,
-    xsrfCookieName: "XSRF-TOKEN",
-    xsrfHeaderName: "X-XSRF-TOKEN",
-    maxContentLength: -1,
-    maxBodyLength: -1,
-  },
-  request: {},
 };
 
 axios.post.mockImplementation(() => Promise.resolve(mockResponse));

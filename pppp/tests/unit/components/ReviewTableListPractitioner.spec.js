@@ -8,27 +8,19 @@ import * as module2 from "../../../src/store/modules/pay-patient-form";
 import * as module3 from "../../../src/store/modules/pay-practitioner-form";
 import pageStateService from "@/services/page-state-service";
 import { routeCollection } from "@/router/index";
-
-const scrollHelper = require("@/helpers/scroll");
+import * as scrollHelper from "@/helpers/scroll";
 
 const spyOnSetPageComplete = vi
   .spyOn(pageStateService, "setPageComplete")
   .mockImplementation(() => Promise.resolve("set"));
-vi
-  .spyOn(pageStateService, "visitPage")
-  .mockImplementation(() => Promise.resolve("visited"));
-
-vi.mock("@/helpers/scroll", () => ({
-  scrollTo: vi.fn(),
-  scrollToElement: vi.fn(),
-}));
 
 const spyOnScrollTo = vi
   .spyOn(scrollHelper, "scrollTo")
   .mockImplementation(() => Promise.resolve("scrolled"));
+
 const spyOnScrollToElement = vi
   .spyOn(scrollHelper, "scrollToElement")
-  .mockImplementation(() => Promise.resolve("scrolled"));
+  .mockImplementation(() => Promise.resolve("scrolled to element"));
 
 const storeTemplate = {
   modules: {
@@ -208,6 +200,11 @@ storeTemplate.modules.payPractitionerForm.state = cloneDeep(practitionerState);
 storeTemplate2.modules.payPractitionerForm.state =
   cloneDeep(practitionerState2);
 
+const router = createRouter({
+  history: createWebHistory(),
+  routes: routeCollection,
+});
+
 //-------COMPUTED-------
 describe("ReviewTableList practitioner", () => {
   it("renders", () => {
@@ -229,15 +226,8 @@ describe("ReviewTableList practitioner", () => {
 describe("ReviewTableList practitioner planReferenceNumberData() CSR", () => {
   let store;
   let wrapper;
-  let router;
 
   it("returns plan reference number in store when path isCSR", async () => {
-    //please note the route change between this and the next test
-    router = createRouter({
-      history: createWebHistory(),
-      routes: routeCollection,
-    });
-
     store = createStore(storeTemplate);
     wrapper = mount(Page, {
       global: {
@@ -262,11 +252,6 @@ describe("ReviewTableList practitioner planReferenceNumberData() CSR", () => {
   });
 
   it("does not render plan reference number when path is NOT CSR", async () => {
-    router = createRouter({
-      history: createWebHistory(),
-      routes: routeCollection,
-    });
-
     store = createStore(storeTemplate);
     wrapper = mount(Page, {
       global: {
@@ -294,14 +279,9 @@ describe("ReviewTableList practitioner planReferenceNumberData() CSR", () => {
 describe("ReviewTableList practitioner patientData()", () => {
   let store;
   let wrapper;
-  let router;
 
   beforeEach(() => {
     store = createStore(storeTemplate);
-    router = createRouter({
-      history: createWebHistory(),
-      routes: routeCollection,
-    });
     wrapper = mount(Page, {
       global: {
         plugins: [store, router],
@@ -346,14 +326,9 @@ describe("ReviewTableList practitioner patientData()", () => {
 describe("ReviewTableList Practitioner vehicleAccidentData()", () => {
   let store;
   let wrapper;
-  let router;
 
   beforeEach(() => {
     store = createStore(storeTemplate);
-    router = createRouter({
-      history: createWebHistory(),
-      routes: routeCollection,
-    });
     wrapper = mount(Page, {
       global: {
         plugins: [store, router],
@@ -380,14 +355,9 @@ describe("ReviewTableList Practitioner vehicleAccidentData()", () => {
 
 describe("ReviewTableList Practitioner claimInfoData()", () => {
   let store;
-  let router;
   let wrapper;
 
   beforeEach(() => {
-    router = createRouter({
-      history: createWebHistory(),
-      routes: routeCollection,
-    });
     store = createStore(storeTemplate);
     wrapper = mount(Page, {
       global: {
@@ -410,14 +380,9 @@ describe("ReviewTableList Practitioner claimInfoData()", () => {
 describe("ReviewTableList Practitioner medicalServiceClaims()", () => {
   let store;
   let wrapper;
-  let router;
 
   beforeEach(() => {
     store = createStore(storeTemplate);
-    router = createRouter({
-      history: createWebHistory(),
-      routes: routeCollection,
-    });
     wrapper = mount(Page, {
       global: {
         plugins: [store, router],
@@ -543,15 +508,10 @@ describe("ReviewTableList Practitioner medicalServiceClaims()", () => {
 
 describe("ReviewTableList Practitioner practitionerData()", () => {
   let store;
-  let router;
   let wrapper;
 
   beforeEach(() => {
     store = createStore(storeTemplate);
-    router = createRouter({
-      history: createWebHistory(),
-      routes: routeCollection,
-    });
     wrapper = mount(Page, {
       global: {
         plugins: [store, router],
@@ -630,15 +590,10 @@ describe("ReviewTableList Practitioner practitionerData()", () => {
 
 describe("ReviewTableList practitioner referredByData()", () => {
   let store;
-  let router;
   let wrapper;
 
   beforeEach(() => {
     store = createStore(storeTemplate);
-    router = createRouter({
-      history: createWebHistory(),
-      routes: routeCollection,
-    });
     wrapper = mount(Page, {
       global: {
         plugins: [store, router],
@@ -680,15 +635,10 @@ describe("ReviewTableList practitioner referredByData()", () => {
 
 describe("ReviewTableList practitioner referredToData()", () => {
   let store;
-  let router;
   let wrapper;
 
   beforeEach(() => {
     store = createStore(storeTemplate);
-    router = createRouter({
-      history: createWebHistory(),
-      routes: routeCollection,
-    });
     wrapper = mount(Page, {
       global: {
         plugins: [store, router],
@@ -730,15 +680,10 @@ describe("ReviewTableList practitioner referredToData()", () => {
 
 describe("ReviewTableList practitioner hospitalVisitClaims()", () => {
   let store;
-  let router;
   let wrapper;
 
   beforeEach(() => {
     store = createStore(storeTemplate);
-    router = createRouter({
-      history: createWebHistory(),
-      routes: routeCollection,
-    });
     wrapper = mount(Page, {
       global: {
         plugins: [store, router],
@@ -875,14 +820,11 @@ describe("ReviewTableList practitioner hospitalVisitClaims()", () => {
 describe("ReviewTableList practitioner navigateToClaimCountPage()", () => {
   let store;
   let wrapper;
-  let mockRoute;
   let mockRouter;
   let spyOnRouter;
 
   beforeEach(() => {
-    mockRoute = {
-      path: "/potato",
-    };
+    //uses local mockRouter to make spying easier
     mockRouter = {
       push: vi.fn(),
       currentRoute: {
@@ -897,7 +839,6 @@ describe("ReviewTableList practitioner navigateToClaimCountPage()", () => {
       global: {
         plugins: [store],
         mocks: {
-          $route: mockRoute,
           $router: mockRouter,
         },
       },
@@ -931,14 +872,11 @@ describe("ReviewTableList practitioner navigateToClaimCountPage()", () => {
 describe("ReviewTableList practitioner navigateToClaimCountPage() (part 2 CSR)", () => {
   let store;
   let wrapper;
-  let mockRoute;
   let mockRouter;
   let spyOnRouter;
 
   beforeEach(() => {
-    mockRoute = {
-      path: "/potato-csr",
-    };
+    //uses a local mockRouter to make spying easier
     mockRouter = {
       push: vi.fn(),
       currentRoute: {
@@ -952,7 +890,6 @@ describe("ReviewTableList practitioner navigateToClaimCountPage() (part 2 CSR)",
       global: {
         plugins: [store],
         mocks: {
-          $route: mockRoute,
           $router: mockRouter,
         },
       },
@@ -988,16 +925,13 @@ describe("ReviewTableList practitioner navigateToClaimCountPage() (part 2 CSR)",
 describe("ReviewTableList practitioner navigateToMainFormPage(anchorName)", () => {
   let store;
   let wrapper;
-  let mockRoute;
   let mockRouter;
   let spyOnRouter;
 
   const anchorName = "anchorName";
 
   beforeEach(() => {
-    mockRoute = {
-      path: "/potato",
-    };
+    //uses a local mockRouter to make spying easier
     mockRouter = {
       push: vi.fn(),
       currentRoute: {
@@ -1011,7 +945,6 @@ describe("ReviewTableList practitioner navigateToMainFormPage(anchorName)", () =
       global: {
         plugins: [store],
         mocks: {
-          $route: mockRoute,
           $router: mockRouter,
         },
       },
@@ -1048,16 +981,12 @@ describe("ReviewTableList practitioner navigateToMainFormPage(anchorName)", () =
 describe("ReviewTableList practitioner navigateToMainFormPage(anchorName) (part 2 CSR)", () => {
   let store;
   let wrapper;
-  let mockRoute;
   let mockRouter;
   let spyOnRouter;
 
   const anchorName = "anchorName";
 
   beforeEach(() => {
-    mockRoute = {
-      path: "/potato-csr",
-    };
     mockRouter = {
       push: vi.fn(),
       currentRoute: {
@@ -1071,7 +1000,6 @@ describe("ReviewTableList practitioner navigateToMainFormPage(anchorName) (part 
       global: {
         plugins: [store],
         mocks: {
-          $route: mockRoute,
           $router: mockRouter,
         },
       },
@@ -1108,9 +1036,7 @@ describe("ReviewTableList practitioner navigateToMainFormPage(anchorName) (part 
 describe("ReviewTableList practitioner getMedicalServiceClaimTitle(index)", () => {
   let store;
   let wrapper;
-  const mockRoute = {
-    path: "/potato-csr",
-  };
+
   const mockRouter = {
     push: vi.fn(),
     currentRoute: {
@@ -1126,7 +1052,6 @@ describe("ReviewTableList practitioner getMedicalServiceClaimTitle(index)", () =
       global: {
         plugins: [store],
         mocks: {
-          $route: mockRoute,
           $router: mockRouter,
         },
       },
@@ -1141,7 +1066,6 @@ describe("ReviewTableList practitioner getMedicalServiceClaimTitle(index)", () =
       global: {
         plugins: [store],
         mocks: {
-          $route: mockRoute,
           $router: mockRouter,
         },
       },

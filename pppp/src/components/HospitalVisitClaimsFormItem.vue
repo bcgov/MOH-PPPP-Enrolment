@@ -585,13 +585,15 @@ export default {
     };
   },
   validations() {
+    const isCSRRoute = isCSR(this.$router.currentRoute.value.path)
+    const alwaysValidValidator = () => { return true}
     return {
       hospitalVisitDateValidator: hospitalVisitDateValidator(isCSR(this.$router.currentRoute.value.path)),
       hospitalVisitDatePastValidator: hospitalVisitDatePastValidator(isCSR(this.$router.currentRoute.value.path)),
       hospitalVisitDateFutureValidator: hospitalVisitDateFutureValidator(isCSR(this.$router.currentRoute.value.path)),
       hospitalVisitDateToFutureValidator,
       hospitalVisitDateRangeValidator,
-      hospitalVisitDateCutOffValidator: optionalValidator(validateIf(!isCSR(this.$router.currentRoute.value.path), hospitalVisitDateCutOffValidator)),
+      hospitalVisitDateCutOffValidator: isCSRRoute ? alwaysValidValidator : hospitalVisitDateCutOffValidator,
       month: {
         required: requiredIf(() => !isCSR(this.$router.currentRoute.value.path)),
         positiveNumberValidator: optionalValidator(positiveNumberValidator),
@@ -615,7 +617,7 @@ export default {
         required: requiredIf(() => !isCSR(this.$router.currentRoute.value.path)),
         intValidator: optionalValidator(intValidator),
         positiveNumberValidator: optionalValidator(positiveNumberValidator),
-        nonZeroNumberValidator: optionalValidator(validateIf(!isCSR(this.$router.currentRoute.value.path), nonZeroNumberValidator)),
+        nonZeroNumberValidator: (isCSRRoute || !this.numberOfServices) ? alwaysValidValidator : nonZeroNumberValidator,
       },
       feeItem: {
         required: requiredIf(() => !isCSR(this.$router.currentRoute.value.path)),
@@ -631,7 +633,7 @@ export default {
       diagnosticCode: {
         required: requiredIf(() => !isCSR(this.$router.currentRoute.value.path)),
         alphanumericValidator: optionalValidator(alphanumericValidator),
-        diagnosticCodeValidator: optionalValidator(validateIf(!isCSR(this.$router.currentRoute.value.path), diagnosticCodeValidator)),
+        diagnosticCodeValidator: (isCSRRoute || !this.diagnosticCode) ?  alwaysValidValidator : diagnosticCodeValidator,
       },
       locationOfService: {
         required: requiredIf(() => !isCSR(this.$router.currentRoute.value.path)),

@@ -3,12 +3,16 @@ import { nextTick } from "vue";
 
 const spyOnWindowScrollTo = vi
   .spyOn(window, "scrollTo")
-  .mockImplementation(vi.fn);
 
 const spyOnScrollToElement = vi.spyOn(scroll, "scrollToElement");
 const spyOnScrollTo = vi.spyOn(scroll, "scrollTo");
 
 describe("Helper scroll.js scrollTo()", () => {
+  beforeEach(() => {
+    //to prevent JSDOM console errors about window.scrollTo not being implemented
+    window.scrollTo = () => {};
+  });
+
   afterEach(() => {
     vi.resetModules();
     vi.clearAllMocks();
@@ -24,9 +28,10 @@ describe("Helper scroll.js scrollTo()", () => {
 //further testing is not possible without refactoring the source code
 //more details available in this SO link:
 //https://stackoverflow.com/questions/51269431/jest-mock-inner-function/55193363#55193363
+//https://vitest.dev/guide/mocking.html#mocking-pitfalls
 //I've left the half-finished tests skipped below in case somebody gets them working later
 
-describe("Helper scroll.js scrollToError()", () => {
+describe.skip("Helper scroll.js scrollToError()", () => {
   afterEach(() => {
     vi.resetModules();
     vi.clearAllMocks();

@@ -10,6 +10,7 @@ import * as module3 from "../../../../src/store/modules/pay-practitioner-form";
 import * as dummyDataValid from "../../../../src/store/states/pay-patient-form-dummy-data";
 import { getConvertedPath } from "@/helpers/url";
 import { payPatientRoutes, payPatientRouteStepOrder } from "@/router/routes";
+import * as scrollHelper from "@/helpers/scroll"; 
 
 const testDateFutureYear = new Date();
 testDateFutureYear.setFullYear(testDateFutureYear.getFullYear() + 1);
@@ -142,24 +143,17 @@ const passingData = {
   referredToPractitionerNumber: "22272",
 };
 
+//required to prevent ECONNREFUSED errors
 vi.mock("axios", () => ({
-  get: vi.fn(),
-  post: vi.fn(() => {
-    return Promise.resolve(mockBackendValidationResponse);
-  }),
+  default: {
+    get: vi.fn(),
+    post: vi.fn(() => {
+      return Promise.resolve();
+    }),
+  } 
 }));
 
-const scrollHelper = require("@/helpers/scroll");
-
-vi.mock("@/helpers/scroll", () => ({
-  scrollTo: vi.fn(),
-  scrollToError: vi.fn(),
-  getTopScrollPosition: vi.fn(),
-}));
-
-vi.spyOn(window, "scrollTo").mockImplementation(vi.fn);
-
-const spyOnScrollTo = vi.spyOn(scrollHelper, "scrollTo");
+const spyOnScrollTo = vi.spyOn(scrollHelper, "scrollTo").mockImplementation(() => Promise.resolve("scrolled"));;
 
 const spyOnGetTopScrollPosition = vi
   .spyOn(scrollHelper, "getTopScrollPosition")
@@ -191,9 +185,6 @@ const patientState = cloneDeep(dummyDataValid.default);
 storeTemplate.modules.payPatientForm.state = cloneDeep(patientState);
 
 const mockRouter = {
-  $route: {
-    path: "/",
-  },
   $router: {
     push: vi.fn(),
     currentRoute: {
@@ -205,9 +196,6 @@ const mockRouter = {
 };
 
 const mockRouterCSR = {
-  $route: {
-    path: "/",
-  },
   $router: {
     push: vi.fn(),
     currentRoute: {
@@ -220,14 +208,10 @@ const mockRouterCSR = {
 
 describe("MainFormPage.vue pay patient", () => {
   // eslint-disable-next-line
-  let state;
   let store;
   let wrapper;
 
   beforeEach(() => {
-    state = {
-      applicationUuid: null,
-    };
     store = createStore(storeTemplate);
     wrapper = mount(Page, {
       global: {
@@ -244,15 +228,11 @@ describe("MainFormPage.vue pay patient", () => {
 
 describe("MainFormPage.vue pay patient created()", () => {
   // eslint-disable-next-line
-  let state;
   let store;
   let wrapper;
   vi.useFakeTimers();
 
   beforeEach(() => {
-    state = {
-      applicationUuid: null,
-    };
     store = createStore(storeTemplate);
     wrapper = mount(Page, {
       global: {
@@ -302,7 +282,6 @@ describe("MainFormPage.vue pay patient created()", () => {
 
 describe("MainFormPage.vue handleBlurField()", () => {
   // eslint-disable-next-line
-  let state;
   let store;
   let wrapper;
 
@@ -312,9 +291,6 @@ describe("MainFormPage.vue handleBlurField()", () => {
   const spyOnTrueTouch = vi.spyOn(fakeTrueValidation, "$touch");
 
   beforeEach(() => {
-    state = {
-      applicationUuid: null,
-    };
     store = createStore(storeTemplate);
     wrapper = mount(Page, {
       global: {
@@ -342,14 +318,10 @@ describe("MainFormPage.vue handleBlurField()", () => {
 
 describe("MainFormPage.vue handleInputPractitioner()", () => {
   // eslint-disable-next-line
-  let state;
   let store;
   let wrapper;
 
   beforeEach(() => {
-    state = {
-      applicationUuid: null,
-    };
     store = createStore(storeTemplate);
     wrapper = mount(Page, {
       global: {
@@ -374,14 +346,10 @@ describe("MainFormPage.vue handleInputPractitioner()", () => {
 
 describe("MainFormPage.vue handleProcessBirthDate()", () => {
   // eslint-disable-next-line
-  let state;
   let store;
   let wrapper;
 
   beforeEach(() => {
-    state = {
-      applicationUuid: null,
-    };
     store = createStore(storeTemplate);
     wrapper = mount(Page, {
       global: {
@@ -406,14 +374,10 @@ describe("MainFormPage.vue handleProcessBirthDate()", () => {
 
 describe("MainFormPage.vue handleProcessServiceDate()", () => {
   // eslint-disable-next-line
-  let state;
   let store;
   let wrapper;
 
   beforeEach(() => {
-    state = {
-      applicationUuid: null,
-    };
     store = createStore(storeTemplate);
     wrapper = mount(Page, {
       global: {
@@ -442,15 +406,11 @@ describe("MainFormPage.vue handleProcessServiceDate()", () => {
 
 describe("MainFormPage.vue validationModal handlers", () => {
   // eslint-disable-next-line
-  let state;
   let store;
   let wrapper;
   let spyOnNavigateToNextPage;
 
   beforeEach(() => {
-    state = {
-      applicationUuid: null,
-    };
     store = createStore(storeTemplate);
     wrapper = mount(Page, {
       global: {
@@ -481,14 +441,10 @@ describe("MainFormPage.vue validationModal handlers", () => {
 
 describe("MainFormPage.vue navigateToNextPage()", () => {
   // eslint-disable-next-line
-  let state;
   let store;
   let wrapper;
 
   beforeEach(() => {
-    state = {
-      applicationUuid: null,
-    };
     store = createStore(storeTemplate);
     wrapper = mount(Page, {
       global: {
@@ -530,15 +486,11 @@ describe("MainFormPage.vue navigateToNextPage()", () => {
 
 describe("MainFormPage.vue saveData()", () => {
   // eslint-disable-next-line
-  let state;
   let store;
   let wrapper;
   let spyOnDispatch;
 
   beforeEach(() => {
-    state = {
-      applicationUuid: null,
-    };
     store = createStore(storeTemplate);
     wrapper = mount(Page, {
       global: {
@@ -576,14 +528,10 @@ describe("MainFormPage.vue saveData()", () => {
 
 describe("MainFormPage.vue getMedicalServiceClaimTitle()", () => {
   // eslint-disable-next-line
-  let state;
   let store;
   let wrapper;
 
   beforeEach(() => {
-    state = {
-      applicationUuid: null,
-    };
     store = createStore(storeTemplate);
     wrapper = mount(Page, {
       global: {
@@ -683,14 +631,10 @@ describe("MainFormPage.vue getMedicalServiceClaimTitle()", () => {
 //-----computed value tests-----
 describe("MainFormPage.vue isReferredByRequired()", () => {
   // eslint-disable-next-line
-  let state;
   let store;
   let wrapper;
 
   beforeEach(() => {
-    state = {
-      applicationUuid: null,
-    };
     store = createStore(storeTemplate);
     wrapper = mount(Page, {
       global: {
@@ -736,14 +680,10 @@ describe("MainFormPage.vue isReferredByRequired()", () => {
 
 describe("MainFormPage.vue isReferredToRequired()", () => {
   // eslint-disable-next-line
-  let state;
   let store;
   let wrapper;
 
   beforeEach(() => {
-    state = {
-      applicationUuid: null,
-    };
     store = createStore(storeTemplate);
     wrapper = mount(Page, {
       global: {
@@ -831,14 +771,10 @@ describe("MainFormPage.vue isReferredToRequired()", () => {
 
 describe("MainFormPage.vue isContainingNoChargeFeeItem()", () => {
   // eslint-disable-next-line
-  let state;
   let store;
   let wrapper;
 
   beforeEach(() => {
-    state = {
-      applicationUuid: null,
-    };
     store = createStore(storeTemplate);
     wrapper = mount(Page, {
       global: {
@@ -918,20 +854,20 @@ describe("MainFormPage.vue isContainingNoChargeFeeItem()", () => {
 
   it("returns true if one of the feeItems is 03333", () => {
     wrapper.vm.medicalServiceClaims[0].feeItem = "03333";
-    expect(Page.computed.isContainingNoChargeFeeItem.call(wrapper.vm)).toBe(
+    expect(Page.methods.isContainingNoChargeFeeItem.call(wrapper.vm)).toBe(
       true
     );
   });
 
   it("returns true if one of the feeItems is 03333 (2)", () => {
     wrapper.vm.medicalServiceClaims[1].feeItem = "03333";
-    expect(Page.computed.isContainingNoChargeFeeItem.call(wrapper.vm)).toBe(
+    expect(Page.methods.isContainingNoChargeFeeItem.call(wrapper.vm)).toBe(
       true
     );
   });
 
   it("returns false if none of the feeItems are 03333", () => {
-    expect(Page.computed.isContainingNoChargeFeeItem.call(wrapper.vm)).toBe(
+    expect(Page.methods.isContainingNoChargeFeeItem.call(wrapper.vm)).toBe(
       false
     );
   });
@@ -939,14 +875,10 @@ describe("MainFormPage.vue isContainingNoChargeFeeItem()", () => {
 
 describe("MainFormPage.vue isCSR()", () => {
   // eslint-disable-next-line
-  let state;
   let store;
   let wrapper;
 
   beforeEach(() => {
-    state = {
-      applicationUuid: null,
-    };
     store = createStore(storeTemplate);
   });
 
@@ -982,28 +914,13 @@ describe("MainFormPage.vue isCSR()", () => {
 describe("MainFormPage.vue beforeRouteLeave(to, from, next)", () => {
   let store;
   let wrapper;
-  let $route;
-  let $router;
 
   beforeEach(() => {
     store = createStore(storeTemplate);
-    $route = {
-      value: {
-        path: "/potato",
-      }
-    };
-    $router = {
-      $route,
-      currentRoute: $route,
-      push: vi.fn(),
-    };
     wrapper = mount(Page, {
       global: {
         plugins: [store],
-        mocks: {
-          $route,
-          $router,
-        },
+        mocks: mockRouter,
       },
     });
   });

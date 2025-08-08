@@ -1,4 +1,4 @@
-import { mount } from "@vue/test-utils";
+import { shallowMount } from "@vue/test-utils";
 import { createStore } from "vuex";
 import { cloneDeep } from "lodash";
 import Page from "@/views/pay-patient/MainFormPage.vue";
@@ -7,6 +7,7 @@ import * as module2 from "../../../../src/store/modules/pay-patient-form";
 import * as module3 from "../../../../src/store/modules/pay-practitioner-form";
 import * as dummyDataValid from "../../../../src/store/states/pay-patient-form-dummy-data";
 import apiService from "@/services/api-service";
+import * as scrollHelper from "@/helpers/scroll";
 
 const testDateFutureYear = new Date();
 testDateFutureYear.setFullYear(testDateFutureYear.getFullYear() + 1);
@@ -197,32 +198,28 @@ const failingData = {
   referredToPractitionerNumber: "",
 };
 
+//required to prevent ECONNREFUSED errors
 vi.mock("axios", () => ({
-  get: vi.fn(),
-  post: vi.fn(() => {
-    return Promise.resolve(mockBackendValidationResponse);
-  }),
+  default: {
+    get: vi.fn(),
+    post: vi.fn(() => {
+      return Promise.resolve();
+    }),
+  },
 }));
 
 const spyOnAPIService = vi
   .spyOn(apiService, "validateApplication")
   .mockImplementation(() => Promise.resolve(mockBackendValidationResponse));
 
-const scrollHelper = require("@/helpers/scroll");
+//required to prevent "not implemented: window.scrollTo" errors
+vi.spyOn(scrollHelper, "scrollTo").mockImplementation(() =>
+  Promise.resolve("scrolled")
+);
 
-vi.mock("@/helpers/scroll", () => ({
-  scrollTo: vi.fn(),
-  scrollToError: vi.fn(),
-  getTopScrollPosition: vi.fn(),
-}));
-
-vi.spyOn(window, "scrollTo").mockImplementation(vi.fn);
-
-const spyOnScrollToError = vi.spyOn(scrollHelper, "scrollToError");
-
-// const localVue = createLocalVue();
-// localVue.use(Vuex);
-// localVue.use(Vuelidate);
+const spyOnScrollToError = vi
+  .spyOn(scrollHelper, "scrollToError")
+  .mockImplementation(() => Promise.resolve("scrolled to error"));
 
 const storeTemplate = {
   modules: {
@@ -236,9 +233,6 @@ const patientState = cloneDeep(dummyDataValid.default);
 storeTemplate.modules.payPatientForm.state = cloneDeep(patientState);
 
 const mockRouterCSR = {
-  $route: {
-    path: "/",
-  },
   $router: {
     push: vi.fn(),
     currentRoute: {
@@ -256,7 +250,7 @@ describe("MainFormPage.vue validateFields(), CSR", () => {
 
   beforeEach(() => {
     store = createStore(storeTemplate);
-    wrapper = mount(Page, {
+    wrapper = shallowMount(Page, {
       global: {
         plugins: [store],
         mocks: mockRouterCSR,

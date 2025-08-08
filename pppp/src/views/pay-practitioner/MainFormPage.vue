@@ -478,7 +478,6 @@ import {
   birthDateValidator,
   motorVehicleAccidentClaimNumberMaskValidator,
   specialtyCodeValidator,
-  validateIf,
   phnNineValidator
 } from '@/helpers/validators';
 import {
@@ -720,6 +719,8 @@ export default {
     );
   },
   validations() {
+    const isCSRRoute = isCSR(this.$router.currentRoute.value.path)
+    const alwaysValidValidator = () => { return true}
     const validations = {
       planReferenceNumber: {},
       phn: {
@@ -730,7 +731,7 @@ export default {
       dependentNumber: {
         intValidator: optionalValidator(intValidator),
         positiveNumberValidator: optionalValidator(positiveNumberValidator),
-        dependentNumberValidator: optionalValidator(validateIf(!isCSR(this.$router.currentRoute.value.path), dependentNumberValidator)),
+        dependentNumberValidator: optionalValidator(isCSRRoute ? alwaysValidValidator : dependentNumberValidator),
       },
       firstName: {
         required: requiredIf(() => !isCSR(this.$router.currentRoute.value.path)),
@@ -748,17 +749,17 @@ export default {
           return !isCSR(this.$router.currentRoute.value.path)
               && this.dependentNumber !== '66';
         }),
-        birthDatePastValidator: optionalValidator(validateIf(!isCSR(this.$router.currentRoute.value.path), birthDatePastValidator)),
+        birthDatePastValidator: optionalValidator(isCSRRoute ? alwaysValidValidator : birthDatePastValidator),
         birthDateValidator,
-        distantPastValidator: optionalValidator(validateIf(!isCSR(this.$router.currentRoute.value.path), distantPastValidator)),
+        distantPastValidator: optionalValidator(isCSRRoute ? alwaysValidValidator : distantPastValidator),
       },
       isVehicleAccident: {
         required: requiredIf(() => !isCSR(this.$router.currentRoute.value.path)),
       },
       vehicleAccidentClaimNumber: {
         alphanumericValidator: optionalValidator(alphanumericValidator),
-        motorVehicleAccidentClaimNumberValidator: optionalValidator(validateIf(!isCSR(this.$router.currentRoute.value.path), motorVehicleAccidentClaimNumberValidator)),
-        motorVehicleAccidentClaimNumberMaskValidator: optionalValidator(validateIf(!isCSR(this.$router.currentRoute.value.path), motorVehicleAccidentClaimNumberMaskValidator)),
+        motorVehicleAccidentClaimNumberValidator: optionalValidator(isCSRRoute ? alwaysValidValidator : motorVehicleAccidentClaimNumberValidator),
+        motorVehicleAccidentClaimNumberMaskValidator: optionalValidator(isCSRRoute ? alwaysValidValidator : motorVehicleAccidentClaimNumberMaskValidator)
       },
       planReferenceNumberOfOriginalClaim: {
         intValidator: optionalValidator(intValidator),
@@ -781,15 +782,15 @@ export default {
         minLength: minLength(5),
       },
       practitionerFacilityNumber: {
-        minLength: optionalValidator(validateIf(!isCSR(this.$router.currentRoute.value.path), minLength(5))),
+        minLength: isCSRRoute ? alwaysValidValidator : minLength(5),
       },
       practitionerSpecialtyCode: {
         alphanumericValidator: optionalValidator(alphanumericValidator),
-        minLength: optionalValidator(validateIf(!isCSR(this.$router.currentRoute.value.path), minLength(2))),
-        specialtyCodeValidator: optionalValidator(validateIf(!isCSR(this.$router.currentRoute.value.path), specialtyCodeValidator)),
+        minLength: isCSRRoute ? alwaysValidValidator : minLength(2),
+        specialtyCodeValidator: optionalValidator(isCSRRoute ? alwaysValidValidator : specialtyCodeValidator),
       },
       coveragePreAuthNumber: {
-        minLength: optionalValidator(validateIf(!isCSR(this.$router.currentRoute.value.path), minLength(4))),
+        minLength: (isCSRRoute || !this.coveragePreAuthNumber) ? alwaysValidValidator : minLength(4),
         intValidator: optionalValidator(intValidator),
         positiveNumberValidator: optionalValidator(positiveNumberValidator),
       },
@@ -800,7 +801,7 @@ export default {
         nameValidator: optionalValidator(nameValidator),
       },
       referredByPractitionerNumber: {
-        minLength: optionalValidator(minLength(5)),
+        minLength: !this.referredByPractitionerNumber ? alwaysValidValidator : minLength(5),
       },
       referredToFirstNameInitial: {
         alphaValidator: optionalValidator(alphaValidator),
@@ -809,7 +810,7 @@ export default {
         nameValidator: optionalValidator(nameValidator),
       },
       referredToPractitionerNumber: {
-        minLength: optionalValidator(minLength(5)),
+        minLength: !this.referredToPractitionerNumber ? alwaysValidValidator : minLength(5),
       },
     };
     if (this.dependentNumber !== '66' && !isCSR(this.$router.currentRoute.value.path)) {
@@ -1053,17 +1054,6 @@ export default {
       }
       return 'Hospital Visit';
     },
-  },
-  computed: {
-    isReferredByRequired() {
-      return (!!this.referredByFirstNameInitial || !!this.referredByLastName || !!this.referredByPractitionerNumber) 
-      && !isCSR(this.$router.currentRoute.value.path);
-    },
-    isReferredToRequired() {
-      return (!!this.referredToFirstNameInitial || !!this.referredToLastName 
-      || !!this.referredToPractitionerNumber || this.isContainingNoChargeFeeItem) 
-      && !isCSR(this.$router.currentRoute.value.path);
-    },
     isContainingNoChargeFeeItem() {
       for (let i=0; i<this.medicalServiceClaims.length; i++) {
         if (this.medicalServiceClaims[i].feeItem === '03333') {
@@ -1076,6 +1066,17 @@ export default {
         }
       }
       return false;
+    },
+  },
+  computed: {
+    isReferredByRequired() {
+      return (!!this.referredByFirstNameInitial || !!this.referredByLastName || !!this.referredByPractitionerNumber) 
+      && !isCSR(this.$router.currentRoute.value.path);
+    },
+    isReferredToRequired() {
+      return (!!this.referredToFirstNameInitial || !!this.referredToLastName 
+      || !!this.referredToPractitionerNumber || this.isContainingNoChargeFeeItem()) 
+      && !isCSR(this.$router.currentRoute.value.path);
     },
     isCSR() {
       return isCSR(this.$router.currentRoute.value.path);

@@ -1,4 +1,4 @@
-import { shallowMount, createLocalVue } from "@vue/test-utils";
+import { shallowMount } from "@vue/test-utils";
 import { createStore } from "vuex";
 import { cloneDeep } from "lodash";
 import { createRouter, createWebHistory } from "vue-router";
@@ -6,9 +6,7 @@ import Page from "@/views/pay-practitioner/SubmissionPage.vue";
 import * as module1 from "../../../../src/store/modules/app";
 import * as module2 from "../../../../src/store/modules/pay-patient-form";
 import * as module3 from "../../../../src/store/modules/pay-practitioner-form";
-import spaEnvService from "@/services/spa-env-service";
 import logService from "@/services/log-service";
-import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import pageStateService from "@/services/page-state-service";
 import { getConvertedPath } from "@/helpers/url";
 import {
@@ -16,10 +14,7 @@ import {
   payPractitionerRouteStepOrder,
 } from "@/router/routes";
 import { routeCollection } from "@/router/index";
-
-// const localVue = createLocalVue();
-// localVue.use(Vuex);
-// localVue.component("font-awesome-icon", FontAwesomeIcon);
+import * as scrollHelper from "@/helpers/scroll"; 
 
 const router = createRouter({
   history: createWebHistory(),
@@ -37,9 +32,7 @@ const storeTemplate = {
   },
 };
 
-const scrollHelper = require("@/helpers/scroll");
-
-const spyOnScrollTo = vi.spyOn(scrollHelper, "scrollTo");
+const spyOnScrollTo = vi.spyOn(scrollHelper, "scrollTo").mockImplementation(() => Promise.resolve("scrolled"));;
 
 const spyOnLogNavigation = vi
   .spyOn(logService, "logNavigation")
@@ -49,38 +42,17 @@ const spyOnSetPageIncomplete = vi
   .spyOn(pageStateService, "setPageIncomplete")
   .mockImplementation(() => Promise.resolve("set"));
 
-vi.spyOn(window, "scrollTo").mockImplementation(vi.fn);
-
 describe("SubmissionPage.vue pay practitioner", () => {
   let store;
   let wrapper;
-  let $route;
-  let $router;
 
   beforeEach(() => {
     store = createStore(storeTemplate);
-    $route = {
-      path: "/potato-csr",
-    };
-    $router = {
-      $route,
-      currentRoute: $route,
-      push: vi.fn(),
-    };
     wrapper = shallowMount(Page, {
       global: {
         plugins: [store, router],
       },
     });
-    vi.spyOn(wrapper.vm.$store, "dispatch");
-
-    vi
-      .spyOn(spaEnvService, "loadEnvs")
-      .mockImplementation(() => Promise.resolve("loaded"));
-
-    // wrapper.vm.$options.created.forEach((hook) => {
-    //   hook.call(wrapper.vm);
-    // });
   });
 
   afterEach(() => {
@@ -104,15 +76,6 @@ describe("SubmissionPage.vue pay practitioner created()", () => {
         plugins: [store, router],
       },
     });
-    vi.spyOn(wrapper.vm.$store, "dispatch");
-
-    vi
-      .spyOn(spaEnvService, "loadEnvs")
-      .mockImplementation(() => Promise.resolve("loaded"));
-
-    // wrapper.vm.$options.created.forEach((hook) => {
-    //   hook.call(wrapper.vm);
-    // });
   });
 
   afterEach(() => {
@@ -128,33 +91,14 @@ describe("SubmissionPage.vue pay practitioner created()", () => {
 describe("SubmissionPage.vue pay practitioner printPage()", () => {
   let store;
   let wrapper;
-  let $route;
-  let $router;
 
   beforeEach(() => {
     store = createStore(storeTemplate);
-    $route = {
-      path: "/potato-csr",
-    };
-    $router = {
-      $route,
-      currentRoute: $route,
-      push: vi.fn(),
-    };
     wrapper = shallowMount(Page, {
       global: {
         plugins: [store, router],
       },
     });
-    vi.spyOn(wrapper.vm.$store, "dispatch");
-
-    vi
-      .spyOn(spaEnvService, "loadEnvs")
-      .mockImplementation(() => Promise.resolve("loaded"));
-
-    // wrapper.vm.$options.created.forEach((hook) => {
-    //   hook.call(wrapper.vm);
-    // });
   });
 
   afterEach(() => {
@@ -171,19 +115,9 @@ describe("SubmissionPage.vue pay practitioner printPage()", () => {
 describe("SubmissionPage.vue beforeRouteLeave(to, from, next)", () => {
   let store;
   let wrapper;
-  let $route;
-  let $router;
 
   beforeEach(() => {
     store = createStore(storeTemplate);
-    $route = {
-      path: "/potato-csr",
-    };
-    $router = {
-      $route,
-      currentRoute: $route,
-      push: vi.fn(),
-    };
     wrapper = shallowMount(Page, {
       global: {
         plugins: [store, router],
