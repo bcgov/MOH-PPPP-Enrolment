@@ -1,6 +1,6 @@
 import { mount } from "@vue/test-utils";
 import Page from "@/views/pay-patient/ClaimCountPage.vue";
-import store from "../../../../src/store/index";
+import store from "@/store/index";
 import * as module2 from "../../../../src/store/modules/pay-patient-form";
 import logService from "@/services/log-service";
 import pageStateService from "@/services/page-state-service";
@@ -8,6 +8,8 @@ import { payPatientRoutes, payPatientRouteStepOrder } from "@/router/routes";
 import { getConvertedPath } from "@/helpers/url";
 import { cloneDeep } from "common-lib-vue";
 import * as scrollHelper from "@/helpers/scroll";
+import { mockRouterCSR } from "../../test-helper.js";
+import * as dummyDataPatientValid from "@/store/states/pay-patient-form-dummy-data";
 
 //required to prevent ECONNREFUSED errors
 vi.mock("axios", () => ({
@@ -19,87 +21,14 @@ vi.mock("axios", () => ({
   },
 }));
 
-const mockRouterCSR = {
-  $router: {
-    push: vi.fn(),
-    currentRoute: {
-      value: {
-        path: "/pay-patient",
-      },
-    },
-  },
-};
-
+//test dates
 const testDate = new Date();
 testDate.setFullYear(testDate.getFullYear() - 1);
 const next = vi.fn();
 
-const dummyDataValid = {
-  default: {
-    claimCount: "1",
+const dummyDataValid = cloneDeep(dummyDataPatientValid.default);
 
-    planReferenceNumber: "1234567890",
-
-    phn: "9999 999 998",
-    dependentNumber: "66",
-    firstName: "Bob",
-    middleInitial: "H",
-    lastName: "Smith",
-    birthDate: new Date("2000-01-01"),
-
-    addressOwner: "PATIENT",
-    unitNumber: "123",
-    streetNumber: "321",
-    streetName: "Fake St.",
-    city: "Victoria",
-    postalCode: "V8V 8V8",
-
-    isVehicleAccident: "Y",
-    vehicleAccidentClaimNumber: "A0000001",
-
-    planReferenceNumberOfOriginalClaim: "321",
-
-    medicalServiceClaims: [
-      {
-        serviceDate: new Date(),
-        numberOfServices: "1",
-        serviceClarificationCode: "A1",
-        feeItem: "00010",
-        amountBilled: "0.00",
-        calledStartTime: {
-          hour: "08",
-          minute: "01",
-        },
-        renderedFinishTime: {
-          hour: "16",
-          minute: "05",
-        },
-        diagnosticCode: "001",
-        locationOfService: "A",
-        correspondenceAttached: null,
-        submissionCode: "I",
-        notes: "Notes here.",
-      },
-    ],
-
-    practitionerLastName: "GOTTNER",
-    practitionerFirstName: "MICHAEL",
-    practitionerPaymentNumber: "00001",
-    practitionerPractitionerNumber: "00001",
-    practitionerFacilityNumber: "12345",
-    practitionerSpecialtyCode: "99",
-
-    referredByFirstNameInitial: "R",
-    referredByLastName: "McDonald",
-    referredByPractitionerNumber: "22271",
-
-    referredToFirstNameInitial: "C",
-    referredToLastName: "Lee",
-    referredToPractitionerNumber: "22272",
-  },
-};
-dummyDataValid.default.medicalServiceClaims[0].serviceDate = testDate;
-
+//spies
 const spyOnLogService = vi
   .spyOn(logService, "logNavigation")
   .mockImplementation(() => Promise.resolve("logged"));
@@ -134,7 +63,9 @@ describe("ClaimCountPage.vue pay patient render test", () => {
     wrapper = mount(Page, {
       global: {
         plugins: [store],
-        mocks: mockRouterCSR,
+        mocks: {
+          $router: mockRouterCSR,
+        },
       },
     });
   });
@@ -156,7 +87,9 @@ describe("ClaimCountPage.vue pay patient created()", () => {
     wrapper = mount(Page, {
       global: {
         plugins: [store],
-        mocks: mockRouterCSR,
+        mocks: {
+          $router: mockRouterCSR,
+        },
       },
     });
   });
@@ -174,32 +107,22 @@ describe("ClaimCountPage.vue pay patient created()", () => {
 
 describe("ClaimCountPage.vue pay patient validateFields() part 1 (invalid)", () => {
   let wrapper;
-  let $router;
   let spyOnRouter;
   let spyOnDispatch;
 
   beforeEach(() => {
-    //using a local mock router to make spying easier
-    $router = {
-      currentRoute: {
-        value: {
-          path: "/potato-csr",
-        },
-      },
-      push: vi.fn(),
-    };
     wrapper = mount(Page, {
       global: {
         plugins: [store],
         mocks: {
-          $router,
+          $router: mockRouterCSR,
         },
       },
     });
     spyOnDispatch = vi.spyOn(wrapper.vm.$store, "dispatch");
 
     spyOnRouter = vi
-      .spyOn($router, "push")
+      .spyOn(mockRouterCSR, "push")
       .mockImplementation(() => Promise.resolve("pushed"));
   });
 
@@ -241,40 +164,25 @@ describe("ClaimCountPage.vue pay patient validateFields() part 1 (invalid)", () 
 
 describe("ClaimCountPage.vue pay patient validateFields() part 2 (valid)", () => {
   let wrapper;
-  let $router;
-  let $store;
   let spyOnRouter;
   let spyOnDispatch;
 
   beforeEach(() => {
-    //using local mocks to make spying easier
-    $router = {
-      currentRoute: {
-        value: {
-          path: "/potato-csr",
-        },
-      },
-      push: vi.fn(),
-    };
-    $store = {
-      state: {
-        payPatientForm: cloneDeep(dummyDataValid.default),
-      },
-      dispatch: vi.fn(),
-    };
-
-    spyOnDispatch = vi.spyOn($store, "dispatch");
-    spyOnRouter = vi
-      .spyOn($router, "push")
-      .mockImplementation(() => Promise.resolve("pushed"));
     wrapper = mount(Page, {
       global: {
+        plugins: [store],
         mocks: {
-          $router,
-          $store,
+          $router: mockRouterCSR,
         },
       },
     });
+
+    Object.assign(wrapper.vm, cloneDeep(dummyDataValid));
+
+    spyOnDispatch = vi.spyOn(wrapper.vm.$store, "dispatch");
+    spyOnRouter = vi
+      .spyOn(mockRouterCSR, "push")
+      .mockImplementation(() => Promise.resolve("pushed"));
   });
 
   afterEach(() => {
@@ -341,22 +249,13 @@ describe("ClaimCountPage.vue pay patient validateFields() part 2 (valid)", () =>
 
 describe("ClaimCountPage.vue pay patient beforeRouteLeave(to, from, next)", () => {
   let wrapper;
-  let $router;
 
   beforeEach(() => {
-    $router = {
-      currentRoute: {
-        value: {
-          path: "/potato-csr",
-        },
-      },
-      push: vi.fn(),
-    };
     wrapper = mount(Page, {
       global: {
         plugins: [store],
         mocks: {
-          $router,
+          $router: mockRouterCSR,
         },
       },
     });

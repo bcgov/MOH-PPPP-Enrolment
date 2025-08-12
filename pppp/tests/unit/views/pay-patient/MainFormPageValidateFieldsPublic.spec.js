@@ -1,20 +1,15 @@
 import { mount } from "@vue/test-utils";
 import { createStore } from "vuex";
 import { cloneDeep } from "lodash";
-import { createRouter, createWebHistory } from "vue-router";
-import { routeCollection } from "@/router/index";
 import Page from "@/views/pay-patient/MainFormPage.vue";
-import * as module1 from "../../../../src/store/modules/app";
-import * as module2 from "../../../../src/store/modules/pay-patient-form";
-import * as module3 from "../../../../src/store/modules/pay-practitioner-form";
 import * as dummyDataValid from "../../../../src/store/states/pay-patient-form-dummy-data";
 import apiService from "@/services/api-service";
 import * as scrollHelper from "@/helpers/scroll";
-
-const router = createRouter({
-  history: createWebHistory(),
-  routes: routeCollection,
-});
+import {
+  defaultStoreTemplate,
+  router,
+  failingData,
+} from "../../test-helper.js";
 
 const testDateFutureYear = new Date();
 testDateFutureYear.setFullYear(testDateFutureYear.getFullYear() + 1);
@@ -86,133 +81,15 @@ const mockBackendValidationResponseDefault = {
   statusText: "OK",
 };
 
-const passingData = {
-  phn: "9999 999 998",
-  dependentNumber: "66",
-  firstName: "Bob",
-  middleInitial: "H",
-  lastName: "Smith",
-  birthDate: new Date("2000-01-01"),
+const passingData = dummyDataValid.default;
 
-  addressOwner: "PATIENT",
-  unitNumber: "123",
-  streetNumber: "321",
-  streetName: "Fake St.",
-  city: "Victoria",
-  postalCode: "V8V 8V8",
-
-  isVehicleAccident: "Y",
-  vehicleAccidentClaimNumber: "A0000001",
-
-  planReferenceNumberOfOriginalClaim: "321",
-
-  medicalServiceClaims: [
-    {
-      serviceDate: new Date(),
-      numberOfServices: "1",
-      serviceClarificationCode: "A1",
-      feeItem: "00010",
-      amountBilled: "0.00",
-      calledStartTime: {
-        hour: "08",
-        minute: "01",
-      },
-      renderedFinishTime: {
-        hour: "16",
-        minute: "05",
-      },
-      diagnosticCode: "001",
-      locationOfService: "B",
-      correspondenceAttached: null,
-      submissionCode: "I",
-      notes: "Notes here.",
-    },
-  ],
-
-  practitionerLastName: "GOTTNER",
-  practitionerFirstName: "MICHAEL",
-  practitionerPaymentNumber: "00001",
-  practitionerPractitionerNumber: "00001",
-  practitionerFacilityNumber: "12345",
-  practitionerSpecialtyCode: "99",
-
-  referredByFirstNameInitial: "R",
-  referredByLastName: "McDonald",
-  referredByPractitionerNumber: "22271",
-
-  referredToFirstNameInitial: "C",
-  referredToLastName: "Lee",
-  referredToPractitionerNumber: "22272",
-};
-
-const failingData = {
-  planReferenceNumber: "",
-  phn: "",
-  dependentNumber: "",
-  firstName: "",
-  middleInitial: "",
-  lastName: "",
-  birthDate: new Date("2000-01-01"),
-
-  addressOwner: "",
-  unitNumber: "",
-  streetNumber: "",
-  streetName: "",
-  city: "",
-  postalCode: "",
-
-  isVehicleAccident: "",
-  vehicleAccidentClaimNumber: "",
-
-  planReferenceNumberOfOriginalClaim: "",
-
-  medicalServiceClaims: [
-    {
-      serviceDate: new Date("2000-01-01"),
-      numberOfServices: "",
-      serviceClarificationCode: "",
-      feeItem: "",
-      amountBilled: "",
-      calledStartTime: {
-        hour: "",
-        minute: "",
-      },
-      renderedFinishTime: {
-        hour: "",
-        minute: "",
-      },
-      diagnosticCode: "",
-      locationOfService: "",
-      correspondenceAttached: null,
-      submissionCode: "",
-      notes: "",
-    },
-  ],
-
-  practitionerLastName: "",
-  practitionerFirstName: "",
-  practitionerPaymentNumber: "",
-  practitionerPractitionerNumber: "",
-  practitionerFacilityNumber: "",
-  practitionerSpecialtyCode: "",
-
-  referredByFirstNameInitial: "",
-  referredByLastName: "",
-  referredByPractitionerNumber: "",
-
-  referredToFirstNameInitial: "",
-  referredToLastName: "",
-  referredToPractitionerNumber: "",
-};
-
-//required to prevent ECONNREFUSED errors
 vi.mock("axios", () => ({
   default: {
     get: vi.fn(),
     post: vi.fn(() => {
       return Promise.resolve();
     }),
-  } 
+  },
 }));
 
 const spyOnAPIService = vi
@@ -220,20 +97,16 @@ const spyOnAPIService = vi
   .mockImplementation(() => Promise.resolve(mockBackendValidationResponse));
 
 //required to prevent "error: not implemented: window.scrollTo" errors
-  vi.spyOn(scrollHelper, "scrollTo").mockImplementation(() => Promise.resolve("scrolled"));;
+vi.spyOn(scrollHelper, "scrollTo").mockImplementation(() =>
+  Promise.resolve("scrolled")
+);
 
-const spyOnScrollToError = vi.spyOn(scrollHelper, "scrollToError").mockImplementation(() => Promise.resolve("scrolled to error"));
+const spyOnScrollToError = vi
+  .spyOn(scrollHelper, "scrollToError")
+  .mockImplementation(() => Promise.resolve("scrolled to error"));
 
-const storeTemplate = {
-  modules: {
-    app: cloneDeep(module1.default),
-    payPatientForm: cloneDeep(module2.default),
-    payPractitionerForm: cloneDeep(module3.default),
-  },
-};
-
-const patientState = cloneDeep(dummyDataValid.default);
-storeTemplate.modules.payPatientForm.state = cloneDeep(patientState);
+const storeTemplate = cloneDeep(defaultStoreTemplate)
+storeTemplate.modules.payPatientForm.state = cloneDeep(dummyDataValid.default);
 
 describe("MainFormPage.vue validateFields(), public", () => {
   let store;

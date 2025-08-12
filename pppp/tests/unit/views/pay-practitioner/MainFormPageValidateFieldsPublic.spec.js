@@ -2,18 +2,14 @@ import { mount } from "@vue/test-utils";
 import { createStore } from "vuex";
 import { cloneDeep } from "lodash";
 import Page from "@/views/pay-practitioner/MainFormPage.vue";
-import * as module1 from "../../../../src/store/modules/app";
-import * as module2 from "../../../../src/store/modules/pay-patient-form";
-import * as module3 from "../../../../src/store/modules/pay-practitioner-form";
 import * as dummyDataValid from "../../../../src/store/states/pay-practitioner-form-dummy-data";
 import apiService from "@/services/api-service";
 import * as scrollHelper from "@/helpers/scroll";
-
-const testDate = new Date();
-const adjustedTestDateMonth = (testDate.getMonth() + 1).toString();
-//testDate.getMonth() returns 0 for January
-//but the hospital visit selector indexes January as 1, since it's the first item on the list
-//this constant adjusts for this difference
+import {
+  defaultStoreTemplate,
+  mockRouter,
+  failingData,
+} from "../../test-helper.js";
 
 const testDateFutureDay = new Date();
 testDateFutureDay.setDate(testDateFutureDay.getDate() + 1);
@@ -91,159 +87,10 @@ const mockBackendValidationResponseDefault = {
   statusText: "OK",
 };
 
-const passingData = {
-  medicalServiceClaimsCount: "1",
-  hospitalVisitClaimsCount: "1",
+const passingData = cloneDeep(dummyDataValid.default)
+passingData.medicalServiceClaims[0].feeItem="00010"
+passingData.hospitalVisitClaims[0].feeItem="00010"
 
-  planReferenceNumber: "1234567890",
-
-  phn: "9999 999 998",
-  dependentNumber: "66",
-  firstName: "Bob",
-  middleInitial: "H",
-  lastName: "Smith",
-  birthDate: new Date(),
-
-  isVehicleAccident: "Y",
-  vehicleAccidentClaimNumber: "A0000001",
-
-  planReferenceNumberOfOriginalClaim: "321",
-
-  medicalServiceClaims: [
-    {
-      serviceDate: new Date(),
-      numberOfServices: "1",
-      serviceClarificationCode: "A1",
-      feeItem: "00010",
-      amountBilled: "0.00",
-      calledStartTime: {
-        hour: "08",
-        minute: "08",
-      },
-      renderedFinishTime: {
-        hour: "16",
-        minute: "06",
-      },
-      diagnosticCode: "001",
-      locationOfService: "B",
-      correspondenceAttached: null,
-      submissionCode: "I",
-      notes: "Notes here.",
-    },
-  ],
-
-  hospitalVisitClaims: [
-    {
-      month: adjustedTestDateMonth.toString(),
-      dayFrom: testDate.getDate().toString(),
-      dayTo: testDate.getDate().toString(),
-      year: testDate.getFullYear().toString(),
-      numberOfServices: "1",
-      serviceClarificationCode: "A1",
-      feeItem: "00010",
-      amountBilled: "0.00",
-      diagnosticCode: "001",
-      locationOfService: "B",
-      correspondenceAttached: null,
-      submissionCode: "I",
-      notes: "Notes here.",
-    },
-  ],
-
-  practitionerLastName: "GOTTNER",
-  practitionerFirstName: "MICHAEL",
-  practitionerPaymentNumber: "A1234",
-  practitionerPractitionerNumber: "00001",
-  practitionerFacilityNumber: "12345",
-  practitionerSpecialtyCode: "99",
-  coveragePreAuthNumber: "2222",
-
-  referredByFirstNameInitial: "R",
-  referredByLastName: "McDonald",
-  referredByPractitionerNumber: "22271",
-
-  referredToFirstNameInitial: "C",
-  referredToLastName: "Lee",
-  referredToPractitionerNumber: "22272",
-};
-
-const failingData = {
-  medicalServiceClaimsCount: "",
-  hospitalVisitClaimsCount: "",
-
-  planReferenceNumber: "",
-
-  phn: "",
-  dependentNumber: "",
-  firstName: "",
-  middleInitial: "",
-  lastName: "",
-  birthDate: new Date(),
-
-  isVehicleAccident: "",
-  vehicleAccidentClaimNumber: "",
-
-  planReferenceNumberOfOriginalClaim: "",
-
-  medicalServiceClaims: [
-    {
-      serviceDate: new Date(),
-      numberOfServices: "",
-      serviceClarificationCode: "",
-      feeItem: "",
-      amountBilled: "",
-      calledStartTime: {
-        hour: "",
-        minute: "",
-      },
-      renderedFinishTime: {
-        hour: "",
-        minute: "",
-      },
-      diagnosticCode: "",
-      locationOfService: "",
-      correspondenceAttached: null,
-      submissionCode: "",
-      notes: "",
-    },
-  ],
-
-  hospitalVisitClaims: [
-    {
-      month: "",
-      dayFrom: "",
-      dayTo: "",
-      year: "",
-      numberOfServices: "",
-      serviceClarificationCode: "",
-      feeItem: "",
-      amountBilled: "",
-      diagnosticCode: "",
-      locationOfService: "",
-      correspondenceAttached: null,
-      submissionCode: "",
-      notes: "",
-    },
-  ],
-
-  practitionerLastName: "",
-  practitionerFirstName: "",
-  practitionerPaymentNumber: "",
-  practitionerPractitionerNumber: "",
-  practitionerFacilityNumber: "",
-  practitionerSpecialtyCode: "",
-  coveragePreAuthNumber: "",
-
-  referredByFirstNameInitial: "",
-  referredByLastName: "",
-  referredByPractitionerNumber: "",
-
-  referredToFirstNameInitial: "",
-  referredToLastName: "",
-  referredToPractitionerNumber: "",
-};
-
-//to prevent ECONNREFUSED errors
 vi.mock("axios", () => ({
   default: {
     get: vi.fn(),
@@ -266,25 +113,10 @@ const spyOnScrollToError = vi
   .spyOn(scrollHelper, "scrollToError")
   .mockImplementation(() => Promise.resolve("scrolled to error"));
 
-const storeTemplate = {
-  modules: {
-    app: cloneDeep(module1.default),
-    payPatientForm: cloneDeep(module2.default),
-    payPractitionerForm: cloneDeep(module3.default),
-  },
-};
+const storeTemplate = cloneDeep(defaultStoreTemplate)
 
 const practitionerState = cloneDeep(dummyDataValid.default);
 storeTemplate.modules.payPractitionerForm.state = cloneDeep(practitionerState);
-
-const mockRouter = {
-  push: vi.fn(),
-  currentRoute: {
-    value: {
-      path: "/pay-practitioner/main-form",
-    },
-  },
-};
 
 describe("MainFormPage.vue validateFields(), public", () => {
   // eslint-disable-next-line

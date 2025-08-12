@@ -1,9 +1,6 @@
 import { mount } from "@vue/test-utils";
 import { createStore } from "vuex";
-import { createRouter, createWebHistory } from "vue-router";
 import Page from "@/views/pay-practitioner/ClaimCountPage.vue";
-import * as module1 from "../../../../src/store/modules/app";
-import * as module2 from "../../../../src/store/modules/pay-patient-form";
 import * as module3 from "../../../../src/store/modules/pay-practitioner-form";
 import logService from "@/services/log-service";
 import pageStateService from "@/services/page-state-service";
@@ -13,8 +10,13 @@ import {
 } from "@/router/routes";
 import { getConvertedPath } from "@/helpers/url";
 import { cloneDeep } from "common-lib-vue";
-import { routeCollection } from "@/router/index";
 import * as scrollHelper from "@/helpers/scroll";
+import {
+  defaultStoreTemplate,
+  mockRouterCSR,
+  router,
+} from "../../test-helper.js";
+import * as dummyDataPractitionerValid from "@/store/states/pay-practitioner-form-dummy-data";
 
 //required to prevent ECONNREFUSED errors
 vi.mock("axios", () => ({
@@ -26,129 +28,20 @@ vi.mock("axios", () => ({
   },
 }));
 
-const router = createRouter({
-  history: createWebHistory(),
-  routes: routeCollection,
-});
-
-const mockRouter = {
-  push: vi.fn(),
-  currentRoute: {
-    value: {
-      path: "/pay-practitioner",
-    },
-  },
-};
-
 const testDate = new Date();
 testDate.setFullYear(testDate.getFullYear() - 1);
 const next = vi.fn();
 
-const dummyDataValid = {
-  default: {
-    medicalServiceClaimsCount: "1",
-    hospitalVisitClaimsCount: "1",
+const dummyDataValid = cloneDeep(dummyDataPractitionerValid.default)
+dummyDataValid.medicalServiceClaims[0].serviceDate = testDate;
 
-    planReferenceNumber: "1234567890",
+//create null store template
+const storeTemplate = cloneDeep(defaultStoreTemplate);
 
-    phn: "9999 999 998",
-    dependentNumber: "66",
-    firstName: "Bob",
-    middleInitial: "H",
-    lastName: "Smith",
-    birthDate: new Date(),
+//create passing store template, then assign passing data
+const passingStoreTemplate = cloneDeep(defaultStoreTemplate);
+passingStoreTemplate.modules.payPractitionerForm.state = cloneDeep(dummyDataValid);
 
-    isVehicleAccident: "Y",
-    vehicleAccidentClaimNumber: "A0000001",
-
-    planReferenceNumberOfOriginalClaim: "321",
-
-    medicalServiceClaims: [
-      {
-        serviceDate: testDate,
-        numberOfServices: "1",
-        serviceClarificationCode: "A1",
-        feeItem: "03333",
-        amountBilled: "0.00",
-        calledStartTime: {
-          hour: "08",
-          minute: "08",
-        },
-        renderedFinishTime: {
-          hour: "16",
-          minute: "06",
-        },
-        diagnosticCode: "001",
-        locationOfService: "A",
-        correspondenceAttached: null,
-        submissionCode: "I",
-        notes: "Notes here.",
-      },
-    ],
-
-    hospitalVisitClaims: [
-      {
-        month: "12",
-        dayFrom: "24",
-        dayTo: "26",
-        year: "2020",
-        numberOfServices: "1",
-        serviceClarificationCode: "A1",
-        feeItem: "03333",
-        amountBilled: "0.00",
-        diagnosticCode: "001",
-        locationOfService: "A",
-        correspondenceAttached: null,
-        submissionCode: "I",
-        notes: "Notes here.",
-      },
-    ],
-
-    practitionerLastName: "GOTTNER",
-    practitionerFirstName: "MICHAEL",
-    practitionerPaymentNumber: "A1234",
-    practitionerPractitionerNumber: "00001",
-    practitionerFacilityNumber: "12345",
-    practitionerSpecialtyCode: "99",
-    coveragePreAuthNumber: "2222",
-
-    referredByFirstNameInitial: "R",
-    referredByLastName: "McDonald",
-    referredByPractitionerNumber: "22271",
-
-    referredToFirstNameInitial: "C",
-    referredToLastName: "Lee",
-    referredToPractitionerNumber: "22272",
-  },
-};
-
-const storeTemplate = {
-  modules: {
-    app: cloneDeep(module1.default),
-    payPatientForm: cloneDeep(module2.default),
-    payPractitionerForm: cloneDeep(module3.default),
-  },
-};
-
-const storeTemplate2 = {
-  modules: {
-    app: cloneDeep(module1.default),
-    payPatientForm: cloneDeep(module2.default),
-    payPractitionerForm: cloneDeep(module3.default),
-  },
-};
-
-const practitionerState = {
-  isInfoCollectionNoticeOpen: true,
-  applicationUuid: null,
-};
-
-const practitionerState2 = cloneDeep(dummyDataValid.default);
-practitionerState2.medicalServiceClaims[0].serviceDate = testDate;
-
-storeTemplate.modules.payPractitionerForm.state = cloneDeep(practitionerState);
-storeTemplate2.modules.payPractitionerForm.state =
-  cloneDeep(practitionerState2);
 
 const spyOnLogService = vi
   .spyOn(logService, "logNavigation")
@@ -224,42 +117,26 @@ describe("ClaimCountPage.vue pay practitioner created()", () => {
 });
 
 describe("ClaimCountPage.vue pay practitioner validateFields() part 1 (invalid)", () => {
-  //this test uses mocks to make spying on store/router functions easier
-  let $store;
+  let store;
   let wrapper;
-  let $router;
   let spyOnRouter;
   let spyOnDispatch;
 
   beforeEach(() => {
-    $router = {
-      currentRoute: {
-        value: {
-          path: "/potato-csr",
-        },
-      },
-      push: vi.fn(),
-    };
-    $store = {
-      state: {
-        payPractitionerForm: {},
-      },
-      dispatch: vi.fn(),
-    };
-    spyOnDispatch = vi.spyOn($store, "dispatch");
-
-    spyOnRouter = vi
-      .spyOn($router, "push")
-      .mockImplementation(() => Promise.resolve("pushed"));
-
+    store = createStore(storeTemplate);
     wrapper = mount(Page, {
       global: {
+        plugins: [store],
         mocks: {
-          $router,
-          $store,
+          $router: mockRouterCSR,
         },
       },
     });
+
+    spyOnDispatch = vi.spyOn(wrapper.vm.$store, "dispatch");
+    spyOnRouter = vi
+      .spyOn(mockRouterCSR, "push")
+      .mockImplementation(() => Promise.resolve("pushed"));
   });
 
   afterEach(() => {
@@ -300,45 +177,26 @@ describe("ClaimCountPage.vue pay practitioner validateFields() part 1 (invalid)"
 
 describe("ClaimCountPage.vue pay practitioner validateFields() part 2 (valid)", () => {
   //this test uses mocks to make spying on store/router functions easier
-  let $store;
+  let store;
   let wrapper;
-  let $route;
-  let $router;
   let spyOnRouter;
   let spyOnDispatch;
 
   beforeEach(() => {
-    $store = {
-      state: {
-        payPractitionerForm: cloneDeep(dummyDataValid.default),
-      },
-      dispatch: vi.fn(),
-    };
-    $route = {
-      value: {
-        path: "/potato-csr",
-      },
-    };
-    $router = {
-      $route,
-      currentRoute: $route,
-      push: vi.fn(),
-    };
-    spyOnDispatch = vi.spyOn($store, "dispatch");
-
-    spyOnRouter = vi
-      .spyOn($router, "push")
-      .mockImplementation(() => Promise.resolve("pushed"));
-
+    store = createStore(passingStoreTemplate);
     wrapper = mount(Page, {
       global: {
+        plugins: [store],
         mocks: {
-          $route,
-          $router,
-          $store,
+          $router: mockRouterCSR,
         },
       },
     });
+    spyOnDispatch = vi.spyOn(wrapper.vm.$store, "dispatch");
+
+    spyOnRouter = vi
+      .spyOn(mockRouterCSR, "push")
+      .mockImplementation(() => Promise.resolve("pushed"));
   });
 
   afterEach(() => {
@@ -378,19 +236,19 @@ describe("ClaimCountPage.vue pay practitioner validateFields() part 2 (valid)", 
       `${module3.MODULE_NAME}/${module3.SET_MEDICAL_SERVICE_CLAIMS}`,
       [
         {
-          amountBilled: "0.00",
-          calledStartTime: { hour: "08", minute: "08" },
-          correspondenceAttached: null,
-          diagnosticCode: "001",
-          feeItem: "03333",
-          locationOfService: "A",
-          notes: "Notes here.",
-          numberOfServices: "1",
-          renderedFinishTime: { hour: "16", minute: "06" },
-          serviceClarificationCode: "A1",
+          amountBilled: dummyDataValid.medicalServiceClaims[0].amountBilled,
+          calledStartTime: dummyDataValid.medicalServiceClaims[0].calledStartTime,
+          correspondenceAttached: dummyDataValid.medicalServiceClaims[0].correspondenceAttached,
+          diagnosticCode: dummyDataValid.medicalServiceClaims[0].diagnosticCode,
+          feeItem: dummyDataValid.medicalServiceClaims[0].feeItem,
+          locationOfService: dummyDataValid.medicalServiceClaims[0].locationOfService,
+          notes: dummyDataValid.medicalServiceClaims[0].notes,
+          numberOfServices: dummyDataValid.medicalServiceClaims[0].numberOfServices,
+          renderedFinishTime: dummyDataValid.medicalServiceClaims[0].renderedFinishTime,
+          serviceClarificationCode: dummyDataValid.medicalServiceClaims[0].serviceClarificationCode,
           serviceDate: cloneDeep(testDate),
           serviceDateData: null,
-          submissionCode: "I",
+          submissionCode: dummyDataValid.medicalServiceClaims[0].submissionCode,
         },
       ]
     );
@@ -402,19 +260,19 @@ describe("ClaimCountPage.vue pay practitioner validateFields() part 2 (valid)", 
       `${module3.MODULE_NAME}/${module3.SET_HOSPITAL_VISIT_CLAIMS}`,
       [
         {
-          amountBilled: "0.00",
-          correspondenceAttached: null,
-          dayFrom: "24",
-          dayTo: "26",
-          diagnosticCode: "001",
-          feeItem: "03333",
-          locationOfService: "A",
-          month: "12",
-          notes: "Notes here.",
-          numberOfServices: "1",
-          serviceClarificationCode: "A1",
-          submissionCode: "I",
-          year: "2020",
+          amountBilled: dummyDataValid.hospitalVisitClaims[0].amountBilled,
+          correspondenceAttached: dummyDataValid.hospitalVisitClaims[0].correspondenceAttached,
+          dayFrom: dummyDataValid.hospitalVisitClaims[0].dayFrom,
+          dayTo: dummyDataValid.hospitalVisitClaims[0].dayTo,
+          diagnosticCode: dummyDataValid.hospitalVisitClaims[0].diagnosticCode,
+          feeItem: dummyDataValid.hospitalVisitClaims[0].feeItem,
+          locationOfService: dummyDataValid.hospitalVisitClaims[0].locationOfService,
+          month: dummyDataValid.hospitalVisitClaims[0].month,
+          notes: dummyDataValid.hospitalVisitClaims[0].notes,
+          numberOfServices: dummyDataValid.hospitalVisitClaims[0].numberOfServices,
+          serviceClarificationCode: dummyDataValid.hospitalVisitClaims[0].serviceClarificationCode,
+          submissionCode: dummyDataValid.hospitalVisitClaims[0].submissionCode,
+          year: dummyDataValid.hospitalVisitClaims[0].year,
         },
       ]
     );
@@ -440,7 +298,7 @@ describe("ClaimCountPage.vue pay practitioner validateFields() part 2 (valid)", 
     expect(spyOnRouter).toHaveBeenCalled();
   });
 
-  it("calls router.push with correct argumentt", () => {
+  it("calls router.push with correct argument", () => {
     wrapper.vm.validateFields();
     expect(spyOnRouter).toHaveBeenCalledWith(
       getConvertedPath(
@@ -452,43 +310,25 @@ describe("ClaimCountPage.vue pay practitioner validateFields() part 2 (valid)", 
 });
 
 describe("ClaimCountPage.vue pay practitioner beforeRouteLeave(to, from, next)", () => {
-  //this test uses mocks to make spying on store/router functions easier
-  let $store;
+  let store;
   let wrapper;
-  let $route;
-  let $router;
 
   beforeEach(() => {
-    $store = {
-      state: {
-        payPractitionerForm: {},
-      },
-      dispatch: vi.fn(),
-    };
-    $router = {
-      $route,
-      currentRoute: {
-        value: {
-          path: "/potato-csr",
-        },
-      },
-      push: vi.fn(),
-    };
-    vi.spyOn($store, "dispatch");
-
-    vi.spyOn($router, "push").mockImplementation(() =>
-      Promise.resolve("pushed")
-    );
-
+    store = createStore(storeTemplate);
     wrapper = mount(Page, {
       global: {
+        plugins: [store],
         mocks: {
-          $route,
-          $router,
-          $store,
+          $router: mockRouterCSR,
         },
       },
     });
+
+    vi.spyOn(wrapper.vm.$store, "dispatch");
+
+    vi.spyOn(mockRouterCSR, "push").mockImplementation(() =>
+      Promise.resolve("pushed")
+    );
   });
 
   afterEach(() => {

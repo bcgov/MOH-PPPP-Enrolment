@@ -7,18 +7,19 @@ import {
   payPatientCSRStepRoutes,
   payPractitionerCSRStepRoutes,
 } from "@/router/step-routes";
+import {
+  mockRouter,
+} from "./test-helper.js";
 
 const mockRoute = {
   params: {
     id: 1
   }
 }
-const mockRouter = {
-  push: vi.fn()
-}
 
 const payPatientTemplate = shallowMount(Page, {
   global: {
+    stubs: ["router-link", "router-view"],
     plugins: [store],
     mocks: {
       $route: mockRoute,
@@ -32,11 +33,10 @@ const payPatientTemplate = shallowMount(Page, {
       },
     }
   },
-  stubs: ["router-link", "router-view"],
 });
 const payPatientCSRTemplate = shallowMount(Page, {
-  stubs: ["router-link", "router-view"],
   global: {
+    stubs: ["router-link", "router-view"],
     plugins: [store],
     mocks: {
       $route: mockRoute,
@@ -52,8 +52,8 @@ const payPatientCSRTemplate = shallowMount(Page, {
   },
 });
 const payPractitionerTemplate = shallowMount(Page, {
-  stubs: ["router-link", "router-view"],
   global: {
+    stubs: ["router-link", "router-view"],
     plugins: [store],
     mocks: {
       $route: mockRoute,
@@ -69,8 +69,8 @@ const payPractitionerTemplate = shallowMount(Page, {
   },
 });
 const payPractitionerCSRTemplate = shallowMount(Page, {
-  stubs: ["router-link", "router-view"],
   global: {
+    stubs: ["router-link", "router-view"],
     plugins: [store],
     mocks: {
       $route: mockRoute,

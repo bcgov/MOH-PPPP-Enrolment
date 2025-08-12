@@ -4,14 +4,24 @@ import { cloneDeep } from "lodash";
 import Page from "@/views/pay-patient/MainFormPage.vue";
 import logService from "@/services/log-service";
 import pageStateService from "@/services/page-state-service";
-import * as module1 from "../../../../src/store/modules/app";
-import * as module2 from "../../../../src/store/modules/pay-patient-form";
-import * as module3 from "../../../../src/store/modules/pay-practitioner-form";
-import * as dummyDataValid from "../../../../src/store/states/pay-patient-form-dummy-data";
 import { getConvertedPath } from "@/helpers/url";
 import { payPatientRoutes, payPatientRouteStepOrder } from "@/router/routes";
-import * as scrollHelper from "@/helpers/scroll"; 
+import * as scrollHelper from "@/helpers/scroll";
+import {
+  defaultStoreTemplate,
+  mockRouterCSR,
+  mockRouter,
+} from "../../test-helper.js";
+import * as dummyDataPatientValid from "@/store/states/pay-patient-form-dummy-data";
 
+//store template to mount the page with
+//since the page won't load unless applicationId is present
+const storeTemplate = cloneDeep(defaultStoreTemplate);
+const passingData = dummyDataPatientValid.default;
+
+storeTemplate.modules.payPatientForm.state = cloneDeep(passingData);
+
+//test dates
 const testDateFutureYear = new Date();
 testDateFutureYear.setFullYear(testDateFutureYear.getFullYear() + 1);
 
@@ -24,8 +34,7 @@ testDatePast89Days.setDate(testDatePast89Days.getDate() - 89);
 const testDatePast91Days = new Date();
 testDatePast91Days.setDate(testDatePast91Days.getDate() - 91);
 
-const next = vi.fn();
-
+//mock API responses
 const mockBackendValidationResponse = {
   data: {
     applicationUuid: "9f6b649b-c483-4327-b5a9-f5aa8d3bec13",
@@ -84,65 +93,6 @@ const mockBackendValidationResponseDefault = {
   statusText: "OK",
 };
 
-const passingData = {
-  phn: "9999 999 998",
-  dependentNumber: "66",
-  firstName: "Bob",
-  middleInitial: "H",
-  lastName: "Smith",
-  birthDate: new Date("2000-01-01"),
-
-  addressOwner: "PATIENT",
-  unitNumber: "123",
-  streetNumber: "321",
-  streetName: "Fake St.",
-  city: "Victoria",
-  postalCode: "V8V 8V8",
-
-  isVehicleAccident: "Y",
-  vehicleAccidentClaimNumber: "A0000001",
-
-  planReferenceNumberOfOriginalClaim: "321",
-
-  medicalServiceClaims: [
-    {
-      serviceDate: new Date(),
-      numberOfServices: "1",
-      serviceClarificationCode: "A1",
-      feeItem: "00010",
-      amountBilled: "0.00",
-      calledStartTime: {
-        hour: "08",
-        minute: "01",
-      },
-      renderedFinishTime: {
-        hour: "16",
-        minute: "05",
-      },
-      diagnosticCode: "001",
-      locationOfService: "B",
-      correspondenceAttached: null,
-      submissionCode: "I",
-      notes: "Notes here.",
-    },
-  ],
-
-  practitionerLastName: "GOTTNER",
-  practitionerFirstName: "MICHAEL",
-  practitionerPaymentNumber: "00001",
-  practitionerPractitionerNumber: "00001",
-  practitionerFacilityNumber: "12345",
-  practitionerSpecialtyCode: "99",
-
-  referredByFirstNameInitial: "R",
-  referredByLastName: "McDonald",
-  referredByPractitionerNumber: "22271",
-
-  referredToFirstNameInitial: "C",
-  referredToLastName: "Lee",
-  referredToPractitionerNumber: "22272",
-};
-
 //required to prevent ECONNREFUSED errors
 vi.mock("axios", () => ({
   default: {
@@ -150,11 +100,13 @@ vi.mock("axios", () => ({
     post: vi.fn(() => {
       return Promise.resolve();
     }),
-  } 
+  },
 }));
 
-const spyOnScrollTo = vi.spyOn(scrollHelper, "scrollTo").mockImplementation(() => Promise.resolve("scrolled"));;
-
+//spies
+const spyOnScrollTo = vi
+  .spyOn(scrollHelper, "scrollTo")
+  .mockImplementation(() => Promise.resolve("scrolled"));
 const spyOnGetTopScrollPosition = vi
   .spyOn(scrollHelper, "getTopScrollPosition")
   .mockImplementation(() => Promise.resolve("top scroll position returned"));
@@ -173,39 +125,6 @@ const spyOnLogNavigation = vi
   .spyOn(logService, "logNavigation")
   .mockImplementation(() => Promise.resolve("logged"));
 
-const storeTemplate = {
-  modules: {
-    app: cloneDeep(module1.default),
-    payPatientForm: cloneDeep(module2.default),
-    payPractitionerForm: cloneDeep(module3.default),
-  },
-};
-
-const patientState = cloneDeep(dummyDataValid.default);
-storeTemplate.modules.payPatientForm.state = cloneDeep(patientState);
-
-const mockRouter = {
-  $router: {
-    push: vi.fn(),
-    currentRoute: {
-      value: {
-        path: "/pay-patient/main-form",
-      }
-    },
-  },
-};
-
-const mockRouterCSR = {
-  $router: {
-    push: vi.fn(),
-    currentRoute: {
-      value: {
-        path: "/pay-patient-csr/main-form",
-      }
-    },
-  },
-};
-
 describe("MainFormPage.vue pay patient", () => {
   // eslint-disable-next-line
   let store;
@@ -216,7 +135,9 @@ describe("MainFormPage.vue pay patient", () => {
     wrapper = mount(Page, {
       global: {
         plugins: [store],
-        mocks: mockRouter,
+        mocks: {
+          $router: mockRouter,
+        },
       },
     });
   });
@@ -237,7 +158,9 @@ describe("MainFormPage.vue pay patient created()", () => {
     wrapper = mount(Page, {
       global: {
         plugins: [store],
-        mocks: mockRouter,
+        mocks: {
+          $router: mockRouter,
+        },
       },
     });
   });
@@ -295,7 +218,9 @@ describe("MainFormPage.vue handleBlurField()", () => {
     wrapper = mount(Page, {
       global: {
         plugins: [store],
-        mocks: mockRouter,
+        mocks: {
+          $router: mockRouter,
+        },
       },
     });
   });
@@ -326,7 +251,9 @@ describe("MainFormPage.vue handleInputPractitioner()", () => {
     wrapper = mount(Page, {
       global: {
         plugins: [store],
-        mocks: mockRouter,
+        mocks: {
+          $router: mockRouter,
+        },
       },
     });
   });
@@ -354,7 +281,9 @@ describe("MainFormPage.vue handleProcessBirthDate()", () => {
     wrapper = mount(Page, {
       global: {
         plugins: [store],
-        mocks: mockRouter,
+        mocks: {
+          $router: mockRouter,
+        },
       },
     });
   });
@@ -382,7 +311,9 @@ describe("MainFormPage.vue handleProcessServiceDate()", () => {
     wrapper = mount(Page, {
       global: {
         plugins: [store],
-        mocks: mockRouter,
+        mocks: {
+          $router: mockRouter,
+        },
       },
     });
   });
@@ -394,13 +325,13 @@ describe("MainFormPage.vue handleProcessServiceDate()", () => {
 
   it("sets serviceDateData to value passed", () => {
     const claimIndex = 0;
-    const mockServiceDate = {"potato": "potato"};
+    const mockServiceDate = { potato: "potato" };
 
     wrapper.vm.medicalServiceClaims[claimIndex].serviceDateData = "notPotato";
     wrapper.vm.handleProcessServiceDate(mockServiceDate, claimIndex);
-    expect(wrapper.vm.medicalServiceClaims[claimIndex].serviceDateData).toStrictEqual(
-      mockServiceDate
-    );
+    expect(
+      wrapper.vm.medicalServiceClaims[claimIndex].serviceDateData
+    ).toStrictEqual(mockServiceDate);
   });
 });
 
@@ -415,7 +346,9 @@ describe("MainFormPage.vue validationModal handlers", () => {
     wrapper = mount(Page, {
       global: {
         plugins: [store],
-        mocks: mockRouter,
+        mocks: {
+          $router: mockRouter,
+        },
       },
     });
     spyOnNavigateToNextPage = vi.spyOn(wrapper.vm, "navigateToNextPage");
@@ -449,7 +382,9 @@ describe("MainFormPage.vue navigateToNextPage()", () => {
     wrapper = mount(Page, {
       global: {
         plugins: [store],
-        mocks: mockRouter,
+        mocks: {
+          $router: mockRouter,
+        },
       },
     });
   });
@@ -495,7 +430,9 @@ describe("MainFormPage.vue saveData()", () => {
     wrapper = mount(Page, {
       global: {
         plugins: [store],
-        mocks: mockRouter,
+        mocks: {
+          $router: mockRouter,
+        },
       },
     });
 
@@ -536,7 +473,9 @@ describe("MainFormPage.vue getMedicalServiceClaimTitle()", () => {
     wrapper = mount(Page, {
       global: {
         plugins: [store],
-        mocks: mockRouter,
+        mocks: {
+          $router: mockRouter,
+        },
       },
     });
     Object.assign(wrapper.vm, cloneDeep(passingData));
@@ -639,7 +578,9 @@ describe("MainFormPage.vue isReferredByRequired()", () => {
     wrapper = mount(Page, {
       global: {
         plugins: [store],
-        mocks: mockRouter,
+        mocks: {
+          $router: mockRouter,
+        },
       },
     });
   });
@@ -688,7 +629,9 @@ describe("MainFormPage.vue isReferredToRequired()", () => {
     wrapper = mount(Page, {
       global: {
         plugins: [store],
-        mocks: mockRouter,
+        mocks: {
+          $router: mockRouter,
+        },
       },
     });
     Object.assign(wrapper.vm, cloneDeep(passingData));
@@ -740,7 +683,9 @@ describe("MainFormPage.vue isReferredToRequired()", () => {
     wrapper = mount(Page, {
       global: {
         plugins: [store],
-        mocks: mockRouterCSR,
+        mocks: {
+          $router: mockRouterCSR,
+        },
       },
     });
 
@@ -756,7 +701,9 @@ describe("MainFormPage.vue isReferredToRequired()", () => {
     wrapper = mount(Page, {
       global: {
         plugins: [store],
-        mocks: mockRouterCSR,
+        mocks: {
+          $router: mockRouterCSR,
+        },
       },
     });
 
@@ -779,7 +726,9 @@ describe("MainFormPage.vue isContainingNoChargeFeeItem()", () => {
     wrapper = mount(Page, {
       global: {
         plugins: [store],
-        mocks: mockRouter,
+        mocks: {
+          $router: mockRouter,
+        },
       },
     });
 
@@ -891,7 +840,9 @@ describe("MainFormPage.vue isCSR()", () => {
     wrapper = mount(Page, {
       global: {
         plugins: [store],
-        mocks: mockRouter,
+        mocks: {
+          $router: mockRouter,
+        },
       },
     });
     expect(Page.computed.isCSR.call(wrapper.vm)).toBe(false);
@@ -901,7 +852,9 @@ describe("MainFormPage.vue isCSR()", () => {
     wrapper = mount(Page, {
       global: {
         plugins: [store],
-        mocks: mockRouterCSR,
+        mocks: {
+          $router: mockRouterCSR,
+        },
       },
     });
     expect(Page.computed.isCSR.call(wrapper.vm)).toBe(true);
@@ -915,16 +868,20 @@ describe("MainFormPage.vue beforeRouteLeave(to, from, next)", () => {
   let store;
   let wrapper;
 
+  const next = vi.fn();
+
   beforeEach(() => {
     store = createStore(storeTemplate);
     wrapper = mount(Page, {
       global: {
         plugins: [store],
-        mocks: mockRouter,
+        mocks: {
+          $router: mockRouter,
+        },
       },
     });
   });
-  
+
   afterEach(() => {
     vi.resetModules();
     vi.clearAllMocks();

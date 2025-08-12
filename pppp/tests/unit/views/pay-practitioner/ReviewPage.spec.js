@@ -2,8 +2,6 @@ import { shallowMount } from "@vue/test-utils";
 import { createStore } from "vuex";
 import { cloneDeep } from "lodash";
 import Page from "@/views/pay-practitioner/ReviewPage.vue";
-import * as module1 from "../../../../src/store/modules/app";
-import * as module2 from "../../../../src/store/modules/pay-patient-form";
 import * as module3 from "../../../../src/store/modules/pay-practitioner-form";
 import * as dummyDataValid from "../../../../src/store/states/pay-practitioner-form-dummy-data";
 import logService from "@/services/log-service";
@@ -15,28 +13,11 @@ import {
   payPractitionerRouteStepOrder,
 } from "@/router/routes";
 import * as scrollHelper from "@/helpers/scroll";
-
-const mockRouterCSR = {
-  $router: {
-    push: vi.fn(),
-    currentRoute: {
-      value: {
-        path: "/potato-csr",
-      },
-    },
-  },
-};
-
-const mockRouter = {
-  $router: {
-    push: vi.fn(),
-    currentRoute: {
-      value: {
-        path: "/potato",
-      },
-    },
-  },
-};
+import {
+  defaultStoreTemplate,
+  mockRouterCSR,
+  mockRouter,
+} from "../../test-helper.js";
 
 const mockResponse = {
   data: {
@@ -91,37 +72,10 @@ const testDate = new Date();
 //storeTemplateNHospitalC and storeTemplateNHospitalN also have *medical* claims set to N.
 //NHospitalC has *hospital* claims set to C. NHospitalN has *hospital* claims set to N.
 
-const storeTemplateC = {
-  modules: {
-    app: cloneDeep(module1.default),
-    payPatientForm: cloneDeep(module2.default),
-    payPractitionerForm: cloneDeep(module3.default),
-  },
-};
-
-const storeTemplateN = {
-  modules: {
-    app: cloneDeep(module1.default),
-    payPatientForm: cloneDeep(module2.default),
-    payPractitionerForm: cloneDeep(module3.default),
-  },
-};
-
-const storeTemplateNHospitalC = {
-  modules: {
-    app: cloneDeep(module1.default),
-    payPatientForm: cloneDeep(module2.default),
-    payPractitionerForm: cloneDeep(module3.default),
-  },
-};
-
-const storeTemplateNHospitalN = {
-  modules: {
-    app: cloneDeep(module1.default),
-    payPatientForm: cloneDeep(module2.default),
-    payPractitionerForm: cloneDeep(module3.default),
-  },
-};
+const storeTemplateC = cloneDeep(defaultStoreTemplate);
+const storeTemplateN = cloneDeep(defaultStoreTemplate);
+const storeTemplateNHospitalC = cloneDeep(defaultStoreTemplate);
+const storeTemplateNHospitalN = cloneDeep(defaultStoreTemplate);
 
 const practitionerStateC = cloneDeep(dummyDataValid.default);
 const practitionerStateN = cloneDeep(dummyDataValid.default);
@@ -199,7 +153,9 @@ describe("ReviewPage.vue pay practitioner", () => {
     wrapper = shallowMount(Page, {
       global: {
         plugins: [store],
-        mocks: mockRouterCSR,
+        mocks: {
+          $router: mockRouterCSR,
+        },
       },
     });
   });
@@ -223,7 +179,9 @@ describe("ReviewPage.vue pay practitioner created()", () => {
     wrapper = shallowMount(Page, {
       global: {
         plugins: [store],
-        mocks: mockRouterCSR,
+        mocks: {
+          $router: mockRouterCSR,
+        },
       },
     });
   });
@@ -254,7 +212,9 @@ describe("ReviewPage.vue pay practitioner continueHandler()", () => {
     wrapper = shallowMount(Page, {
       global: {
         plugins: [store],
-        mocks: mockRouterCSR,
+        mocks: {
+          $router: mockRouterCSR,
+        },
       },
     });
     const spyOnSubmitForm = vi.spyOn(wrapper.vm, "submitForm");
@@ -267,7 +227,9 @@ describe("ReviewPage.vue pay practitioner continueHandler()", () => {
     wrapper = shallowMount(Page, {
       global: {
         plugins: [store],
-        mocks: mockRouter,
+        mocks: {
+          $router: mockRouter,
+        },
       },
     });
     wrapper.vm.continueHandler();
@@ -279,7 +241,9 @@ describe("ReviewPage.vue pay practitioner continueHandler()", () => {
     wrapper = shallowMount(Page, {
       global: {
         plugins: [store],
-        mocks: mockRouterCSR,
+        mocks: {
+          $router: mockRouterCSR,
+        },
       },
     });
     const spyOnSubmitForm = vi.spyOn(wrapper.vm, "submitForm");
@@ -292,7 +256,9 @@ describe("ReviewPage.vue pay practitioner continueHandler()", () => {
     wrapper = shallowMount(Page, {
       global: {
         plugins: [store],
-        mocks: mockRouterCSR,
+        mocks: {
+          $router: mockRouterCSR,
+        },
       },
     });
     const spyOnSubmitForm = vi.spyOn(wrapper.vm, "submitForm");
@@ -305,7 +271,9 @@ describe("ReviewPage.vue pay practitioner continueHandler()", () => {
     wrapper = shallowMount(Page, {
       global: {
         plugins: [store],
-        mocks: mockRouter,
+        mocks: {
+          $router: mockRouter,
+        },
       },
     });
     wrapper.vm.continueHandler();
@@ -317,7 +285,9 @@ describe("ReviewPage.vue pay practitioner continueHandler()", () => {
     wrapper = shallowMount(Page, {
       global: {
         plugins: [store],
-        mocks: mockRouterCSR,
+        mocks: {
+          $router: mockRouterCSR,
+        },
       },
     });
     const spyOnSubmitForm = vi.spyOn(wrapper.vm, "submitForm");
@@ -340,7 +310,9 @@ describe("ReviewPage.vue pay practitioner submitForm()", () => {
     wrapper = shallowMount(Page, {
       global: {
         plugins: [store],
-        mocks: mockRouterCSR,
+        mocks: {
+          $router: mockRouterCSR,
+        },
       },
     });
     spyOnDispatch = vi.spyOn(wrapper.vm.$store, "dispatch");
@@ -592,7 +564,9 @@ describe("ReviewPage.vue beforeRouteLeave(to, from, next)", () => {
     wrapper = shallowMount(Page, {
       global: {
         plugins: [store],
-        mocks: mockRouterCSR,
+        mocks: {
+          $router: mockRouterCSR,
+        },
       },
     });
   });

@@ -1,20 +1,21 @@
 import { mount } from "@vue/test-utils";
 import { cloneDeep } from "lodash";
 import { createStore } from "vuex";
-import { createRouter, createWebHistory } from "vue-router";
-import { routeCollection } from "@/router/index";
 import Page from "@/views/pay-patient/ReviewPage.vue";
-import * as module1 from "../../../../src/store/modules/app";
 import * as module2 from "../../../../src/store/modules/pay-patient-form";
-import * as module3 from "../../../../src/store/modules/pay-practitioner-form";
 import * as dummyDataValid from "../../../../src/store/states/pay-patient-form-dummy-data";
-import spaEnvService from "@/services/spa-env-service";
 import logService from "@/services/log-service";
 import apiService from "@/services/api-service";
 import pageStateService from "@/services/page-state-service";
 import { getConvertedPath } from "@/helpers/url";
 import { payPatientRoutes, payPatientRouteStepOrder } from "@/router/routes";
-import * as scrollHelper from "@/helpers/scroll"; 
+import * as scrollHelper from "@/helpers/scroll";
+import {
+  defaultStoreTemplate,
+  mockRouter,
+  mockRouterCSR,
+  router,
+} from "../../test-helper.js";
 
 const mockResponse = {
   data: {
@@ -61,58 +62,22 @@ const mockResponseDBErrorPrnPresent = {
   },
 };
 
-const mockRouter = {
-  $router: {
-    push: vi.fn(),
-    currentRoute: {
-      value: {
-        path: "/potato",
-      },
-    },
-  },
-};
-
-const mockRouterCSR = {
-  $router: {
-    push: vi.fn(),
-    currentRoute: {
-      value: {
-        path: "/potato-csr",
-      },
-    },
-  },
-};
-
-let router;
-router = createRouter({
-  history: createWebHistory(),
-  routes: routeCollection,
-});
-
 const next = vi.fn();
 const testDate = new Date();
 
-const storeTemplateC = {
-  modules: {
-    app: cloneDeep(module1.default),
-    payPatientForm: cloneDeep(module2.default),
-    payPractitionerForm: cloneDeep(module3.default),
-  },
-};
-
-const storeTemplateN = {
-  modules: {
-    app: cloneDeep(module1.default),
-    payPatientForm: cloneDeep(module2.default),
-    payPractitionerForm: cloneDeep(module3.default),
-  },
-};
-
+//create two variables with passing store data
 const patientStateC = cloneDeep(dummyDataValid.default);
 const patientStateN = cloneDeep(dummyDataValid.default);
+
+//assign the patient states different correspondenceAttached variables
 patientStateC.medicalServiceClaims[0].correspondenceAttached = "C";
 patientStateN.medicalServiceClaims[0].correspondenceAttached = "N";
 
+//create two store template variables from default (currently contains null store data)
+const storeTemplateC= cloneDeep(defaultStoreTemplate)
+const storeTemplateN= cloneDeep(defaultStoreTemplate)
+
+//initialize the two store templates with different patient states/correspondence variables
 storeTemplateC.modules.payPatientForm.state = cloneDeep(patientStateC);
 storeTemplateN.modules.payPatientForm.state = cloneDeep(patientStateN);
 
@@ -121,12 +86,16 @@ storeTemplateN.modules.payPatientForm.state = cloneDeep(patientStateN);
 //I've instead mocked the function below
 vi.spyOn(global, "Date").mockImplementation(() => testDate);
 
-vi
-  .spyOn(apiService, "submitPayPatientApplication")
-  .mockImplementation(() => Promise.resolve(mockResponse));
+vi.spyOn(apiService, "submitPayPatientApplication").mockImplementation(() =>
+  Promise.resolve(mockResponse)
+);
 
-const spyOnScrollTo = vi.spyOn(scrollHelper, "scrollTo").mockImplementation(() => Promise.resolve("scrolled"));;
-const spyOnScrollToError = vi.spyOn(scrollHelper, "scrollToError").mockImplementation(() => Promise.resolve("scrolled to error"));;
+const spyOnScrollTo = vi
+  .spyOn(scrollHelper, "scrollTo")
+  .mockImplementation(() => Promise.resolve("scrolled"));
+const spyOnScrollToError = vi
+  .spyOn(scrollHelper, "scrollToError")
+  .mockImplementation(() => Promise.resolve("scrolled to error"));
 
 const spyOnGetTopScrollPosition = vi
   .spyOn(scrollHelper, "getTopScrollPosition")
@@ -216,7 +185,9 @@ describe("ReviewPage.vue pay patient continueHandler()", () => {
     wrapper = mount(Page, {
       global: {
         plugins: [store],
-        mocks: mockRouter,
+        mocks: {
+          $router: mockRouter,
+        },
       },
     });
     const spyOnSubmitForm = vi.spyOn(wrapper.vm, "submitForm");
@@ -229,7 +200,9 @@ describe("ReviewPage.vue pay patient continueHandler()", () => {
     wrapper = mount(Page, {
       global: {
         plugins: [store],
-        mocks: mockRouterCSR,
+        mocks: {
+          $router: mockRouterCSR,
+        },
       },
     });
     const spyOnSubmitForm = vi.spyOn(wrapper.vm, "submitForm");
@@ -242,7 +215,9 @@ describe("ReviewPage.vue pay patient continueHandler()", () => {
     wrapper = mount(Page, {
       global: {
         plugins: [store],
-        mocks: mockRouter,
+        mocks: {
+          $router: mockRouter,
+        },
       },
     });
     wrapper.vm.continueHandler();
@@ -315,27 +290,27 @@ describe("ReviewPage.vue pay patient submitForm()", () => {
   });
 
   it("calls scrollToError on error code 3", async () => {
-    vi
-      .spyOn(apiService, "submitPayPatientApplication")
-      .mockImplementationOnce(() => Promise.resolve(mockResponse3));
+    vi.spyOn(apiService, "submitPayPatientApplication").mockImplementationOnce(
+      () => Promise.resolve(mockResponse3)
+    );
     wrapper.vm.submitForm();
     await wrapper.vm.$nextTick;
     expect(spyOnScrollToError).toHaveBeenCalled();
   });
 
   it("calls logServiceError on error code 3", async () => {
-    vi
-      .spyOn(apiService, "submitPayPatientApplication")
-      .mockImplementationOnce(() => Promise.resolve(mockResponse3));
+    vi.spyOn(apiService, "submitPayPatientApplication").mockImplementationOnce(
+      () => Promise.resolve(mockResponse3)
+    );
     wrapper.vm.submitForm();
     await wrapper.vm.$nextTick;
     expect(spyOnLogServiceError).toHaveBeenCalled();
   });
 
   it("calls navigateToSubmissionErrorPage on misc error", async () => {
-    vi
-      .spyOn(apiService, "submitPayPatientApplication")
-      .mockImplementationOnce(() => Promise.resolve(mockResponseMisc));
+    vi.spyOn(apiService, "submitPayPatientApplication").mockImplementationOnce(
+      () => Promise.resolve(mockResponseMisc)
+    );
     wrapper.vm.submitForm();
     await wrapper.vm.$nextTick;
     expect(spyOnNavigateToSubmissionErrorPage).toHaveBeenCalled();
@@ -343,31 +318,27 @@ describe("ReviewPage.vue pay patient submitForm()", () => {
   });
 
   it("calls logServiceError on misc error", async () => {
-    vi
-      .spyOn(apiService, "submitPayPatientApplication")
-      .mockImplementationOnce(() => Promise.resolve(mockResponseMisc));
+    vi.spyOn(apiService, "submitPayPatientApplication").mockImplementationOnce(
+      () => Promise.resolve(mockResponseMisc)
+    );
     wrapper.vm.submitForm();
     await wrapper.vm.$nextTick;
     expect(spyOnLogServiceError).toHaveBeenCalled();
   });
 
   it("calls logServiceError on DB Error PRN Present error", async () => {
-    vi
-      .spyOn(apiService, "submitPayPatientApplication")
-      .mockImplementationOnce(() =>
-        Promise.resolve(mockResponseDBErrorPrnPresent)
-      );
+    vi.spyOn(apiService, "submitPayPatientApplication").mockImplementationOnce(
+      () => Promise.resolve(mockResponseDBErrorPrnPresent)
+    );
     wrapper.vm.submitForm();
     await wrapper.vm.$nextTick;
     expect(spyOnLogServiceError).toHaveBeenCalled();
   });
 
   it("calls spyOnNavigateToSubmissionPage on DB Error PRN Present error", async () => {
-    vi
-      .spyOn(apiService, "submitPayPatientApplication")
-      .mockImplementationOnce(() =>
-        Promise.resolve(mockResponseDBErrorPrnPresent)
-      );
+    vi.spyOn(apiService, "submitPayPatientApplication").mockImplementationOnce(
+      () => Promise.resolve(mockResponseDBErrorPrnPresent)
+    );
     wrapper.vm.submitForm();
     await wrapper.vm.$nextTick;
     expect(spyOnNavigateToSubmissionPage).toHaveBeenCalled();

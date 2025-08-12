@@ -4,19 +4,20 @@ import { cloneDeep } from "lodash";
 import Page from "@/views/pay-practitioner/MainFormPage.vue";
 import logService from "@/services/log-service";
 import pageStateService from "@/services/page-state-service";
-import * as module1 from "../../../../src/store/modules/app";
-import * as module2 from "../../../../src/store/modules/pay-patient-form";
-import * as module3 from "../../../../src/store/modules/pay-practitioner-form";
 import * as dummyDataValid from "../../../../src/store/states/pay-practitioner-form-dummy-data";
 import { getConvertedPath } from "@/helpers/url";
 import {
   payPractitionerRoutes,
   payPractitionerRouteStepOrder,
 } from "@/router/routes";
-import * as scrollHelper from "@/helpers/scroll"; 
+import * as scrollHelper from "@/helpers/scroll";
+import {
+  defaultStoreTemplate,
+  mockRouterCSR,
+  mockRouter,
+} from "../../test-helper.js"; 
 
 const testDate = new Date();
-const adjustedTestDateMonth = testDate.getMonth() + 1;
 //testDate.getMonth() returns 0 for January
 //but the hospital visit selector indexes January as 1, since it's the first item on the list
 //this constant adjusts for this difference
@@ -41,107 +42,7 @@ testDatePast91Days.setDate(testDatePast91Days.getDate() - 91);
 
 const next = vi.fn();
 
-const mockBackendValidationResponse = {
-  data: {
-    applicationUuid: "9f6b649b-c483-4327-b5a9-f5aa8d3bec13",
-    requestUuid: "1dc94b87-86f9-4d92-a749-fb8b2fc1edaf",
-    returnCode: "0",
-    returnMessage: "Valid",
-    practitionerFirstName: "Y",
-    practitionerLastName: "Y",
-    practitionerNumber: "Y",
-    serviceFeeItem1: "Y",
-    serviceFeeItem2: "",
-    serviceFeeItem3: "",
-    serviceFeeItem4: "",
-    serviceLocationCode1: "",
-    serviceLocationCode2: "",
-    serviceLocationCode3: "",
-    serviceLocationCode4: "",
-    hospitalFeeItem1: "",
-    hospitalFeeItem2: "",
-    hospitalLocationCode1: "",
-    hospitalLocationCode2: "",
-  },
-  status: 200,
-  statusText: "OK",
-};
-
-const passingData = {
-  medicalServiceClaimsCount: "1",
-  hospitalVisitClaimsCount: "1",
-
-  planReferenceNumber: "1234567890",
-
-  phn: "9999 999 998",
-  dependentNumber: "66",
-  firstName: "Bob",
-  middleInitial: "H",
-  lastName: "Smith",
-  birthDate: new Date(),
-
-  isVehicleAccident: "Y",
-  vehicleAccidentClaimNumber: "A0000001",
-
-  planReferenceNumberOfOriginalClaim: "321",
-
-  medicalServiceClaims: [
-    {
-      serviceDate: new Date(),
-      numberOfServices: "1",
-      serviceClarificationCode: "A1",
-      feeItem: "00010",
-      amountBilled: "0.00",
-      calledStartTime: {
-        hour: "08",
-        minute: "08",
-      },
-      renderedFinishTime: {
-        hour: "16",
-        minute: "06",
-      },
-      diagnosticCode: "001",
-      locationOfService: "B",
-      correspondenceAttached: null,
-      submissionCode: "I",
-      notes: "Notes here.",
-    },
-  ],
-
-  hospitalVisitClaims: [
-    {
-      month: adjustedTestDateMonth.toString(),
-      dayFrom: testDate.getDate().toString(),
-      dayTo: testDate.getDate().toString(),
-      year: testDate.getFullYear().toString(),
-      numberOfServices: "1",
-      serviceClarificationCode: "A1",
-      feeItem: "00010",
-      amountBilled: "0.00",
-      diagnosticCode: "001",
-      locationOfService: "B",
-      correspondenceAttached: null,
-      submissionCode: "I",
-      notes: "Notes here.",
-    },
-  ],
-
-  practitionerLastName: "GOTTNER",
-  practitionerFirstName: "MICHAEL",
-  practitionerPaymentNumber: "A1234",
-  practitionerPractitionerNumber: "00001",
-  practitionerFacilityNumber: "12345",
-  practitionerSpecialtyCode: "99",
-  coveragePreAuthNumber: "2222",
-
-  referredByFirstNameInitial: "R",
-  referredByLastName: "McDonald",
-  referredByPractitionerNumber: "22271",
-
-  referredToFirstNameInitial: "C",
-  referredToLastName: "Lee",
-  referredToPractitionerNumber: "22272",
-};
+const passingData = cloneDeep(dummyDataValid.default)
 
 //required to prevent ECONNREFUSED errors
 vi.mock("axios", () => ({
@@ -172,34 +73,10 @@ const spyOnLogNavigation = vi
   .spyOn(logService, "logNavigation")
   .mockImplementation(() => Promise.resolve("logged"));
 
-const storeTemplate = {
-  modules: {
-    app: cloneDeep(module1.default),
-    payPatientForm: cloneDeep(module2.default),
-    payPractitionerForm: cloneDeep(module3.default),
-  },
-};
+const storeTemplate = cloneDeep(defaultStoreTemplate);
 
 const practitionerState = cloneDeep(dummyDataValid.default);
 storeTemplate.modules.payPractitionerForm.state = cloneDeep(practitionerState);
-
-const mockRouter = {
-  push: vi.fn(),
-  currentRoute: {
-    value: {
-      path: "/pay-practitioner/main-form",
-    },
-  },
-};
-
-const mockRouterCSR = {
-  push: vi.fn(),
-  currentRoute: {
-    value: {
-      path: "/pay-practitioner-csr/main-form",
-    },
-  },
-};
 
 describe("MainFormPage.vue pay practitioner", () => {
   // eslint-disable-next-line
@@ -793,18 +670,30 @@ describe("MainFormPage.vue isReferredToRequired()", () => {
     expect(Page.computed.isReferredToRequired.call(wrapper.vm)).toBe(true);
   });
 
-  it("returns false if all three conditions are null", async () => {
+  it("returns false if all three conditions are null and fee items aren't 03333", async () => {
     await wrapper.setData({ referredToFirstNameInitial: null });
     await wrapper.setData({ referredToLastName: null });
     await wrapper.setData({ referredToPractitionerNumber: null });
+    wrapper.vm.medicalServiceClaims[0].feeItem = "00010";
+    wrapper.vm.hospitalVisitClaims[0].feeItem = "00010";
     expect(Page.computed.isReferredToRequired.call(wrapper.vm)).toBe(false);
   });
 
-  it("returns true if fee item is 03333", async () => {
+  it("returns true if medical service fee item is 03333", async () => {
     await wrapper.setData({ referredToFirstNameInitial: null });
     await wrapper.setData({ referredToLastName: null });
     await wrapper.setData({ referredToPractitionerNumber: null });
     wrapper.vm.medicalServiceClaims[0].feeItem = "03333";
+    wrapper.vm.hospitalVisitClaims[0].feeItem = "00010";
+    expect(Page.computed.isReferredToRequired.call(wrapper.vm)).toBe(true);
+  });
+
+  it("returns true if hospital visit fee item is 03333", async () => {
+    await wrapper.setData({ referredToFirstNameInitial: null });
+    await wrapper.setData({ referredToLastName: null });
+    await wrapper.setData({ referredToPractitionerNumber: null });
+    wrapper.vm.medicalServiceClaims[0].feeItem = "00010";
+    wrapper.vm.hospitalVisitClaims[0].feeItem = "03333";
     expect(Page.computed.isReferredToRequired.call(wrapper.vm)).toBe(true);
   });
 

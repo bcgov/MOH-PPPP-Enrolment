@@ -1,11 +1,7 @@
 import { shallowMount } from "@vue/test-utils";
 import { createStore } from "vuex";
 import { cloneDeep } from "lodash";
-import { createRouter, createWebHistory } from "vue-router";
 import Page from "@/views/pay-practitioner/SubmissionPage.vue";
-import * as module1 from "../../../../src/store/modules/app";
-import * as module2 from "../../../../src/store/modules/pay-patient-form";
-import * as module3 from "../../../../src/store/modules/pay-practitioner-form";
 import logService from "@/services/log-service";
 import pageStateService from "@/services/page-state-service";
 import { getConvertedPath } from "@/helpers/url";
@@ -13,24 +9,16 @@ import {
   payPractitionerRoutes,
   payPractitionerRouteStepOrder,
 } from "@/router/routes";
-import { routeCollection } from "@/router/index";
 import * as scrollHelper from "@/helpers/scroll"; 
-
-const router = createRouter({
-  history: createWebHistory(),
-  routes: routeCollection,
-});
+import {
+  defaultStoreTemplate,
+  router
+} from "../../test-helper.js";
 
 const next = vi.fn();
-const spyOnPrint = vi.spyOn(window, "print").mockImplementation(vi.fn);
+const storeTemplate = cloneDeep(defaultStoreTemplate);
 
-const storeTemplate = {
-  modules: {
-    app: cloneDeep(module1.default),
-    payPatientForm: cloneDeep(module2.default),
-    payPractitionerForm: cloneDeep(module3.default),
-  },
-};
+const spyOnPrint = vi.spyOn(window, "print").mockImplementation(vi.fn);
 
 const spyOnScrollTo = vi.spyOn(scrollHelper, "scrollTo").mockImplementation(() => Promise.resolve("scrolled"));;
 

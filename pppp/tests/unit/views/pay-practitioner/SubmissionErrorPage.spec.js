@@ -2,35 +2,21 @@ import { shallowMount } from "@vue/test-utils";
 import { createStore } from "vuex";
 import { cloneDeep } from "lodash";
 import Page from "@/views/pay-practitioner/SubmissionErrorPage.vue";
-import * as module1 from "../../../../src/store/modules/app";
-import * as module2 from "../../../../src/store/modules/pay-patient-form";
-import * as module3 from "../../../../src/store/modules/pay-practitioner-form";
 import logService from "@/services/log-service";
 import pageStateService from "@/services/page-state-service";
 import { getConvertedPath } from "@/helpers/url";
-import { createRouter, createWebHistory } from "vue-router";
-import { routeCollection } from "@/router/index";
 import {
   payPractitionerRoutes,
   payPractitionerRouteStepOrder,
 } from "@/router/routes";
 import * as scrollHelper from "@/helpers/scroll"; 
-
-let router;
-router = createRouter({
-      history: createWebHistory(),
-      routes: routeCollection,
-    });
+import {
+  defaultStoreTemplate,
+  router
+} from "../../test-helper.js";
 
 const next = vi.fn();
-
-const storeTemplate = {
-  modules: {
-    app: cloneDeep(module1.default),
-    payPatientForm: cloneDeep(module2.default),
-    payPractitionerForm: cloneDeep(module3.default),
-  },
-};
+const storeTemplate = cloneDeep(defaultStoreTemplate);
 
 const spyOnLogNavigation = vi
   .spyOn(logService, "logNavigation")
