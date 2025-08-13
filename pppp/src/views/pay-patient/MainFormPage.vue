@@ -563,15 +563,11 @@ import {
   DigitInput,
   FacilityNumberInput,
   InputComponent,
-  // NumberInput,
   PhnInput,
   PostalCodeInput,
   PractitionerNumberInput,
   PromptModal,
   RadioComponent,
-  // Select,
-  // Textarea,
-  // TimeInput,
   alphanumericValidator,
   alphaValidator,
   cloneDeep,
@@ -663,16 +659,12 @@ export default {
     FacilityNumberInput,
     InputComponent: InputComponent,
     MedicalServiceClaimsFormItem,
-    // NumberInput,
     PageContent,
     PhnInput,
     PostalCodeInput,
     PractitionerNumberInput,
     PromptModal,
     RadioComponent,
-    // Select,
-    // Textarea,
-    // TimeInput,
     TipBox,
   },
   data: () => {
@@ -1165,58 +1157,6 @@ export default {
       result.push('Placeholder field name');
       return result;
     },
-    // medicalServiceClaimsValidations() {
-    //   return {
-    //     serviceDate: {
-    //       required: requiredIf(() => !isCSR(this.$router.currentRoute.value.path)),
-    //       serviceDateValidator: optionalValidator(serviceDateValidator),
-    //       serviceDateFutureValidator: optionalValidator(validateIf(!isCSR(this.$router.currentRoute.value.path), serviceDateFutureValidator)),
-    //       distantPastValidator: optionalValidator(validateIf(!isCSR(this.$router.currentRoute.value.path), distantPastValidator)),
-    //       serviceDateCutOffValidator: optionalValidator(validateIf(!isCSR(this.$router.currentRoute.value.path), serviceDateCutOffValidator)),
-    //     },
-    //     numberOfServices: {
-    //       required: requiredIf(() => !isCSR(this.$router.currentRoute.value.path)),
-    //       intValidator: optionalValidator(intValidator),
-    //       positiveNumberValidator: optionalValidator(positiveNumberValidator),
-    //       nonZeroNumberValidator: optionalValidator(validateIf(!isCSR(this.$router.currentRoute.value.path), nonZeroNumberValidator)),
-    //     },
-    //     feeItem: {
-    //       required: requiredIf(() => !isCSR(this.$router.currentRoute.value.path)),
-    //       intValidator: optionalValidator(intValidator),
-    //       positiveNumberValidator: optionalValidator(positiveNumberValidator),
-    //     },
-    //     amountBilled: {
-    //       required: requiredIf(() => !isCSR(this.$router.currentRoute.value.path)),
-    //       dollarNumberValidator: optionalValidator(dollarNumberValidator),
-    //       positiveNumberValidator: optionalValidator(positiveNumberValidator),
-    //       amountBilledZeroValidator: optionalValidator(amountBilledZeroValidator),
-    //     },
-    //     calledStartTime: {
-    //       partialTimeValidator: optionalValidator(partialTimeValidator),
-    //     },
-    //     renderedFinishTime: {
-    //       partialTimeValidator: optionalValidator(partialTimeValidator),
-    //     },
-    //     diagnosticCode: {
-    //       required: requiredIf(() => !isCSR(this.$router.currentRoute.value.path)),
-    //       alphanumericValidator: optionalValidator(alphanumericValidator),
-    //       diagnosticCodeValidator: optionalValidator(validateIf(!isCSR(this.$router.currentRoute.value.path), diagnosticCodeValidator)),
-    //     },
-    //     locationOfService: {
-    //       required: requiredIf(() => !isCSR(this.$router.currentRoute.value.path)),
-    //       serviceLocationCodeValidator: validateIf(!isCSR(this.$router.currentRoute.value.path), serviceLocationCodeValidator),
-    //     },
-    //     serviceClarificationCode: {
-    //       clarificationCodeValidator: optionalValidator(clarificationCodeValidator(isCSR(this.$router.currentRoute.value.path))),
-    //     },
-    //     submissionCode: {
-    //       submissionCodeValidator: validateIf(!isCSR(this.$router.currentRoute.value.path), submissionCodeValidator),
-    //     },
-    //     notes: {
-    //       maxLength: maxLength(400),
-    //     },
-    //   };
-    // }
   },
   // Required in order to block back navigation.
   beforeRouteLeave(to, from, next) {

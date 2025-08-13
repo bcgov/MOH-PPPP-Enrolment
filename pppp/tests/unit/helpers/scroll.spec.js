@@ -40,7 +40,6 @@ describe.skip("Helper scroll.js scrollToError()", () => {
   it("calls scrollToElement() when scrollToError() is called", async () => {
     vi.useFakeTimers();
     scroll.scrollToError();
-    // scroll.scrollToElement();
     vi.advanceTimersByTime(5);
     await nextTick();
     expect(spyOnScrollToElement).toHaveBeenCalled();
@@ -48,14 +47,6 @@ describe.skip("Helper scroll.js scrollToError()", () => {
 });
 
 describe.skip("Helper scroll.js scrollToElement()", () => {
-  // const fakeElement = {
-  //   getBoundingClientRect: () => {
-  //     return {
-  //       top: 100,
-  //     };
-  //   },
-  // };
-
   afterEach(() => {
     vi.resetModules();
     vi.clearAllMocks();
@@ -67,7 +58,6 @@ describe.skip("Helper scroll.js scrollToElement()", () => {
 
   it("calls spyOnScrollTo when called with an argument", async () => {
     vi.useFakeTimers();
-    // scroll.scrollToElement(fakeElement);
     scroll.scrollTo();
     vi.advanceTimersByTime(5);
     await nextTick();

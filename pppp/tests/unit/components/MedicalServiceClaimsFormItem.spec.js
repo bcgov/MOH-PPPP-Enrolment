@@ -4,7 +4,6 @@ import * as dummyDataPatient from "../../../src/store/states/pay-patient-form-du
 //in the long term, I want to move this into the components folder
 //but for now I'll import it from its current location in /views
 import Component from "@/components/MedicalServiceClaimsFormItem";
-// import Component from "@/components/MedicalServiceClaimsFormItem.vue";
 
 const testDateFutureYear = new Date();
 testDateFutureYear.setFullYear(testDateFutureYear.getFullYear() + 1);

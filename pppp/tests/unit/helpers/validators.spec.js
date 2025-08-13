@@ -203,7 +203,6 @@ describe("validators.js birthDateValidator()", () => {
       },
     };
     const result = birthDateValidator("", testDate1);
-    // expect(result).toEqual(false);
     expect(result).toBe(true);
   });
 
@@ -216,7 +215,6 @@ describe("validators.js birthDateValidator()", () => {
       },
     };
     const result = birthDateValidator("", testDate1);
-    // expect(result).toEqual(false);
     expect(result).toBe(false);
   });
 });
@@ -288,7 +286,6 @@ describe("validators.js serviceDateValidator()", () => {
       },
     };
     const result = serviceDateValidator("", testDate1);
-    // expect(result).toEqual(false);
     expect(result).toBe(true);
   });
 
@@ -301,7 +298,6 @@ describe("validators.js serviceDateValidator()", () => {
       },
     };
     const result = serviceDateValidator("", testDate1);
-    // expect(result).toEqual(false);
     expect(result).toBe(false);
   });
 });

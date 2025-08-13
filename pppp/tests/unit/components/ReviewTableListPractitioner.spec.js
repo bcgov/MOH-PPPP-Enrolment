@@ -824,7 +824,6 @@ describe("ReviewTableList practitioner navigateToClaimCountPage()", () => {
   let spyOnRouter;
 
   beforeEach(() => {
-    //uses local mockRouter to make spying easier
     mockRouter = {
       push: vi.fn(),
       currentRoute: {
@@ -876,7 +875,6 @@ describe("ReviewTableList practitioner navigateToClaimCountPage() (part 2 CSR)",
   let spyOnRouter;
 
   beforeEach(() => {
-    //uses a local mockRouter to make spying easier
     mockRouter = {
       push: vi.fn(),
       currentRoute: {
@@ -931,7 +929,6 @@ describe("ReviewTableList practitioner navigateToMainFormPage(anchorName)", () =
   const anchorName = "anchorName";
 
   beforeEach(() => {
-    //uses a local mockRouter to make spying easier
     mockRouter = {
       push: vi.fn(),
       currentRoute: {
