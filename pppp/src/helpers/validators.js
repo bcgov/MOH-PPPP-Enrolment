@@ -13,7 +13,6 @@ import {
 } from 'date-fns';
 import { selectOptionsSpecialtyCode } from '@/constants/select-options';
 import { diagnosticCodes } from '@/constants/diagnostic-codes';
-// import { helpers } from 'vuelidate/lib/validators';
 import { helpers } from '@vuelidate/validators';
 
 export const validateIf = (prop, validator) =>

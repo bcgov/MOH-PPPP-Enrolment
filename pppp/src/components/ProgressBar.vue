@@ -48,6 +48,7 @@
 
 <script>
 import pageStateService from '../services/page-state-service';
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { isPastPath } from '../router/routes';
 import { scrollTo } from '../helpers/scroll';
 import environment from '../settings';
