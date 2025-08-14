@@ -25,11 +25,6 @@ export const bcPostalCodeValidator = (value) => {
   return criteria.test(value);
 };
 
-export const clinicNameValidator = (value) => {
-  const criteria = /^[0-9a-zA-Z-.' ]*$/;
-  return criteria.test(value);
-};
-
 export const clarificationCodeValidator = (csr) => {
   return (value) => {
     if (csr) {
