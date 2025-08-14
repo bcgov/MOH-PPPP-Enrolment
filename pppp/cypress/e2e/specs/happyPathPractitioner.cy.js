@@ -1,6 +1,4 @@
 // https://docs.cypress.io/api/introduction/api.html
-/* eslint-disable jest/valid-expect */
-/* eslint-disable jest/valid-expect-in-promise */
 import dummyData from '../../../src/store/states/pay-patient-form-dummy-data';
 
 const testYear = new Date().getFullYear() - 1;

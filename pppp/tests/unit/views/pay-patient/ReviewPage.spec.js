@@ -81,11 +81,6 @@ const storeTemplateN= cloneDeep(defaultStoreTemplate)
 storeTemplateC.modules.payPatientForm.state = cloneDeep(patientStateC);
 storeTemplateN.modules.payPatientForm.state = cloneDeep(patientStateN);
 
-//later versions of Jest use a function called "jest.setSystemTime"
-//but since this project is using Jest 24.x
-//I've instead mocked the function below
-vi.spyOn(global, "Date").mockImplementation(() => testDate);
-
 vi.spyOn(apiService, "submitPayPatientApplication").mockImplementation(() =>
   Promise.resolve(mockResponse)
 );
@@ -260,12 +255,14 @@ describe("ReviewPage.vue pay patient submitForm()", () => {
   });
 
   it("dispatches the submission date", async () => {
+    vi.setSystemTime(testDate)
     wrapper.vm.submitForm();
     await wrapper.vm.$nextTick;
     expect(spyOnDispatch).toHaveBeenCalledWith(
       `${module2.MODULE_NAME}/${module2.SET_SUBMISSION_DATE}`,
       testDate
     );
+    vi.useRealTimers()
   });
 
   it("dispatches the reference number from the API response", async () => {

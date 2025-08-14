@@ -103,9 +103,6 @@ storeTemplateNHospitalN.modules.payPractitionerForm.state = cloneDeep(
   practitionerStateNHospitalN
 );
 
-//required to prevent date errors
-vi.spyOn(global, "Date").mockImplementation(() => testDate);
-
 vi.spyOn(apiService, "submitPayPractitionerApplication").mockImplementation(
   () => Promise.resolve(mockResponse)
 );
@@ -334,12 +331,14 @@ describe("ReviewPage.vue pay practitioner submitForm()", () => {
   });
 
   it("dispatches the submission date", async () => {
+    vi.setSystemTime(testDate)
     wrapper.vm.submitForm();
     await wrapper.vm.$nextTick;
     expect(spyOnDispatch).toHaveBeenCalledWith(
       `${module3.MODULE_NAME}/${module3.SET_SUBMISSION_DATE}`,
       testDate
     );
+    vi.useRealTimers()
   });
 
   it("dispatches the reference number from the API response", async () => {
