@@ -23,13 +23,14 @@
             <div v-if="isCaptchaValid"
                 class="text-success">Captcha successfully verified.</div>
             <div class="mt-3">
-              <input type="checkbox"
-                    data-cy="consentCheckbox"
-                    id="is-terms-accepted"
-                    class="d-inline"
-                    v-model="isTermsAccepted" />
-              <label for="is-terms-accepted"
-                    class="mt-3 ml-3 ms-2 d-inline"><b>I have read and understand this information</b></label>
+              <CheckboxComponent
+                id="is-terms-accepted"
+                v-model="isTermsAccepted"
+                class="is-terms-accepted"
+                cypress-id="consentCheckbox"
+                :required="true"
+                label="I have read and understand this information"
+              />
             </div>
             
           </div>
@@ -46,14 +47,14 @@
 </template>
 
 <script>
-import { ButtonComponent, CaptchaComponent } from "common-lib-vue";
-// import Captcha from '../components/Captcha';
+import { ButtonComponent, CaptchaComponent, CheckboxComponent } from "common-lib-vue";
 
 export default {
   name: "ConsentModal",
   components: {
     ButtonComponent: ButtonComponent,
     CaptchaComponent,
+    CheckboxComponent
   },
   props: {
     applicationUuid: {
