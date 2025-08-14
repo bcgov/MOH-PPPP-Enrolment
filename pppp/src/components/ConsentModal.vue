@@ -14,7 +14,8 @@
             <p><b>Keep your personal information secure - especially when using a shared device like a computer at a library, school or café.</b> To delete any information that was entered, either complete the application and submit it or, if you don't finish, close the web browser.</p>
             <p><b>Need to take a break and come back later?</b> The data you enter on this form is saved locally to the computer or device you are using until you close the web browser or submit your application.</p>
             <p class="mb-4">Personal information is collected under the authority of the <em>Medicare Protection Act</em> and section 26 (a), (c) and (e) of the <em>Freedom of Information and Protection of Privacy Act</em> for the purposes of administration of the Medical Services Plan. If you have any questions about the collection and use of your personal information, please contact <a href="https://www2.gov.bc.ca/gov/content/health/about-bc-s-health-care-system/partners/health-insurance-bc" target="_blank">Health Insurance BC</a>.</p>
-            <Captcha v-if="!isCaptchaValid"
+            <CaptchaComponent v-if="!isCaptchaValid"
+                    data-cy="captchaInput"
                     :apiBasePath="captchaAPIBasePath"
                     :nonce="applicationUuid"
                     @captchaLoaded="handleCaptchaLoaded()"
@@ -45,14 +46,14 @@
 </template>
 
 <script>
-import { ButtonComponent } from "common-lib-vue";
-import Captcha from '../components/Captcha';
+import { ButtonComponent, CaptchaComponent } from "common-lib-vue";
+// import Captcha from '../components/Captcha';
 
 export default {
   name: "ConsentModal",
   components: {
     ButtonComponent: ButtonComponent,
-    Captcha,
+    CaptchaComponent,
   },
   props: {
     applicationUuid: {
