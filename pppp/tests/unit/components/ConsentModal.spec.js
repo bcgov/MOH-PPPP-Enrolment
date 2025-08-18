@@ -1,17 +1,9 @@
-import { mount } from "@vue/test-utils";
+import { shallowMount } from "@vue/test-utils";
 import Component from "@/components/ConsentModal.vue";
 
-vi.mock("axios", () => ({
-  default: {
-    get: vi.fn(),
-    post: vi.fn(() => {
-      return Promise.resolve();
-    }),
-  },
-}));
-
+//shallow mount means the captcha API calls don't need to be mocked
 describe("ConsentModal.vue", () => {
-  const wrapper = mount(Component, {
+  const wrapper = shallowMount(Component, {
     props: {
       applicationUuid: "11111",
     },
@@ -26,7 +18,7 @@ describe("ConsentModal.vue getFocusableEls()", () => {
   let wrapper;
 
   beforeEach(() => {
-    wrapper = mount(Component, {
+    wrapper = shallowMount(Component, {
       propsData: {
         applicationUuid: "11111",
       },
@@ -54,7 +46,7 @@ describe("ConsentModal.vue handleCaptchaLoaded()", () => {
   let wrapper;
 
   beforeEach(() => {
-    wrapper = mount(Component, {
+    wrapper = shallowMount(Component, {
       propsData: {
         applicationUuid: "11111",
       },
@@ -84,7 +76,7 @@ describe("ConsentModal.vue handleCaptchaVerified()", () => {
   let wrapper;
 
   beforeEach(() => {
-    wrapper = mount(Component, {
+    wrapper = shallowMount(Component, {
       propsData: {
         applicationUuid: "11111",
       },
@@ -117,7 +109,7 @@ describe("ConsentModal.vue handleCaptchaVerified()", () => {
 });
 
 describe("ConsentModal.vue closeModal()", () => {
-  const wrapper = mount(Component, {
+  const wrapper = shallowMount(Component, {
     propsData: {
       applicationUuid: "11111",
     },
@@ -154,7 +146,7 @@ describe("ConsentModal.vue handleKeyDown()", () => {
   let wrapper;
 
   beforeEach(() => {
-    wrapper = mount(Component, {
+    wrapper = shallowMount(Component, {
       propsData: {
         applicationUuid: "11111",
       },
@@ -197,7 +189,7 @@ describe("ConsentModal.vue handleTab()", () => {
   let wrapper;
 
   beforeEach(() => {
-    wrapper = mount(Component, {
+    wrapper = shallowMount(Component, {
       propsData: {
         applicationUuid: "11111",
       },
@@ -280,7 +272,7 @@ describe("ConsentModal.vue handleTabBackwards()", () => {
   let wrapper;
 
   beforeEach(() => {
-    wrapper = mount(Component, {
+    wrapper = shallowMount(Component, {
       propsData: {
         applicationUuid: "11111",
       },
