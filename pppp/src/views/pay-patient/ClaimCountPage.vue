@@ -37,7 +37,6 @@ import spaEnvService from "@/services/spa-env-service";
 import { payPatientRoutes, commonRoutes, isPastPath } from "@/router/routes";
 import { scrollTo, scrollToError, getTopScrollPosition } from "@/helpers/scroll";
 import { getConvertedPath, isCSR } from "@/helpers/url";
-import ContinueBar from "@/components/ContinueBar.vue";
 import PageContent from "@/components/PageContent.vue";
 import {
   MODULE_NAME as formModule,
@@ -47,7 +46,7 @@ import {
 import logService from "@/services/log-service";
 import { required } from "@vuelidate/validators";
 import useVuelidate from "@vuelidate/core";
-import { NumberSelect, cloneDeep } from "common-lib-vue";
+import { NumberSelect, cloneDeep, ContinueBar } from "common-lib-vue";
 
 export default {
   name: "ClaimCountPage",

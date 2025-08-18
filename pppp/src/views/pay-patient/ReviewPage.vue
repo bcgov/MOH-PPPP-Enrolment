@@ -21,6 +21,7 @@
       </div>
     </PageContent>
     <ContinueBar
+      cypress-id="continueBar"
       :has-loader="isLoading"
       :button-label="continueButtonLabel"
       @continue="continueHandler()"
@@ -30,7 +31,6 @@
 
 <script>
 import PageContent from "@/components/PageContent.vue";
-import ContinueBar from "@/components/ContinueBar.vue";
 import CorrespondenceAttachedMessage from "@/components/CorrespondenceAttachedMessage.vue";
 import ReviewTableList from "@/components/pay-patient/ReviewTableList.vue";
 import pageStateService from "@/services/page-state-service";
@@ -45,6 +45,7 @@ import {
 } from "../../store/modules/pay-patient-form";
 import apiService from "../../services/api-service";
 import logService from "../../services/log-service";
+import { ContinueBar } from "common-lib-vue";
 
 export default {
   name: "ReviewPage",

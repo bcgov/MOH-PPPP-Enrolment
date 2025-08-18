@@ -900,6 +900,7 @@
       <p>Do you wish to continue?</p>
     </PromptModal>
     <ContinueBar
+      cypress-id="continueBar"
       :has-loader="isValidating"
       @continue="validateFields()"
     />
@@ -919,7 +920,6 @@ import {
   phnNineValidator,
 } from "@/helpers/validators";
 import { extraSmallStyles, smallStyles, mediumStyles } from "@/constants/input-styles";
-import ContinueBar from "@/components/ContinueBar.vue";
 import PageContent from "@/components/PageContent.vue";
 import TipBox from "@/components/TipBox.vue";
 import MedicalServiceClaimsFormItem from "@/components/MedicalServiceClaimsFormItem.vue";
@@ -979,6 +979,7 @@ import {
   pastDateValidator,
   phnValidator,
   positiveNumberValidator,
+  ContinueBar
 } from "common-lib-vue";
 import { startOfToday, isSameDay } from "date-fns";
 

@@ -57,7 +57,10 @@
         </div>
       </div>
     </PageContent>
-    <ContinueBar @continue="validateFields()" />
+    <ContinueBar
+      cypress-id="continueBar"
+      @continue="validateFields()"
+    />
   </div>
 </template>
 
@@ -66,7 +69,6 @@ import pageStateService from "@/services/page-state-service";
 import spaEnvService from "@/services/spa-env-service";
 import { payPractitionerRoutes, commonRoutes, isPastPath } from "@/router/routes";
 import { scrollTo, scrollToError, getTopScrollPosition } from "@/helpers/scroll";
-import ContinueBar from "@/components/ContinueBar.vue";
 import PageContent from "@/components/PageContent.vue";
 import { NumberSelect, cloneDeep } from "common-lib-vue";
 import {
@@ -80,6 +82,7 @@ import logService from "@/services/log-service";
 import { required } from "@vuelidate/validators";
 import useVuelidate from "@vuelidate/core";
 import { getConvertedPath, isCSR } from "@/helpers/url";
+import { ContinueBar } from "common-lib-vue";
 
 const atLeastOneClaimValidator = (vm) => {
   if (
