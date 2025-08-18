@@ -10,12 +10,7 @@ import pageStateService from "@/services/page-state-service";
 import { getConvertedPath } from "@/helpers/url";
 import { payPatientRoutes, payPatientRouteStepOrder } from "@/router/routes";
 import * as scrollHelper from "@/helpers/scroll";
-import {
-  defaultStoreTemplate,
-  mockRouter,
-  mockRouterCSR,
-  router,
-} from "../../test-helper.js";
+import { defaultStoreTemplate, mockRouter, mockRouterCSR, router } from "../../test-helper.js";
 
 const mockResponse = {
   data: {
@@ -74,8 +69,8 @@ patientStateC.medicalServiceClaims[0].correspondenceAttached = "C";
 patientStateN.medicalServiceClaims[0].correspondenceAttached = "N";
 
 //create two store template variables from default (currently contains null store data)
-const storeTemplateC= cloneDeep(defaultStoreTemplate)
-const storeTemplateN= cloneDeep(defaultStoreTemplate)
+const storeTemplateC = cloneDeep(defaultStoreTemplate);
+const storeTemplateN = cloneDeep(defaultStoreTemplate);
 
 //initialize the two store templates with different patient states/correspondence variables
 storeTemplateC.modules.payPatientForm.state = cloneDeep(patientStateC);
@@ -145,11 +140,10 @@ describe("ReviewPage.vue pay patient", () => {
 
 describe("ReviewPage.vue pay patient created()", () => {
   let store;
-  let wrapper;
 
   beforeEach(() => {
     store = createStore(storeTemplateC);
-    wrapper = mount(Page, {
+    mount(Page, {
       global: {
         plugins: [store, router],
       },
@@ -238,15 +232,9 @@ describe("ReviewPage.vue pay patient submitForm()", () => {
     });
     spyOnDispatch = vi.spyOn(wrapper.vm.$store, "dispatch");
 
-    spyOnNavigateToSubmissionPage = vi.spyOn(
-      wrapper.vm,
-      "navigateToSubmissionPage"
-    );
+    spyOnNavigateToSubmissionPage = vi.spyOn(wrapper.vm, "navigateToSubmissionPage");
 
-    spyOnNavigateToSubmissionErrorPage = vi.spyOn(
-      wrapper.vm,
-      "navigateToSubmissionErrorPage"
-    );
+    spyOnNavigateToSubmissionErrorPage = vi.spyOn(wrapper.vm, "navigateToSubmissionErrorPage");
   });
 
   afterEach(() => {
@@ -255,14 +243,14 @@ describe("ReviewPage.vue pay patient submitForm()", () => {
   });
 
   it("dispatches the submission date", async () => {
-    vi.setSystemTime(testDate)
+    vi.setSystemTime(testDate);
     wrapper.vm.submitForm();
     await wrapper.vm.$nextTick;
     expect(spyOnDispatch).toHaveBeenCalledWith(
       `${module2.MODULE_NAME}/${module2.SET_SUBMISSION_DATE}`,
       testDate
     );
-    vi.useRealTimers()
+    vi.useRealTimers();
   });
 
   it("dispatches the reference number from the API response", async () => {
@@ -287,8 +275,8 @@ describe("ReviewPage.vue pay patient submitForm()", () => {
   });
 
   it("calls scrollToError on error code 3", async () => {
-    vi.spyOn(apiService, "submitPayPatientApplication").mockImplementationOnce(
-      () => Promise.resolve(mockResponse3)
+    vi.spyOn(apiService, "submitPayPatientApplication").mockImplementationOnce(() =>
+      Promise.resolve(mockResponse3)
     );
     wrapper.vm.submitForm();
     await wrapper.vm.$nextTick;
@@ -296,8 +284,8 @@ describe("ReviewPage.vue pay patient submitForm()", () => {
   });
 
   it("calls logServiceError on error code 3", async () => {
-    vi.spyOn(apiService, "submitPayPatientApplication").mockImplementationOnce(
-      () => Promise.resolve(mockResponse3)
+    vi.spyOn(apiService, "submitPayPatientApplication").mockImplementationOnce(() =>
+      Promise.resolve(mockResponse3)
     );
     wrapper.vm.submitForm();
     await wrapper.vm.$nextTick;
@@ -305,8 +293,8 @@ describe("ReviewPage.vue pay patient submitForm()", () => {
   });
 
   it("calls navigateToSubmissionErrorPage on misc error", async () => {
-    vi.spyOn(apiService, "submitPayPatientApplication").mockImplementationOnce(
-      () => Promise.resolve(mockResponseMisc)
+    vi.spyOn(apiService, "submitPayPatientApplication").mockImplementationOnce(() =>
+      Promise.resolve(mockResponseMisc)
     );
     wrapper.vm.submitForm();
     await wrapper.vm.$nextTick;
@@ -315,8 +303,8 @@ describe("ReviewPage.vue pay patient submitForm()", () => {
   });
 
   it("calls logServiceError on misc error", async () => {
-    vi.spyOn(apiService, "submitPayPatientApplication").mockImplementationOnce(
-      () => Promise.resolve(mockResponseMisc)
+    vi.spyOn(apiService, "submitPayPatientApplication").mockImplementationOnce(() =>
+      Promise.resolve(mockResponseMisc)
     );
     wrapper.vm.submitForm();
     await wrapper.vm.$nextTick;
@@ -324,8 +312,8 @@ describe("ReviewPage.vue pay patient submitForm()", () => {
   });
 
   it("calls logServiceError on DB Error PRN Present error", async () => {
-    vi.spyOn(apiService, "submitPayPatientApplication").mockImplementationOnce(
-      () => Promise.resolve(mockResponseDBErrorPrnPresent)
+    vi.spyOn(apiService, "submitPayPatientApplication").mockImplementationOnce(() =>
+      Promise.resolve(mockResponseDBErrorPrnPresent)
     );
     wrapper.vm.submitForm();
     await wrapper.vm.$nextTick;
@@ -333,8 +321,8 @@ describe("ReviewPage.vue pay patient submitForm()", () => {
   });
 
   it("calls spyOnNavigateToSubmissionPage on DB Error PRN Present error", async () => {
-    vi.spyOn(apiService, "submitPayPatientApplication").mockImplementationOnce(
-      () => Promise.resolve(mockResponseDBErrorPrnPresent)
+    vi.spyOn(apiService, "submitPayPatientApplication").mockImplementationOnce(() =>
+      Promise.resolve(mockResponseDBErrorPrnPresent)
     );
     wrapper.vm.submitForm();
     await wrapper.vm.$nextTick;
@@ -361,9 +349,7 @@ describe("ReviewPage.vue pay patient navigateToSubmissionPage()", () => {
     });
     vi.spyOn(wrapper.vm.$store, "dispatch");
 
-    spyOnRouter = vi
-      .spyOn(router, "push")
-      .mockImplementation(() => Promise.resolve("pushed"));
+    spyOnRouter = vi.spyOn(router, "push").mockImplementation(() => Promise.resolve("pushed"));
 
     toPath = getConvertedPath(
       wrapper.vm.$router.currentRoute.value.path,
@@ -409,9 +395,7 @@ describe("ReviewPage.vue pay patient navigateToSubmissionErrorPage()", () => {
       },
     });
 
-    spyOnRouter = vi
-      .spyOn(router, "push")
-      .mockImplementation(() => Promise.resolve("pushed"));
+    spyOnRouter = vi.spyOn(router, "push").mockImplementation(() => Promise.resolve("pushed"));
 
     toPath = getConvertedPath(
       wrapper.vm.$router.currentRoute.value.path,

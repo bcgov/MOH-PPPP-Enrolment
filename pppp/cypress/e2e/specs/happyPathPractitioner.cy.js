@@ -1,5 +1,5 @@
 // https://docs.cypress.io/api/introduction/api.html
-import dummyData from '../../../src/store/states/pay-patient-form-dummy-data';
+import dummyData from "../../../src/store/states/pay-patient-form-dummy-data";
 
 const testYear = new Date().getFullYear() - 1;
 const backendLastName = dummyData.practitionerLastName;
@@ -133,7 +133,7 @@ describe("Pay Practitioner-Public", () => {
     cy.location().should((loc) => {
       expect(loc.pathname).to.eq("/pppp/pay-practitioner/submission");
     });
-    
+
     cy.get("[data-cy=newForm]").click();
 
     cy.location().should((loc) => {

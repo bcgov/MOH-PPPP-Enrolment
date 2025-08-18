@@ -10,7 +10,7 @@ import * as module1 from "../../../src/store/modules/app";
 import * as module2 from "../../../src/store/modules/pay-patient-form";
 import * as module3 from "../../../src/store/modules/pay-practitioner-form";
 import { routeCollection } from "@/router/index";
-import * as scrollHelper from "@/helpers/scroll"; 
+import * as scrollHelper from "@/helpers/scroll";
 
 const storeTemplate = {
   modules: {
@@ -20,15 +20,9 @@ const storeTemplate = {
   },
 };
 
-vi
-  .spyOn(pageStateService, "setPageComplete")
-  .mockImplementation(() => Promise.resolve("set"));
-vi
-  .spyOn(pageStateService, "setPageIncomplete")
-  .mockImplementation(() => Promise.resolve("set"));
-vi
-  .spyOn(pageStateService, "visitPage")
-  .mockImplementation(() => Promise.resolve("visited"));
+vi.spyOn(pageStateService, "setPageComplete").mockImplementation(() => Promise.resolve("set"));
+vi.spyOn(pageStateService, "setPageIncomplete").mockImplementation(() => Promise.resolve("set"));
+vi.spyOn(pageStateService, "visitPage").mockImplementation(() => Promise.resolve("visited"));
 
 vi.mock("@/helpers/scroll", () => ({
   scrollTo: vi.fn(),
@@ -40,11 +34,11 @@ const router = createRouter({
   routes: routeCollection,
 });
 
-const spyOnRouter = vi
-  .spyOn(router, "push")
-  .mockImplementation(() => Promise.resolve("pushed"));
+const spyOnRouter = vi.spyOn(router, "push").mockImplementation(() => Promise.resolve("pushed"));
 
-const spyOnScrollTo = vi.spyOn(scrollHelper, "scrollTo").mockImplementation(() => Promise.resolve("scrolled"));
+const spyOnScrollTo = vi
+  .spyOn(scrollHelper, "scrollTo")
+  .mockImplementation(() => Promise.resolve("scrolled"));
 
 describe("ProgressBar.vue", () => {
   let wrapper;
@@ -56,8 +50,8 @@ describe("ProgressBar.vue", () => {
       global: {
         plugins: [store, router],
         stubs: {
-          FontAwesomeIcon:{ template: '<div>Stubbed Global Component</div>' }
-        }
+          FontAwesomeIcon: { template: "<div>Stubbed Global Component</div>" },
+        },
       },
       props: {
         currentPath: routeStepOrder[1].path,
@@ -86,8 +80,8 @@ describe("ProgressBar.vue onClickLink()", () => {
       global: {
         plugins: [store, router],
         stubs: {
-          FontAwesomeIcon:{ template: '<div>Stubbed Global Component</div>' }
-        }
+          FontAwesomeIcon: { template: "<div>Stubbed Global Component</div>" },
+        },
       },
       props: {
         currentPath: routeStepOrder[1].path,
@@ -104,17 +98,13 @@ describe("ProgressBar.vue onClickLink()", () => {
   it("calls pageStateService.setPageComplete when passed valid path", async () => {
     await wrapper.vm.onClickLink(routeStepOrder[0].path);
     await wrapper.vm.$nextTick();
-    expect(pageStateService.setPageComplete).toHaveBeenCalledWith(
-      routeStepOrder[0].path
-    );
+    expect(pageStateService.setPageComplete).toHaveBeenCalledWith(routeStepOrder[0].path);
   });
 
   it("calls pageStateService.setPagesetPageIncomplete when passed valid path", async () => {
     await wrapper.vm.onClickLink(routeStepOrder[0].path);
     await wrapper.vm.$nextTick();
-    expect(pageStateService.setPageIncomplete).toHaveBeenCalledWith(
-      routeStepOrder[1].path
-    );
+    expect(pageStateService.setPageIncomplete).toHaveBeenCalledWith(routeStepOrder[1].path);
   });
 
   it("calls scrollTo when passed valid path", async () => {
@@ -174,8 +164,8 @@ describe("ProgressBar.vue openDropdown() and closeDropdown()", () => {
       global: {
         plugins: [store, router],
         stubs: {
-          FontAwesomeIcon:{ template: '<div>Stubbed Global Component</div>' }
-        }
+          FontAwesomeIcon: { template: "<div>Stubbed Global Component</div>" },
+        },
       },
       props: {
         currentPath: routeStepOrder[1].path,
@@ -190,18 +180,14 @@ describe("ProgressBar.vue openDropdown() and closeDropdown()", () => {
   });
 
   it("dispatches with true when openDropdown() is called", async () => {
-    const spyOnDispatch = vi
-      .spyOn(wrapper.vm.$store, "dispatch")
-      .mockImplementation(vi.fn());
+    const spyOnDispatch = vi.spyOn(wrapper.vm.$store, "dispatch").mockImplementation(vi.fn());
     await wrapper.vm.openDropdown();
     await wrapper.vm.$nextTick();
     expect(spyOnDispatch).toHaveBeenCalledWith(stringCall, true);
   });
 
   it("dispatches with false when closeDropdown() is called", async () => {
-    const spyOnDispatch = vi
-      .spyOn(wrapper.vm.$store, "dispatch")
-      .mockImplementation(vi.fn());
+    const spyOnDispatch = vi.spyOn(wrapper.vm.$store, "dispatch").mockImplementation(vi.fn());
     await wrapper.vm.closeDropdown();
     await wrapper.vm.$nextTick();
     expect(spyOnDispatch).toHaveBeenCalledWith(stringCall, false);
@@ -218,8 +204,8 @@ describe("ProgressBar.vue getLinkStyles()", () => {
       global: {
         plugins: [store, router],
         stubs: {
-          FontAwesomeIcon:{ template: '<div>Stubbed Global Component</div>' }
-        }
+          FontAwesomeIcon: { template: "<div>Stubbed Global Component</div>" },
+        },
       },
       props: {
         currentPath: routeStepOrder[1].path,

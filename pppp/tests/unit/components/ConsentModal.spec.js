@@ -7,7 +7,7 @@ vi.mock("axios", () => ({
     post: vi.fn(() => {
       return Promise.resolve();
     }),
-  } 
+  },
 }));
 
 describe("ConsentModal.vue", () => {
@@ -69,16 +69,14 @@ describe("ConsentModal.vue handleCaptchaLoaded()", () => {
   it("assigns the results of getFocusableEls() to data", async () => {
     await wrapper.setData({ focusableEls: [] });
     expect(wrapper.vm.focusableEls).toEqual([]);
-    vi
-      .spyOn(wrapper.vm, "getFocusableEls")
-      .mockReturnValue(["default1", "default2", "default3", "default4"]);
-    wrapper.vm.handleCaptchaLoaded();
-    expect(wrapper.vm.focusableEls).toEqual([
+    vi.spyOn(wrapper.vm, "getFocusableEls").mockReturnValue([
       "default1",
       "default2",
       "default3",
       "default4",
     ]);
+    wrapper.vm.handleCaptchaLoaded();
+    expect(wrapper.vm.focusableEls).toEqual(["default1", "default2", "default3", "default4"]);
   });
 });
 
@@ -175,19 +173,13 @@ describe("ConsentModal.vue handleKeyDown()", () => {
   });
 
   it("calls handleTabBackwards() on function call with shift key", () => {
-    const spyOnHandleTabBackwards = vi.spyOn(
-      wrapper.vm,
-      "handleTabBackwards"
-    );
+    const spyOnHandleTabBackwards = vi.spyOn(wrapper.vm, "handleTabBackwards");
     wrapper.vm.handleKeyDown(fakeShiftEvent);
     expect(spyOnHandleTabBackwards).toHaveBeenCalled();
   });
 
   it("calls neither function if the button pressed isn't tab", () => {
-    const spyOnHandleTabBackwards = vi.spyOn(
-      wrapper.vm,
-      "handleTabBackwards"
-    );
+    const spyOnHandleTabBackwards = vi.spyOn(wrapper.vm, "handleTabBackwards");
     const spyOnHandleTab = vi.spyOn(wrapper.vm, "handleTab");
     wrapper.vm.handleKeyDown(miscEvent);
     expect(spyOnHandleTabBackwards).not.toHaveBeenCalled();
@@ -241,18 +233,15 @@ describe("ConsentModal.vue handleTab()", () => {
     await wrapper.setData({
       focusableEls: mockElements,
     });
-    console.log("kumquat1", wrapper.vm.focusedEl)
     await wrapper.vm.$nextTick();
     await wrapper.setData({
       focusedEl: wrapper.vm.focusableEls[0],
     });
     await wrapper.vm.$nextTick();
-    console.log("kumquat2", wrapper.vm.focusedEl.name, "(should be 1)")
     expect(wrapper.vm.focusedEl.name).toBe(mockElements[0].name);
 
     await wrapper.vm.handleTab();
     await wrapper.vm.$nextTick();
-    console.log("kumquat3", wrapper.vm.focusedEl.name, "(should be 2)")
     expect(wrapper.vm.focusedEl.name).toBe(mockElements[1].name);
   });
 

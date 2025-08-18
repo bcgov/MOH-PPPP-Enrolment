@@ -1,51 +1,51 @@
-import dummyData from '@/store/states/pay-practitioner-form-dummy-data';
-import settings from '@/settings';
+import dummyData from "@/store/states/pay-practitioner-form-dummy-data";
+import settings from "@/settings";
 
-export const MODULE_NAME = 'payPractitionerForm';
+export const MODULE_NAME = "payPractitionerForm";
 
 // Action names.
-export const RESET_FORM = 'resetForm';
-export const SET_APPLICATION_UUID = 'setApplicationUuid';
-export const SET_CAPTCHA_TOKEN = 'setCaptchaToken';
-export const SET_IS_INFO_COLLECTION_NOTICE_OPEN = 'setIsInfoCollectionNoticeOpen';
-export const SET_SUBMISSION_DATE = 'setSubmissionDate';
-export const SET_REFERENCE_NUMBER = 'setReferenceNumber';
+export const RESET_FORM = "resetForm";
+export const SET_APPLICATION_UUID = "setApplicationUuid";
+export const SET_CAPTCHA_TOKEN = "setCaptchaToken";
+export const SET_IS_INFO_COLLECTION_NOTICE_OPEN = "setIsInfoCollectionNoticeOpen";
+export const SET_SUBMISSION_DATE = "setSubmissionDate";
+export const SET_REFERENCE_NUMBER = "setReferenceNumber";
 
-export const SET_MEDICAL_SERVICE_CLAIMS_COUNT = 'setMedicalServiceClaimsCount';
-export const SET_HOSPITAL_VISIT_CLAIMS_COUNT = 'setHospitalVisitClaimsCount';
+export const SET_MEDICAL_SERVICE_CLAIMS_COUNT = "setMedicalServiceClaimsCount";
+export const SET_HOSPITAL_VISIT_CLAIMS_COUNT = "setHospitalVisitClaimsCount";
 
-export const SET_PLAN_REFERENCE_NUMBER = 'setPlanReferenceNumber';
+export const SET_PLAN_REFERENCE_NUMBER = "setPlanReferenceNumber";
 
-export const SET_PHN = 'setPhn';
-export const SET_DEPENDENT_NUMBER = 'setDependentNumber';
-export const SET_FIRST_NAME = 'setFirstName';
-export const SET_MIDDLE_INITIAL = 'setMiddleInitial';
-export const SET_LAST_NAME = 'setLastName';
-export const SET_BIRTH_DATE = 'setBirthDate';
+export const SET_PHN = "setPhn";
+export const SET_DEPENDENT_NUMBER = "setDependentNumber";
+export const SET_FIRST_NAME = "setFirstName";
+export const SET_MIDDLE_INITIAL = "setMiddleInitial";
+export const SET_LAST_NAME = "setLastName";
+export const SET_BIRTH_DATE = "setBirthDate";
 
-export const SET_IS_VEHICLE_ACCIDENT = 'setIsVehicleAccident';
-export const SET_VEHICLE_ACCIDENT_CLAIM_NUMBER = 'setVehicleAccidentClaimNumber';
+export const SET_IS_VEHICLE_ACCIDENT = "setIsVehicleAccident";
+export const SET_VEHICLE_ACCIDENT_CLAIM_NUMBER = "setVehicleAccidentClaimNumber";
 
-export const SET_PLAN_REFERENCE_NUMBER_OF_ORIGINAL_CLAIM = 'setPlanReferenceNumberOfOriginalClaim';
+export const SET_PLAN_REFERENCE_NUMBER_OF_ORIGINAL_CLAIM = "setPlanReferenceNumberOfOriginalClaim";
 
-export const SET_MEDICAL_SERVICE_CLAIMS = 'setMedicalServiceClaims';
-export const SET_HOSPITAL_VISIT_CLAIMS = 'setHospitalVisitClaims';
+export const SET_MEDICAL_SERVICE_CLAIMS = "setMedicalServiceClaims";
+export const SET_HOSPITAL_VISIT_CLAIMS = "setHospitalVisitClaims";
 
-export const SET_PRACTITIONER_LAST_NAME = 'setPractitionerLastName';
-export const SET_PRACTITIONER_FIRST_NAME = 'setPractitionerFirstName';
-export const SET_PRACTITIONER_PAYMENT_NUMBER = 'setPractitionerPaymentNumber';
-export const SET_PRACTITIONER_PRACTITIONER_NUMBER = 'setPractitionerPractitionerNumber';
-export const SET_PRACTITIONER_FACILITY_NUMBER = 'setPractitionerFacilityNumber';
-export const SET_PRACTITIONER_SPECIALTY_CODE = 'setPractitionerSpecialtyCode';
-export const SET_COVERAGE_PRE_AUTH_NUMBER = 'setCoveragePreAuthNumber';
+export const SET_PRACTITIONER_LAST_NAME = "setPractitionerLastName";
+export const SET_PRACTITIONER_FIRST_NAME = "setPractitionerFirstName";
+export const SET_PRACTITIONER_PAYMENT_NUMBER = "setPractitionerPaymentNumber";
+export const SET_PRACTITIONER_PRACTITIONER_NUMBER = "setPractitionerPractitionerNumber";
+export const SET_PRACTITIONER_FACILITY_NUMBER = "setPractitionerFacilityNumber";
+export const SET_PRACTITIONER_SPECIALTY_CODE = "setPractitionerSpecialtyCode";
+export const SET_COVERAGE_PRE_AUTH_NUMBER = "setCoveragePreAuthNumber";
 
-export const SET_REFERRED_BY_FIRST_NAME_INITIAL = 'setReferredByFirstNameInitial';
-export const SET_REFERRED_BY_LAST_NAME = 'setReferredByLastName';
-export const SET_REFERRED_BY_PRACTITIONER_NUMBER = 'setReferredByPractitionerNumber';
+export const SET_REFERRED_BY_FIRST_NAME_INITIAL = "setReferredByFirstNameInitial";
+export const SET_REFERRED_BY_LAST_NAME = "setReferredByLastName";
+export const SET_REFERRED_BY_PRACTITIONER_NUMBER = "setReferredByPractitionerNumber";
 
-export const SET_REFERRED_TO_FIRST_NAME_INITIAL = 'setReferredToFirstNameInitial';
-export const SET_REFERRED_TO_LAST_NAME = 'setReferredToLastName';
-export const SET_REFERRED_TO_PRACTITIONER_NUMBER = 'setReferredToPractitionerNumber';
+export const SET_REFERRED_TO_FIRST_NAME_INITIAL = "setReferredToFirstNameInitial";
+export const SET_REFERRED_TO_LAST_NAME = "setReferredToLastName";
+export const SET_REFERRED_TO_PRACTITIONER_NUMBER = "setReferredToPractitionerNumber";
 
 export default {
   namespaced: true,
@@ -220,10 +220,10 @@ export default {
       commit(SET_VEHICLE_ACCIDENT_CLAIM_NUMBER, null);
 
       commit(SET_PLAN_REFERENCE_NUMBER_OF_ORIGINAL_CLAIM, null);
-      
+
       commit(SET_MEDICAL_SERVICE_CLAIMS, []);
       commit(SET_HOSPITAL_VISIT_CLAIMS, []);
-      
+
       commit(SET_PRACTITIONER_LAST_NAME, null);
       commit(SET_PRACTITIONER_FIRST_NAME, null);
       commit(SET_PRACTITIONER_PAYMENT_NUMBER, null);
@@ -231,11 +231,11 @@ export default {
       commit(SET_PRACTITIONER_SPECIALTY_CODE, null);
       commit(SET_PRACTITIONER_FACILITY_NUMBER, null);
       commit(SET_COVERAGE_PRE_AUTH_NUMBER, null);
-      
+
       commit(SET_REFERRED_BY_FIRST_NAME_INITIAL, null);
       commit(SET_REFERRED_BY_LAST_NAME, null);
       commit(SET_REFERRED_BY_PRACTITIONER_NUMBER, null);
-      
+
       commit(SET_REFERRED_TO_FIRST_NAME_INITIAL, null);
       commit(SET_REFERRED_TO_LAST_NAME, null);
       commit(SET_REFERRED_TO_PRACTITIONER_NUMBER, null);
@@ -337,5 +337,5 @@ export default {
       commit(SET_REFERRED_TO_PRACTITIONER_NUMBER, payload);
     },
   },
-  getters: {}
+  getters: {},
 };

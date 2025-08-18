@@ -7,7 +7,7 @@ vi.mock("axios", () => ({
     post: vi.fn(() => {
       return Promise.resolve();
     }),
-  } 
+  },
 }));
 
 const spyOnAxiosPost = vi.spyOn(axios, "post");

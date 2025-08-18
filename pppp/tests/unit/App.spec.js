@@ -7,15 +7,13 @@ import {
   payPatientCSRStepRoutes,
   payPractitionerCSRStepRoutes,
 } from "@/router/step-routes";
-import {
-  mockRouter,
-} from "./test-helper.js";
+import { mockRouter } from "./test-helper.js";
 
 const mockRoute = {
   params: {
-    id: 1
-  }
-}
+    id: 1,
+  },
+};
 
 const payPatientTemplate = shallowMount(Page, {
   global: {
@@ -31,7 +29,7 @@ const payPatientTemplate = shallowMount(Page, {
           },
         },
       },
-    }
+    },
   },
 });
 const payPatientCSRTemplate = shallowMount(Page, {
@@ -48,7 +46,7 @@ const payPatientCSRTemplate = shallowMount(Page, {
           },
         },
       },
-    }
+    },
   },
 });
 const payPractitionerTemplate = shallowMount(Page, {
@@ -65,7 +63,7 @@ const payPractitionerTemplate = shallowMount(Page, {
           },
         },
       },
-    }
+    },
   },
 });
 const payPractitionerCSRTemplate = shallowMount(Page, {
@@ -82,7 +80,7 @@ const payPractitionerCSRTemplate = shallowMount(Page, {
           },
         },
       },
-    }
+    },
   },
 });
 

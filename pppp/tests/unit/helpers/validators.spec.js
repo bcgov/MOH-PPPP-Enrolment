@@ -1,6 +1,5 @@
 import {
   bcPostalCodeValidator,
-  clinicNameValidator,
   clarificationCodeValidator,
   motorVehicleAccidentClaimNumberMaskValidator,
   diagnosticCodeValidator,
@@ -43,13 +42,13 @@ describe("validators.js clarificationCodeValidator()", () => {
     vi.resetModules();
   });
 
-  it("returns false if given an empty value (not CSR)", () => { 
-    const result = isNotCSRFunction("")
+  it("returns false if given an empty value (not CSR)", () => {
+    const result = isNotCSRFunction("");
     expect(result).toBe(false);
   });
 
-  it("returns false if given an empty value (CSR)", () => { 
-    const result = isCSRFunction("")
+  it("returns false if given an empty value (CSR)", () => {
+    const result = isCSRFunction("");
     expect(result).toBe(false);
   });
 
@@ -73,13 +72,13 @@ describe("validators.js clarificationCodeValidator()", () => {
     expect(result).toBe(true);
   });
 
-  it("returns false if given a non-alphanumeric value (not CSR)", () => { 
-    const result = isNotCSRFunction("$$")
+  it("returns false if given a non-alphanumeric value (not CSR)", () => {
+    const result = isNotCSRFunction("$$");
     expect(result).toBe(false);
   });
 
-  it("returns false if given a non-alphanumeric value (CSR)", () => { 
-    const result = isCSRFunction("$$")
+  it("returns false if given a non-alphanumeric value (CSR)", () => {
+    const result = isCSRFunction("$$");
     expect(result).toBe(false);
   });
 });
@@ -355,7 +354,7 @@ describe("validators.js phnNineValidator()", () => {
   it("returns false if given an empty value", () => {
     const result = phnNineValidator();
     expect(result).toBe(false);
-  });  
+  });
 
   it("returns false if given an integer", () => {
     const result = phnNineValidator(9999999998);
@@ -368,7 +367,7 @@ describe("validators.js phnNineValidator()", () => {
   });
 
   it("returns false if given an object", () => {
-    const result = phnNineValidator({"9": "9", "8": "9"});
+    const result = phnNineValidator({ 9: "9", 8: "9" });
     expect(result).toBe(false);
   });
 });

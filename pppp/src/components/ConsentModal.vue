@@ -1,27 +1,67 @@
 <template>
   <div ref="modal">
-    <div class="modal fade show"
-        id="exampleModal"
-        tabindex="-1"
-        role="dialog"
-        aria-labelledby="exampleModalLabel">
-      <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+    <div
+      id="exampleModal"
+      class="modal fade show"
+      tabindex="-1"
+      role="dialog"
+      aria-labelledby="exampleModalLabel"
+    >
+      <div
+        class="modal-dialog modal-dialog-centered modal-lg"
+        role="document"
+      >
         <div class="modal-content">
           <div class="modal-header">
-            <h2 class="modal-title" id="exampleModalLabel">Information collection notice</h2>
+            <h2
+              id="exampleModalLabel"
+              class="modal-title"
+            >
+              Information collection notice
+            </h2>
           </div>
           <div class="modal-body">
-            <p><b>Keep your personal information secure - especially when using a shared device like a computer at a library, school or café.</b> To delete any information that was entered, either complete the application and submit it or, if you don't finish, close the web browser.</p>
-            <p><b>Need to take a break and come back later?</b> The data you enter on this form is saved locally to the computer or device you are using until you close the web browser or submit your application.</p>
-            <p class="mb-4">Personal information is collected under the authority of the <em>Medicare Protection Act</em> and section 26 (a), (c) and (e) of the <em>Freedom of Information and Protection of Privacy Act</em> for the purposes of administration of the Medical Services Plan. If you have any questions about the collection and use of your personal information, please contact <a href="https://www2.gov.bc.ca/gov/content/health/about-bc-s-health-care-system/partners/health-insurance-bc" target="_blank">Health Insurance BC</a>.</p>
-            <CaptchaComponent v-if="!isCaptchaValid"
-                    data-cy="captchaInput"
-                    :apiBasePath="captchaAPIBasePath"
-                    :nonce="applicationUuid"
-                    @captchaLoaded="handleCaptchaLoaded()"
-                    @captchaVerified="handleCaptchaVerified($event)" />
-            <div v-if="isCaptchaValid"
-                class="text-success">Captcha successfully verified.</div>
+            <p>
+              <b>
+                Keep your personal information secure - especially when using a shared device like a
+                computer at a library, school or café.
+              </b>
+              To delete any information that was entered, either complete the application and submit
+              it or, if you don't finish, close the web browser.
+            </p>
+            <p>
+              <b>Need to take a break and come back later?</b> The data you enter on this form is
+              saved locally to the computer or device you are using until you close the web browser
+              or submit your application.
+            </p>
+            <p class="mb-4">
+              Personal information is collected under the authority of the
+              <em>Medicare Protection Act</em> and section 26 (a), (c) and (e) of the
+              <em>Freedom of Information and Protection of Privacy Act</em> for the purposes of
+              administration of the Medical Services Plan. If you have any questions about the
+              collection and use of your personal information, please contact
+              <a
+                href="https://www2.gov.bc.ca/gov/content/health/about-bc-s-health-care-system/partners/health-insurance-bc"
+                target="_blank"
+              >
+                Health Insurance BC
+              </a>
+              .
+            </p>
+            <CaptchaComponent
+              v-if="!isCaptchaValid"
+              data-cy="captchaInput"
+              :api-base-path="captchaAPIBasePath"
+              :nonce="applicationUuid"
+              @captcha-loaded="handleCaptchaLoaded()"
+              @captcha-verified="handleCaptchaVerified($event)"
+            />
+            <div
+              v-if="isCaptchaValid"
+              class="text-success"
+            >
+              Captcha successfully verified.
+            </div>
             <div class="mt-3">
               <CheckboxComponent
                 id="is-terms-accepted"
@@ -32,13 +72,14 @@
                 label="I have read and understand this information"
               />
             </div>
-            
           </div>
           <div class="modal-footer justify-content-center">
-            <ButtonComponent label="Continue"
-                    cypressId="consentContinue"
-                    @click="closeModal()"
-                    :disabled="!isCaptchaValid || !isTermsAccepted"/>
+            <ButtonComponent
+              label="Continue"
+              cypress-id="consentContinue"
+              :disabled="!isCaptchaValid || !isTermsAccepted"
+              @click="closeModal()"
+            />
           </div>
         </div>
       </div>
@@ -54,54 +95,59 @@ export default {
   components: {
     ButtonComponent: ButtonComponent,
     CaptchaComponent,
-    CheckboxComponent
+    CheckboxComponent,
   },
   props: {
     applicationUuid: {
       type: String,
-      default: '',
+      default: "",
       required: true,
     },
   },
+  emits: ["captchaVerified", "close"],
   data: () => {
     return {
       focusableEls: [],
       focusedEl: null,
-      captchaAPIBasePath: '/pppp/api/captcha',
+      captchaAPIBasePath: "/pppp/api/captcha",
       isCaptchaValid: false,
       isTermsAccepted: false,
     };
   },
   mounted() {
-    window.addEventListener('keydown', this.handleKeyDown);
-    document.body.classList.add('no-scroll');
+    window.addEventListener("keydown", this.handleKeyDown);
+    document.body.classList.add("no-scroll");
     this.focusableEls = this.getFocusableEls();
   },
   unmounted() {
-    window.removeEventListener('keydown', this.handleKeyDown);
-    document.body.classList.remove('no-scroll');
+    window.removeEventListener("keydown", this.handleKeyDown);
+    document.body.classList.remove("no-scroll");
   },
   methods: {
     getFocusableEls() {
       // Create an array of focusable elements from the contents of the modal
-      return Array.from(this.$refs.modal.querySelectorAll('a[href], area[href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), button, [tabindex="0"]'));
+      return Array.from(
+        this.$refs.modal.querySelectorAll(
+          'a[href], area[href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), button, [tabindex="0"]'
+        )
+      );
     },
     handleCaptchaLoaded() {
       this.focusableEls = this.getFocusableEls();
     },
     handleCaptchaVerified(captchaToken) {
-      this.$emit('captchaVerified', captchaToken);
+      this.$emit("captchaVerified", captchaToken);
       this.isCaptchaValid = true;
       setTimeout(() => {
         this.focusableEls = this.getFocusableEls();
       }, 0);
     },
     closeModal() {
-      this.$emit('close', true);
+      this.$emit("close", true);
     },
     handleKeyDown(event) {
       // Handle tabbing
-      if (event.key === 'Tab') {
+      if (event.key === "Tab") {
         // Prevent usual tabbing, manually set focus
         event.preventDefault();
         if (event.shiftKey) {
@@ -141,7 +187,7 @@ export default {
       }
       this.focusedEl.focus();
     },
-  }
+  },
 };
 </script>
 
@@ -154,6 +200,6 @@ export default {
 }
 .modal-header {
   background: #036;
-  color: #FFF;
+  color: #fff;
 }
 </style>

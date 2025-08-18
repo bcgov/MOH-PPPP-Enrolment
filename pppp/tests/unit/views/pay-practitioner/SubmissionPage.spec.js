@@ -5,22 +5,18 @@ import Page from "@/views/pay-practitioner/SubmissionPage.vue";
 import logService from "@/services/log-service";
 import pageStateService from "@/services/page-state-service";
 import { getConvertedPath } from "@/helpers/url";
-import {
-  payPractitionerRoutes,
-  payPractitionerRouteStepOrder,
-} from "@/router/routes";
-import * as scrollHelper from "@/helpers/scroll"; 
-import {
-  defaultStoreTemplate,
-  router
-} from "../../test-helper.js";
+import { payPractitionerRoutes, payPractitionerRouteStepOrder } from "@/router/routes";
+import * as scrollHelper from "@/helpers/scroll";
+import { defaultStoreTemplate, router } from "../../test-helper.js";
 
 const next = vi.fn();
 const storeTemplate = cloneDeep(defaultStoreTemplate);
 
 const spyOnPrint = vi.spyOn(window, "print").mockImplementation(vi.fn);
 
-const spyOnScrollTo = vi.spyOn(scrollHelper, "scrollTo").mockImplementation(() => Promise.resolve("scrolled"));;
+const spyOnScrollTo = vi
+  .spyOn(scrollHelper, "scrollTo")
+  .mockImplementation(() => Promise.resolve("scrolled"));
 
 const spyOnLogNavigation = vi
   .spyOn(logService, "logNavigation")
@@ -55,11 +51,10 @@ describe("SubmissionPage.vue pay practitioner", () => {
 
 describe("SubmissionPage.vue pay practitioner created()", () => {
   let store;
-  let wrapper;
 
   beforeEach(() => {
     store = createStore(storeTemplate);
-    wrapper = shallowMount(Page, {
+    shallowMount(Page, {
       global: {
         plugins: [store, router],
       },

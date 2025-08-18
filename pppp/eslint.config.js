@@ -2,7 +2,7 @@ import js from "@eslint/js";
 import pluginCypress from "eslint-plugin-cypress/flat";
 import compat from "eslint-plugin-compat";
 import pluginVue from "eslint-plugin-vue";
-import vitest from '@vitest/eslint-plugin'
+import vitest from "@vitest/eslint-plugin";
 
 export default [
   js.configs.recommended, //eslint formatting for basic Javascript syntax

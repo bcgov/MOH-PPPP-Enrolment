@@ -4,18 +4,11 @@ import Page from "@/views/pay-practitioner/ClaimCountPage.vue";
 import * as module3 from "../../../../src/store/modules/pay-practitioner-form";
 import logService from "@/services/log-service";
 import pageStateService from "@/services/page-state-service";
-import {
-  payPractitionerRoutes,
-  payPractitionerRouteStepOrder,
-} from "@/router/routes";
+import { payPractitionerRoutes, payPractitionerRouteStepOrder } from "@/router/routes";
 import { getConvertedPath } from "@/helpers/url";
 import { cloneDeep } from "common-lib-vue";
 import * as scrollHelper from "@/helpers/scroll";
-import {
-  defaultStoreTemplate,
-  mockRouterCSR,
-  router,
-} from "../../test-helper.js";
+import { defaultStoreTemplate, mockRouterCSR, router } from "../../test-helper.js";
 import * as dummyDataPractitionerValid from "@/store/states/pay-practitioner-form-dummy-data";
 
 //required to prevent ECONNREFUSED errors
@@ -32,7 +25,7 @@ const testDate = new Date();
 testDate.setFullYear(testDate.getFullYear() - 1);
 const next = vi.fn();
 
-const dummyDataValid = cloneDeep(dummyDataPractitionerValid.default)
+const dummyDataValid = cloneDeep(dummyDataPractitionerValid.default);
 dummyDataValid.medicalServiceClaims[0].serviceDate = testDate;
 
 //create null store template
@@ -41,7 +34,6 @@ const storeTemplate = cloneDeep(defaultStoreTemplate);
 //create passing store template, then assign passing data
 const passingStoreTemplate = cloneDeep(defaultStoreTemplate);
 passingStoreTemplate.modules.payPractitionerForm.state = cloneDeep(dummyDataValid);
-
 
 const spyOnLogService = vi
   .spyOn(logService, "logNavigation")
@@ -94,12 +86,11 @@ describe("ClaimCountPage.vue render test", () => {
 });
 
 describe("ClaimCountPage.vue pay practitioner created()", () => {
-  let wrapper;
   let store;
 
   beforeEach(() => {
     store = createStore(storeTemplate);
-    wrapper = mount(Page, {
+    mount(Page, {
       global: {
         plugins: [store, router],
       },
@@ -326,9 +317,7 @@ describe("ClaimCountPage.vue pay practitioner beforeRouteLeave(to, from, next)",
 
     vi.spyOn(wrapper.vm.$store, "dispatch");
 
-    vi.spyOn(mockRouterCSR, "push").mockImplementation(() =>
-      Promise.resolve("pushed")
-    );
+    vi.spyOn(mockRouterCSR, "push").mockImplementation(() => Promise.resolve("pushed"));
   });
 
   afterEach(() => {

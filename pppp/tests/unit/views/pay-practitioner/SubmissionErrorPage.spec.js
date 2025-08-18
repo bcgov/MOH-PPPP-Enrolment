@@ -5,15 +5,9 @@ import Page from "@/views/pay-practitioner/SubmissionErrorPage.vue";
 import logService from "@/services/log-service";
 import pageStateService from "@/services/page-state-service";
 import { getConvertedPath } from "@/helpers/url";
-import {
-  payPractitionerRoutes,
-  payPractitionerRouteStepOrder,
-} from "@/router/routes";
-import * as scrollHelper from "@/helpers/scroll"; 
-import {
-  defaultStoreTemplate,
-  router
-} from "../../test-helper.js";
+import { payPractitionerRoutes, payPractitionerRouteStepOrder } from "@/router/routes";
+import * as scrollHelper from "@/helpers/scroll";
+import { defaultStoreTemplate, router } from "../../test-helper.js";
 
 const next = vi.fn();
 const storeTemplate = cloneDeep(defaultStoreTemplate);
@@ -26,7 +20,9 @@ const spyOnSetPageIncomplete = vi
   .spyOn(pageStateService, "setPageIncomplete")
   .mockImplementation(() => Promise.resolve("set"));
 
-const spyOnScrollTo = vi.spyOn(scrollHelper, "scrollTo").mockImplementation(() => Promise.resolve("scrolled"));;
+const spyOnScrollTo = vi
+  .spyOn(scrollHelper, "scrollTo")
+  .mockImplementation(() => Promise.resolve("scrolled"));
 
 describe("SubmissionPage.vue pay practitioner", () => {
   let store;
@@ -53,11 +49,10 @@ describe("SubmissionPage.vue pay practitioner", () => {
 
 describe("SubmissionPage.vue pay practitioner created()", () => {
   let store;
-  let wrapper;
 
   beforeEach(() => {
     store = createStore(storeTemplate);
-    wrapper = shallowMount(Page, {
+    shallowMount(Page, {
       global: {
         plugins: [store, router],
       },

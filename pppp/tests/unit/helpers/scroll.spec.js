@@ -1,8 +1,7 @@
 import * as scroll from "@/helpers/scroll.js";
 import { nextTick } from "vue";
 
-const spyOnWindowScrollTo = vi
-  .spyOn(window, "scrollTo")
+const spyOnWindowScrollTo = vi.spyOn(window, "scrollTo");
 
 const spyOnScrollToElement = vi.spyOn(scroll, "scrollToElement");
 const spyOnScrollTo = vi.spyOn(scroll, "scrollTo");

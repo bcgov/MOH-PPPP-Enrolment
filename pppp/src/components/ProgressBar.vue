@@ -1,68 +1,119 @@
 <template>
-  <nav v-if='isCurrentPathInSteps'
-      class="component-container">
+  <nav
+    v-if="isCurrentPathInSteps"
+    class="component-container"
+  >
     <div class="progress-bar-container">
-      <div class="progress-bar" :style="progressBarStyles"></div>
+      <div
+        class="progress-bar"
+        :style="progressBarStyles"
+      ></div>
     </div>
     <div class="step-container">
       <a
-        href="javascript:void(0);"
         v-for="(route, index) in routes"
         :key="route.path"
-        :style='getLinkStyles(route.path)'
+        href="javascript:void(0);"
+        :style="getLinkStyles(route.path)"
         @click="onClickLink(route.path)"
       >
-        <div class="step" v-bind:class="{'step-selected': index + 1 === currentStepNumber, 'step-passed': index + 1 < currentStepNumber}">
-          <div class="step-text" v-bind:class="{'v-step-text-selected': index + 1 === currentStepNumber}">{{ route.title }}</div>
+        <div
+          class="step"
+          :class="{
+            'step-selected': index + 1 === currentStepNumber,
+            'step-passed': index + 1 < currentStepNumber,
+          }"
+        >
+          <div
+            class="step-text"
+            :class="{ 'v-step-text-selected': index + 1 === currentStepNumber }"
+          >
+            {{ route.title }}
+          </div>
         </div>
       </a>
     </div>
-    <div v-bind:class="{ hide: hideMobileStep }" class="mobile-step-container p-3 border-bottom">
-      <div class="pb-3">Step {{ currentStepNumber }}/{{ routes.length }} - {{ currentStepTitle }}</div>
-      <div class="chevron-container" @click="openDropdown">
-        <font-awesome-icon icon="chevron-down" />
+    <div
+      :class="{ hide: hideMobileStep }"
+      class="mobile-step-container p-3 border-bottom"
+    >
+      <div class="pb-3">
+        Step {{ currentStepNumber }}/{{ routes.length }} - {{ currentStepTitle }}
+      </div>
+      <div
+        class="chevron-container"
+        @click="openDropdown"
+      >
+        <FontAwesomeIcon icon="chevron-down" />
       </div>
     </div>
-    <div v-bind:class="{ hide: hideMobileProgress }" class="mobile-progress-bar-container p-3 pt-5 border-bottom">
+    <div
+      :class="{ hide: hideMobileProgress }"
+      class="mobile-progress-bar-container p-3 pt-5 border-bottom"
+    >
       <div class="v-progress-bar-container">
-        <div class="v-progress-bar" :style="verticalProgressBarStyles"></div>
+        <div
+          class="v-progress-bar"
+          :style="verticalProgressBarStyles"
+        ></div>
       </div>
       <div class="v-step-container">
         <a
-        href="javascript:void(0);"
-        v-for="(route, index) in routes"
-        :key="route.path"
-        @click="onClickLink(route.path)"
-      >
-        <div class="v-step" v-bind:class="{'v-step-selected': index + 1 === currentStepNumber, 'v-step-passed': index + 1 < currentStepNumber}">
-          <div class="v-step-text" v-bind:class="{'v-step-text-selected': index + 1 === currentStepNumber}" >{{ route.title }}</div>
-        </div>
-      </a>
+          v-for="(route, index) in routes"
+          :key="route.path"
+          href="javascript:void(0);"
+          @click="onClickLink(route.path)"
+        >
+          <div
+            class="v-step"
+            :class="{
+              'v-step-selected': index + 1 === currentStepNumber,
+              'v-step-passed': index + 1 < currentStepNumber,
+            }"
+          >
+            <div
+              class="v-step-text"
+              :class="{ 'v-step-text-selected': index + 1 === currentStepNumber }"
+            >
+              {{ route.title }}
+            </div>
+          </div>
+        </a>
       </div>
-      <div class="chevron-container" @click="closeDropdown">
-        <font-awesome-icon icon="chevron-up" />
+      <div
+        class="chevron-container"
+        @click="closeDropdown"
+      >
+        <FontAwesomeIcon icon="chevron-up" />
       </div>
     </div>
   </nav>
 </template>
 
 <script>
-import pageStateService from '../services/page-state-service';
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
-import { isPastPath } from '../router/routes';
-import { scrollTo } from '../helpers/scroll';
-import environment from '../settings';
-import {
-  MODULE_NAME,
-  SET_SHOW_MOBILE_STEPPER_DETAILS,
-} from '../store/modules/app';
+import pageStateService from "../services/page-state-service";
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import { isPastPath } from "../router/routes";
+import { scrollTo } from "../helpers/scroll";
+import environment from "../settings";
+import { MODULE_NAME, SET_SHOW_MOBILE_STEPPER_DETAILS } from "../store/modules/app";
 
 export default {
   name: "ProgressBar",
-  components: {},
+  components: {
+    FontAwesomeIcon,
+  },
   props: {
-    currentPath: String,
-    routes: Array
+    currentPath: {
+      type: String,
+      default: "",
+    },
+    routes: {
+      type: Array,
+      default: () => {
+        [];
+      },
+    },
   },
   computed: {
     hideMobileStep() {
@@ -72,32 +123,29 @@ export default {
       return !this.$store.state.app.showMobileStepperDetails;
     },
     progressBarStyles() {
-      const index = this.routes.findIndex(element => {
+      const index = this.routes.findIndex((element) => {
         return element.path === this.currentPath;
       });
       return {
-        width:
-          (100 / this.routes.length) * index +
-          100 / this.routes.length / 2 +
-          "%"
+        width: (100 / this.routes.length) * index + 100 / this.routes.length / 2 + "%",
       };
     },
     verticalProgressBarStyles() {
-      const index = this.routes.findIndex(element => {
+      const index = this.routes.findIndex((element) => {
         return element.path === this.currentPath;
       });
-      return {     
-        height: index / (this.routes.length - 1) * 100 + "%"
+      return {
+        height: (index / (this.routes.length - 1)) * 100 + "%",
       };
     },
     currentStepNumber() {
-      const index = this.routes.findIndex(element => {
+      const index = this.routes.findIndex((element) => {
         return element.path.includes(this.currentPath);
       });
       return index + 1;
     },
     currentStepTitle() {
-      const index = this.routes.findIndex(element => {
+      const index = this.routes.findIndex((element) => {
         return element.path.includes(this.currentPath);
       });
       return this.routes[index].title;
@@ -107,15 +155,14 @@ export default {
         return element.path === this.currentPath;
       });
       return index > -1;
-    }
+    },
   },
   methods: {
     onClickLink(path) {
-      if (this.currentPath !== path && 
-        (
-          environment.bypassRouteGuards ||
-          isPastPath(path, this.currentPath)
-        )) {
+      if (
+        this.currentPath !== path &&
+        (environment.bypassRouteGuards || isPastPath(path, this.currentPath))
+      ) {
         pageStateService.setPageIncomplete(this.currentPath);
         pageStateService.setPageComplete(path);
         this.$router.push(path);
@@ -124,16 +171,16 @@ export default {
     },
     getLinkStyles(path) {
       return {
-        cursor: isPastPath(path, this.currentPath) ? 'pointer' : 'default'
-      }
+        cursor: isPastPath(path, this.currentPath) ? "pointer" : "default",
+      };
     },
     openDropdown() {
-      this.$store.dispatch(MODULE_NAME + '/' + SET_SHOW_MOBILE_STEPPER_DETAILS, true);
+      this.$store.dispatch(MODULE_NAME + "/" + SET_SHOW_MOBILE_STEPPER_DETAILS, true);
     },
     closeDropdown() {
-      this.$store.dispatch(MODULE_NAME + '/' + SET_SHOW_MOBILE_STEPPER_DETAILS, false);
-    }
-  }
+      this.$store.dispatch(MODULE_NAME + "/" + SET_SHOW_MOBILE_STEPPER_DETAILS, false);
+    },
+  },
 };
 </script>
 
@@ -196,7 +243,7 @@ export default {
   transform: translateX(-37%);
   white-space: nowrap;
   color: #000;
-  background: #FFF;
+  background: #fff;
   font-weight: normal;
   font-size: 13.33px;
 }

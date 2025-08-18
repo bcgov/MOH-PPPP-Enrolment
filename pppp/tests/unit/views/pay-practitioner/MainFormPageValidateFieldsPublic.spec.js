@@ -5,11 +5,7 @@ import Page from "@/views/pay-practitioner/MainFormPage.vue";
 import * as dummyDataValid from "../../../../src/store/states/pay-practitioner-form-dummy-data";
 import apiService from "@/services/api-service";
 import * as scrollHelper from "@/helpers/scroll";
-import {
-  defaultStoreTemplate,
-  mockRouter,
-  failingData,
-} from "../../test-helper.js";
+import { defaultStoreTemplate, mockRouter, failingData } from "../../test-helper.js";
 
 const testDateFutureDay = new Date();
 testDateFutureDay.setDate(testDateFutureDay.getDate() + 1);
@@ -87,9 +83,9 @@ const mockBackendValidationResponseDefault = {
   statusText: "OK",
 };
 
-const passingData = cloneDeep(dummyDataValid.default)
-passingData.medicalServiceClaims[0].feeItem="00010"
-passingData.hospitalVisitClaims[0].feeItem="00010"
+const passingData = cloneDeep(dummyDataValid.default);
+passingData.medicalServiceClaims[0].feeItem = "00010";
+passingData.hospitalVisitClaims[0].feeItem = "00010";
 
 vi.mock("axios", () => ({
   default: {
@@ -105,21 +101,18 @@ const spyOnAPIService = vi
   .mockImplementation(() => Promise.resolve(mockBackendValidationResponse));
 
 //to prevent console errors
-vi.spyOn(scrollHelper, "scrollTo").mockImplementation(() =>
-  Promise.resolve("scrolled")
-);
+vi.spyOn(scrollHelper, "scrollTo").mockImplementation(() => Promise.resolve("scrolled"));
 
 const spyOnScrollToError = vi
   .spyOn(scrollHelper, "scrollToError")
   .mockImplementation(() => Promise.resolve("scrolled to error"));
 
-const storeTemplate = cloneDeep(defaultStoreTemplate)
+const storeTemplate = cloneDeep(defaultStoreTemplate);
 
 const practitionerState = cloneDeep(dummyDataValid.default);
 storeTemplate.modules.payPractitionerForm.state = cloneDeep(practitionerState);
 
 describe("MainFormPage.vue validateFields(), public", () => {
-  // eslint-disable-next-line
   let store;
   let wrapper;
   let spyOnNavigateToNextPage;

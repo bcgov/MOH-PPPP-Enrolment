@@ -1,10 +1,10 @@
 export const isCorrespondenceAttachedAbleToSubmit = (correspondenceAttached) => {
   switch (correspondenceAttached) {
-    case 'C':
+    case "C":
       return false;
-    case 'N':
+    case "N":
       return true;
-    case 'B':
+    case "B":
       return false;
   }
   return true;

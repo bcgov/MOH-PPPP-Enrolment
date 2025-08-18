@@ -8,7 +8,7 @@ vi.mock("axios", () => ({
     post: vi.fn(() => {
       return Promise.resolve();
     }),
-  } 
+  },
 }));
 
 vi.mock("uuid");
@@ -37,9 +37,7 @@ describe("APIService", () => {
       applicationUuid: 1111111,
     };
     APIService.validateApplication("1", fakeArgument);
-    expect(
-      spyOnSendPostRequest
-    ).toHaveBeenCalledWith(
+    expect(spyOnSendPostRequest).toHaveBeenCalledWith(
       "/pppp/api/payformsIntegration/validateClaim/1111111",
       "1",
       { applicationUuid: 1111111, requestUuid: "uuid-123" }
@@ -348,7 +346,7 @@ describe("APIService filterSpecialChar()", () => {
   });
 
   it("filters out slashes and quotes", () => {
-    // eslint-disable-next-line 
+    // eslint-disable-next-line
     const testText = `test text. should have: // should not have:\ ""`;
     const result = APIService.filterSpecialChar(testText);
     expect(result).toBe(`test text. should have: // should not have: `);

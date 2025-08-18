@@ -4,18 +4,17 @@ import * as stepRoutes from "@/router/step-routes";
 import pageStateService from "@/services/page-state-service";
 //using vi to mock
 
-const mockPageStateService = vi
-  .spyOn(pageStateService, "isPageVisited")
-  .mockReturnValue(false);
+const mockPageStateService = vi.spyOn(pageStateService, "isPageVisited").mockReturnValue(false);
 
-describe.skip("router.beforeEach() specific page not found", () => {
-  it("routes specific page not found to destination", () => {
+//router isn't calling next() like it should be
+//tests are skipped until a new strategy for testing route guards is found
+describe.skip("router.beforeEach() specific page not found", async () => {
+  it("routes specific page not found to destination", async () => {
     const to = commonRoutes.SPECIFIC_PAGE_NOT_FOUND_PAGE;
     const from = vi.fn();
     const next = vi.fn();
-    // router.beforeHooks.forEach((hook) => {
-    //   hook(to, from, next);
-    // });
+    await router.isReady();
+    await router.push(to, from, next);
 
     expect(next).toHaveBeenCalledWith();
   });
@@ -24,9 +23,9 @@ describe.skip("router.beforeEach() specific page not found", () => {
 describe.skip("router.beforeEach() pay patient CSR", () => {
   it("routes pay patient CSR routes to home if they're not home and not visited", () => {
     const testRoutes = stepRoutes.payPatientCSRStepRoutes;
-    const lastIndex = testRoutes.length - 1;
-    const to = testRoutes[lastIndex];
-    const from = vi.fn();
+    // const lastIndex = testRoutes.length - 1;
+    // const to = testRoutes[lastIndex];
+    // const from = vi.fn();
     const next = vi.fn();
 
     // router.beforeHooks.forEach((hook) => {
@@ -39,9 +38,9 @@ describe.skip("router.beforeEach() pay patient CSR", () => {
   });
 
   it("routes pay patient CSR routes to home if they ARE home", () => {
-    const testRoutes = stepRoutes.payPatientCSRStepRoutes;
-    const to = testRoutes[0];
-    const from = vi.fn();
+    // const testRoutes = stepRoutes.payPatientCSRStepRoutes;
+    // const to = testRoutes[0];
+    // const from = vi.fn();
     const next = vi.fn();
 
     // router.beforeHooks.forEach((hook) => {
@@ -53,10 +52,10 @@ describe.skip("router.beforeEach() pay patient CSR", () => {
 
   it("routes pay patient CSR routes to their destination if they're visited", () => {
     mockPageStateService.mockReturnValueOnce(true);
-    const testRoutes = stepRoutes.payPatientCSRStepRoutes;
-    const lastIndex = testRoutes.length - 1;
-    const to = testRoutes[lastIndex];
-    const from = vi.fn();
+    // const testRoutes = stepRoutes.payPatientCSRStepRoutes;
+    // const lastIndex = testRoutes.length - 1;
+    // const to = testRoutes[lastIndex];
+    // const from = vi.fn();
     const next = vi.fn();
 
     // router.beforeHooks.forEach((hook) => {
@@ -70,9 +69,9 @@ describe.skip("router.beforeEach() pay patient CSR", () => {
 describe.skip("router.beforeEach() pay practitioner CSR", () => {
   it("routes pay practitioner CSR routes to home if they're not home and not visited", () => {
     const testRoutes = stepRoutes.payPractitionerCSRStepRoutes;
-    const lastIndex = testRoutes.length - 1;
-    const to = testRoutes[lastIndex];
-    const from = vi.fn();
+    // const lastIndex = testRoutes.length - 1;
+    // const to = testRoutes[lastIndex];
+    // const from = vi.fn();
     const next = vi.fn();
 
     // router.beforeHooks.forEach((hook) => {
@@ -85,9 +84,9 @@ describe.skip("router.beforeEach() pay practitioner CSR", () => {
   });
 
   it("routes pay practitioner CSR routes to home if they ARE home", () => {
-    const testRoutes = stepRoutes.payPractitionerCSRStepRoutes;
-    const to = testRoutes[0];
-    const from = vi.fn();
+    // const testRoutes = stepRoutes.payPractitionerCSRStepRoutes;
+    // const to = testRoutes[0];
+    // const from = vi.fn();
     const next = vi.fn();
 
     // router.beforeHooks.forEach((hook) => {
@@ -99,10 +98,10 @@ describe.skip("router.beforeEach() pay practitioner CSR", () => {
 
   it("routes pay practitioner CSR routes to their destination if they're visited", () => {
     mockPageStateService.mockReturnValueOnce(true);
-    const testRoutes = stepRoutes.payPractitionerCSRStepRoutes;
-    const lastIndex = testRoutes.length - 1;
-    const to = testRoutes[lastIndex];
-    const from = vi.fn();
+    // const testRoutes = stepRoutes.payPractitionerCSRStepRoutes;
+    // const lastIndex = testRoutes.length - 1;
+    // const to = testRoutes[lastIndex];
+    // const from = vi.fn();
     const next = vi.fn();
 
     // router.beforeHooks.forEach((hook) => {
@@ -116,9 +115,9 @@ describe.skip("router.beforeEach() pay practitioner CSR", () => {
 describe.skip("router.beforeEach() pay patient public", () => {
   it("routes pay patient public routes to home if they're not home and not visited", () => {
     const testRoutes = stepRoutes.payPatientStepRoutes;
-    const lastIndex = testRoutes.length - 1;
-    const to = testRoutes[lastIndex];
-    const from = vi.fn();
+    // const lastIndex = testRoutes.length - 1;
+    // const to = testRoutes[lastIndex];
+    // const from = vi.fn();
     const next = vi.fn();
 
     // router.beforeHooks.forEach((hook) => {
@@ -131,9 +130,9 @@ describe.skip("router.beforeEach() pay patient public", () => {
   });
 
   it("routes pay patient public routes to home if they ARE home", () => {
-    const testRoutes = stepRoutes.payPatientStepRoutes;
-    const to = testRoutes[0];
-    const from = vi.fn();
+    // const testRoutes = stepRoutes.payPatientStepRoutes;
+    // const to = testRoutes[0];
+    // const from = vi.fn();
     const next = vi.fn();
 
     // router.beforeHooks.forEach((hook) => {
@@ -145,10 +144,10 @@ describe.skip("router.beforeEach() pay patient public", () => {
 
   it("routes pay patient public routes to their destination if they're visited", () => {
     mockPageStateService.mockReturnValueOnce(true);
-    const testRoutes = stepRoutes.payPatientStepRoutes;
-    const lastIndex = testRoutes.length - 1;
-    const to = testRoutes[lastIndex];
-    const from = vi.fn();
+    // const testRoutes = stepRoutes.payPatientStepRoutes;
+    // const lastIndex = testRoutes.length - 1;
+    // const to = testRoutes[lastIndex];
+    // const from = vi.fn();
     const next = vi.fn();
 
     // router.beforeHooks.forEach((hook) => {
@@ -162,9 +161,9 @@ describe.skip("router.beforeEach() pay patient public", () => {
 describe.skip("router.beforeEach() pay practitioner public", () => {
   it("routes pay practitioner public routes to home if they're not home and not visited", () => {
     const testRoutes = stepRoutes.payPractitionerStepRoutes;
-    const lastIndex = testRoutes.length - 1;
-    const to = testRoutes[lastIndex];
-    const from = vi.fn();
+    // const lastIndex = testRoutes.length - 1;
+    // const to = testRoutes[lastIndex];
+    // const from = vi.fn();
     const next = vi.fn();
 
     // router.beforeHooks.forEach((hook) => {
@@ -177,9 +176,9 @@ describe.skip("router.beforeEach() pay practitioner public", () => {
   });
 
   it("routes pay practitioner public routes to home if they ARE home", () => {
-    const testRoutes = stepRoutes.payPractitionerStepRoutes;
-    const to = testRoutes[0];
-    const from = vi.fn();
+    // const testRoutes = stepRoutes.payPractitionerStepRoutes;
+    // const to = testRoutes[0];
+    // const from = vi.fn();
     const next = vi.fn();
 
     // router.beforeHooks.forEach((hook) => {
@@ -191,10 +190,10 @@ describe.skip("router.beforeEach() pay practitioner public", () => {
 
   it("routes pay practitioner public routes to their destination if they're visited", () => {
     mockPageStateService.mockReturnValueOnce(true);
-    const testRoutes = stepRoutes.payPractitionerStepRoutes;
-    const lastIndex = testRoutes.length - 1;
-    const to = testRoutes[lastIndex];
-    const from = vi.fn();
+    // const testRoutes = stepRoutes.payPractitionerStepRoutes;
+    // const lastIndex = testRoutes.length - 1;
+    // const to = testRoutes[lastIndex];
+    // const from = vi.fn();
     const next = vi.fn();
 
     // router.beforeHooks.forEach((hook) => {

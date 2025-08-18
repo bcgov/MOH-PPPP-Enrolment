@@ -5,16 +5,15 @@ import logService from "@/services/log-service";
 import pageStateService from "@/services/page-state-service";
 import { getConvertedPath } from "@/helpers/url";
 import { payPatientRoutes, payPatientRouteStepOrder } from "@/router/routes";
-import * as scrollHelper from "@/helpers/scroll"; 
-import {
-  defaultStoreTemplate,
-  router
-} from "../../test-helper.js";
+import * as scrollHelper from "@/helpers/scroll";
+import { defaultStoreTemplate, router } from "../../test-helper.js";
 
 const next = vi.fn();
 const storeTemplate = defaultStoreTemplate;
 
-const spyOnScrollTo = vi.spyOn(scrollHelper, "scrollTo").mockImplementation(() => Promise.resolve("scrolled"));;
+const spyOnScrollTo = vi
+  .spyOn(scrollHelper, "scrollTo")
+  .mockImplementation(() => Promise.resolve("scrolled"));
 
 const spyOnLogNavigation = vi
   .spyOn(logService, "logNavigation")
@@ -51,11 +50,10 @@ describe("SubmissionErrorPage pay patient", () => {
 
 describe("SubmissionErrorPage pay patient created()", () => {
   let store;
-  let wrapper;
 
   beforeEach(() => {
     store = createStore(storeTemplate);
-    wrapper = mount(Page, {
+    mount(Page, {
       global: {
         plugins: [store, router],
       },

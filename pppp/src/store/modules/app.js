@@ -1,7 +1,7 @@
-export const MODULE_NAME = 'app';
+export const MODULE_NAME = "app";
 
-export const SET_SHOW_MOBILE_STEPPER_DETAILS = 'setShowMobileStepperDetails';
-export const SET_IS_MODAL_OPEN = 'setIsModalOpen';
+export const SET_SHOW_MOBILE_STEPPER_DETAILS = "setShowMobileStepperDetails";
+export const SET_IS_MODAL_OPEN = "setIsModalOpen";
 
 export default {
   namespaced: true,
@@ -18,7 +18,7 @@ export default {
     },
     [SET_IS_MODAL_OPEN](state, payload) {
       state.isModalOpen = payload;
-    }
+    },
   },
   actions: {
     [SET_SHOW_MOBILE_STEPPER_DETAILS]({ commit }, payload) {
@@ -26,7 +26,7 @@ export default {
     },
     [SET_IS_MODAL_OPEN]({ commit }, payload) {
       commit(SET_IS_MODAL_OPEN, payload);
-    }
+    },
   },
-  getters: {}
+  getters: {},
 };

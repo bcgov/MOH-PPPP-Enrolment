@@ -5,11 +5,7 @@ import Page from "@/views/pay-patient/MainFormPage.vue";
 import * as dummyDataValid from "../../../../src/store/states/pay-patient-form-dummy-data";
 import apiService from "@/services/api-service";
 import * as scrollHelper from "@/helpers/scroll";
-import {
-  defaultStoreTemplate,
-  router,
-  failingData,
-} from "../../test-helper.js";
+import { defaultStoreTemplate, router, failingData } from "../../test-helper.js";
 
 const testDateFutureYear = new Date();
 testDateFutureYear.setFullYear(testDateFutureYear.getFullYear() + 1);
@@ -97,15 +93,13 @@ const spyOnAPIService = vi
   .mockImplementation(() => Promise.resolve(mockBackendValidationResponse));
 
 //required to prevent "error: not implemented: window.scrollTo" errors
-vi.spyOn(scrollHelper, "scrollTo").mockImplementation(() =>
-  Promise.resolve("scrolled")
-);
+vi.spyOn(scrollHelper, "scrollTo").mockImplementation(() => Promise.resolve("scrolled"));
 
 const spyOnScrollToError = vi
   .spyOn(scrollHelper, "scrollToError")
   .mockImplementation(() => Promise.resolve("scrolled to error"));
 
-const storeTemplate = cloneDeep(defaultStoreTemplate)
+const storeTemplate = cloneDeep(defaultStoreTemplate);
 storeTemplate.modules.payPatientForm.state = cloneDeep(dummyDataValid.default);
 
 describe("MainFormPage.vue validateFields(), public", () => {
@@ -517,9 +511,7 @@ describe("MainFormPage.vue validateFields(), public", () => {
     Object.assign(wrapper.vm, cloneDeep(passingData));
     const testData = "a";
     await wrapper.setData({ planReferenceNumberOfOriginalClaim: testData });
-    expect(wrapper.vm.planReferenceNumberOfOriginalClaim).toStrictEqual(
-      testData
-    );
+    expect(wrapper.vm.planReferenceNumberOfOriginalClaim).toStrictEqual(testData);
     await wrapper.vm.validateFields();
     await wrapper.vm.$nextTick;
     expect(spyOnScrollToError).toHaveBeenCalled();
@@ -530,9 +522,7 @@ describe("MainFormPage.vue validateFields(), public", () => {
     Object.assign(wrapper.vm, cloneDeep(passingData));
     const testData = "-2";
     await wrapper.setData({ planReferenceNumberOfOriginalClaim: testData });
-    expect(wrapper.vm.planReferenceNumberOfOriginalClaim).toStrictEqual(
-      testData
-    );
+    expect(wrapper.vm.planReferenceNumberOfOriginalClaim).toStrictEqual(testData);
     await wrapper.vm.validateFields();
     await wrapper.vm.$nextTick;
     expect(spyOnScrollToError).toHaveBeenCalled();

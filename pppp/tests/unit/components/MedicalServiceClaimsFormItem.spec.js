@@ -45,9 +45,7 @@ const mockRouterCSR = {
   },
 };
 
-const passingClaim = cloneDeep(
-  dummyDataPatient.default.medicalServiceClaims[0]
-);
+const passingClaim = cloneDeep(dummyDataPatient.default.medicalServiceClaims[0]);
 
 const passingProps = {
   index: 0,
@@ -111,9 +109,7 @@ describe("MedicalServiceClaimsFormItem handleInputServiceFeeItem()", () => {
     wrapper.vm.handleInputServiceFeeItem(0);
     await wrapper.vm.$nextTick();
     expect(wrapper.emitted()).toHaveProperty("update:feeItem");
-    expect(wrapper.emitted()).toHaveProperty(
-      "update:medicalServiceClaimsFeeItemValidationError"
-    );
+    expect(wrapper.emitted()).toHaveProperty("update:medicalServiceClaimsFeeItemValidationError");
   });
 });
 
@@ -203,14 +199,9 @@ describe("MedicalServiceClaimsFormItem isSubmissionCodeRequired()", () => {
 });
 
 describe("MedicalServiceClaimsFormItem handleProcessServiceDate()", () => {
-  // eslint-disable-next-line
-  let state;
   let wrapper;
 
   beforeEach(() => {
-    state = {
-      applicationUuid: null,
-    };
     wrapper = mount(Component, {
       props: passingProps,
       global: {

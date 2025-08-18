@@ -58,8 +58,7 @@ const patientState = {
   postalCode: "defaultpostalCode",
   isVehicleAccident: "Y",
   vehicleAccidentClaimNumber: "defaultAccidentClaimNumber",
-  planReferenceNumberOfOriginalClaim:
-    "defaultplanReferenceNumberOfOriginalClaim",
+  planReferenceNumberOfOriginalClaim: "defaultplanReferenceNumberOfOriginalClaim",
   medicalServiceClaims: [
     {
       serviceDate: "defaultserviceDate",
@@ -150,9 +149,7 @@ describe("ReviewTableList patient planReferenceNumberData() CSR", () => {
     });
     const result = wrapper.vm.$store.state.payPatientForm.planReferenceNumber;
     expect(result).toBe("defaultReferenceNumber");
-    expect(wrapper.text()).toEqual(
-      expect.stringContaining("defaultReferenceNumber")
-    );
+    expect(wrapper.text()).toEqual(expect.stringContaining("defaultReferenceNumber"));
   });
 
   it("does not render plan reference number when path is NOT CSR", () => {
@@ -165,9 +162,7 @@ describe("ReviewTableList patient planReferenceNumberData() CSR", () => {
     });
     const result = wrapper.vm.$store.state.payPatientForm.planReferenceNumber;
     expect(result).toBe("defaultReferenceNumber");
-    expect(wrapper.text()).not.toEqual(
-      expect.stringContaining("defaultReferenceNumber")
-    );
+    expect(wrapper.text()).not.toEqual(expect.stringContaining("defaultReferenceNumber"));
   });
 });
 
@@ -196,12 +191,9 @@ describe("ReviewTableList patient patientData()", () => {
   });
 
   it("renders dependentNumber", () => {
-    const dependentNumber =
-      wrapper.vm.$store.state.payPatientForm.dependentNumber;
+    const dependentNumber = wrapper.vm.$store.state.payPatientForm.dependentNumber;
     expect(dependentNumber).toBe("defaultdependentNumber");
-    expect(wrapper.text()).toEqual(
-      expect.stringContaining("defaultdependentNumber")
-    );
+    expect(wrapper.text()).toEqual(expect.stringContaining("defaultdependentNumber"));
   });
 
   it("renders firstName", () => {
@@ -240,33 +232,25 @@ describe("ReviewTableList patient paymentMailAddressData()", () => {
     const addressOwner = wrapper.vm.$store.state.payPatientForm.addressOwner;
     expect(addressOwner).toBe("Default address owner");
     //it capitalizes the value, so I capitalized it below
-    expect(wrapper.text()).toEqual(
-      expect.stringContaining("Default address owner")
-    );
+    expect(wrapper.text()).toEqual(expect.stringContaining("Default address owner"));
   });
 
   it("renders unitNumber", () => {
     const unitNumber = wrapper.vm.$store.state.payPatientForm.unitNumber;
     expect(unitNumber).toBe("defaultunitNumber");
-    expect(wrapper.text()).toEqual(
-      expect.stringContaining("defaultunitNumber")
-    );
+    expect(wrapper.text()).toEqual(expect.stringContaining("defaultunitNumber"));
   });
 
   it("renders streetNumber", () => {
     const streetNumber = wrapper.vm.$store.state.payPatientForm.streetNumber;
     expect(streetNumber).toBe("defaultstreetNumber");
-    expect(wrapper.text()).toEqual(
-      expect.stringContaining("defaultstreetNumber")
-    );
+    expect(wrapper.text()).toEqual(expect.stringContaining("defaultstreetNumber"));
   });
 
   it("renders streetName", () => {
     const streetName = wrapper.vm.$store.state.payPatientForm.streetName;
     expect(streetName).toBe("defaultstreetName");
-    expect(wrapper.text()).toEqual(
-      expect.stringContaining("defaultstreetName")
-    );
+    expect(wrapper.text()).toEqual(expect.stringContaining("defaultstreetName"));
   });
 
   it("renders city", () => {
@@ -278,9 +262,7 @@ describe("ReviewTableList patient paymentMailAddressData()", () => {
   it("renders postalCode", () => {
     const postalCode = wrapper.vm.$store.state.payPatientForm.postalCode;
     expect(postalCode).toBe("defaultpostalCode");
-    expect(wrapper.text()).toEqual(
-      expect.stringContaining("defaultpostalCode")
-    );
+    expect(wrapper.text()).toEqual(expect.stringContaining("defaultpostalCode"));
   });
 });
 
@@ -298,8 +280,7 @@ describe("ReviewTableList patient vehicleAccidentData()", () => {
   });
 
   it("renders isVehicleAccident", () => {
-    const isVehicleAccident =
-      wrapper.vm.$store.state.payPatientForm.isVehicleAccident;
+    const isVehicleAccident = wrapper.vm.$store.state.payPatientForm.isVehicleAccident;
     expect(isVehicleAccident).toBe("Y");
     expect(wrapper.text()).toEqual(expect.stringContaining("Yes"));
   });
@@ -308,9 +289,7 @@ describe("ReviewTableList patient vehicleAccidentData()", () => {
     const vehicleAccidentClaimNumber =
       wrapper.vm.$store.state.payPatientForm.vehicleAccidentClaimNumber;
     expect(vehicleAccidentClaimNumber).toBe("defaultAccidentClaimNumber");
-    expect(wrapper.text()).toEqual(
-      expect.stringContaining("defaultAccidentClaimNumber")
-    );
+    expect(wrapper.text()).toEqual(expect.stringContaining("defaultAccidentClaimNumber"));
   });
 });
 
@@ -351,115 +330,82 @@ describe("ReviewTableList patient medicalServiceClaims()", () => {
   });
 
   it("renders serviceDate", () => {
-    const serviceDate =
-      wrapper.vm.$store.state.payPatientForm.medicalServiceClaims[0]
-        .serviceDate;
+    const serviceDate = wrapper.vm.$store.state.payPatientForm.medicalServiceClaims[0].serviceDate;
     expect(serviceDate).toBe("defaultserviceDate");
-    expect(wrapper.text()).toEqual(
-      expect.stringContaining("defaultserviceDate")
-    );
+    expect(wrapper.text()).toEqual(expect.stringContaining("defaultserviceDate"));
   });
 
   it("renders numberOfServices", () => {
     const numberOfServices =
-      wrapper.vm.$store.state.payPatientForm.medicalServiceClaims[0]
-        .numberOfServices;
+      wrapper.vm.$store.state.payPatientForm.medicalServiceClaims[0].numberOfServices;
     expect(numberOfServices).toBe("defaultnumberOfServices");
-    expect(wrapper.text()).toEqual(
-      expect.stringContaining("defaultnumberOfServices")
-    );
+    expect(wrapper.text()).toEqual(expect.stringContaining("defaultnumberOfServices"));
   });
 
   it("renders serviceClarificationCode", () => {
     const serviceClarificationCode =
-      wrapper.vm.$store.state.payPatientForm.medicalServiceClaims[0]
-        .serviceClarificationCode;
+      wrapper.vm.$store.state.payPatientForm.medicalServiceClaims[0].serviceClarificationCode;
     expect(serviceClarificationCode).toBe("defaultserviceClarificationCode");
-    expect(wrapper.text()).toEqual(
-      expect.stringContaining("defaultserviceClarificationCode")
-    );
+    expect(wrapper.text()).toEqual(expect.stringContaining("defaultserviceClarificationCode"));
   });
 
   it("renders feeItem", () => {
-    const feeItem =
-      wrapper.vm.$store.state.payPatientForm.medicalServiceClaims[0].feeItem;
+    const feeItem = wrapper.vm.$store.state.payPatientForm.medicalServiceClaims[0].feeItem;
     expect(feeItem).toBe("defaultfeeItem");
     expect(wrapper.text()).toEqual(expect.stringContaining("defaultfeeItem"));
   });
 
   it("renders amountBilled", () => {
     const amountBilled =
-      wrapper.vm.$store.state.payPatientForm.medicalServiceClaims[0]
-        .amountBilled;
+      wrapper.vm.$store.state.payPatientForm.medicalServiceClaims[0].amountBilled;
     expect(amountBilled).toBe("defaultamountBilled");
-    expect(wrapper.text()).toEqual(
-      expect.stringContaining("defaultamountBilled")
-    );
+    expect(wrapper.text()).toEqual(expect.stringContaining("defaultamountBilled"));
   });
 
   it("renders calledStartTime", () => {
     const calledStartTime =
-      wrapper.vm.$store.state.payPatientForm.medicalServiceClaims[0]
-        .calledStartTime.time;
+      wrapper.vm.$store.state.payPatientForm.medicalServiceClaims[0].calledStartTime.time;
     expect(calledStartTime).toBe("defaultcalledStartTime");
-    expect(wrapper.text()).toEqual(
-      expect.stringContaining("defaultcalledStartTime")
-    );
+    expect(wrapper.text()).toEqual(expect.stringContaining("defaultcalledStartTime"));
   });
 
   it("renders renderedFinishTime", () => {
     const renderedFinishTime =
-      wrapper.vm.$store.state.payPatientForm.medicalServiceClaims[0]
-        .renderedFinishTime.time;
+      wrapper.vm.$store.state.payPatientForm.medicalServiceClaims[0].renderedFinishTime.time;
     expect(renderedFinishTime).toBe("defaultrenderedFinishTime");
-    expect(wrapper.text()).toEqual(
-      expect.stringContaining("defaultrenderedFinishTime")
-    );
+    expect(wrapper.text()).toEqual(expect.stringContaining("defaultrenderedFinishTime"));
   });
 
   it("renders diagnosticCode", () => {
     const diagnosticCode =
-      wrapper.vm.$store.state.payPatientForm.medicalServiceClaims[0]
-        .diagnosticCode;
+      wrapper.vm.$store.state.payPatientForm.medicalServiceClaims[0].diagnosticCode;
     expect(diagnosticCode).toBe("defaultdiagnosticCode");
-    expect(wrapper.text()).toEqual(
-      expect.stringContaining("defaultdiagnosticCode")
-    );
+    expect(wrapper.text()).toEqual(expect.stringContaining("defaultdiagnosticCode"));
   });
 
   it("renders locationOfService", () => {
     const locationOfService =
-      wrapper.vm.$store.state.payPatientForm.medicalServiceClaims[0]
-        .locationOfService;
+      wrapper.vm.$store.state.payPatientForm.medicalServiceClaims[0].locationOfService;
     expect(locationOfService).toBe("defaultlocationOfService");
-    expect(wrapper.text()).toEqual(
-      expect.stringContaining("defaultlocationOfService")
-    );
+    expect(wrapper.text()).toEqual(expect.stringContaining("defaultlocationOfService"));
   });
 
   it("renders correspondenceAttached", () => {
     const correspondenceAttached =
-      wrapper.vm.$store.state.payPatientForm.medicalServiceClaims[0]
-        .correspondenceAttached;
+      wrapper.vm.$store.state.payPatientForm.medicalServiceClaims[0].correspondenceAttached;
     expect(correspondenceAttached).toBe("defaultcorrespondenceAttached");
-    expect(wrapper.text()).toEqual(
-      expect.stringContaining("defaultcorrespondenceAttached")
-    );
+    expect(wrapper.text()).toEqual(expect.stringContaining("defaultcorrespondenceAttached"));
   });
 
   it("renders submissionCode", () => {
     const submissionCode =
-      wrapper.vm.$store.state.payPatientForm.medicalServiceClaims[0]
-        .submissionCode;
+      wrapper.vm.$store.state.payPatientForm.medicalServiceClaims[0].submissionCode;
     expect(submissionCode).toBe("defaultsubmissionCode");
-    expect(wrapper.text()).toEqual(
-      expect.stringContaining("defaultsubmissionCode")
-    );
+    expect(wrapper.text()).toEqual(expect.stringContaining("defaultsubmissionCode"));
   });
 
   it("renders notes", () => {
-    const notes =
-      wrapper.vm.$store.state.payPatientForm.medicalServiceClaims[0].notes;
+    const notes = wrapper.vm.$store.state.payPatientForm.medicalServiceClaims[0].notes;
     expect(notes).toBe("defaultnotes");
     expect(wrapper.text()).toEqual(expect.stringContaining("defaultnotes"));
   });
@@ -479,38 +425,28 @@ describe("ReviewTableList patient practitionerData()", () => {
   });
 
   it("renders practitionerLastName", () => {
-    const practitionerLastName =
-      wrapper.vm.$store.state.payPatientForm.practitionerLastName;
+    const practitionerLastName = wrapper.vm.$store.state.payPatientForm.practitionerLastName;
     expect(practitionerLastName).toBe("defaultpractitionerLastName");
-    expect(wrapper.text()).toEqual(
-      expect.stringContaining("defaultpractitionerLastName")
-    );
+    expect(wrapper.text()).toEqual(expect.stringContaining("defaultpractitionerLastName"));
   });
 
   it("renders practitionerFirstName", () => {
-    const practitionerFirstName =
-      wrapper.vm.$store.state.payPatientForm.practitionerFirstName;
+    const practitionerFirstName = wrapper.vm.$store.state.payPatientForm.practitionerFirstName;
     expect(practitionerFirstName).toBe("defaultpractitionerFirstName");
-    expect(wrapper.text()).toEqual(
-      expect.stringContaining("defaultpractitionerFirstName")
-    );
+    expect(wrapper.text()).toEqual(expect.stringContaining("defaultpractitionerFirstName"));
   });
 
   it("renders practitionerPaymentNumber", () => {
     const practitionerPaymentNumber =
       wrapper.vm.$store.state.payPatientForm.practitionerPaymentNumber;
     expect(practitionerPaymentNumber).toBe("defaultpractitionerPaymentNumber");
-    expect(wrapper.text()).toEqual(
-      expect.stringContaining("defaultpractitionerPaymentNumber")
-    );
+    expect(wrapper.text()).toEqual(expect.stringContaining("defaultpractitionerPaymentNumber"));
   });
 
   it("renders practitionerPractitionerNumber", () => {
     const practitionerPractitionerNumber =
       wrapper.vm.$store.state.payPatientForm.practitionerPractitionerNumber;
-    expect(practitionerPractitionerNumber).toBe(
-      "defaultpractitionerPractitionerNumber"
-    );
+    expect(practitionerPractitionerNumber).toBe("defaultpractitionerPractitionerNumber");
     expect(wrapper.text()).toEqual(
       expect.stringContaining("defaultpractitionerPractitionerNumber")
     );
@@ -520,20 +456,14 @@ describe("ReviewTableList patient practitionerData()", () => {
     const practitionerSpecialtyCode =
       wrapper.vm.$store.state.payPatientForm.practitionerSpecialtyCode;
     expect(practitionerSpecialtyCode).toBe("defaultpractitionerSpecialtyCode");
-    expect(wrapper.text()).toEqual(
-      expect.stringContaining("defaultpractitionerSpecialtyCode")
-    );
+    expect(wrapper.text()).toEqual(expect.stringContaining("defaultpractitionerSpecialtyCode"));
   });
 
   it("renders practitionerFacilityNumber", () => {
     const practitionerFacilityNumber =
       wrapper.vm.$store.state.payPatientForm.practitionerFacilityNumber;
-    expect(practitionerFacilityNumber).toBe(
-      "defaultpractitionerFacilityNumber"
-    );
-    expect(wrapper.text()).toEqual(
-      expect.stringContaining("defaultpractitionerFacilityNumber")
-    );
+    expect(practitionerFacilityNumber).toBe("defaultpractitionerFacilityNumber");
+    expect(wrapper.text()).toEqual(expect.stringContaining("defaultpractitionerFacilityNumber"));
   });
 });
 
@@ -553,32 +483,21 @@ describe("ReviewTableList patient referredByData()", () => {
   it("renders referredByPractitionerNumber", () => {
     const referredByPractitionerNumber =
       wrapper.vm.$store.state.payPatientForm.referredByPractitionerNumber;
-    expect(referredByPractitionerNumber).toBe(
-      "defaultreferredByPractitionerNumber"
-    );
-    expect(wrapper.text()).toEqual(
-      expect.stringContaining("defaultreferredByPractitionerNumber")
-    );
+    expect(referredByPractitionerNumber).toBe("defaultreferredByPractitionerNumber");
+    expect(wrapper.text()).toEqual(expect.stringContaining("defaultreferredByPractitionerNumber"));
   });
 
   it("renders referredByLastName", () => {
-    const referredByLastName =
-      wrapper.vm.$store.state.payPatientForm.referredByLastName;
+    const referredByLastName = wrapper.vm.$store.state.payPatientForm.referredByLastName;
     expect(referredByLastName).toBe("defaultreferredByLastName");
-    expect(wrapper.text()).toEqual(
-      expect.stringContaining("defaultreferredByLastName")
-    );
+    expect(wrapper.text()).toEqual(expect.stringContaining("defaultreferredByLastName"));
   });
 
   it("renders referredByFirstNameInitial", () => {
     const referredByFirstNameInitial =
       wrapper.vm.$store.state.payPatientForm.referredByFirstNameInitial;
-    expect(referredByFirstNameInitial).toBe(
-      "defaultreferredByFirstNameInitial"
-    );
-    expect(wrapper.text()).toEqual(
-      expect.stringContaining("defaultreferredByFirstNameInitial")
-    );
+    expect(referredByFirstNameInitial).toBe("defaultreferredByFirstNameInitial");
+    expect(wrapper.text()).toEqual(expect.stringContaining("defaultreferredByFirstNameInitial"));
   });
 });
 
@@ -598,32 +517,21 @@ describe("ReviewTableList patient referredToData()", () => {
   it("renders referredToPractitionerNumber", () => {
     const referredToPractitionerNumber =
       wrapper.vm.$store.state.payPatientForm.referredToPractitionerNumber;
-    expect(referredToPractitionerNumber).toBe(
-      "defaultreferredToPractitionerNumber"
-    );
-    expect(wrapper.text()).toEqual(
-      expect.stringContaining("defaultreferredToPractitionerNumber")
-    );
+    expect(referredToPractitionerNumber).toBe("defaultreferredToPractitionerNumber");
+    expect(wrapper.text()).toEqual(expect.stringContaining("defaultreferredToPractitionerNumber"));
   });
 
   it("renders referredToLastName", () => {
-    const referredToLastName =
-      wrapper.vm.$store.state.payPatientForm.referredToLastName;
+    const referredToLastName = wrapper.vm.$store.state.payPatientForm.referredToLastName;
     expect(referredToLastName).toBe("defaultreferredToLastName");
-    expect(wrapper.text()).toEqual(
-      expect.stringContaining("defaultreferredToLastName")
-    );
+    expect(wrapper.text()).toEqual(expect.stringContaining("defaultreferredToLastName"));
   });
 
   it("renders referredToFirstNameInitial", () => {
     const referredToFirstNameInitial =
       wrapper.vm.$store.state.payPatientForm.referredToFirstNameInitial;
-    expect(referredToFirstNameInitial).toBe(
-      "defaultreferredToFirstNameInitial"
-    );
-    expect(wrapper.text()).toEqual(
-      expect.stringContaining("defaultreferredToFirstNameInitial")
-    );
+    expect(referredToFirstNameInitial).toBe("defaultreferredToFirstNameInitial");
+    expect(wrapper.text()).toEqual(expect.stringContaining("defaultreferredToFirstNameInitial"));
   });
 });
 
@@ -788,9 +696,7 @@ describe("ReviewTableList patient navigateToMainFormPage(anchorName) (part 2 CSR
 
   it("calls setPageComplete", () => {
     wrapper.vm.navigateToMainFormPage(anchorName);
-    expect(spyOnSetPageComplete).toHaveBeenCalledWith(
-      "/pay-patient-csr/main-form"
-    );
+    expect(spyOnSetPageComplete).toHaveBeenCalledWith("/pay-patient-csr/main-form");
   });
 
   it("calls scrollToElement", async () => {

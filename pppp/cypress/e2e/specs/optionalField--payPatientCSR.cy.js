@@ -1,10 +1,4 @@
 // https://docs.cypress.io/api/introduction/api.html
-import dummyData from '../../../src/store/states/pay-patient-form-dummy-data';
-
-const testYear = new Date().getFullYear() - 1;
-const backendLastName = dummyData.practitionerLastName;
-const backendFirstName = dummyData.practitionerFirstName;
-const backendPractitionerNumber = dummyData.practitionerPractitionerNumber;
 //you can replace the testUrl with https://dev.my.gov.bc.ca/pppp/pay-patient-csr if needed
 //you can also replace the "dev" with "test" to check the TEST environment
 const testUrl = "/pay-patient-csr";

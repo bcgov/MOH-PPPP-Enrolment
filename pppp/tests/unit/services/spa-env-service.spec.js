@@ -7,7 +7,7 @@ vi.mock("axios", () => ({
     post: vi.fn(() => {
       return Promise.resolve();
     }),
-  } 
+  },
 }));
 
 const mockResponse = {
@@ -15,8 +15,7 @@ const mockResponse = {
     SPA_ENV_PPPP_MAINTENANCE_FLAG: "false",
     SPA_ENV_PPPP_MAINTENANCE_START: "2019-06-30 6:50:00 PM",
     SPA_ENV_PPPP_MAINTENANCE_END: "2020-01-24 12:00:00 PM",
-    SPA_ENV_PPPP_MAINTENANCE_MESSAGE:
-      "System will be down from time A to time B.",
+    SPA_ENV_PPPP_MAINTENANCE_MESSAGE: "System will be down from time A to time B.",
   },
   status: 200,
   statusText: "OK",

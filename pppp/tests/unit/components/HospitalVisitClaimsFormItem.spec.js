@@ -2,10 +2,6 @@ import { mount } from "@vue/test-utils";
 import { cloneDeep } from "lodash";
 import * as dummyDataPractitioner from "../../../src/store/states/pay-practitioner-form-dummy-data";
 import Component from "@/components/HospitalVisitClaimsFormItem.vue";
-import apiService from "@/services/api-service";
-import logService from "@/services/log-service";
-import pageStateService from "@/services/page-state-service";
-import * as scrollHelper from "@/helpers/scroll"; 
 
 const testDateFutureYear = new Date();
 testDateFutureYear.setFullYear(testDateFutureYear.getFullYear() + 1);
@@ -21,64 +17,6 @@ testDatePast89Days.setDate(testDatePast89Days.getDate() - 89);
 
 const testDatePastYear = new Date();
 testDatePastYear.setFullYear(testDatePastYear.getFullYear() - 1);
-
-const mockBackendValidationResponse = {
-  data: {
-    applicationUuid: "9f6b649b-c483-4327-b5a9-f5aa8d3bec13",
-    requestUuid: "1dc94b87-86f9-4d92-a749-fb8b2fc1edaf",
-    returnCode: "0",
-    returnMessage: "Valid",
-    practitionerFirstName: "Y",
-    practitionerLastName: "Y",
-    practitionerNumber: "Y",
-    serviceFeeItem1: "Y",
-    serviceFeeItem2: "",
-    serviceFeeItem3: "",
-    serviceFeeItem4: "",
-    serviceLocationCode1: "",
-    serviceLocationCode2: "",
-    serviceLocationCode3: "",
-    serviceLocationCode4: "",
-    hospitalFeeItem1: "",
-    hospitalFeeItem2: "",
-    hospitalLocationCode1: "",
-    hospitalLocationCode2: "",
-  },
-  status: 200,
-  statusText: "OK",
-};
-
-const mockBackendValidationResponseFail = {
-  data: {
-    applicationUuid: "c440ae62-d591-40f8-b1fb-0f31bcb2def2",
-    requestUuid: "cb0984f6-6811-45bb-974e-e02689097557",
-    returnCode: "1",
-    returnMessage: "Not valid",
-    practitionerFirstName: "N",
-    practitionerLastName: "N",
-    practitionerNumber: "N",
-    serviceFeeItem1: "Y",
-    serviceFeeItem2: "",
-    serviceFeeItem3: "",
-    serviceFeeItem4: "",
-    serviceLocationCode1: "",
-    serviceLocationCode2: "",
-    serviceLocationCode3: "",
-    serviceLocationCode4: "",
-    hospitalFeeItem1: "",
-    hospitalFeeItem2: "",
-    hospitalLocationCode1: "",
-    hospitalLocationCode2: "",
-  },
-  status: 200,
-  statusText: "OK",
-};
-
-const mockBackendValidationResponseDefault = {
-  data: {},
-  status: 200,
-  statusText: "OK",
-};
 
 const mockRouter = {
   $router: {
@@ -102,9 +40,7 @@ const mockRouterCSR = {
   },
 };
 
-const passingClaim = cloneDeep(
-  dummyDataPractitioner.default.hospitalVisitClaims[0]
-);
+const passingClaim = cloneDeep(dummyDataPractitioner.default.hospitalVisitClaims[0]);
 
 const passingProps = {
   ...passingClaim,
@@ -118,28 +54,8 @@ vi.mock("axios", () => ({
     post: vi.fn(() => {
       return Promise.resolve();
     }),
-  } 
+  },
 }));
-
-const spyOnAPIService = vi
-  .spyOn(apiService, "validateApplication")
-  .mockImplementation(() => Promise.resolve(mockBackendValidationResponse));
-
-const spyOnSetPageComplete = vi
-  .spyOn(pageStateService, "setPageComplete")
-  .mockImplementation(() => Promise.resolve("set"));
-const spyOnSetPageIncomplete = vi
-  .spyOn(pageStateService, "setPageIncomplete")
-  .mockImplementation(() => Promise.resolve("set"));
-const spyOnVisitPage = vi
-  .spyOn(pageStateService, "visitPage")
-  .mockImplementation(() => Promise.resolve("visited"));
-
-const spyOnLogNavigation = vi
-  .spyOn(logService, "logNavigation")
-  .mockImplementation(() => Promise.resolve("logged"));
-
-
 
 describe("HospitalVisitClaimsFormItem.vue", () => {
   let wrapper;
@@ -161,14 +77,9 @@ describe("HospitalVisitClaimsFormItem.vue", () => {
 });
 
 describe("HospitalVisitClaimsFormItem.vue handleInputHospitalVisitFeeItem()", () => {
-  // eslint-disable-next-line
-  let state;
   let wrapper;
 
   beforeEach(() => {
-    state = {
-      applicationUuid: null,
-    };
     wrapper = mount(Component, {
       props: passingProps,
       global: {
@@ -190,14 +101,11 @@ describe("HospitalVisitClaimsFormItem.vue handleInputHospitalVisitFeeItem()", ()
     wrapper.vm.handleInputHospitalVisitFeeItem(0);
     await wrapper.vm.$nextTick();
     expect(wrapper.emitted()).toHaveProperty("update:feeItem");
-    expect(wrapper.emitted()).toHaveProperty(
-      "update:hospitalVisitClaimsFeeItemValidationError"
-    );
+    expect(wrapper.emitted()).toHaveProperty("update:hospitalVisitClaimsFeeItemValidationError");
   });
 });
 
 describe("HospitalVisitClaimsFormItem.vue isHospitalVisitSubmissionCodeRequired()", () => {
-  // eslint-disable-next-line
   let wrapper;
 
   beforeEach(() => {
@@ -275,7 +183,7 @@ describe("HospitalVisitClaimsFormItem.vue isHospitalVisitSubmissionCodeRequired(
 });
 
 describe("HospitalVisitClaimsFormItem.vue validations (public)", () => {
-  let wrapper; 
+  let wrapper;
 
   beforeEach(() => {
     wrapper = mount(Component, {
@@ -286,7 +194,7 @@ describe("HospitalVisitClaimsFormItem.vue validations (public)", () => {
     });
   });
 
-  afterEach(() => {    
+  afterEach(() => {
     vi.clearAllMocks();
   });
 
@@ -597,15 +505,11 @@ describe("HospitalVisitClaimsFormItem.vue validations (public)", () => {
   it("(submissionCode, hospitalVisitClaims) flags invalid if not present and more than 90 days ago", async () => {
     const testSubmissionCode = null;
     const testDayTo = null;
-    const testDayFrom = testDatePast91Days
-      .getDate()
-      .toString();
+    const testDayFrom = testDatePast91Days.getDate().toString();
     // javascript date has January start at 0, but the select field has January start from 1
     // this code adjusts for that fact
     const testMonth = (testDatePast91Days.getMonth() + 1).toString();
-    const testYear = testDatePast91Days
-      .getFullYear()
-      .toString();
+    const testYear = testDatePast91Days.getFullYear().toString();
     expect(wrapper.vm.v$.submissionCode.$invalid).toBe(false);
     await wrapper.setProps({ submissionCode: testSubmissionCode });
     await wrapper.setProps({ dayTo: testDayTo });
@@ -623,15 +527,11 @@ describe("HospitalVisitClaimsFormItem.vue validations (public)", () => {
   it("(submissionCode, hospitalVisitClaims) flags valid if not present and less than 90 days ago", async () => {
     const testSubmissionCode = null;
     const testDayTo = null;
-    const testDayFrom = testDatePast89Days
-      .getDate()
-      .toString();
+    const testDayFrom = testDatePast89Days.getDate().toString();
     // javascript date has January start at 0, but the select field has January start from 1
     // this code adjusts for that fact
     const testMonth = (testDatePast89Days.getMonth() + 1).toString();
-    const testYear = testDatePast89Days
-      .getFullYear()
-      .toString();
+    const testYear = testDatePast89Days.getFullYear().toString();
     expect(wrapper.vm.v$.submissionCode.$invalid).toBe(false);
     await wrapper.setProps({ submissionCode: testSubmissionCode });
     await wrapper.setProps({ dayTo: testDayTo });
@@ -657,13 +557,11 @@ describe("HospitalVisitClaimsFormItem.vue validations (public)", () => {
 
   it("(each, hospitalVisitDateValidator, hospitalVisitClaims) flags invalid if date is invalid", async () => {
     const testDayTo = null;
-    const testDayFrom = "32"
+    const testDayFrom = "32";
     // javascript date has January start at 0, but the select field has January start from 1
     // this code adjusts for that fact
     const testMonth = (testDatePast91Days.getMonth() + 1).toString();
-    const testYear = testDatePast91Days
-      .getFullYear()
-      .toString();
+    const testYear = testDatePast91Days.getFullYear().toString();
     expect(wrapper.vm.v$.hospitalVisitDateValidator.$invalid).toBe(false);
     await wrapper.setProps({ dayTo: testDayTo });
     await wrapper.setProps({ dayFrom: testDayFrom });
@@ -678,15 +576,11 @@ describe("HospitalVisitClaimsFormItem.vue validations (public)", () => {
 
   it("(each, hospitalVisitDatePastValidator, hospitalVisitClaims) flags valid if date is in past 18 months", async () => {
     const testDayTo = null;
-    const testDayFrom = testDatePast91Days
-      .getDate()
-      .toString();
+    const testDayFrom = testDatePast91Days.getDate().toString();
     // javascript date has January start at 0, but the select field has January start from 1
     // this code adjusts for that fact
     const testMonth = (testDatePast91Days.getMonth() + 1).toString();
-    const testYear = testDatePast91Days
-      .getFullYear()
-      .toString();
+    const testYear = testDatePast91Days.getFullYear().toString();
     expect(wrapper.vm.v$.hospitalVisitDatePastValidator.$invalid).toBe(false);
     await wrapper.setProps({ dayTo: testDayTo });
     await wrapper.setProps({ dayFrom: testDayFrom });
@@ -701,9 +595,7 @@ describe("HospitalVisitClaimsFormItem.vue validations (public)", () => {
 
   it("(each, hospitalVisitDatePastValidator, hospitalVisitClaims) flags invalid if date more than 18 months old", async () => {
     const testDayTo = null;
-    const testDayFrom = testDatePast91Days
-      .getDate()
-      .toString();
+    const testDayFrom = testDatePast91Days.getDate().toString();
     // javascript date has January start at 0, but the select field has January start from 1
     // this code adjusts for that fact
     const testMonth = (testDatePast91Days.getMonth() + 1).toString();
@@ -722,9 +614,7 @@ describe("HospitalVisitClaimsFormItem.vue validations (public)", () => {
 
   it("(each, hospitalVisitDateFutureValidator, hospitalVisitClaims) flags invalid if date is in future", async () => {
     const testDayTo = null;
-    const testDayFrom = testDatePast91Days
-      .getDate()
-      .toString();
+    const testDayFrom = testDatePast91Days.getDate().toString();
     // javascript date has January start at 0, but the select field has January start from 1
     // this code adjusts for that fact
     const testMonth = (testDatePast91Days.getMonth() + 1).toString();
@@ -747,8 +637,8 @@ describe("HospitalVisitClaimsFormItem.vue validations (public)", () => {
     //since they both pull from the same month/year
     //so this test will have to suffice
     const testDayTo = "19";
-    const testDayFrom = "18"
-    const testMonth = "1"
+    const testDayFrom = "18";
+    const testMonth = "1";
     const testYear = testDateFutureYear.toString();
     expect(wrapper.vm.v$.hospitalVisitDateFutureValidator.$invalid).toBe(false);
     await wrapper.setProps({ dayTo: testDayTo });
@@ -766,9 +656,7 @@ describe("HospitalVisitClaimsFormItem.vue validations (public)", () => {
     const testDayTo = null;
     const testDayFrom = "18";
     const testMonth = "1";
-    const testYear = testDatePastYear
-    .getFullYear()
-    .toString();
+    const testYear = testDatePastYear.getFullYear().toString();
     expect(wrapper.vm.v$.hospitalVisitDateRangeValidator.$invalid).toBe(false);
     await wrapper.setProps({ dayTo: testDayTo });
     await wrapper.setProps({ dayFrom: testDayFrom });
@@ -785,9 +673,7 @@ describe("HospitalVisitClaimsFormItem.vue validations (public)", () => {
     const testDayTo = "19";
     const testDayFrom = "18";
     const testMonth = "1";
-    const testYear = testDatePastYear
-    .getFullYear()
-    .toString();
+    const testYear = testDatePastYear.getFullYear().toString();
     expect(wrapper.vm.v$.hospitalVisitDateRangeValidator.$invalid).toBe(false);
     await wrapper.setProps({ dayTo: testDayTo });
     await wrapper.setProps({ dayFrom: testDayFrom });
@@ -804,9 +690,7 @@ describe("HospitalVisitClaimsFormItem.vue validations (public)", () => {
     const testDayTo = "17";
     const testDayFrom = "18";
     const testMonth = "1";
-    const testYear = testDatePastYear
-    .getFullYear()
-    .toString();
+    const testYear = testDatePastYear.getFullYear().toString();
     expect(wrapper.vm.v$.hospitalVisitDateRangeValidator.$invalid).toBe(false);
     await wrapper.setProps({ dayTo: testDayTo });
     await wrapper.setProps({ dayFrom: testDayFrom });

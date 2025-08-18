@@ -6,16 +6,9 @@ import logService from "@/services/log-service";
 import pageStateService from "@/services/page-state-service";
 import * as dummyDataValid from "../../../../src/store/states/pay-practitioner-form-dummy-data";
 import { getConvertedPath } from "@/helpers/url";
-import {
-  payPractitionerRoutes,
-  payPractitionerRouteStepOrder,
-} from "@/router/routes";
+import { payPractitionerRoutes, payPractitionerRouteStepOrder } from "@/router/routes";
 import * as scrollHelper from "@/helpers/scroll";
-import {
-  defaultStoreTemplate,
-  mockRouterCSR,
-  mockRouter,
-} from "../../test-helper.js"; 
+import { defaultStoreTemplate, mockRouterCSR, mockRouter } from "../../test-helper.js";
 
 const testDate = new Date();
 //testDate.getMonth() returns 0 for January
@@ -42,7 +35,7 @@ testDatePast91Days.setDate(testDatePast91Days.getDate() - 91);
 
 const next = vi.fn();
 
-const passingData = cloneDeep(dummyDataValid.default)
+const passingData = cloneDeep(dummyDataValid.default);
 
 //required to prevent ECONNREFUSED errors
 vi.mock("axios", () => ({
@@ -51,10 +44,12 @@ vi.mock("axios", () => ({
     post: vi.fn(() => {
       return Promise.resolve();
     }),
-  } 
+  },
 }));
 
-const spyOnScrollTo = vi.spyOn(scrollHelper, "scrollTo").mockImplementation(() => Promise.resolve("scrolled"));;
+const spyOnScrollTo = vi
+  .spyOn(scrollHelper, "scrollTo")
+  .mockImplementation(() => Promise.resolve("scrolled"));
 
 const spyOnGetTopScrollPosition = vi
   .spyOn(scrollHelper, "getTopScrollPosition")
@@ -79,7 +74,6 @@ const practitionerState = cloneDeep(dummyDataValid.default);
 storeTemplate.modules.payPractitionerForm.state = cloneDeep(practitionerState);
 
 describe("MainFormPage.vue pay practitioner", () => {
-  // eslint-disable-next-line
   let store;
   let wrapper;
 
@@ -101,7 +95,6 @@ describe("MainFormPage.vue pay practitioner", () => {
 });
 
 describe("MainFormPage.vue pay practitioner created()", () => {
-  // eslint-disable-next-line
   let store;
   let wrapper;
   vi.useFakeTimers();
@@ -128,22 +121,17 @@ describe("MainFormPage.vue pay practitioner created()", () => {
     expect(wrapper.vm.planReferenceNumber).toEqual(
       storeTemplate.modules.payPractitionerForm.state.planReferenceNumber
     );
-    expect(wrapper.vm.phn).toEqual(
-      storeTemplate.modules.payPractitionerForm.state.phn
-    );
+    expect(wrapper.vm.phn).toEqual(storeTemplate.modules.payPractitionerForm.state.phn);
     expect(wrapper.vm.vehicleAccidentClaimNumber).toEqual(
       storeTemplate.modules.payPractitionerForm.state.vehicleAccidentClaimNumber
     );
     expect(wrapper.vm.practitionerPractitionerNumber).toEqual(
-      storeTemplate.modules.payPractitionerForm.state
-        .practitionerPractitionerNumber
+      storeTemplate.modules.payPractitionerForm.state.practitionerPractitionerNumber
     );
     expect(wrapper.vm.referredToLastName).toEqual(
       storeTemplate.modules.payPractitionerForm.state.referredToLastName
     );
-    expect(wrapper.vm.medicalServiceClaimsFeeItemValidationError).toHaveLength(
-      4
-    );
+    expect(wrapper.vm.medicalServiceClaimsFeeItemValidationError).toHaveLength(4);
   });
 
   it("calls logNavigation", () => {
@@ -158,7 +146,6 @@ describe("MainFormPage.vue pay practitioner created()", () => {
 });
 
 describe("MainFormPage.vue handleBlurField()", () => {
-  // eslint-disable-next-line
   let store;
   let wrapper;
 
@@ -196,7 +183,6 @@ describe("MainFormPage.vue handleBlurField()", () => {
 });
 
 describe("MainFormPage.vue handleInputPractitioner()", () => {
-  // eslint-disable-next-line
   let store;
   let wrapper;
 
@@ -226,7 +212,6 @@ describe("MainFormPage.vue handleInputPractitioner()", () => {
 });
 
 describe("MainFormPage.vue handleProcessBirthDate()", () => {
-  // eslint-disable-next-line
   let store;
   let wrapper;
 
@@ -256,7 +241,6 @@ describe("MainFormPage.vue handleProcessBirthDate()", () => {
 });
 
 describe("MainFormPage.vue validationModal handlers", () => {
-  // eslint-disable-next-line
   let store;
   let wrapper;
   let spyOnNavigateToNextPage;
@@ -293,7 +277,6 @@ describe("MainFormPage.vue validationModal handlers", () => {
 });
 
 describe("MainFormPage.vue navigateToNextPage()", () => {
-  // eslint-disable-next-line
   let store;
   let wrapper;
 
@@ -340,7 +323,6 @@ describe("MainFormPage.vue navigateToNextPage()", () => {
 });
 
 describe("MainFormPage.vue saveData()", () => {
-  // eslint-disable-next-line
   let store;
   let wrapper;
   let spyOnDispatch;
@@ -371,19 +353,14 @@ describe("MainFormPage.vue saveData()", () => {
 
   it("saves example value to store", async () => {
     const testValue = "SaveDataTestValue";
-    expect(
-      wrapper.vm.$store.state.payPractitionerForm.referredByLastName
-    ).not.toEqual(testValue);
+    expect(wrapper.vm.$store.state.payPractitionerForm.referredByLastName).not.toEqual(testValue);
     await wrapper.setData({ referredByLastName: testValue });
     wrapper.vm.saveData();
-    expect(
-      wrapper.vm.$store.state.payPractitionerForm.referredByLastName
-    ).toEqual(testValue);
+    expect(wrapper.vm.$store.state.payPractitionerForm.referredByLastName).toEqual(testValue);
   });
 });
 
 describe("MainFormPage.vue getMedicalServiceClaimTitle()", () => {
-  // eslint-disable-next-line
   let store;
   let wrapper;
 
@@ -487,7 +464,6 @@ describe("MainFormPage.vue getMedicalServiceClaimTitle()", () => {
 });
 
 describe("MainFormPage.vue getHospitalVisitClaimTitle()", () => {
-  // eslint-disable-next-line
   let store;
   let wrapper;
 
@@ -576,7 +552,6 @@ describe("MainFormPage.vue getHospitalVisitClaimTitle()", () => {
 
 //-----computed value tests-----
 describe("MainFormPage.vue isReferredByRequired()", () => {
-  // eslint-disable-next-line
   let store;
   let wrapper;
 
@@ -627,7 +602,6 @@ describe("MainFormPage.vue isReferredByRequired()", () => {
 });
 
 describe("MainFormPage.vue isReferredToRequired()", () => {
-  // eslint-disable-next-line
   let store;
   let wrapper;
 
@@ -735,7 +709,6 @@ describe("MainFormPage.vue isReferredToRequired()", () => {
 });
 
 describe("MainFormPage.vue isContainingNoChargeFeeItem()", () => {
-  // eslint-disable-next-line
   let store;
   let wrapper;
 
@@ -869,47 +842,34 @@ describe("MainFormPage.vue isContainingNoChargeFeeItem()", () => {
 
   it("returns true if one of the (medical) feeItems is 03333", () => {
     wrapper.vm.medicalServiceClaims[0].feeItem = "03333";
-    expect(Page.methods.isContainingNoChargeFeeItem.call(wrapper.vm)).toBe(
-      true
-    );
+    expect(Page.methods.isContainingNoChargeFeeItem.call(wrapper.vm)).toBe(true);
   });
 
   it("returns true if one of the (medical) feeItems is 03333 (2)", () => {
     wrapper.vm.medicalServiceClaims[1].feeItem = "03333";
-    expect(Page.methods.isContainingNoChargeFeeItem.call(wrapper.vm)).toBe(
-      true
-    );
+    expect(Page.methods.isContainingNoChargeFeeItem.call(wrapper.vm)).toBe(true);
   });
 
   it("returns false if none of the (medical) feeItems are 03333", () => {
-    expect(Page.methods.isContainingNoChargeFeeItem.call(wrapper.vm)).toBe(
-      false
-    );
+    expect(Page.methods.isContainingNoChargeFeeItem.call(wrapper.vm)).toBe(false);
   });
 
   it("returns true if one of the (hospital) feeItems is 03333", () => {
     wrapper.vm.hospitalVisitClaims[0].feeItem = "03333";
-    expect(Page.methods.isContainingNoChargeFeeItem.call(wrapper.vm)).toBe(
-      true
-    );
+    expect(Page.methods.isContainingNoChargeFeeItem.call(wrapper.vm)).toBe(true);
   });
 
   it("returns true if one of the (hospital) feeItems is 03333 (2)", () => {
     wrapper.vm.hospitalVisitClaims[1].feeItem = "03333";
-    expect(Page.methods.isContainingNoChargeFeeItem.call(wrapper.vm)).toBe(
-      true
-    );
+    expect(Page.methods.isContainingNoChargeFeeItem.call(wrapper.vm)).toBe(true);
   });
 
   it("returns false if none of the (hospital) feeItems are 03333", () => {
-    expect(Page.methods.isContainingNoChargeFeeItem.call(wrapper.vm)).toBe(
-      false
-    );
+    expect(Page.methods.isContainingNoChargeFeeItem.call(wrapper.vm)).toBe(false);
   });
 });
 
 describe("MainFormPage.vue isCSR()", () => {
-  // eslint-disable-next-line
   let store;
   let wrapper;
 
@@ -1012,9 +972,7 @@ describe("MainFormPage.vue beforeRouteLeave(to, from, next)", () => {
     vi.useFakeTimers();
     await pageStateService.importPageRoutes(payPractitionerRouteStepOrder);
     await wrapper.vm.$nextTick;
-    await pageStateService.setPageComplete(
-      payPractitionerRouteStepOrder[0].path
-    );
+    await pageStateService.setPageComplete(payPractitionerRouteStepOrder[0].path);
     await wrapper.vm.$nextTick;
     Page.beforeRouteLeave.call(
       wrapper.vm,
