@@ -23,7 +23,7 @@
     "@fortawesome/vue-fontawesome": "^3.1.1",
     "@vuelidate/core": "^2.0.1",
     "@vuelidate/validators": "^2.0.0-alpha.29",
-    "axios": "^0.21.4",
+    "axios": "^1.11.0",
     "common-lib-vue": "^3.1.1-alpha.6",
     "core-js": "^3.38.1",
     "date-fns": "^2.16.1",
