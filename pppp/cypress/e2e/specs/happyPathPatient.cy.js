@@ -1,23 +1,13 @@
 // https://docs.cypress.io/api/introduction/api.html
-import dummyData from "../../../src/store/states/pay-patient-form-dummy-data";
+import envData from "../../fixtures/env-data.js";
 
 const testYear = new Date().getFullYear() - 1;
-const backendLastName = dummyData.practitionerLastName;
-const backendFirstName = dummyData.practitionerFirstName;
-const backendPractitionerNumber = dummyData.practitionerPractitionerNumber;
-//you can replace the testUrl with https://dev.my.gov.bc.ca/pppp/pay-patient if needed
-//you can also replace the "dev" with "test" to check the TEST environment
+const backendLastName = envData.backendLastName;
+const backendFirstName = envData.backendFirstName;
+const backendPractitionerNumber = envData.backendPractitionerNumber;
 const testUrl = "/pay-patient";
 
-//dev environment data
-// const backendLastName = "GOTTNER";
-// const backendFirstName = "MICHAEL";
-// const backendPractitionerNumber = "00001";
 
-//test environment data
-// const backendLastName = "OPXUWPW";
-// const backendFirstName = "UJGIJPQ";
-// const backendPractitionerNumber = "B1419";
 
 describe("Pay Patient-Public", () => {
   it("follows the happy path", () => {
@@ -96,7 +86,6 @@ describe("Pay Patient-Public", () => {
     cy.get("[data-cy=practitionerFirstName]").type(backendFirstName);
     cy.get("[data-cy=paymentNumber]").type(backendPractitionerNumber);
     cy.get("[data-cy=practitionerNumber]").type(backendPractitionerNumber);
-
     cy.get("[data-cy=continueBar]").click();
 
     //Review page

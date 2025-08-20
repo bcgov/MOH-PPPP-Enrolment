@@ -1,6 +1,4 @@
 // https://docs.cypress.io/api/introduction/api.html
-//you can replace the testUrl with https://dev.my.gov.bc.ca/pppp/pay-patient-csr if needed
-//you can also replace the "dev" with "test" to check the TEST environment
 const testUrl = "/pay-patient-csr";
 
 describe("Pay Patient-CSR", () => {
