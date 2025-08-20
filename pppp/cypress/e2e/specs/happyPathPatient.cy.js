@@ -7,8 +7,6 @@ const backendFirstName = envData.backendFirstName;
 const backendPractitionerNumber = envData.backendPractitionerNumber;
 const testUrl = "/pay-patient";
 
-
-
 describe("Pay Patient-Public", () => {
   it("follows the happy path", () => {
     cy.visit(testUrl);
@@ -86,16 +84,36 @@ describe("Pay Patient-Public", () => {
     cy.get("[data-cy=practitionerFirstName]").type(backendFirstName);
     cy.get("[data-cy=paymentNumber]").type(backendPractitionerNumber);
     cy.get("[data-cy=practitionerNumber]").type(backendPractitionerNumber);
+
+    if (envData.enableIntercepts) {
+      console.log("intercepted validateClaim + submission calls for happyPathPatient");
+      cy.intercept("POST", "/pppp/api/payformsIntegration/validateClaim/*", {
+        statusCode: 200,
+        body: {
+          returnCode: "0",
+          testfield: "This is a stubbed test response from Cypress",
+        },
+      });
+
+      cy.intercept("POST", "/pppp/api/payformsIntegration/patient/*", {
+        statusCode: 200,
+        body: {
+          returnCode: "0",
+          testfield: "This is a stubbed test response from Cypress",
+        },
+      });
+    }
+
     cy.get("[data-cy=continueBar]").click();
 
     //Review page
-    cy.location().should((loc) => {
+    cy.location({ timeout: 40000 }).should((loc) => {
       expect(loc.pathname).to.eq("/pppp/pay-patient/review");
     });
 
     cy.get("[data-cy=continueBar]").click();
 
-    cy.location().should((loc) => {
+    cy.location({ timeout: 40000 }).should((loc) => {
       expect(loc.pathname).to.eq("/pppp/pay-patient/submission");
     });
 

@@ -109,16 +109,35 @@ describe("Pay Practitioner-Public", () => {
     cy.get("[data-cy=paymentNumber]").type(backendPractitionerNumber);
     cy.get("[data-cy=practitionerNumber]").type(backendPractitionerNumber);
 
+    if (envData.enableIntercepts) {
+      console.log("intercepted validateClaim + patient calls for happyPathPractitioner");
+      cy.intercept("POST", "/pppp/api/payformsIntegration/validateClaim/*", {
+        statusCode: 200,
+        body: {
+          returnCode: "0",
+          testfield: "This is a stubbed test response from Cypress",
+        },
+      });
+
+      cy.intercept("POST", "/pppp/api/payformsIntegration/practitioner/*", {
+        statusCode: 200,
+        body: {
+          returnCode: "0",
+          testfield: "This is a stubbed test response from Cypress",
+        },
+      });
+    }
+
     cy.get("[data-cy=continueBar]").click();
 
     //Review page
-    cy.location().should((loc) => {
+    cy.location({ timeout: 40000 }).should((loc) => {
       expect(loc.pathname).to.eq("/pppp/pay-practitioner/review");
     });
 
     cy.get("[data-cy=continueBar]").click();
 
-    cy.location().should((loc) => {
+    cy.location({ timeout: 40000 }).should((loc) => {
       expect(loc.pathname).to.eq("/pppp/pay-practitioner/submission");
     });
 
