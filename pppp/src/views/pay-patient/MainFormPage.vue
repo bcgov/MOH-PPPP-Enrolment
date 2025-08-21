@@ -1336,7 +1336,6 @@ export default {
         nameValidator: optionalValidator(nameValidator),
       },
       referredToPractitionerNumber: {
-        // minLength: optionalValidator(minLength(5)),
         minLength: !this.referredToPractitionerNumber ? alwaysValidValidator : minLength(5),
       },
     };

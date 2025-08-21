@@ -149,8 +149,6 @@ describe("HospitalVisitClaimsFormItem.vue isHospitalVisitSubmissionCodeRequired(
     await wrapper.setProps({
       year: testDatePast91Days.getFullYear().toString(),
     });
-    // javascript date has January start at 0, but the select field has January start from 1
-    // this code adjusts for that fact
     const correctedMonth = testDatePast91Days.getMonth() + 1;
     await wrapper.setProps({ month: correctedMonth.toString() });
     await wrapper.setProps({
@@ -170,8 +168,6 @@ describe("HospitalVisitClaimsFormItem.vue isHospitalVisitSubmissionCodeRequired(
     await wrapper.setProps({
       year: testDatePast91Days.getFullYear().toString(),
     });
-    // javascript date has January start at 0, but the select field has January start from 1
-    // this code adjusts for that fact
     const correctedMonth = testDatePast91Days.getMonth() + 1;
     await wrapper.setProps({ month: correctedMonth.toString() });
     await wrapper.setProps({
@@ -506,8 +502,6 @@ describe("HospitalVisitClaimsFormItem.vue validations (public)", () => {
     const testSubmissionCode = null;
     const testDayTo = null;
     const testDayFrom = testDatePast91Days.getDate().toString();
-    // javascript date has January start at 0, but the select field has January start from 1
-    // this code adjusts for that fact
     const testMonth = (testDatePast91Days.getMonth() + 1).toString();
     const testYear = testDatePast91Days.getFullYear().toString();
     expect(wrapper.vm.v$.submissionCode.$invalid).toBe(false);
@@ -528,8 +522,6 @@ describe("HospitalVisitClaimsFormItem.vue validations (public)", () => {
     const testSubmissionCode = null;
     const testDayTo = null;
     const testDayFrom = testDatePast89Days.getDate().toString();
-    // javascript date has January start at 0, but the select field has January start from 1
-    // this code adjusts for that fact
     const testMonth = (testDatePast89Days.getMonth() + 1).toString();
     const testYear = testDatePast89Days.getFullYear().toString();
     expect(wrapper.vm.v$.submissionCode.$invalid).toBe(false);
@@ -558,8 +550,6 @@ describe("HospitalVisitClaimsFormItem.vue validations (public)", () => {
   it("(each, hospitalVisitDateValidator, hospitalVisitClaims) flags invalid if date is invalid", async () => {
     const testDayTo = null;
     const testDayFrom = "32";
-    // javascript date has January start at 0, but the select field has January start from 1
-    // this code adjusts for that fact
     const testMonth = (testDatePast91Days.getMonth() + 1).toString();
     const testYear = testDatePast91Days.getFullYear().toString();
     expect(wrapper.vm.v$.hospitalVisitDateValidator.$invalid).toBe(false);
@@ -577,8 +567,6 @@ describe("HospitalVisitClaimsFormItem.vue validations (public)", () => {
   it("(each, hospitalVisitDatePastValidator, hospitalVisitClaims) flags valid if date is in past 18 months", async () => {
     const testDayTo = null;
     const testDayFrom = testDatePast91Days.getDate().toString();
-    // javascript date has January start at 0, but the select field has January start from 1
-    // this code adjusts for that fact
     const testMonth = (testDatePast91Days.getMonth() + 1).toString();
     const testYear = testDatePast91Days.getFullYear().toString();
     expect(wrapper.vm.v$.hospitalVisitDatePastValidator.$invalid).toBe(false);
@@ -596,8 +584,6 @@ describe("HospitalVisitClaimsFormItem.vue validations (public)", () => {
   it("(each, hospitalVisitDatePastValidator, hospitalVisitClaims) flags invalid if date more than 18 months old", async () => {
     const testDayTo = null;
     const testDayFrom = testDatePast91Days.getDate().toString();
-    // javascript date has January start at 0, but the select field has January start from 1
-    // this code adjusts for that fact
     const testMonth = (testDatePast91Days.getMonth() + 1).toString();
     const testYear = "2001";
     expect(wrapper.vm.v$.hospitalVisitDatePastValidator.$invalid).toBe(false);
@@ -615,8 +601,6 @@ describe("HospitalVisitClaimsFormItem.vue validations (public)", () => {
   it("(each, hospitalVisitDateFutureValidator, hospitalVisitClaims) flags invalid if date is in future", async () => {
     const testDayTo = null;
     const testDayFrom = testDatePast91Days.getDate().toString();
-    // javascript date has January start at 0, but the select field has January start from 1
-    // this code adjusts for that fact
     const testMonth = (testDatePast91Days.getMonth() + 1).toString();
     const testYear = testDateFutureYear.toString();
     expect(wrapper.vm.v$.hospitalVisitDateFutureValidator.$invalid).toBe(false);

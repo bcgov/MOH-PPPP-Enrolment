@@ -231,7 +231,7 @@ describe("ReviewTableList patient paymentMailAddressData()", () => {
   it("renders addressOwner", () => {
     const addressOwner = wrapper.vm.$store.state.payPatientForm.addressOwner;
     expect(addressOwner).toBe("Default address owner");
-    //it capitalizes the value, so I capitalized it below
+    //note the capitalization here
     expect(wrapper.text()).toEqual(expect.stringContaining("Default address owner"));
   });
 

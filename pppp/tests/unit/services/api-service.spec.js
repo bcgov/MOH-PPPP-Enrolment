@@ -346,6 +346,8 @@ describe("APIService filterSpecialChar()", () => {
   });
 
   it("filters out slashes and quotes", () => {
+    //eslint thinks the escape character is unnecessary
+    //it's not. it's important for the functionality of the test
     // eslint-disable-next-line
     const testText = `test text. should have: // should not have:\ ""`;
     const result = APIService.filterSpecialChar(testText);

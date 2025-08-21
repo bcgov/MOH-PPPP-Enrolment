@@ -25,7 +25,7 @@ describe("Helper scroll.js scrollTo()", () => {
 
 //unfortunately, due to the nested function calls,
 //further testing is not possible without refactoring the source code
-//more details available in this SO link:
+//more details available here:
 //https://stackoverflow.com/questions/51269431/jest-mock-inner-function/55193363#55193363
 //https://vitest.dev/guide/mocking.html#mocking-pitfalls
 //I've left the half-finished tests skipped below in case somebody gets them working later

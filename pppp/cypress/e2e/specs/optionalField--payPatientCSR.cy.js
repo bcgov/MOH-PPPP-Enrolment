@@ -1,4 +1,3 @@
-// https://docs.cypress.io/api/introduction/api.html
 import envData from "../../fixtures/env-data.js";
 const testUrl = "/pay-patient-csr";
 

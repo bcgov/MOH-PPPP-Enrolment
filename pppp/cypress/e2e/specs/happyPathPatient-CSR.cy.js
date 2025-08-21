@@ -1,4 +1,3 @@
-// https://docs.cypress.io/api/introduction/api.html
 import envData from "../../fixtures/env-data.js";
 
 const testYear = new Date().getFullYear() - 1;
