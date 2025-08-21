@@ -136,6 +136,7 @@ export default {
 <style scoped>
 main {
   padding: 0;
+  overflow: initial; /*needed for continue button to stick to the bottom of the page */
 }
 @media only screen and (max-width: 575px) {
   .container.stepper {
