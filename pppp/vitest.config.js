@@ -6,6 +6,7 @@ export default mergeConfig(
   viteConfig,
   defineConfig({
     test: {
+      pool: "threads",
       globals: true,
       environment: "jsdom",
       exclude: [...configDefaults.exclude, "e2e/**"],
