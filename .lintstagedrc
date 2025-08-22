@@ -1,0 +1,4 @@
+{
+  "pppp/**.{js,ts,jsx,tsx,vue,cjs}": ["sh -c 'cd pppp && npm run pre-commit:lint'"],
+  "pppp/**": ["sh -c 'cd pppp && npm run pre-commit:prettier'"]
+}
