@@ -3,7 +3,6 @@ import { defineConfig } from "cypress";
 
 export default defineConfig({
   e2e: {
-    baseUrl: "http://172.25.129.209:5173/ahdc/",
     experimentalRunAllSpecs: true,
     testIsolation: true, //to prevent Cypress errors
     // setupNodeEvents(on) {
