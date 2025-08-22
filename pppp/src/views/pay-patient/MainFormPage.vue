@@ -979,7 +979,7 @@ import {
   pastDateValidator,
   phnValidator,
   positiveNumberValidator,
-  ContinueBar
+  ContinueBar,
 } from "common-lib-vue";
 import { startOfToday, isSameDay } from "date-fns";
 
