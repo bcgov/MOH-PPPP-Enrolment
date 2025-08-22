@@ -101,7 +101,6 @@ export default {
     applicationUuid: {
       type: String,
       default: "",
-      required: true,
     },
   },
   emits: ["captchaVerified", "close"],
