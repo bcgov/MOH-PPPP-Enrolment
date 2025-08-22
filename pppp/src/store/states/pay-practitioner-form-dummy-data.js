@@ -57,10 +57,10 @@ export default {
     },
   ],
 
-  practitionerLastName: "OPXUWPW",
-  practitionerFirstName: "UJGIJPQ",
+  practitionerLastName: "ABABML",
+  practitionerFirstName: "RVWUJY",
   practitionerPaymentNumber: "A1234",
-  practitionerPractitionerNumber: "B1419",
+  practitionerPractitionerNumber: "J5868",
   practitionerFacilityNumber: "12345",
   practitionerSpecialtyCode: "99",
   coveragePreAuthNumber: "2222",

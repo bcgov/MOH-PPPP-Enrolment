@@ -45,13 +45,9 @@ export default {
     },
   ],
   //Dev environment:
-  practitionerLastName: "OPXUWPW",
-  practitionerFirstName: "UJGIJPQ",
-  practitionerPractitionerNumber: "B1419",
-  //Test environment:
-  // practitionerLastName: 'Green',
-  // practitionerFirstName: 'Rachel',
-  // practitionerPractitionerNumber: '22274',
+  practitionerLastName: "ABABML",
+  practitionerFirstName: "RVWUJY",
+  practitionerPractitionerNumber: "J5868",
 
   practitionerPaymentNumber: "00001",
   practitionerFacilityNumber: "12345",
