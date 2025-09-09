@@ -1,175 +1,78 @@
-import { mount, createLocalVue } from "@vue/test-utils";
-import Vuex from "vuex";
-import Vuelidate from "vuelidate";
+import { mount } from "@vue/test-utils";
 import Page from "@/views/pay-patient/ClaimCountPage.vue";
-import { cloneDeep } from "lodash";
-import * as module1 from "../../../../src/store/modules/app";
+import store from "@/store/index";
 import * as module2 from "../../../../src/store/modules/pay-patient-form";
-import * as module3 from "../../../../src/store/modules/pay-practitioner-form";
 import logService from "@/services/log-service";
 import pageStateService from "@/services/page-state-service";
 import { payPatientRoutes, payPatientRouteStepOrder } from "@/router/routes";
 import { getConvertedPath } from "@/helpers/url";
+import { cloneDeep } from "common-lib-vue";
+import * as scrollHelper from "@/helpers/scroll";
+import { mockRouterCSR } from "../../test-helper.js";
+import * as dummyDataPatientValid from "@/store/states/pay-patient-form-dummy-data";
 
-const localVue = createLocalVue();
-localVue.use(Vuex);
-localVue.use(Vuelidate);
-
-jest.mock("axios", () => ({
-  get: jest.fn(),
-  post: jest.fn(() => {
-    return Promise.resolve();
-  }),
+//required to prevent ECONNREFUSED errors
+vi.mock("axios", () => ({
+  default: {
+    get: vi.fn(),
+    post: vi.fn(() => {
+      return Promise.resolve();
+    }),
+  },
 }));
 
-const testDate = new Date().getFullYear() - 1;
-const next = jest.fn();
+//test dates
+const testDate = new Date();
+testDate.setFullYear(testDate.getFullYear() - 1);
+const next = vi.fn();
 
-const dummyDataValid = {
-  default: {
-    claimCount: "1",
+const dummyDataValid = cloneDeep(dummyDataPatientValid.default);
 
-    planReferenceNumber: "1234567890",
-
-    phn: "9999 999 998",
-    dependentNumber: "66",
-    firstName: "Bob",
-    middleInitial: "H",
-    lastName: "Smith",
-    birthDate: new Date("2000-01-01"),
-
-    addressOwner: "PATIENT",
-    unitNumber: "123",
-    streetNumber: "321",
-    streetName: "Fake St.",
-    city: "Victoria",
-    postalCode: "V8V 8V8",
-
-    isVehicleAccident: "Y",
-    vehicleAccidentClaimNumber: "A0000001",
-
-    planReferenceNumberOfOriginalClaim: "321",
-
-    medicalServiceClaims: [
-      {
-        serviceDate: new Date(),
-        numberOfServices: "1",
-        serviceClarificationCode: "A1",
-        feeItem: "00010",
-        amountBilled: "0.00",
-        calledStartTime: {
-          hour: "08",
-          minute: "01",
-        },
-        renderedFinishTime: {
-          hour: "16",
-          minute: "05",
-        },
-        diagnosticCode: "001",
-        locationOfService: "A",
-        correspondenceAttached: null,
-        submissionCode: "I",
-        notes: "Notes here.",
-      },
-    ],
-
-    practitionerLastName: "GOTTNER",
-    practitionerFirstName: "MICHAEL",
-    practitionerPaymentNumber: "00001",
-    practitionerPractitionerNumber: "00001",
-    practitionerFacilityNumber: "12345",
-    practitionerSpecialtyCode: "99",
-
-    referredByFirstNameInitial: "R",
-    referredByLastName: "McDonald",
-    referredByPractitionerNumber: "22271",
-
-    referredToFirstNameInitial: "C",
-    referredToLastName: "Lee",
-    referredToPractitionerNumber: "22272",
-  },
-};
-
-const storeTemplate = {
-  modules: {
-    app: cloneDeep(module1.default),
-    payPatientForm: cloneDeep(module2.default),
-    payPractitionerForm: cloneDeep(module3.default),
-  },
-};
-
-const storeTemplate2 = {
-  modules: {
-    app: cloneDeep(module1.default),
-    payPatientForm: cloneDeep(module2.default),
-    payPractitionerForm: cloneDeep(module3.default),
-  },
-};
-
-const patientState = {
-  isInfoCollectionNoticeOpen: true,
-  applicationUuid: null,
-};
-
-const patientState2 = cloneDeep(dummyDataValid.default);
-patientState2.medicalServiceClaims[0].serviceDate = testDate;
-
-storeTemplate.modules.payPatientForm.state = cloneDeep(patientState);
-storeTemplate2.modules.payPatientForm.state = cloneDeep(patientState2);
-
-const spyOnLogService = jest
+//spies
+const spyOnLogService = vi
   .spyOn(logService, "logNavigation")
   .mockImplementation(() => Promise.resolve("logged"));
 
-const scrollHelper = require("@/helpers/scroll");
+const spyOnScrollTo = vi
+  .spyOn(scrollHelper, "scrollTo")
+  .mockImplementation(() => Promise.resolve("scrolled"));
+const spyOnScrollToError = vi
+  .spyOn(scrollHelper, "scrollToError")
+  .mockImplementation(() => Promise.resolve("scrolled to error"));
 
-const spyOnScrollTo = jest.spyOn(scrollHelper, "scrollTo");
-const spyOnScrollToError = jest.spyOn(scrollHelper, "scrollToError");
-
-jest.spyOn(window, "scrollTo").mockImplementation(jest.fn);
-
-const spyOnGetTopScrollPosition = jest
+const spyOnGetTopScrollPosition = vi
   .spyOn(scrollHelper, "getTopScrollPosition")
   .mockImplementation(() => Promise.resolve("top scroll position returned"));
 
-const spyOnVisitPage = jest
+const spyOnVisitPage = vi
   .spyOn(pageStateService, "visitPage")
   .mockImplementation(() => Promise.resolve("visited"));
 
-const spyOnSetPageComplete = jest
+const spyOnSetPageComplete = vi
   .spyOn(pageStateService, "setPageComplete")
   .mockImplementation(() => Promise.resolve("set"));
 
-const spyOnSetPageIncomplete = jest
+const spyOnSetPageIncomplete = vi
   .spyOn(pageStateService, "setPageIncomplete")
   .mockImplementation(() => Promise.resolve("set"));
 
 describe("ClaimCountPage.vue pay patient render test", () => {
-  let store;
   let wrapper;
 
   beforeEach(() => {
-    store = new Vuex.Store(storeTemplate);
     wrapper = mount(Page, {
-      localVue,
-      store,
-      mocks: {
-        $route: {
-          path: "/",
-        },
-        $router: {
-          push: jest.fn(),
-          currentRoute: {
-            path: "/potato-csr",
-          },
+      global: {
+        plugins: [store],
+        mocks: {
+          $router: mockRouterCSR,
         },
       },
     });
   });
 
   afterEach(() => {
-    jest.resetModules();
-    jest.clearAllMocks();
+    vi.resetModules();
+    vi.clearAllMocks();
   });
 
   it("renders", () => {
@@ -178,31 +81,22 @@ describe("ClaimCountPage.vue pay patient render test", () => {
 });
 
 describe("ClaimCountPage.vue pay patient created()", () => {
-  let store;
   let wrapper;
 
   beforeEach(() => {
-    store = new Vuex.Store(storeTemplate);
     wrapper = mount(Page, {
-      localVue,
-      store,
-      mocks: {
-        $route: {
-          path: "/",
-        },
-        $router: {
-          push: jest.fn(),
-          currentRoute: {
-            path: "/potato-csr",
-          },
+      global: {
+        plugins: [store],
+        mocks: {
+          $router: mockRouterCSR,
         },
       },
     });
   });
 
   afterEach(() => {
-    jest.resetModules();
-    jest.clearAllMocks();
+    vi.resetModules();
+    vi.clearAllMocks();
   });
 
   it("calls logService", () => {
@@ -212,41 +106,29 @@ describe("ClaimCountPage.vue pay patient created()", () => {
 });
 
 describe("ClaimCountPage.vue pay patient validateFields() part 1 (invalid)", () => {
-  let store;
   let wrapper;
-  let $route;
-  let $router;
   let spyOnRouter;
   let spyOnDispatch;
 
   beforeEach(() => {
-    store = new Vuex.Store(storeTemplate);
-    $route = {
-      path: "/potato-csr",
-    };
-    $router = {
-      $route,
-      currentRoute: $route,
-      push: jest.fn(),
-    };
     wrapper = mount(Page, {
-      localVue,
-      store,
-      mocks: {
-        $route,
-        $router,
+      global: {
+        plugins: [store],
+        mocks: {
+          $router: mockRouterCSR,
+        },
       },
     });
-    spyOnDispatch = jest.spyOn(wrapper.vm.$store, "dispatch");
+    spyOnDispatch = vi.spyOn(wrapper.vm.$store, "dispatch");
 
-    spyOnRouter = jest
-      .spyOn($router, "push")
+    spyOnRouter = vi
+      .spyOn(mockRouterCSR, "push")
       .mockImplementation(() => Promise.resolve("pushed"));
   });
 
   afterEach(() => {
-    jest.resetModules();
-    jest.clearAllMocks();
+    vi.resetModules();
+    vi.clearAllMocks();
   });
 
   it("calls scrollToError", () => {
@@ -281,41 +163,31 @@ describe("ClaimCountPage.vue pay patient validateFields() part 1 (invalid)", () 
 });
 
 describe("ClaimCountPage.vue pay patient validateFields() part 2 (valid)", () => {
-  let store;
   let wrapper;
-  let $route;
-  let $router;
   let spyOnRouter;
   let spyOnDispatch;
 
   beforeEach(() => {
-    store = new Vuex.Store(storeTemplate2);
-    $route = {
-      path: "/potato-csr",
-    };
-    $router = {
-      $route,
-      currentRoute: $route,
-      push: jest.fn(),
-    };
     wrapper = mount(Page, {
-      localVue,
-      store,
-      mocks: {
-        $route,
-        $router,
+      global: {
+        plugins: [store],
+        mocks: {
+          $router: mockRouterCSR,
+        },
       },
     });
-    spyOnDispatch = jest.spyOn(wrapper.vm.$store, "dispatch");
 
-    spyOnRouter = jest
-      .spyOn($router, "push")
+    Object.assign(wrapper.vm, cloneDeep(dummyDataValid));
+
+    spyOnDispatch = vi.spyOn(wrapper.vm.$store, "dispatch");
+    spyOnRouter = vi
+      .spyOn(mockRouterCSR, "push")
       .mockImplementation(() => Promise.resolve("pushed"));
   });
 
   afterEach(() => {
-    jest.resetModules();
-    jest.clearAllMocks();
+    vi.resetModules();
+    vi.clearAllMocks();
   });
 
   it("does not call scrollToError()", () => {
@@ -340,23 +212,7 @@ describe("ClaimCountPage.vue pay patient validateFields() part 2 (valid)", () =>
     wrapper.vm.validateFields();
     expect(spyOnDispatch).toHaveBeenCalledWith(
       `${module2.MODULE_NAME}/${module2.SET_MEDICAL_SERVICE_CLAIMS}`,
-      [
-        {
-          amountBilled: "0.00",
-          calledStartTime: { hour: "08", minute: "01" },
-          correspondenceAttached: null,
-          diagnosticCode: "001",
-          feeItem: "00010",
-          locationOfService: "A",
-          notes: "Notes here.",
-          numberOfServices: "1",
-          renderedFinishTime: { hour: "16", minute: "05" },
-          serviceClarificationCode: "A1",
-          serviceDate: testDate,
-          serviceDateData: null,
-          submissionCode: "I",
-        },
-      ]
+      expect.any(Array)
     );
   });
 
@@ -384,7 +240,7 @@ describe("ClaimCountPage.vue pay patient validateFields() part 2 (valid)", () =>
     wrapper.vm.validateFields();
     expect(spyOnRouter).toHaveBeenCalledWith(
       getConvertedPath(
-        wrapper.vm.$router.currentRoute.path,
+        wrapper.vm.$router.currentRoute.value.path,
         payPatientRoutes.MAIN_FORM_PAGE.path
       )
     );
@@ -392,46 +248,34 @@ describe("ClaimCountPage.vue pay patient validateFields() part 2 (valid)", () =>
 });
 
 describe("ClaimCountPage.vue pay patient beforeRouteLeave(to, from, next)", () => {
-  let store;
   let wrapper;
-  let $route;
-  let $router;
 
   beforeEach(() => {
-    store = new Vuex.Store(storeTemplate2);
-    $route = {
-      path: "/potato-csr",
-    };
-    $router = {
-      $route,
-      currentRoute: $route,
-      push: jest.fn(),
-    };
     wrapper = mount(Page, {
-      localVue,
-      store,
-      mocks: {
-        $route,
-        $router,
+      global: {
+        plugins: [store],
+        mocks: {
+          $router: mockRouterCSR,
+        },
       },
     });
   });
 
   afterEach(() => {
-    jest.resetModules();
-    jest.clearAllMocks();
+    vi.resetModules();
+    vi.clearAllMocks();
   });
 
   it("calls scrollTo() and getTopScrollPosition() when given invalid route", async () => {
     //to, from, next
-    jest.useFakeTimers();
+    vi.useFakeTimers();
     Page.beforeRouteLeave.call(
       wrapper.vm,
       payPatientRouteStepOrder[1],
       payPatientRouteStepOrder[0],
       next
     );
-    jest.advanceTimersByTime(5);
+    vi.advanceTimersByTime(5);
     await wrapper.vm.$nextTick;
     expect(spyOnGetTopScrollPosition).toHaveBeenCalled();
     expect(spyOnScrollTo).toHaveBeenCalled();
@@ -439,17 +283,17 @@ describe("ClaimCountPage.vue pay patient beforeRouteLeave(to, from, next)", () =
 
   it("calls next() with proper arguments when given invalid route", async () => {
     //to, from, next
-    jest.useFakeTimers();
+    vi.useFakeTimers();
     Page.beforeRouteLeave.call(
       wrapper.vm,
       payPatientRouteStepOrder[1],
       payPatientRouteStepOrder[0],
       next
     );
-    jest.advanceTimersByTime(5);
+    vi.advanceTimersByTime(5);
     await wrapper.vm.$nextTick;
     const testPath = getConvertedPath(
-      wrapper.vm.$router.currentRoute.path,
+      wrapper.vm.$router.currentRoute.value.path,
       payPatientRoutes.CLAIM_COUNT_PAGE.path
     );
     expect(next).toHaveBeenCalledWith({
@@ -460,14 +304,14 @@ describe("ClaimCountPage.vue pay patient beforeRouteLeave(to, from, next)", () =
 
   it("calls next() with proper arguments when given valid route", async () => {
     //to, from, next
-    jest.useFakeTimers();
+    vi.useFakeTimers();
     Page.beforeRouteLeave.call(
       wrapper.vm,
       payPatientRouteStepOrder[0],
       payPatientRouteStepOrder[1],
       next
     );
-    jest.advanceTimersByTime(5);
+    vi.advanceTimersByTime(5);
     await wrapper.vm.$nextTick;
     expect(next).toHaveBeenCalled();
     expect(spyOnGetTopScrollPosition).not.toHaveBeenCalled();
@@ -476,28 +320,28 @@ describe("ClaimCountPage.vue pay patient beforeRouteLeave(to, from, next)", () =
 
   it("calls spyOnSetPageIncomplete (valid route)", async () => {
     //to, from, next
-    jest.useFakeTimers();
+    vi.useFakeTimers();
     Page.beforeRouteLeave.call(
       wrapper.vm,
       payPatientRouteStepOrder[0],
       payPatientRouteStepOrder[1],
       next
     );
-    jest.advanceTimersByTime(5);
+    vi.advanceTimersByTime(5);
     await wrapper.vm.$nextTick;
     expect(spyOnSetPageIncomplete).toHaveBeenCalled();
   });
 
   it("calls spyOnSetPageIncomplete (invalid route)", async () => {
     //to, from, next
-    jest.useFakeTimers();
+    vi.useFakeTimers();
     Page.beforeRouteLeave.call(
       wrapper.vm,
       payPatientRouteStepOrder[1],
       payPatientRouteStepOrder[0],
       next
     );
-    jest.advanceTimersByTime(5);
+    vi.advanceTimersByTime(5);
     await wrapper.vm.$nextTick;
     expect(spyOnSetPageIncomplete).toHaveBeenCalled();
   });

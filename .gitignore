@@ -110,3 +110,7 @@ params-*.txt
 lib
 build/
 dist/
+
+#Cypress videos
+pppp/cypress/videos
+pppp/cypress/downloads

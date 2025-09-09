@@ -1,22 +1,16 @@
-import { shallowMount, createLocalVue } from "@vue/test-utils";
-import Vuex from "vuex";
-import Vuelidate from "vuelidate";
+import { mount } from "@vue/test-utils";
+import { createStore } from "vuex";
 import { cloneDeep } from "lodash";
 import Page from "@/views/pay-practitioner/MainFormPage.vue";
 import logService from "@/services/log-service";
 import pageStateService from "@/services/page-state-service";
-import * as module1 from "../../../../src/store/modules/app";
-import * as module2 from "../../../../src/store/modules/pay-patient-form";
-import * as module3 from "../../../../src/store/modules/pay-practitioner-form";
 import * as dummyDataValid from "../../../../src/store/states/pay-practitioner-form-dummy-data";
 import { getConvertedPath } from "@/helpers/url";
-import {
-  payPractitionerRoutes,
-  payPractitionerRouteStepOrder,
-} from "@/router/routes";
+import { payPractitionerRoutes, payPractitionerRouteStepOrder } from "@/router/routes";
+import * as scrollHelper from "@/helpers/scroll";
+import { defaultStoreTemplate, mockRouterCSR, mockRouter } from "../../test-helper.js";
 
 const testDate = new Date();
-const adjustedTestDateMonth = testDate.getMonth() + 1;
 //testDate.getMonth() returns 0 for January
 //but the hospital visit selector indexes January as 1, since it's the first item on the list
 //this constant adjusts for this difference
@@ -39,277 +33,59 @@ testDatePast89Days.setDate(testDatePast89Days.getDate() - 89);
 const testDatePast91Days = new Date();
 testDatePast91Days.setDate(testDatePast91Days.getDate() - 91);
 
-const next = jest.fn();
+const next = vi.fn();
 
-const mockBackendValidationResponse = {
-  data: {
-    applicationUuid: "9f6b649b-c483-4327-b5a9-f5aa8d3bec13",
-    requestUuid: "1dc94b87-86f9-4d92-a749-fb8b2fc1edaf",
-    returnCode: "0",
-    returnMessage: "Valid",
-    practitionerFirstName: "Y",
-    practitionerLastName: "Y",
-    practitionerNumber: "Y",
-    serviceFeeItem1: "Y",
-    serviceFeeItem2: "",
-    serviceFeeItem3: "",
-    serviceFeeItem4: "",
-    serviceLocationCode1: "",
-    serviceLocationCode2: "",
-    serviceLocationCode3: "",
-    serviceLocationCode4: "",
-    hospitalFeeItem1: "",
-    hospitalFeeItem2: "",
-    hospitalLocationCode1: "",
-    hospitalLocationCode2: "",
+const passingData = cloneDeep(dummyDataValid.default);
+
+//required to prevent ECONNREFUSED errors
+vi.mock("axios", () => ({
+  default: {
+    get: vi.fn(),
+    post: vi.fn(() => {
+      return Promise.resolve();
+    }),
   },
-  status: 200,
-  statusText: "OK",
-  headers: {
-    accept: "application/json, text/plain, */*",
-    "accept-encoding": "gzip, deflate, br",
-    "accept-language": "en-US,en;q=0.9",
-    "access-control-allow-credentials": "true",
-    "access-control-allow-headers":
-      "Accept,Authorization,Cache-Control,Content-Type,DNT,If-Modified-Since,Keep-Alive,Origin,User-Agent,X-Requested-With",
-    "access-control-allow-methods": "GET, POST, PUT, DELETE, OPTIONS",
-    "access-control-allow-origin": "https://my.gov.bc.ca",
-    "access-control-expose-headers": "Authorization",
-    authorization: "Basic Z2NwZW1zcGRlOndlbGNvbWUx",
-    breadcrumbid: "ID-vs-dapp041-maximusbchealth-local-1636494389451-0-269",
-    "cache-control": "no-store",
-    connection: "close",
-    "content-security-policy":
-      "default-src * data: blob: filesystem: 'unsafe-inline' 'unsafe-eval'",
-    "content-type": "application/json",
-    date: "Tue, 16 Nov 2021 00:43:38 GMT",
-    forwarded:
-      "for=216.232.32.188;host=pppp-web-0752cb-dev.apps.silver.devops.gov.bc.ca;proto=https",
-    origin: "http://localhost:8080",
-    pragma: "no-cache",
-    referer: "http://localhost:8080/pppp/pay-patient/main-form",
-    "response-type": "application/json",
-    "sec-ch-ua":
-      '"Google Chrome";v="95", "Chromium";v="95", ";Not A Brand";v="99"',
-    "sec-ch-ua-mobile": "?0",
-    "sec-ch-ua-platform": '"Windows"',
-    "sec-fetch-dest": "empty",
-    "sec-fetch-mode": "cors",
-    "sec-fetch-site": "same-origin",
-    server: "nginx",
-    "strict-transport-security": "max-age=86400; includeSubDomains",
-    "transfer-encoding": "chunked",
-    "user-agent":
-      "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.69 Safari/537.36",
-    uuid: "9f6b649b-c483-4327-b5a9-f5aa8d3bec13",
-    "x-content-type-options": "nosniff",
-    "x-forwarded-for": "127.0.0.1, 216.232.32.188",
-    "x-forwarded-host":
-      "localhost:8080, pppp-web-0752cb-dev.apps.silver.devops.gov.bc.ca",
-    "x-forwarded-port": "8080, 443",
-    "x-forwarded-proto": "http, https",
-    "x-frame-options": "DENY",
-    "x-powered-by": "Servlet/3.1 JSP/2.3",
-    "x-weblogic-request-clusterinfo": "true",
-    "x-xss-protection": "1",
-  },
-  config: {
-    url:
-      "/pppp/api/payformsIntegration/validateClaim/9f6b649b-c483-4327-b5a9-f5aa8d3bec13",
-    method: "post",
-    data:
-      '{"applicationUuid":"9f6b649b-c483-4327-b5a9-f5aa8d3bec13","practitionerFirstName":"MICHAEL","practitionerLastName":"GOTTNER","practitionerNumber":"00001","serviceFeeItem1":"00010","serviceFeeItem2":"","serviceFeeItem3":"","serviceFeeItem4":"","serviceLocationCode1":"","serviceLocationCode2":"","serviceLocationCode3":"","serviceLocationCode4":"","hospitalFeeItem1":"","hospitalFeeItem2":"","hospitalLocationCode1":"","hospitalLocationCode2":"","requestUuid":"1dc94b87-86f9-4d92-a749-fb8b2fc1edaf"}',
-    headers: {
-      Accept: "application/json, text/plain, */*",
-      "Content-Type": "application/json",
-      "Response-Type": "application/json",
-      "X-Authorization":
-        "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7Im5vbmNlIjoiOWY2YjY0OWItYzQ4My00MzI3LWI1YTktZjVhYThkM2JlYzEzIn0sImlhdCI6MTYzNzAyMzMzOCwiZXhwIjoxNjM3MDM0MTM4fQ.ARc5LYhvmOAj-pCMnwbxNfpKnAk_g3ZTWHkoYWHp7EA",
-    },
-    transformRequest: [null],
-    transformResponse: [null],
-    timeout: 0,
-    xsrfCookieName: "XSRF-TOKEN",
-    xsrfHeaderName: "X-XSRF-TOKEN",
-    maxContentLength: -1,
-    maxBodyLength: -1,
-    transitional: {
-      silentJSONParsing: true,
-      forcedJSONParsing: true,
-      clarifyTimeoutError: false,
-    },
-  },
-  request: {},
-};
-
-const passingData = {
-  medicalServiceClaimsCount: "1",
-  hospitalVisitClaimsCount: "1",
-
-  planReferenceNumber: "1234567890",
-
-  phn: "9999 999 998",
-  dependentNumber: "66",
-  firstName: "Bob",
-  middleInitial: "H",
-  lastName: "Smith",
-  birthDate: new Date(),
-
-  isVehicleAccident: "Y",
-  vehicleAccidentClaimNumber: "A0000001",
-
-  planReferenceNumberOfOriginalClaim: "321",
-
-  medicalServiceClaims: [
-    {
-      serviceDate: new Date(),
-      numberOfServices: "1",
-      serviceClarificationCode: "A1",
-      feeItem: "00010",
-      amountBilled: "0.00",
-      calledStartTime: {
-        hour: "08",
-        minute: "08",
-      },
-      renderedFinishTime: {
-        hour: "16",
-        minute: "06",
-      },
-      diagnosticCode: "001",
-      locationOfService: "B",
-      correspondenceAttached: null,
-      submissionCode: "I",
-      notes: "Notes here.",
-    },
-  ],
-
-  hospitalVisitClaims: [
-    {
-      month: adjustedTestDateMonth.toString(),
-      dayFrom: testDate.getDate().toString(),
-      dayTo: testDate.getDate().toString(),
-      year: testDate.getFullYear().toString(),
-      numberOfServices: "1",
-      serviceClarificationCode: "A1",
-      feeItem: "00010",
-      amountBilled: "0.00",
-      diagnosticCode: "001",
-      locationOfService: "B",
-      correspondenceAttached: null,
-      submissionCode: "I",
-      notes: "Notes here.",
-    },
-  ],
-
-  practitionerLastName: "GOTTNER",
-  practitionerFirstName: "MICHAEL",
-  practitionerPaymentNumber: "A1234",
-  practitionerPractitionerNumber: "00001",
-  practitionerFacilityNumber: "12345",
-  practitionerSpecialtyCode: "99",
-  coveragePreAuthNumber: "2222",
-
-  referredByFirstNameInitial: "R",
-  referredByLastName: "McDonald",
-  referredByPractitionerNumber: "22271",
-
-  referredToFirstNameInitial: "C",
-  referredToLastName: "Lee",
-  referredToPractitionerNumber: "22272",
-};
-
-jest.mock("axios", () => ({
-  get: jest.fn(),
-  post: jest.fn(() => {
-    return Promise.resolve(mockBackendValidationResponse);
-  }),
 }));
 
-const scrollHelper = require("@/helpers/scroll");
+const spyOnScrollTo = vi
+  .spyOn(scrollHelper, "scrollTo")
+  .mockImplementation(() => Promise.resolve("scrolled"));
 
-jest.mock("@/helpers/scroll", () => ({
-  scrollTo: jest.fn(),
-  scrollToError: jest.fn(),
-  getTopScrollPosition: jest.fn(),
-}));
-
-jest.spyOn(window, "scrollTo").mockImplementation(jest.fn);
-
-const spyOnScrollTo = jest.spyOn(scrollHelper, "scrollTo");
-
-const spyOnGetTopScrollPosition = jest
+const spyOnGetTopScrollPosition = vi
   .spyOn(scrollHelper, "getTopScrollPosition")
   .mockImplementation(() => Promise.resolve("top scroll position returned"));
 
-const spyOnSetPageComplete = jest
+const spyOnSetPageComplete = vi
   .spyOn(pageStateService, "setPageComplete")
   .mockImplementation(() => Promise.resolve("set"));
-const spyOnSetPageIncomplete = jest
+const spyOnSetPageIncomplete = vi
   .spyOn(pageStateService, "setPageIncomplete")
   .mockImplementation(() => Promise.resolve("set"));
-const spyOnVisitPage = jest
+const spyOnVisitPage = vi
   .spyOn(pageStateService, "visitPage")
   .mockImplementation(() => Promise.resolve("visited"));
-
-const localVue = createLocalVue();
-localVue.use(Vuex);
-localVue.use(Vuelidate);
-
-const spyOnLogNavigation = jest
+const spyOnLogNavigation = vi
   .spyOn(logService, "logNavigation")
   .mockImplementation(() => Promise.resolve("logged"));
 
-const storeTemplate = {
-  modules: {
-    app: cloneDeep(module1.default),
-    payPatientForm: cloneDeep(module2.default),
-    payPractitionerForm: cloneDeep(module3.default),
-  },
-};
+const storeTemplate = cloneDeep(defaultStoreTemplate);
 
 const practitionerState = cloneDeep(dummyDataValid.default);
 storeTemplate.modules.payPractitionerForm.state = cloneDeep(practitionerState);
 
-const mockRouter = {
-  $route: {
-    path: "/",
-  },
-  $router: {
-    push: jest.fn(),
-    currentRoute: {
-      path: "/pay-practitioner/main-form",
-    },
-  },
-};
-
-const mockRouterCSR = {
-  $route: {
-    path: "/",
-  },
-  $router: {
-    push: jest.fn(),
-    currentRoute: {
-      path: "/pay-practitioner-csr/main-form",
-    },
-  },
-};
-
 describe("MainFormPage.vue pay practitioner", () => {
-  // eslint-disable-next-line
-  let state;
   let store;
   let wrapper;
 
   beforeEach(() => {
-    state = {
-      applicationUuid: null,
-    };
-    store = new Vuex.Store(storeTemplate);
-
-    wrapper = shallowMount(Page, {
-      store,
-      localVue,
-      mocks: mockRouter,
+    store = createStore(storeTemplate);
+    wrapper = mount(Page, {
+      global: {
+        plugins: [store],
+        mocks: {
+          $router: mockRouter,
+        },
+      },
     });
   });
 
@@ -319,28 +95,25 @@ describe("MainFormPage.vue pay practitioner", () => {
 });
 
 describe("MainFormPage.vue pay practitioner created()", () => {
-  // eslint-disable-next-line
-  let state;
   let store;
   let wrapper;
-  jest.useFakeTimers();
+  vi.useFakeTimers();
 
   beforeEach(() => {
-    state = {
-      applicationUuid: null,
-    };
-    store = new Vuex.Store(storeTemplate);
-
-    wrapper = shallowMount(Page, {
-      store,
-      localVue,
-      mocks: mockRouter,
+    store = createStore(storeTemplate);
+    wrapper = mount(Page, {
+      global: {
+        plugins: [store],
+        mocks: {
+          $router: mockRouter,
+        },
+      },
     });
   });
 
   afterEach(() => {
-    jest.resetModules();
-    jest.clearAllMocks();
+    vi.resetModules();
+    vi.clearAllMocks();
   });
 
   it("assigns data the values in the store", () => {
@@ -348,22 +121,17 @@ describe("MainFormPage.vue pay practitioner created()", () => {
     expect(wrapper.vm.planReferenceNumber).toEqual(
       storeTemplate.modules.payPractitionerForm.state.planReferenceNumber
     );
-    expect(wrapper.vm.phn).toEqual(
-      storeTemplate.modules.payPractitionerForm.state.phn
-    );
+    expect(wrapper.vm.phn).toEqual(storeTemplate.modules.payPractitionerForm.state.phn);
     expect(wrapper.vm.vehicleAccidentClaimNumber).toEqual(
       storeTemplate.modules.payPractitionerForm.state.vehicleAccidentClaimNumber
     );
     expect(wrapper.vm.practitionerPractitionerNumber).toEqual(
-      storeTemplate.modules.payPractitionerForm.state
-        .practitionerPractitionerNumber
+      storeTemplate.modules.payPractitionerForm.state.practitionerPractitionerNumber
     );
     expect(wrapper.vm.referredToLastName).toEqual(
       storeTemplate.modules.payPractitionerForm.state.referredToLastName
     );
-    expect(wrapper.vm.medicalServiceClaimsFeeItemValidationError).toHaveLength(
-      4
-    );
+    expect(wrapper.vm.medicalServiceClaimsFeeItemValidationError).toHaveLength(4);
   });
 
   it("calls logNavigation", () => {
@@ -371,39 +139,36 @@ describe("MainFormPage.vue pay practitioner created()", () => {
   });
 
   it("sets page loaded to true", async () => {
-    jest.advanceTimersByTime(5);
+    vi.advanceTimersByTime(5);
     await wrapper.vm.$nextTick;
     expect(wrapper.vm.isPageLoaded).toBe(true);
   });
 });
 
 describe("MainFormPage.vue handleBlurField()", () => {
-  // eslint-disable-next-line
-  let state;
   let store;
   let wrapper;
 
   const fakeTrueValidation = {
-    $touch: jest.fn,
+    $touch: vi.fn,
   };
-  const spyOnTrueTouch = jest.spyOn(fakeTrueValidation, "$touch");
+  const spyOnTrueTouch = vi.spyOn(fakeTrueValidation, "$touch");
 
   beforeEach(() => {
-    state = {
-      applicationUuid: null,
-    };
-    store = new Vuex.Store(storeTemplate);
-
-    wrapper = shallowMount(Page, {
-      store,
-      localVue,
-      mocks: mockRouter,
+    store = createStore(storeTemplate);
+    wrapper = mount(Page, {
+      global: {
+        plugins: [store],
+        mocks: {
+          $router: mockRouter,
+        },
+      },
     });
   });
 
   afterEach(() => {
-    jest.resetModules();
-    jest.clearAllMocks();
+    vi.resetModules();
+    vi.clearAllMocks();
   });
 
   it("calls $touch when passed a validation", () => {
@@ -418,27 +183,24 @@ describe("MainFormPage.vue handleBlurField()", () => {
 });
 
 describe("MainFormPage.vue handleInputPractitioner()", () => {
-  // eslint-disable-next-line
-  let state;
   let store;
   let wrapper;
 
   beforeEach(() => {
-    state = {
-      applicationUuid: null,
-    };
-    store = new Vuex.Store(storeTemplate);
-
-    wrapper = shallowMount(Page, {
-      store,
-      localVue,
-      mocks: mockRouter,
+    store = createStore(storeTemplate);
+    wrapper = mount(Page, {
+      global: {
+        plugins: [store],
+        mocks: {
+          $router: mockRouter,
+        },
+      },
     });
   });
 
   afterEach(() => {
-    jest.resetModules();
-    jest.clearAllMocks();
+    vi.resetModules();
+    vi.clearAllMocks();
   });
 
   it("sets isPractitionerErrorShown to false", () => {
@@ -449,64 +211,25 @@ describe("MainFormPage.vue handleInputPractitioner()", () => {
   });
 });
 
-describe("MainFormPage.vue handleInputServiceFeeItem()", () => {
-  // eslint-disable-next-line
-  let state;
-  let store;
-  let wrapper;
-
-  beforeEach(() => {
-    state = {
-      applicationUuid: null,
-    };
-    store = new Vuex.Store(storeTemplate);
-
-    wrapper = shallowMount(Page, {
-      store,
-      localVue,
-      mocks: mockRouter,
-    });
-  });
-
-  afterEach(() => {
-    jest.resetModules();
-    jest.clearAllMocks();
-  });
-
-  it("sets fee item validation to false", () => {
-    wrapper.vm.medicalServiceClaimsFeeItemValidationError[0] = true;
-    expect(wrapper.vm.medicalServiceClaimsFeeItemValidationError[0]).toBe(
-      true
-    );
-    wrapper.vm.handleInputServiceFeeItem(0);
-    expect(wrapper.vm.medicalServiceClaimsFeeItemValidationError[0]).toBe(
-      false
-    );
-  });
-});
-
 describe("MainFormPage.vue handleProcessBirthDate()", () => {
-  // eslint-disable-next-line
-  let state;
   let store;
   let wrapper;
 
   beforeEach(() => {
-    state = {
-      applicationUuid: null,
-    };
-    store = new Vuex.Store(storeTemplate);
-
-    wrapper = shallowMount(Page, {
-      store,
-      localVue,
-      mocks: mockRouter,
+    store = createStore(storeTemplate);
+    wrapper = mount(Page, {
+      global: {
+        plugins: [store],
+        mocks: {
+          $router: mockRouter,
+        },
+      },
     });
   });
 
   afterEach(() => {
-    jest.resetModules();
-    jest.clearAllMocks();
+    vi.resetModules();
+    vi.clearAllMocks();
   });
 
   it("sets data to equal value passed", () => {
@@ -517,101 +240,27 @@ describe("MainFormPage.vue handleProcessBirthDate()", () => {
   });
 });
 
-describe("MainFormPage.vue handleProcessServiceDate()", () => {
-  // eslint-disable-next-line
-  let state;
-  let store;
-  let wrapper;
-
-  beforeEach(() => {
-    state = {
-      applicationUuid: null,
-    };
-    store = new Vuex.Store(storeTemplate);
-
-    wrapper = shallowMount(Page, {
-      store,
-      localVue,
-      mocks: mockRouter,
-    });
-  });
-
-  afterEach(() => {
-    jest.resetModules();
-    jest.clearAllMocks();
-  });
-
-  it("sets serviceDateData to value passed", () => {
-    const claimIndex = 0;
-
-    wrapper.vm.medicalServiceClaims[claimIndex].serviceDateData = "notPotato";
-    wrapper.vm.handleProcessServiceDate("potato", claimIndex);
-    expect(wrapper.vm.medicalServiceClaims[claimIndex].serviceDateData).toBe(
-      "potato"
-    );
-  });
-});
-
-describe("MainFormPage.vue handleInputHospitalVisitFeeItem()", () => {
-  // eslint-disable-next-line
-  let state;
-  let store;
-  let wrapper;
-
-  beforeEach(() => {
-    state = {
-      applicationUuid: null,
-    };
-    store = new Vuex.Store(storeTemplate);
-
-    wrapper = shallowMount(Page, {
-      store,
-      localVue,
-      mocks: mockRouter,
-    });
-  });
-
-  afterEach(() => {
-    jest.resetModules();
-    jest.clearAllMocks();
-  });
-
-  it("sets fee item validation to false", () => {
-    wrapper.vm.hospitalVisitClaimsFeeItemValidationError[0] = true;
-    expect(wrapper.vm.hospitalVisitClaimsFeeItemValidationError[0]).toBe(
-      true
-    );
-    wrapper.vm.handleInputHospitalVisitFeeItem(0);
-    expect(wrapper.vm.hospitalVisitClaimsFeeItemValidationError[0]).toBe(
-      false
-    );
-  });
-});
-
 describe("MainFormPage.vue validationModal handlers", () => {
-  // eslint-disable-next-line
-  let state;
   let store;
   let wrapper;
   let spyOnNavigateToNextPage;
 
   beforeEach(() => {
-    state = {
-      applicationUuid: null,
-    };
-    store = new Vuex.Store(storeTemplate);
-
-    wrapper = shallowMount(Page, {
-      store,
-      localVue,
-      mocks: mockRouter,
+    store = createStore(storeTemplate);
+    wrapper = mount(Page, {
+      global: {
+        plugins: [store],
+        mocks: {
+          $router: mockRouter,
+        },
+      },
     });
-    spyOnNavigateToNextPage = jest.spyOn(wrapper.vm, "navigateToNextPage");
+    spyOnNavigateToNextPage = vi.spyOn(wrapper.vm, "navigateToNextPage");
   });
 
   afterEach(() => {
-    jest.resetModules();
-    jest.clearAllMocks();
+    vi.resetModules();
+    vi.clearAllMocks();
   });
 
   it("calls navigateToNextPage() on Yes", () => {
@@ -628,27 +277,24 @@ describe("MainFormPage.vue validationModal handlers", () => {
 });
 
 describe("MainFormPage.vue navigateToNextPage()", () => {
-  // eslint-disable-next-line
-  let state;
   let store;
   let wrapper;
 
   beforeEach(() => {
-    state = {
-      applicationUuid: null,
-    };
-    store = new Vuex.Store(storeTemplate);
-
-    wrapper = shallowMount(Page, {
-      store,
-      localVue,
-      mocks: mockRouter,
+    store = createStore(storeTemplate);
+    wrapper = mount(Page, {
+      global: {
+        plugins: [store],
+        mocks: {
+          $router: mockRouter,
+        },
+      },
     });
   });
 
   afterEach(() => {
-    jest.resetModules();
-    jest.clearAllMocks();
+    vi.resetModules();
+    vi.clearAllMocks();
   });
 
   it("calls pageStateService.setPageComplete", async () => {
@@ -677,31 +323,27 @@ describe("MainFormPage.vue navigateToNextPage()", () => {
 });
 
 describe("MainFormPage.vue saveData()", () => {
-  // eslint-disable-next-line
-  let state;
   let store;
   let wrapper;
   let spyOnDispatch;
 
   beforeEach(() => {
-    state = {
-      applicationUuid: null,
-    };
-    store = new Vuex.Store(storeTemplate);
-
-    wrapper = shallowMount(Page, {
-      store,
-      localVue,
-      mocks: mockRouter,
+    store = createStore(storeTemplate);
+    wrapper = mount(Page, {
+      global: {
+        plugins: [store],
+        mocks: {
+          $router: mockRouter,
+        },
+      },
     });
 
-    spyOnDispatch = jest.spyOn(store, "dispatch");
-    Object.assign(wrapper.vm, cloneDeep(passingData));
+    spyOnDispatch = vi.spyOn(store, "dispatch");
   });
 
   afterEach(() => {
-    jest.resetModules();
-    jest.clearAllMocks();
+    vi.resetModules();
+    vi.clearAllMocks();
   });
 
   it("dispatches correctly", async () => {
@@ -711,40 +353,33 @@ describe("MainFormPage.vue saveData()", () => {
 
   it("saves example value to store", async () => {
     const testValue = "SaveDataTestValue";
-    expect(
-      wrapper.vm.$store.state.payPractitionerForm.referredByLastName
-    ).not.toEqual(testValue);
+    expect(wrapper.vm.$store.state.payPractitionerForm.referredByLastName).not.toEqual(testValue);
     await wrapper.setData({ referredByLastName: testValue });
     wrapper.vm.saveData();
-    expect(
-      wrapper.vm.$store.state.payPractitionerForm.referredByLastName
-    ).toEqual(testValue);
+    expect(wrapper.vm.$store.state.payPractitionerForm.referredByLastName).toEqual(testValue);
   });
 });
 
 describe("MainFormPage.vue getMedicalServiceClaimTitle()", () => {
-  // eslint-disable-next-line
-  let state;
   let store;
   let wrapper;
 
   beforeEach(() => {
-    state = {
-      applicationUuid: null,
-    };
-    store = new Vuex.Store(storeTemplate);
-
-    wrapper = shallowMount(Page, {
-      store,
-      localVue,
-      mocks: mockRouter,
+    store = createStore(storeTemplate);
+    wrapper = mount(Page, {
+      global: {
+        plugins: [store],
+        mocks: {
+          $router: mockRouter,
+        },
+      },
     });
     Object.assign(wrapper.vm, cloneDeep(passingData));
   });
 
   afterEach(() => {
-    jest.resetModules();
-    jest.clearAllMocks();
+    vi.resetModules();
+    vi.clearAllMocks();
   });
 
   it("returns correct title when 1 claim", () => {
@@ -829,28 +464,24 @@ describe("MainFormPage.vue getMedicalServiceClaimTitle()", () => {
 });
 
 describe("MainFormPage.vue getHospitalVisitClaimTitle()", () => {
-  // eslint-disable-next-line
-  let state;
   let store;
   let wrapper;
 
   beforeEach(() => {
-    state = {
-      applicationUuid: null,
-    };
-    store = new Vuex.Store(storeTemplate);
-
-    wrapper = shallowMount(Page, {
-      store,
-      localVue,
-      mocks: mockRouter,
+    store = createStore(storeTemplate);
+    wrapper = mount(Page, {
+      global: {
+        plugins: [store],
+        mocks: {
+          $router: mockRouter,
+        },
+      },
     });
-    Object.assign(wrapper.vm, cloneDeep(passingData));
   });
 
   afterEach(() => {
-    jest.resetModules();
-    jest.clearAllMocks();
+    vi.resetModules();
+    vi.clearAllMocks();
   });
 
   it("returns correct title when 1 claim", () => {
@@ -919,228 +550,26 @@ describe("MainFormPage.vue getHospitalVisitClaimTitle()", () => {
   });
 });
 
-describe("MainFormPage.vue getServiceDateFutureErrorMessage()", () => {
-  // eslint-disable-next-line
-  let state;
-  let store;
-  let wrapper;
-
-  beforeEach(() => {
-    state = {
-      applicationUuid: null,
-    };
-    store = new Vuex.Store(storeTemplate);
-
-    wrapper = shallowMount(Page, {
-      store,
-      localVue,
-      mocks: mockRouter,
-    });
-    Object.assign(wrapper.vm, cloneDeep(passingData));
-  });
-
-  afterEach(() => {
-    jest.resetModules();
-    jest.clearAllMocks();
-  });
-
-  it("returns correct message when 1 claim", () => {
-    const result = wrapper.vm.getServiceDateFutureErrorMessage();
-    expect(result).not.toContain("90"); //eg. "90 days in the future"
-  });
-
-  it("returns correct message when more than 1 claim", async () => {
-    const result = wrapper.vm.getServiceDateFutureErrorMessage("03333");
-    expect(result).toContain("90"); //eg. "90 days in the future"
-  });
-});
-
-describe("MainFormPage.vue isSubmissionCodeRequired()", () => {
-  // eslint-disable-next-line
-  let state;
-  let store;
-  let wrapper;
-
-  beforeEach(() => {
-    state = {
-      applicationUuid: null,
-    };
-    store = new Vuex.Store(storeTemplate);
-  });
-
-  afterEach(() => {
-    jest.resetModules();
-    jest.clearAllMocks();
-  });
-
-  it("returns false when serviceDate is null", () => {
-    wrapper = shallowMount(Page, {
-      store,
-      localVue,
-      mocks: mockRouter,
-    });
-    Object.assign(wrapper.vm, cloneDeep(passingData));
-    wrapper.vm.medicalServiceClaims[0].serviceDate = null;
-    const result = wrapper.vm.isSubmissionCodeRequired(0);
-    expect(result).toBe(false);
-  });
-
-  it("returns false when not service date is less than 90 days ago", () => {
-    wrapper = shallowMount(Page, {
-      store,
-      localVue,
-      mocks: mockRouter,
-    });
-    Object.assign(wrapper.vm, cloneDeep(passingData));
-    wrapper.vm.medicalServiceClaims[0].serviceDate = testDatePast89Days;
-    const result = wrapper.vm.isSubmissionCodeRequired(0);
-    expect(result).toBe(false);
-  });
-
-  it("returns true when not service date is more than 90 days ago", () => {
-    wrapper = shallowMount(Page, {
-      store,
-      localVue,
-      mocks: mockRouter,
-    });
-    Object.assign(wrapper.vm, cloneDeep(passingData));
-    wrapper.vm.medicalServiceClaims[0].serviceDate = testDatePast91Days;
-    const result = wrapper.vm.isSubmissionCodeRequired(0);
-    expect(result).toBe(true);
-  });
-
-  it("returns false when route is CSR", () => {
-    wrapper = shallowMount(Page, {
-      store,
-      localVue,
-      mocks: mockRouterCSR,
-    });
-    Object.assign(wrapper.vm, cloneDeep(passingData));
-    wrapper.vm.medicalServiceClaims[0].serviceDate = testDatePast91Days;
-    const result = wrapper.vm.isSubmissionCodeRequired(0);
-    expect(result).toBe(false);
-  });
-});
-
-describe("MainFormPage.vue isHospitalVisitSubmissionCodeRequired()", () => {
-  // eslint-disable-next-line
-  let state;
-  let store;
-  let wrapper;
-
-  beforeEach(() => {
-    state = {
-      applicationUuid: null,
-    };
-    store = new Vuex.Store(storeTemplate);
-  });
-
-  afterEach(() => {
-    jest.resetModules();
-    jest.clearAllMocks();
-  });
-
-  it("returns false when serviceDate is null", () => {
-    wrapper = shallowMount(Page, {
-      store,
-      localVue,
-      mocks: mockRouter,
-    });
-    Object.assign(wrapper.vm, cloneDeep(passingData));
-    wrapper.vm.hospitalVisitClaims[0].year = null;
-    wrapper.vm.hospitalVisitClaims[0].month = null;
-    wrapper.vm.hospitalVisitClaims[0].dayFrom = null;
-    const result = wrapper.vm.isHospitalVisitSubmissionCodeRequired(0);
-    expect(result).toBe(false);
-  });
-
-  it("returns false when service date is less than 90 days ago", () => {
-    wrapper = shallowMount(Page, {
-      store,
-      localVue,
-      mocks: mockRouter,
-    });
-    Object.assign(wrapper.vm, cloneDeep(passingData));
-    wrapper.vm.hospitalVisitClaims[0].year = testDatePast89Days
-      .getFullYear()
-      .toString();
-    // javascript date has January start at 0, but the select field has January start from 1
-    // this code adjusts for that fact
-    const correctedMonth = testDatePast89Days.getMonth() + 1;
-    wrapper.vm.hospitalVisitClaims[0].month = correctedMonth.toString();
-    wrapper.vm.hospitalVisitClaims[0].dayFrom = testDatePast89Days
-      .getDate()
-      .toString();
-    const result = wrapper.vm.isHospitalVisitSubmissionCodeRequired(0);
-    expect(result).toBe(false);
-  });
-
-  it("returns true when service date is more than 90 days ago", () => {
-    wrapper = shallowMount(Page, {
-      store,
-      localVue,
-      mocks: mockRouter,
-    });
-    Object.assign(wrapper.vm, cloneDeep(passingData));
-    wrapper.vm.hospitalVisitClaims[0].year = testDatePast91Days
-      .getFullYear()
-      .toString();
-    // javascript date has January start at 0, but the select field has January start from 1
-    // this code adjusts for that fact
-    const correctedMonth = testDatePast91Days.getMonth() + 1;
-    wrapper.vm.hospitalVisitClaims[0].month = correctedMonth.toString();
-    wrapper.vm.hospitalVisitClaims[0].dayFrom = testDatePast91Days
-      .getDate()
-      .toString();
-    const result = wrapper.vm.isHospitalVisitSubmissionCodeRequired(0);
-    expect(result).toBe(true);
-  });
-
-  it("returns false when route is CSR", () => {
-    wrapper = shallowMount(Page, {
-      store,
-      localVue,
-      mocks: mockRouterCSR,
-    });
-    Object.assign(wrapper.vm, cloneDeep(passingData));
-    wrapper.vm.hospitalVisitClaims[0].year = testDatePast91Days
-      .getFullYear()
-      .toString();
-    // javascript date has January start at 0, but the select field has January start from 1
-    // this code adjusts for that fact
-    const correctedMonth = testDatePast91Days.getMonth() + 1;
-    wrapper.vm.hospitalVisitClaims[0].month = correctedMonth.toString();
-    wrapper.vm.hospitalVisitClaims[0].dayFrom = testDatePast91Days
-      .getDate()
-      .toString();
-    const result = wrapper.vm.isHospitalVisitSubmissionCodeRequired(0);
-    expect(result).toBe(false);
-  });
-});
-
 //-----computed value tests-----
 describe("MainFormPage.vue isReferredByRequired()", () => {
-  // eslint-disable-next-line
-  let state;
   let store;
   let wrapper;
 
   beforeEach(() => {
-    state = {
-      applicationUuid: null,
-    };
-    store = new Vuex.Store(storeTemplate);
-
-    wrapper = shallowMount(Page, {
-      store,
-      localVue,
-      mocks: mockRouter,
+    store = createStore(storeTemplate);
+    wrapper = mount(Page, {
+      global: {
+        plugins: [store],
+        mocks: {
+          $router: mockRouter,
+        },
+      },
     });
   });
 
   afterEach(() => {
-    jest.resetModules();
-    jest.clearAllMocks();
+    vi.resetModules();
+    vi.clearAllMocks();
   });
 
   it("returns false if all three conditions are null", async () => {
@@ -1173,29 +602,25 @@ describe("MainFormPage.vue isReferredByRequired()", () => {
 });
 
 describe("MainFormPage.vue isReferredToRequired()", () => {
-  // eslint-disable-next-line
-  let state;
   let store;
   let wrapper;
 
   beforeEach(() => {
-    state = {
-      applicationUuid: null,
-    };
-    store = new Vuex.Store(storeTemplate);
-
-    wrapper = shallowMount(Page, {
-      store,
-      localVue,
-      mocks: mockRouter,
+    store = createStore(storeTemplate);
+    wrapper = mount(Page, {
+      global: {
+        plugins: [store],
+        mocks: {
+          $router: mockRouter,
+        },
+      },
     });
     Object.assign(wrapper.vm, cloneDeep(passingData));
-    wrapper.vm.medicalServiceClaims[0].feeItem = "11111";
   });
 
   afterEach(() => {
-    jest.resetModules();
-    jest.clearAllMocks();
+    vi.resetModules();
+    vi.clearAllMocks();
   });
 
   it("returns true if the first is not null", async () => {
@@ -1219,26 +644,41 @@ describe("MainFormPage.vue isReferredToRequired()", () => {
     expect(Page.computed.isReferredToRequired.call(wrapper.vm)).toBe(true);
   });
 
-  it("returns false if all three conditions are null", async () => {
+  it("returns false if all three conditions are null and fee items aren't 03333", async () => {
     await wrapper.setData({ referredToFirstNameInitial: null });
     await wrapper.setData({ referredToLastName: null });
     await wrapper.setData({ referredToPractitionerNumber: null });
+    wrapper.vm.medicalServiceClaims[0].feeItem = "00010";
+    wrapper.vm.hospitalVisitClaims[0].feeItem = "00010";
     expect(Page.computed.isReferredToRequired.call(wrapper.vm)).toBe(false);
   });
 
-  it("returns true if fee item is 03333", async () => {
+  it("returns true if medical service fee item is 03333", async () => {
     await wrapper.setData({ referredToFirstNameInitial: null });
     await wrapper.setData({ referredToLastName: null });
     await wrapper.setData({ referredToPractitionerNumber: null });
     wrapper.vm.medicalServiceClaims[0].feeItem = "03333";
+    wrapper.vm.hospitalVisitClaims[0].feeItem = "00010";
+    expect(Page.computed.isReferredToRequired.call(wrapper.vm)).toBe(true);
+  });
+
+  it("returns true if hospital visit fee item is 03333", async () => {
+    await wrapper.setData({ referredToFirstNameInitial: null });
+    await wrapper.setData({ referredToLastName: null });
+    await wrapper.setData({ referredToPractitionerNumber: null });
+    wrapper.vm.medicalServiceClaims[0].feeItem = "00010";
+    wrapper.vm.hospitalVisitClaims[0].feeItem = "03333";
     expect(Page.computed.isReferredToRequired.call(wrapper.vm)).toBe(true);
   });
 
   it("returns false if route is CSR and the three conditions are null (fee item 11111)", async () => {
-    wrapper = shallowMount(Page, {
-      store,
-      localVue,
-      mocks: mockRouterCSR,
+    wrapper = mount(Page, {
+      global: {
+        plugins: [store],
+        mocks: {
+          $router: mockRouterCSR,
+        },
+      },
     });
 
     Object.assign(wrapper.vm, cloneDeep(passingData));
@@ -1250,10 +690,13 @@ describe("MainFormPage.vue isReferredToRequired()", () => {
   });
 
   it("returns false if route is CSR and the three conditions are null (fee item 03333)", async () => {
-    wrapper = shallowMount(Page, {
-      store,
-      localVue,
-      mocks: mockRouterCSR,
+    wrapper = mount(Page, {
+      global: {
+        plugins: [store],
+        mocks: {
+          $router: mockRouterCSR,
+        },
+      },
     });
 
     Object.assign(wrapper.vm, cloneDeep(passingData));
@@ -1266,21 +709,18 @@ describe("MainFormPage.vue isReferredToRequired()", () => {
 });
 
 describe("MainFormPage.vue isContainingNoChargeFeeItem()", () => {
-  // eslint-disable-next-line
-  let state;
   let store;
   let wrapper;
 
   beforeEach(() => {
-    state = {
-      applicationUuid: null,
-    };
-    store = new Vuex.Store(storeTemplate);
-
-    wrapper = shallowMount(Page, {
-      store,
-      localVue,
-      mocks: mockRouter,
+    store = createStore(storeTemplate);
+    wrapper = mount(Page, {
+      global: {
+        plugins: [store],
+        mocks: {
+          $router: mockRouter,
+        },
+      },
     });
 
     wrapper.vm.medicalServiceClaims = [
@@ -1396,83 +836,72 @@ describe("MainFormPage.vue isContainingNoChargeFeeItem()", () => {
   });
 
   afterEach(() => {
-    jest.resetModules();
-    jest.clearAllMocks();
+    vi.resetModules();
+    vi.clearAllMocks();
   });
 
   it("returns true if one of the (medical) feeItems is 03333", () => {
     wrapper.vm.medicalServiceClaims[0].feeItem = "03333";
-    expect(Page.computed.isContainingNoChargeFeeItem.call(wrapper.vm)).toBe(
-      true
-    );
+    expect(Page.methods.isContainingNoChargeFeeItem.call(wrapper.vm)).toBe(true);
   });
 
   it("returns true if one of the (medical) feeItems is 03333 (2)", () => {
     wrapper.vm.medicalServiceClaims[1].feeItem = "03333";
-    expect(Page.computed.isContainingNoChargeFeeItem.call(wrapper.vm)).toBe(
-      true
-    );
+    expect(Page.methods.isContainingNoChargeFeeItem.call(wrapper.vm)).toBe(true);
   });
 
   it("returns false if none of the (medical) feeItems are 03333", () => {
-    expect(Page.computed.isContainingNoChargeFeeItem.call(wrapper.vm)).toBe(
-      false
-    );
+    expect(Page.methods.isContainingNoChargeFeeItem.call(wrapper.vm)).toBe(false);
   });
 
   it("returns true if one of the (hospital) feeItems is 03333", () => {
     wrapper.vm.hospitalVisitClaims[0].feeItem = "03333";
-    expect(Page.computed.isContainingNoChargeFeeItem.call(wrapper.vm)).toBe(
-      true
-    );
+    expect(Page.methods.isContainingNoChargeFeeItem.call(wrapper.vm)).toBe(true);
   });
 
   it("returns true if one of the (hospital) feeItems is 03333 (2)", () => {
     wrapper.vm.hospitalVisitClaims[1].feeItem = "03333";
-    expect(Page.computed.isContainingNoChargeFeeItem.call(wrapper.vm)).toBe(
-      true
-    );
+    expect(Page.methods.isContainingNoChargeFeeItem.call(wrapper.vm)).toBe(true);
   });
 
   it("returns false if none of the (hospital) feeItems are 03333", () => {
-    expect(Page.computed.isContainingNoChargeFeeItem.call(wrapper.vm)).toBe(
-      false
-    );
+    expect(Page.methods.isContainingNoChargeFeeItem.call(wrapper.vm)).toBe(false);
   });
 });
 
 describe("MainFormPage.vue isCSR()", () => {
-  // eslint-disable-next-line
-  let state;
   let store;
   let wrapper;
 
   beforeEach(() => {
-    state = {
-      applicationUuid: null,
-    };
-    store = new Vuex.Store(storeTemplate);
+    store = createStore(storeTemplate);
   });
 
   afterEach(() => {
-    jest.resetModules();
-    jest.clearAllMocks();
+    vi.resetModules();
+    vi.clearAllMocks();
   });
 
   it("returns false if not CSR route", () => {
-    wrapper = shallowMount(Page, {
-      store,
-      localVue,
-      mocks: mockRouter,
+    wrapper = mount(Page, {
+      global: {
+        plugins: [store],
+        mocks: {
+          $router: mockRouter,
+        },
+      },
     });
     expect(Page.computed.isCSR.call(wrapper.vm)).toBe(false);
   });
 
   it("returns true if CSR route", () => {
-    wrapper = shallowMount(Page, {
-      store,
-      localVue,
-      mocks: mockRouterCSR,
+    wrapper = mount(Page, {
+      global: {
+        plugins: [store],
+        mocks: {
+          $router: mockRouterCSR,
+        },
+      },
     });
     expect(Page.computed.isCSR.call(wrapper.vm)).toBe(true);
   });
@@ -1484,44 +913,34 @@ describe("MainFormPage.vue isCSR()", () => {
 describe("MainFormPage.vue beforeRouteLeave(to, from, next)", () => {
   let store;
   let wrapper;
-  let $route;
-  let $router;
 
   beforeEach(() => {
-    store = new Vuex.Store(storeTemplate);
-    $route = {
-      path: "/potato",
-    };
-    $router = {
-      $route,
-      currentRoute: $route,
-      push: jest.fn(),
-    };
-    wrapper = shallowMount(Page, {
-      localVue,
-      store,
-      mocks: {
-        $route,
-        $router,
+    store = createStore(storeTemplate);
+    wrapper = mount(Page, {
+      global: {
+        plugins: [store],
+        mocks: {
+          $router: mockRouter,
+        },
       },
     });
   });
 
   afterEach(() => {
-    jest.resetModules();
-    jest.clearAllMocks();
+    vi.resetModules();
+    vi.clearAllMocks();
   });
 
   it("calls scrollTo() and getTopScrollPosition() when given invalid route", async () => {
     //to, from, next
-    jest.useFakeTimers();
+    vi.useFakeTimers();
     Page.beforeRouteLeave.call(
       wrapper.vm,
       payPractitionerRouteStepOrder[3],
       payPractitionerRouteStepOrder[0],
       next
     );
-    jest.advanceTimersByTime(5);
+    vi.advanceTimersByTime(5);
     await wrapper.vm.$nextTick;
     expect(spyOnGetTopScrollPosition).toHaveBeenCalled();
     expect(spyOnScrollTo).toHaveBeenCalled();
@@ -1529,17 +948,17 @@ describe("MainFormPage.vue beforeRouteLeave(to, from, next)", () => {
 
   it("calls next() with proper arguments when given invalid route", async () => {
     //to, from, next
-    jest.useFakeTimers();
+    vi.useFakeTimers();
     Page.beforeRouteLeave.call(
       wrapper.vm,
       payPractitionerRouteStepOrder[3],
       payPractitionerRouteStepOrder[0],
       next
     );
-    jest.advanceTimersByTime(5);
+    vi.advanceTimersByTime(5);
     await wrapper.vm.$nextTick;
     const testPath = getConvertedPath(
-      wrapper.vm.$router.currentRoute.path,
+      wrapper.vm.$router.currentRoute.value.path,
       payPractitionerRoutes.MAIN_FORM_PAGE.path
     );
     expect(next).toHaveBeenCalledWith({
@@ -1550,12 +969,10 @@ describe("MainFormPage.vue beforeRouteLeave(to, from, next)", () => {
 
   it("calls next() when passed a route that has been completed in pageStateService", async () => {
     //to, from, next
-    jest.useFakeTimers();
+    vi.useFakeTimers();
     await pageStateService.importPageRoutes(payPractitionerRouteStepOrder);
     await wrapper.vm.$nextTick;
-    await pageStateService.setPageComplete(
-      payPractitionerRouteStepOrder[0].path
-    );
+    await pageStateService.setPageComplete(payPractitionerRouteStepOrder[0].path);
     await wrapper.vm.$nextTick;
     Page.beforeRouteLeave.call(
       wrapper.vm,
@@ -1563,7 +980,7 @@ describe("MainFormPage.vue beforeRouteLeave(to, from, next)", () => {
       payPractitionerRouteStepOrder[1],
       next
     );
-    jest.advanceTimersByTime(5);
+    vi.advanceTimersByTime(5);
     await wrapper.vm.$nextTick;
     expect(next).toHaveBeenCalled();
     expect(spyOnSetPageIncomplete).toHaveBeenCalled();
@@ -1573,14 +990,14 @@ describe("MainFormPage.vue beforeRouteLeave(to, from, next)", () => {
 
   it("calls spyOnSetPageIncomplete (valid route)", async () => {
     //to, from, next
-    jest.useFakeTimers();
+    vi.useFakeTimers();
     Page.beforeRouteLeave.call(
       wrapper.vm,
       payPractitionerRouteStepOrder[0],
       payPractitionerRouteStepOrder[1],
       next
     );
-    jest.advanceTimersByTime(5);
+    vi.advanceTimersByTime(5);
     await wrapper.vm.$nextTick;
     expect(spyOnSetPageIncomplete).toHaveBeenCalled();
   });

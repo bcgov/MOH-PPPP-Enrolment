@@ -1,37 +1,26 @@
-import { mount, createLocalVue } from "@vue/test-utils";
-import Vuex from "vuex";
-import Vuelidate from "vuelidate";
+import { mount } from "@vue/test-utils";
+import { createStore } from "vuex";
+import { createRouter, createWebHistory } from "vue-router";
 import Page from "@/components/pay-practitioner/ReviewTableList.vue";
 import { cloneDeep } from "lodash";
 import * as module1 from "../../../src/store/modules/app";
 import * as module2 from "../../../src/store/modules/pay-patient-form";
 import * as module3 from "../../../src/store/modules/pay-practitioner-form";
 import pageStateService from "@/services/page-state-service";
+import { routeCollection } from "@/router/index";
+import * as scrollHelper from "@/helpers/scroll";
 
-const localVue = createLocalVue();
-localVue.use(Vuex);
-localVue.use(Vuelidate);
-
-const scrollHelper = require("@/helpers/scroll");
-
-const spyOnSetPageComplete = jest
+const spyOnSetPageComplete = vi
   .spyOn(pageStateService, "setPageComplete")
   .mockImplementation(() => Promise.resolve("set"));
-jest
-  .spyOn(pageStateService, "visitPage")
-  .mockImplementation(() => Promise.resolve("visited"));
 
-jest.mock("@/helpers/scroll", () => ({
-  scrollTo: jest.fn(),
-  scrollToElement: jest.fn(),
-}));
-
-const spyOnScrollTo = jest
+const spyOnScrollTo = vi
   .spyOn(scrollHelper, "scrollTo")
   .mockImplementation(() => Promise.resolve("scrolled"));
-const spyOnScrollToElement = jest
+
+const spyOnScrollToElement = vi
   .spyOn(scrollHelper, "scrollToElement")
-  .mockImplementation(() => Promise.resolve("scrolled"));
+  .mockImplementation(() => Promise.resolve("scrolled to element"));
 
 const storeTemplate = {
   modules: {
@@ -64,8 +53,7 @@ const practitionerState = {
   postalCode: "defaultpostalCode",
   isVehicleAccident: "Y",
   vehicleAccidentClaimNumber: "defaultAccidentClaimNumber",
-  planReferenceNumberOfOriginalClaim:
-    "defaultplanReferenceNumberOfOriginalClaim",
+  planReferenceNumberOfOriginalClaim: "defaultplanReferenceNumberOfOriginalClaim",
   medicalServiceClaims: [
     {
       serviceDate: "defaultserviceDate",
@@ -208,27 +196,25 @@ practitionerState2.hospitalVisitClaims = [
 ];
 
 storeTemplate.modules.payPractitionerForm.state = cloneDeep(practitionerState);
-storeTemplate2.modules.payPractitionerForm.state = cloneDeep(
-  practitionerState2
-);
+storeTemplate2.modules.payPractitionerForm.state = cloneDeep(practitionerState2);
+
+const router = createRouter({
+  history: createWebHistory(),
+  routes: routeCollection,
+});
 
 //-------COMPUTED-------
 describe("ReviewTableList practitioner", () => {
   it("renders", () => {
-    const store = new Vuex.Store(storeTemplate);
+    const router = createRouter({
+      history: createWebHistory(),
+      routes: routeCollection,
+    });
+
+    const store = createStore(storeTemplate);
     const wrapper = mount(Page, {
-      localVue,
-      store,
-      mocks: {
-        $route: {
-          path: "/",
-        },
-        $router: {
-          push: jest.fn(),
-          currentRoute: {
-            path: "/",
-          },
-        },
+      global: {
+        plugins: [store, router],
       },
     });
     expect(wrapper.element).toBeDefined();
@@ -239,55 +225,46 @@ describe("ReviewTableList practitioner planReferenceNumberData() CSR", () => {
   let store;
   let wrapper;
 
-  it("returns plan reference number in store when path isCSR", () => {
-    //please note the route change between this and the next test
-    store = new Vuex.Store(storeTemplate);
+  it("returns plan reference number in store when path isCSR", async () => {
+    store = createStore(storeTemplate);
     wrapper = mount(Page, {
-      localVue,
-      store,
-      mocks: {
-        $route: {
-          path: "/",
-        },
-        $router: {
-          push: jest.fn(),
-          currentRoute: {
-            path: "/potato-csr",
+      global: {
+        plugins: [store],
+        mocks: {
+          $router: {
+            currentRoute: {
+              value: {
+                path: "/pay-practitioner-csr",
+              },
+            },
           },
         },
       },
     });
-    const result =
-      wrapper.vm.$store.state.payPractitionerForm.planReferenceNumber;
+    const result = wrapper.vm.$store.state.payPractitionerForm.planReferenceNumber;
     expect(result).toBe("defaultReferenceNumber");
-    expect(wrapper.text()).toEqual(
-      expect.stringContaining("defaultReferenceNumber")
-    );
+    expect(wrapper.text()).toEqual(expect.stringContaining("defaultReferenceNumber"));
   });
 
-  it("does not render plan reference number when path is NOT CSR", () => {
-    store = new Vuex.Store(storeTemplate);
+  it("does not render plan reference number when path is NOT CSR", async () => {
+    store = createStore(storeTemplate);
     wrapper = mount(Page, {
-      localVue,
-      store,
-      mocks: {
-        $route: {
-          path: "/",
-        },
-        $router: {
-          push: jest.fn(),
-          currentRoute: {
-            path: "/potato",
+      global: {
+        plugins: [store],
+        mocks: {
+          $router: {
+            currentRoute: {
+              value: {
+                path: "/pay-practitioner",
+              },
+            },
           },
         },
       },
     });
-    const result =
-      wrapper.vm.$store.state.payPractitionerForm.planReferenceNumber;
+    const result = wrapper.vm.$store.state.payPractitionerForm.planReferenceNumber;
     expect(result).toBe("defaultReferenceNumber");
-    expect(wrapper.text()).not.toEqual(
-      expect.stringContaining("defaultReferenceNumber")
-    );
+    expect(wrapper.text()).not.toEqual(expect.stringContaining("defaultReferenceNumber"));
   });
 });
 
@@ -296,20 +273,10 @@ describe("ReviewTableList practitioner patientData()", () => {
   let wrapper;
 
   beforeEach(() => {
-    store = new Vuex.Store(storeTemplate);
+    store = createStore(storeTemplate);
     wrapper = mount(Page, {
-      localVue,
-      store,
-      mocks: {
-        $route: {
-          path: "/",
-        },
-        $router: {
-          push: jest.fn(),
-          currentRoute: {
-            path: "/potato-csr",
-          },
-        },
+      global: {
+        plugins: [store, router],
       },
     });
   });
@@ -321,12 +288,9 @@ describe("ReviewTableList practitioner patientData()", () => {
   });
 
   it("renders dependentNumber", () => {
-    const dependentNumber =
-      wrapper.vm.$store.state.payPractitionerForm.dependentNumber;
+    const dependentNumber = wrapper.vm.$store.state.payPractitionerForm.dependentNumber;
     expect(dependentNumber).toBe("defaultdependentNumber");
-    expect(wrapper.text()).toEqual(
-      expect.stringContaining("defaultdependentNumber")
-    );
+    expect(wrapper.text()).toEqual(expect.stringContaining("defaultdependentNumber"));
   });
 
   it("renders firstName", () => {
@@ -353,27 +317,16 @@ describe("ReviewTableList Practitioner vehicleAccidentData()", () => {
   let wrapper;
 
   beforeEach(() => {
-    store = new Vuex.Store(storeTemplate);
+    store = createStore(storeTemplate);
     wrapper = mount(Page, {
-      localVue,
-      store,
-      mocks: {
-        $route: {
-          path: "/",
-        },
-        $router: {
-          push: jest.fn(),
-          currentRoute: {
-            path: "/potato-csr",
-          },
-        },
+      global: {
+        plugins: [store, router],
       },
     });
   });
 
   it("renders isVehicleAccident", () => {
-    const isVehicleAccident =
-      wrapper.vm.$store.state.payPractitionerForm.isVehicleAccident;
+    const isVehicleAccident = wrapper.vm.$store.state.payPractitionerForm.isVehicleAccident;
     expect(isVehicleAccident).toBe("Y");
     expect(wrapper.text()).toEqual(expect.stringContaining("Yes"));
   });
@@ -382,9 +335,7 @@ describe("ReviewTableList Practitioner vehicleAccidentData()", () => {
     const vehicleAccidentClaimNumber =
       wrapper.vm.$store.state.payPractitionerForm.vehicleAccidentClaimNumber;
     expect(vehicleAccidentClaimNumber).toBe("defaultAccidentClaimNumber");
-    expect(wrapper.text()).toEqual(
-      expect.stringContaining("defaultAccidentClaimNumber")
-    );
+    expect(wrapper.text()).toEqual(expect.stringContaining("defaultAccidentClaimNumber"));
   });
 });
 
@@ -393,28 +344,17 @@ describe("ReviewTableList Practitioner claimInfoData()", () => {
   let wrapper;
 
   beforeEach(() => {
-    store = new Vuex.Store(storeTemplate);
+    store = createStore(storeTemplate);
     wrapper = mount(Page, {
-      localVue,
-      store,
-      mocks: {
-        $route: {
-          path: "/",
-        },
-        $router: {
-          push: jest.fn(),
-          currentRoute: {
-            path: "/potato-csr",
-          },
-        },
+      global: {
+        plugins: [store, router],
       },
     });
   });
 
   it("renders planReferenceNumberOfOriginalClaim", () => {
     const isVehicleAccident =
-      wrapper.vm.$store.state.payPractitionerForm
-        .planReferenceNumberOfOriginalClaim;
+      wrapper.vm.$store.state.payPractitionerForm.planReferenceNumberOfOriginalClaim;
     expect(isVehicleAccident).toBe("defaultplanReferenceNumberOfOriginalClaim");
     expect(wrapper.text()).toEqual(
       expect.stringContaining("defaultplanReferenceNumberOfOriginalClaim")
@@ -427,135 +367,92 @@ describe("ReviewTableList Practitioner medicalServiceClaims()", () => {
   let wrapper;
 
   beforeEach(() => {
-    store = new Vuex.Store(storeTemplate);
+    store = createStore(storeTemplate);
     wrapper = mount(Page, {
-      localVue,
-      store,
-      mocks: {
-        $route: {
-          path: "/",
-        },
-        $router: {
-          push: jest.fn(),
-          currentRoute: {
-            path: "/potato-csr",
-          },
-        },
+      global: {
+        plugins: [store, router],
       },
     });
   });
 
   it("renders serviceDate", () => {
     const serviceDate =
-      wrapper.vm.$store.state.payPractitionerForm.medicalServiceClaims[0]
-        .serviceDate;
+      wrapper.vm.$store.state.payPractitionerForm.medicalServiceClaims[0].serviceDate;
     expect(serviceDate).toBe("defaultserviceDate");
-    expect(wrapper.text()).toEqual(
-      expect.stringContaining("defaultserviceDate")
-    );
+    expect(wrapper.text()).toEqual(expect.stringContaining("defaultserviceDate"));
   });
 
   it("renders numberOfServices", () => {
     const numberOfServices =
-      wrapper.vm.$store.state.payPractitionerForm.medicalServiceClaims[0]
-        .numberOfServices;
+      wrapper.vm.$store.state.payPractitionerForm.medicalServiceClaims[0].numberOfServices;
     expect(numberOfServices).toBe("defaultnumberOfServices");
-    expect(wrapper.text()).toEqual(
-      expect.stringContaining("defaultnumberOfServices")
-    );
+    expect(wrapper.text()).toEqual(expect.stringContaining("defaultnumberOfServices"));
   });
 
   it("renders serviceClarificationCode", () => {
     const serviceClarificationCode =
-      wrapper.vm.$store.state.payPractitionerForm.medicalServiceClaims[0]
-        .serviceClarificationCode;
+      wrapper.vm.$store.state.payPractitionerForm.medicalServiceClaims[0].serviceClarificationCode;
     expect(serviceClarificationCode).toBe("defaultserviceClarificationCode");
-    expect(wrapper.text()).toEqual(
-      expect.stringContaining("defaultserviceClarificationCode")
-    );
+    expect(wrapper.text()).toEqual(expect.stringContaining("defaultserviceClarificationCode"));
   });
 
   it("renders feeItem", () => {
-    const feeItem =
-      wrapper.vm.$store.state.payPractitionerForm.medicalServiceClaims[0]
-        .feeItem;
+    const feeItem = wrapper.vm.$store.state.payPractitionerForm.medicalServiceClaims[0].feeItem;
     expect(feeItem).toBe("defaultfeeItem");
     expect(wrapper.text()).toEqual(expect.stringContaining("defaultfeeItem"));
   });
 
   it("renders amountBilled", () => {
     const amountBilled =
-      wrapper.vm.$store.state.payPractitionerForm.medicalServiceClaims[0]
-        .amountBilled;
+      wrapper.vm.$store.state.payPractitionerForm.medicalServiceClaims[0].amountBilled;
     expect(amountBilled).toBe("defaultamountBilled");
-    expect(wrapper.text()).toEqual(
-      expect.stringContaining("defaultamountBilled")
-    );
+    expect(wrapper.text()).toEqual(expect.stringContaining("defaultamountBilled"));
   });
 
   it("renders calledStartTime", () => {
     const calledStartTime =
-      wrapper.vm.$store.state.payPractitionerForm.medicalServiceClaims[0]
-        .calledStartTime.time;
+      wrapper.vm.$store.state.payPractitionerForm.medicalServiceClaims[0].calledStartTime.time;
     expect(calledStartTime).toBe("defaultcalledStartTime");
-    expect(wrapper.text()).toEqual(
-      expect.stringContaining("defaultcalledStartTime")
-    );
+    expect(wrapper.text()).toEqual(expect.stringContaining("defaultcalledStartTime"));
   });
 
   it("renders renderedFinishTime", () => {
     const renderedFinishTime =
-      wrapper.vm.$store.state.payPractitionerForm.medicalServiceClaims[0]
-        .renderedFinishTime.time;
+      wrapper.vm.$store.state.payPractitionerForm.medicalServiceClaims[0].renderedFinishTime.time;
     expect(renderedFinishTime).toBe("defaultrenderedFinishTime");
-    expect(wrapper.text()).toEqual(
-      expect.stringContaining("defaultrenderedFinishTime")
-    );
+    expect(wrapper.text()).toEqual(expect.stringContaining("defaultrenderedFinishTime"));
   });
 
   it("renders diagnosticCode", () => {
     const diagnosticCode =
-      wrapper.vm.$store.state.payPractitionerForm.medicalServiceClaims[0]
-        .diagnosticCode;
+      wrapper.vm.$store.state.payPractitionerForm.medicalServiceClaims[0].diagnosticCode;
     expect(diagnosticCode).toBe("defaultdiagnosticCode");
-    expect(wrapper.text()).toEqual(
-      expect.stringContaining("defaultdiagnosticCode")
-    );
+    expect(wrapper.text()).toEqual(expect.stringContaining("defaultdiagnosticCode"));
   });
 
   it("renders locationOfService", () => {
     const locationOfService =
-      wrapper.vm.$store.state.payPractitionerForm.medicalServiceClaims[0]
-        .locationOfService;
+      wrapper.vm.$store.state.payPractitionerForm.medicalServiceClaims[0].locationOfService;
     expect(locationOfService).toBe("defaultlocationOfService");
-    expect(wrapper.text()).toEqual(
-      expect.stringContaining("defaultlocationOfService")
-    );
+    expect(wrapper.text()).toEqual(expect.stringContaining("defaultlocationOfService"));
   });
 
   it("renders correspondenceAttached", () => {
     const correspondenceAttached =
-      wrapper.vm.$store.state.payPractitionerForm.medicalServiceClaims[0]
-        .correspondenceAttached;
+      wrapper.vm.$store.state.payPractitionerForm.medicalServiceClaims[0].correspondenceAttached;
     expect(correspondenceAttached).toBe("defaultcorrespondenceAttached");
-    expect(wrapper.text()).toEqual(
-      expect.stringContaining("defaultcorrespondenceAttached")
-    );
+    expect(wrapper.text()).toEqual(expect.stringContaining("defaultcorrespondenceAttached"));
   });
 
   it("renders submissionCode", () => {
     const submissionCode =
-      wrapper.vm.$store.state.payPractitionerForm.medicalServiceClaims[0]
-        .submissionCode;
+      wrapper.vm.$store.state.payPractitionerForm.medicalServiceClaims[0].submissionCode;
     expect(submissionCode).toBe("defaultsubmissionCode");
-    expect(wrapper.text()).toEqual(
-      expect.stringContaining("defaultsubmissionCode")
-    );
+    expect(wrapper.text()).toEqual(expect.stringContaining("defaultsubmissionCode"));
   });
 
   it("renders notes", () => {
-    const notes =
-      wrapper.vm.$store.state.payPractitionerForm.medicalServiceClaims[0].notes;
+    const notes = wrapper.vm.$store.state.payPractitionerForm.medicalServiceClaims[0].notes;
     expect(notes).toBe("defaultnotes");
     expect(wrapper.text()).toEqual(expect.stringContaining("defaultnotes"));
   });
@@ -566,58 +463,37 @@ describe("ReviewTableList Practitioner practitionerData()", () => {
   let wrapper;
 
   beforeEach(() => {
-    store = new Vuex.Store(storeTemplate);
+    store = createStore(storeTemplate);
     wrapper = mount(Page, {
-      localVue,
-      store,
-      mocks: {
-        $route: {
-          path: "/",
-        },
-        $router: {
-          push: jest.fn(),
-          currentRoute: {
-            path: "/potato-csr",
-          },
-        },
+      global: {
+        plugins: [store, router],
       },
     });
   });
 
   it("renders PractitionerLastName", () => {
-    const practitionerLastName =
-      wrapper.vm.$store.state.payPractitionerForm.practitionerLastName;
+    const practitionerLastName = wrapper.vm.$store.state.payPractitionerForm.practitionerLastName;
     expect(practitionerLastName).toBe("defaultpractitionerLastName");
-    expect(wrapper.text()).toEqual(
-      expect.stringContaining("defaultpractitionerLastName")
-    );
+    expect(wrapper.text()).toEqual(expect.stringContaining("defaultpractitionerLastName"));
   });
 
   it("renders practitionerFirstName", () => {
-    const practitionerFirstName =
-      wrapper.vm.$store.state.payPractitionerForm.practitionerFirstName;
+    const practitionerFirstName = wrapper.vm.$store.state.payPractitionerForm.practitionerFirstName;
     expect(practitionerFirstName).toBe("defaultpractitionerFirstName");
-    expect(wrapper.text()).toEqual(
-      expect.stringContaining("defaultpractitionerFirstName")
-    );
+    expect(wrapper.text()).toEqual(expect.stringContaining("defaultpractitionerFirstName"));
   });
 
   it("renders practitionerPaymentNumber", () => {
     const practitionerPaymentNumber =
       wrapper.vm.$store.state.payPractitionerForm.practitionerPaymentNumber;
     expect(practitionerPaymentNumber).toBe("defaultpractitionerPaymentNumber");
-    expect(wrapper.text()).toEqual(
-      expect.stringContaining("defaultpractitionerPaymentNumber")
-    );
+    expect(wrapper.text()).toEqual(expect.stringContaining("defaultpractitionerPaymentNumber"));
   });
 
   it("renders practitionerPractitionerNumber", () => {
     const practitionerPractitionerNumber =
-      wrapper.vm.$store.state.payPractitionerForm
-        .practitionerPractitionerNumber;
-    expect(practitionerPractitionerNumber).toBe(
-      "defaultpractitionerPractitionerNumber"
-    );
+      wrapper.vm.$store.state.payPractitionerForm.practitionerPractitionerNumber;
+    expect(practitionerPractitionerNumber).toBe("defaultpractitionerPractitionerNumber");
     expect(wrapper.text()).toEqual(
       expect.stringContaining("defaultpractitionerPractitionerNumber")
     );
@@ -627,29 +503,20 @@ describe("ReviewTableList Practitioner practitionerData()", () => {
     const practitionerSpecialtyCode =
       wrapper.vm.$store.state.payPractitionerForm.practitionerSpecialtyCode;
     expect(practitionerSpecialtyCode).toBe("defaultpractitionerSpecialtyCode");
-    expect(wrapper.text()).toEqual(
-      expect.stringContaining("defaultpractitionerSpecialtyCode")
-    );
+    expect(wrapper.text()).toEqual(expect.stringContaining("defaultpractitionerSpecialtyCode"));
   });
 
   it("renders practitionerFacilityNumber", () => {
     const practitionerFacilityNumber =
       wrapper.vm.$store.state.payPractitionerForm.practitionerFacilityNumber;
-    expect(practitionerFacilityNumber).toBe(
-      "defaultpractitionerFacilityNumber"
-    );
-    expect(wrapper.text()).toEqual(
-      expect.stringContaining("defaultpractitionerFacilityNumber")
-    );
+    expect(practitionerFacilityNumber).toBe("defaultpractitionerFacilityNumber");
+    expect(wrapper.text()).toEqual(expect.stringContaining("defaultpractitionerFacilityNumber"));
   });
 
   it("renders Coverage Pre-Authorization Number", () => {
-    const coveragePreAuthNumber =
-      wrapper.vm.$store.state.payPractitionerForm.coveragePreAuthNumber;
+    const coveragePreAuthNumber = wrapper.vm.$store.state.payPractitionerForm.coveragePreAuthNumber;
     expect(coveragePreAuthNumber).toBe("defaultcoveragePreAuthNumber");
-    expect(wrapper.text()).toEqual(
-      expect.stringContaining("defaultcoveragePreAuthNumber")
-    );
+    expect(wrapper.text()).toEqual(expect.stringContaining("defaultcoveragePreAuthNumber"));
   });
 });
 
@@ -658,20 +525,10 @@ describe("ReviewTableList practitioner referredByData()", () => {
   let wrapper;
 
   beforeEach(() => {
-    store = new Vuex.Store(storeTemplate);
+    store = createStore(storeTemplate);
     wrapper = mount(Page, {
-      localVue,
-      store,
-      mocks: {
-        $route: {
-          path: "/",
-        },
-        $router: {
-          push: jest.fn(),
-          currentRoute: {
-            path: "/potato-csr",
-          },
-        },
+      global: {
+        plugins: [store, router],
       },
     });
   });
@@ -679,32 +536,21 @@ describe("ReviewTableList practitioner referredByData()", () => {
   it("renders referredByPractitionerNumber", () => {
     const referredByPractitionerNumber =
       wrapper.vm.$store.state.payPractitionerForm.referredByPractitionerNumber;
-    expect(referredByPractitionerNumber).toBe(
-      "defaultreferredByPractitionerNumber"
-    );
-    expect(wrapper.text()).toEqual(
-      expect.stringContaining("defaultreferredByPractitionerNumber")
-    );
+    expect(referredByPractitionerNumber).toBe("defaultreferredByPractitionerNumber");
+    expect(wrapper.text()).toEqual(expect.stringContaining("defaultreferredByPractitionerNumber"));
   });
 
   it("renders referredByLastName", () => {
-    const referredByLastName =
-      wrapper.vm.$store.state.payPractitionerForm.referredByLastName;
+    const referredByLastName = wrapper.vm.$store.state.payPractitionerForm.referredByLastName;
     expect(referredByLastName).toBe("defaultreferredByLastName");
-    expect(wrapper.text()).toEqual(
-      expect.stringContaining("defaultreferredByLastName")
-    );
+    expect(wrapper.text()).toEqual(expect.stringContaining("defaultreferredByLastName"));
   });
 
   it("renders referredByFirstNameInitial", () => {
     const referredByFirstNameInitial =
       wrapper.vm.$store.state.payPractitionerForm.referredByFirstNameInitial;
-    expect(referredByFirstNameInitial).toBe(
-      "defaultreferredByFirstNameInitial"
-    );
-    expect(wrapper.text()).toEqual(
-      expect.stringContaining("defaultreferredByFirstNameInitial")
-    );
+    expect(referredByFirstNameInitial).toBe("defaultreferredByFirstNameInitial");
+    expect(wrapper.text()).toEqual(expect.stringContaining("defaultreferredByFirstNameInitial"));
   });
 });
 
@@ -713,20 +559,10 @@ describe("ReviewTableList practitioner referredToData()", () => {
   let wrapper;
 
   beforeEach(() => {
-    store = new Vuex.Store(storeTemplate);
+    store = createStore(storeTemplate);
     wrapper = mount(Page, {
-      localVue,
-      store,
-      mocks: {
-        $route: {
-          path: "/",
-        },
-        $router: {
-          push: jest.fn(),
-          currentRoute: {
-            path: "/potato-csr",
-          },
-        },
+      global: {
+        plugins: [store, router],
       },
     });
   });
@@ -734,32 +570,21 @@ describe("ReviewTableList practitioner referredToData()", () => {
   it("renders referredToPractitionerNumber", () => {
     const referredToPractitionerNumber =
       wrapper.vm.$store.state.payPractitionerForm.referredToPractitionerNumber;
-    expect(referredToPractitionerNumber).toBe(
-      "defaultreferredToPractitionerNumber"
-    );
-    expect(wrapper.text()).toEqual(
-      expect.stringContaining("defaultreferredToPractitionerNumber")
-    );
+    expect(referredToPractitionerNumber).toBe("defaultreferredToPractitionerNumber");
+    expect(wrapper.text()).toEqual(expect.stringContaining("defaultreferredToPractitionerNumber"));
   });
 
   it("renders referredToLastName", () => {
-    const referredToLastName =
-      wrapper.vm.$store.state.payPractitionerForm.referredToLastName;
+    const referredToLastName = wrapper.vm.$store.state.payPractitionerForm.referredToLastName;
     expect(referredToLastName).toBe("defaultreferredToLastName");
-    expect(wrapper.text()).toEqual(
-      expect.stringContaining("defaultreferredToLastName")
-    );
+    expect(wrapper.text()).toEqual(expect.stringContaining("defaultreferredToLastName"));
   });
 
   it("renders referredToFirstNameInitial", () => {
     const referredToFirstNameInitial =
       wrapper.vm.$store.state.payPractitionerForm.referredToFirstNameInitial;
-    expect(referredToFirstNameInitial).toBe(
-      "defaultreferredToFirstNameInitial"
-    );
-    expect(wrapper.text()).toEqual(
-      expect.stringContaining("defaultreferredToFirstNameInitial")
-    );
+    expect(referredToFirstNameInitial).toBe("defaultreferredToFirstNameInitial");
+    expect(wrapper.text()).toEqual(expect.stringContaining("defaultreferredToFirstNameInitial"));
   });
 });
 
@@ -768,138 +593,95 @@ describe("ReviewTableList practitioner hospitalVisitClaims()", () => {
   let wrapper;
 
   beforeEach(() => {
-    store = new Vuex.Store(storeTemplate);
+    store = createStore(storeTemplate);
     wrapper = mount(Page, {
-      localVue,
-      store,
-      mocks: {
-        $route: {
-          path: "/",
-        },
-        $router: {
-          push: jest.fn(),
-          currentRoute: {
-            path: "/potato-csr",
-          },
-        },
+      global: {
+        plugins: [store, router],
       },
     });
   });
 
   it("renders HVC month", () => {
-    const month =
-      wrapper.vm.$store.state.payPractitionerForm.hospitalVisitClaims[0].month;
+    const month = wrapper.vm.$store.state.payPractitionerForm.hospitalVisitClaims[0].month;
     expect(month).toBe("1");
     expect(wrapper.text()).toEqual(expect.stringContaining("January"));
   });
 
   it("renders HVC dayFrom", () => {
-    const dayFrom =
-      wrapper.vm.$store.state.payPractitionerForm.hospitalVisitClaims[0]
-        .dayFrom;
+    const dayFrom = wrapper.vm.$store.state.payPractitionerForm.hospitalVisitClaims[0].dayFrom;
     expect(dayFrom).toBe("defaultHVCdayFrom");
-    expect(wrapper.text()).toEqual(
-      expect.stringContaining("defaultHVCdayFrom")
-    );
+    expect(wrapper.text()).toEqual(expect.stringContaining("defaultHVCdayFrom"));
   });
 
   it("renders HVC dayTo", () => {
-    const dayTo =
-      wrapper.vm.$store.state.payPractitionerForm.hospitalVisitClaims[0].dayTo;
+    const dayTo = wrapper.vm.$store.state.payPractitionerForm.hospitalVisitClaims[0].dayTo;
     expect(dayTo).toBe("defaultHVCdayTo");
     expect(wrapper.text()).toEqual(expect.stringContaining("defaultHVCdayTo"));
   });
 
   it("renders HVC year", () => {
-    const year =
-      wrapper.vm.$store.state.payPractitionerForm.hospitalVisitClaims[0].year;
+    const year = wrapper.vm.$store.state.payPractitionerForm.hospitalVisitClaims[0].year;
     expect(year).toBe("defaultHVCyear");
     expect(wrapper.text()).toEqual(expect.stringContaining("defaultHVCyear"));
   });
 
   it("renders HVC numberOfServices", () => {
     const numberOfServices =
-      wrapper.vm.$store.state.payPractitionerForm.hospitalVisitClaims[0]
-        .numberOfServices;
+      wrapper.vm.$store.state.payPractitionerForm.hospitalVisitClaims[0].numberOfServices;
     expect(numberOfServices).toBe("defaultHVCnumberOfServices");
-    expect(wrapper.text()).toEqual(
-      expect.stringContaining("defaultHVCnumberOfServices")
-    );
+    expect(wrapper.text()).toEqual(expect.stringContaining("defaultHVCnumberOfServices"));
   });
 
   it("renders HVC serviceClarificationCode", () => {
     const serviceClarificationCode =
-      wrapper.vm.$store.state.payPractitionerForm.hospitalVisitClaims[0]
-        .serviceClarificationCode;
+      wrapper.vm.$store.state.payPractitionerForm.hospitalVisitClaims[0].serviceClarificationCode;
     expect(serviceClarificationCode).toBe("defaultHVCserviceClarificationCode");
-    expect(wrapper.text()).toEqual(
-      expect.stringContaining("defaultHVCserviceClarificationCode")
-    );
+    expect(wrapper.text()).toEqual(expect.stringContaining("defaultHVCserviceClarificationCode"));
   });
 
   it("renders HVC feeItem", () => {
-    const feeItem =
-      wrapper.vm.$store.state.payPractitionerForm.hospitalVisitClaims[0]
-        .feeItem;
+    const feeItem = wrapper.vm.$store.state.payPractitionerForm.hospitalVisitClaims[0].feeItem;
     expect(feeItem).toBe("defaultHVCfeeItem");
-    expect(wrapper.text()).toEqual(
-      expect.stringContaining("defaultHVCfeeItem")
-    );
+    expect(wrapper.text()).toEqual(expect.stringContaining("defaultHVCfeeItem"));
   });
 
   it("renders HVC amountBilled", () => {
     const amountBilled =
-      wrapper.vm.$store.state.payPractitionerForm.hospitalVisitClaims[0]
-        .amountBilled;
+      wrapper.vm.$store.state.payPractitionerForm.hospitalVisitClaims[0].amountBilled;
     expect(amountBilled).toBe("defaultHVCamountBilled");
-    expect(wrapper.text()).toEqual(
-      expect.stringContaining("defaultHVCamountBilled")
-    );
+    expect(wrapper.text()).toEqual(expect.stringContaining("defaultHVCamountBilled"));
   });
 
   it("renders HVC diagnosticCode", () => {
     const diagnosticCode =
-      wrapper.vm.$store.state.payPractitionerForm.hospitalVisitClaims[0]
-        .diagnosticCode;
+      wrapper.vm.$store.state.payPractitionerForm.hospitalVisitClaims[0].diagnosticCode;
     expect(diagnosticCode).toBe("defaultHVCdiagnosticCode");
-    expect(wrapper.text()).toEqual(
-      expect.stringContaining("defaultHVCdiagnosticCode")
-    );
+    expect(wrapper.text()).toEqual(expect.stringContaining("defaultHVCdiagnosticCode"));
   });
 
   it("renders HVC locationOfService", () => {
     const locationOfService =
-      wrapper.vm.$store.state.payPractitionerForm.hospitalVisitClaims[0]
-        .locationOfService;
+      wrapper.vm.$store.state.payPractitionerForm.hospitalVisitClaims[0].locationOfService;
     expect(locationOfService).toBe("defaultHVClocationOfService");
-    expect(wrapper.text()).toEqual(
-      expect.stringContaining("defaultHVClocationOfService")
-    );
+    expect(wrapper.text()).toEqual(expect.stringContaining("defaultHVClocationOfService"));
   });
 
   it("renders HVC correspondenceAttached", () => {
     const correspondenceAttached =
-      wrapper.vm.$store.state.payPractitionerForm.hospitalVisitClaims[0]
-        .correspondenceAttached;
+      wrapper.vm.$store.state.payPractitionerForm.hospitalVisitClaims[0].correspondenceAttached;
     expect(correspondenceAttached).toBe("defaultHVCcorrespondenceAttached");
-    expect(wrapper.text()).toEqual(
-      expect.stringContaining("defaultHVCcorrespondenceAttached")
-    );
+    expect(wrapper.text()).toEqual(expect.stringContaining("defaultHVCcorrespondenceAttached"));
   });
 
   it("renders HVC submissionCode", () => {
     const submissionCode =
-      wrapper.vm.$store.state.payPractitionerForm.hospitalVisitClaims[0]
-        .submissionCode;
+      wrapper.vm.$store.state.payPractitionerForm.hospitalVisitClaims[0].submissionCode;
     expect(submissionCode).toBe("defaultHVCsubmissionCode");
-    expect(wrapper.text()).toEqual(
-      expect.stringContaining("defaultHVCsubmissionCode")
-    );
+    expect(wrapper.text()).toEqual(expect.stringContaining("defaultHVCsubmissionCode"));
   });
 
   it("renders HVC notes", () => {
-    const notes =
-      wrapper.vm.$store.state.payPractitionerForm.hospitalVisitClaims[0].notes;
+    const notes = wrapper.vm.$store.state.payPractitionerForm.hospitalVisitClaims[0].notes;
     expect(notes).toBe("defaultHVCnotes");
     expect(wrapper.text()).toEqual(expect.stringContaining("defaultHVCnotes"));
   });
@@ -915,36 +697,34 @@ describe("ReviewTableList practitioner hospitalVisitClaims()", () => {
 describe("ReviewTableList practitioner navigateToClaimCountPage()", () => {
   let store;
   let wrapper;
-  let $route;
-  let $router;
+  let mockRouter;
   let spyOnRouter;
 
   beforeEach(() => {
-    $route = {
-      path: "/potato",
+    mockRouter = {
+      push: vi.fn(),
+      currentRoute: {
+        value: {
+          path: "/potato",
+        },
+      },
     };
-    $router = {
-      $route,
-      currentRoute: $route,
-      push: jest.fn(),
-    };
-    store = new Vuex.Store(storeTemplate);
+
+    store = createStore(storeTemplate);
     wrapper = mount(Page, {
-      localVue,
-      store,
-      mocks: {
-        $route,
-        $router,
+      global: {
+        plugins: [store],
+        mocks: {
+          $router: mockRouter,
+        },
       },
     });
-    spyOnRouter = jest
-      .spyOn($router, "push")
-      .mockImplementation(() => Promise.resolve("pushed"));
+    spyOnRouter = vi.spyOn(mockRouter, "push").mockImplementation(() => Promise.resolve("pushed"));
   });
 
   afterEach(() => {
-    jest.resetModules();
-    jest.clearAllMocks();
+    vi.resetModules();
+    vi.clearAllMocks();
   });
 
   it("calls router push", () => {
@@ -966,36 +746,33 @@ describe("ReviewTableList practitioner navigateToClaimCountPage()", () => {
 describe("ReviewTableList practitioner navigateToClaimCountPage() (part 2 CSR)", () => {
   let store;
   let wrapper;
-  let $route;
-  let $router;
+  let mockRouter;
   let spyOnRouter;
 
   beforeEach(() => {
-    $route = {
-      path: "/potato-csr",
+    mockRouter = {
+      push: vi.fn(),
+      currentRoute: {
+        value: {
+          path: "/potato-csr",
+        },
+      },
     };
-    $router = {
-      $route,
-      currentRoute: $route,
-      push: jest.fn(),
-    };
-    store = new Vuex.Store(storeTemplate);
+    store = createStore(storeTemplate);
     wrapper = mount(Page, {
-      localVue,
-      store,
-      mocks: {
-        $route,
-        $router,
+      global: {
+        plugins: [store],
+        mocks: {
+          $router: mockRouter,
+        },
       },
     });
-    spyOnRouter = jest
-      .spyOn($router, "push")
-      .mockImplementation(() => Promise.resolve("pushed"));
+    spyOnRouter = vi.spyOn(mockRouter, "push").mockImplementation(() => Promise.resolve("pushed"));
   });
 
   afterEach(() => {
-    jest.resetModules();
-    jest.clearAllMocks();
+    vi.resetModules();
+    vi.clearAllMocks();
   });
 
   it("calls router push", async () => {
@@ -1019,38 +796,35 @@ describe("ReviewTableList practitioner navigateToClaimCountPage() (part 2 CSR)",
 describe("ReviewTableList practitioner navigateToMainFormPage(anchorName)", () => {
   let store;
   let wrapper;
-  let $route;
-  let $router;
+  let mockRouter;
   let spyOnRouter;
 
   const anchorName = "anchorName";
 
   beforeEach(() => {
-    $route = {
-      path: "/potato",
+    mockRouter = {
+      push: vi.fn(),
+      currentRoute: {
+        value: {
+          path: "/potato",
+        },
+      },
     };
-    $router = {
-      $route,
-      currentRoute: $route,
-      push: jest.fn(),
-    };
-    store = new Vuex.Store(storeTemplate);
+    store = createStore(storeTemplate);
     wrapper = mount(Page, {
-      localVue,
-      store,
-      mocks: {
-        $route,
-        $router,
+      global: {
+        plugins: [store],
+        mocks: {
+          $router: mockRouter,
+        },
       },
     });
-    spyOnRouter = jest
-      .spyOn($router, "push")
-      .mockImplementation(() => Promise.resolve("pushed"));
+    spyOnRouter = vi.spyOn(mockRouter, "push").mockImplementation(() => Promise.resolve("pushed"));
   });
 
   afterEach(() => {
-    jest.resetModules();
-    jest.clearAllMocks();
+    vi.resetModules();
+    vi.clearAllMocks();
   });
 
   it("calls router push", () => {
@@ -1060,9 +834,7 @@ describe("ReviewTableList practitioner navigateToMainFormPage(anchorName)", () =
 
   it("calls setPageComplete", () => {
     wrapper.vm.navigateToMainFormPage(anchorName);
-    expect(spyOnSetPageComplete).toHaveBeenCalledWith(
-      "/pay-practitioner/main-form"
-    );
+    expect(spyOnSetPageComplete).toHaveBeenCalledWith("/pay-practitioner/main-form");
   });
 
   it("calls scrollToElement", async () => {
@@ -1075,38 +847,35 @@ describe("ReviewTableList practitioner navigateToMainFormPage(anchorName)", () =
 describe("ReviewTableList practitioner navigateToMainFormPage(anchorName) (part 2 CSR)", () => {
   let store;
   let wrapper;
-  let $route;
-  let $router;
+  let mockRouter;
   let spyOnRouter;
 
   const anchorName = "anchorName";
 
   beforeEach(() => {
-    $route = {
-      path: "/potato-csr",
+    mockRouter = {
+      push: vi.fn(),
+      currentRoute: {
+        value: {
+          path: "/potato-csr",
+        },
+      },
     };
-    $router = {
-      $route,
-      currentRoute: $route,
-      push: jest.fn(),
-    };
-    store = new Vuex.Store(storeTemplate);
+    store = createStore(storeTemplate);
     wrapper = mount(Page, {
-      localVue,
-      store,
-      mocks: {
-        $route,
-        $router,
+      global: {
+        plugins: [store],
+        mocks: {
+          $router: mockRouter,
+        },
       },
     });
-    spyOnRouter = jest
-      .spyOn($router, "push")
-      .mockImplementation(() => Promise.resolve("pushed"));
+    spyOnRouter = vi.spyOn(mockRouter, "push").mockImplementation(() => Promise.resolve("pushed"));
   });
 
   afterEach(() => {
-    jest.resetModules();
-    jest.clearAllMocks();
+    vi.resetModules();
+    vi.clearAllMocks();
   });
 
   it("calls router push", () => {
@@ -1116,9 +885,7 @@ describe("ReviewTableList practitioner navigateToMainFormPage(anchorName) (part 
 
   it("calls setPageComplete", () => {
     wrapper.vm.navigateToMainFormPage(anchorName);
-    expect(spyOnSetPageComplete).toHaveBeenCalledWith(
-      "/pay-practitioner-csr/main-form"
-    );
+    expect(spyOnSetPageComplete).toHaveBeenCalledWith("/pay-practitioner-csr/main-form");
   });
 
   it("calls scrollToElement", async () => {
@@ -1131,23 +898,24 @@ describe("ReviewTableList practitioner navigateToMainFormPage(anchorName) (part 
 describe("ReviewTableList practitioner getMedicalServiceClaimTitle(index)", () => {
   let store;
   let wrapper;
-  const $route = {
-    path: "/potato-csr",
-  };
-  const $router = {
-    $route,
-    currentRoute: $route,
-    push: jest.fn(),
+
+  const mockRouter = {
+    push: vi.fn(),
+    currentRoute: {
+      value: {
+        path: "/potato-csr",
+      },
+    },
   };
 
   it("returns 1", () => {
-    store = new Vuex.Store(storeTemplate);
+    store = createStore(storeTemplate);
     wrapper = mount(Page, {
-      localVue,
-      store,
-      mocks: {
-        $route,
-        $router,
+      global: {
+        plugins: [store],
+        mocks: {
+          $router: mockRouter,
+        },
       },
     });
     const result = wrapper.vm.getMedicalServiceClaimTitle(0);
@@ -1155,13 +923,13 @@ describe("ReviewTableList practitioner getMedicalServiceClaimTitle(index)", () =
   });
 
   it("returns 2", () => {
-    store = new Vuex.Store(storeTemplate2);
+    store = createStore(storeTemplate2);
     wrapper = mount(Page, {
-      localVue,
-      store,
-      mocks: {
-        $route,
-        $router,
+      global: {
+        plugins: [store],
+        mocks: {
+          $router: mockRouter,
+        },
       },
     });
     const result = wrapper.vm.getMedicalServiceClaimTitle(0);

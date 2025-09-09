@@ -11,12 +11,12 @@
 </template>
 
 <script>
-import PageContent from '../components/PageContent.vue';
+import PageContent from "../components/PageContent.vue";
 
 export default {
-  name: 'MaintenancePage',
+  name: "MaintenancePage",
   components: {
     PageContent,
-  }
-}
+  },
+};
 </script>

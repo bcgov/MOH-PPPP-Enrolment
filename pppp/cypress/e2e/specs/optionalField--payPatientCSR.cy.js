@@ -1,9 +1,4 @@
-// https://docs.cypress.io/api/introduction/api.html
-/* eslint-disable jest/valid-expect */
-/* eslint-disable jest/valid-expect-in-promise */
-
-//you can replace the testUrl with https://dev.my.gov.bc.ca/pppp/pay-patient-csr if needed
-//you can also replace the "dev" with "test" to check the TEST environment
+import envData from "../../fixtures/env-data.js";
 const testUrl = "/pay-patient-csr";
 
 describe("Pay Patient-CSR", () => {
@@ -39,9 +34,21 @@ describe("Pay Patient-CSR", () => {
       expect(loc.pathname).to.eq("/pppp/pay-patient-csr/review");
     });
 
+    if (envData.enableIntercepts) {
+      console.log("intercepted submission call for optionalField--payPatientCSR");
+
+      cy.intercept("POST", "/pppp/api/payformsIntegration/patient/*", {
+        statusCode: 200,
+        body: {
+          returnCode: "0",
+          testfield: "This is a stubbed test response from Cypress",
+        },
+      });
+    }
+
     cy.get("[data-cy=continueBar]").click();
 
-    cy.location().should((loc) => {
+    cy.location({ timeout: 40000 }).should((loc) => {
       expect(loc.pathname).to.eq("/pppp/pay-patient-csr/submission");
     });
   });

@@ -1,29 +1,17 @@
-// https://docs.cypress.io/api/introduction/api.html
-/* eslint-disable jest/valid-expect */
-/* eslint-disable jest/valid-expect-in-promise */
-
-//you can replace the testUrl with https://dev.my.gov.bc.ca/pppp/pay-practitioner if needed
-//you can also replace the "dev" with "test" to check the TEST environment
-const testUrl = "/pay-practitioner";
-
-//dev environment data
-const backendLastName = "GOTTNER";
-const backendFirstName = "MICHAEL";
-const backendPractitionerNumber = "00001";
-
-//test environment data
-// const backendLastName = "OPXUWPW";
-// const backendFirstName = "UJGIJPQ";
-// const backendPractitionerNumber = "B1419";
+import envData from "../../fixtures/env-data.js";
 
 const testYear = new Date().getFullYear() - 1;
+const backendLastName = envData.backendLastName;
+const backendFirstName = envData.backendFirstName;
+const backendPractitionerNumber = envData.backendPractitionerNumber;
+const testUrl = "/pay-practitioner-csr";
 
-describe("Pay Practitioner-Public", () => {
+describe("Pay Practitioner-CSR", () => {
   it("follows the happy path", () => {
     cy.visit(testUrl);
     //Claim Count
     cy.location().should((loc) => {
-      expect(loc.pathname).to.eq("/pppp/pay-practitioner");
+      expect(loc.pathname).to.eq("/pppp/pay-practitioner-csr");
     });
 
     cy.get("[data-cy=captchaInput]").type("irobot");
@@ -46,9 +34,10 @@ describe("Pay Practitioner-Public", () => {
 
     //Main Form
     cy.location().should((loc) => {
-      expect(loc.pathname).to.eq("/pppp/pay-practitioner/main-form");
+      expect(loc.pathname).to.eq("/pppp/pay-practitioner-csr/main-form");
     });
 
+    cy.get("[data-cy=PRN]").type("1111111111");
     cy.get("[data-cy=PHN]").type("9353 166 544");
     cy.get("[data-cy=patientFirstName]").type("Firstname");
     cy.get("[data-cy=patientLastName]").type("Lastname");
@@ -84,10 +73,12 @@ describe("Pay Practitioner-Public", () => {
       .trigger("change");
 
     cy.get("select")
-      .find("option[data-cy=submissionCode0]")
+      .find("option[data-cy=submissionCode00]")
       .then(($el) => $el.get(0).setAttribute("selected", "selected"))
       .parent()
       .trigger("change");
+
+    cy.get("[data-cy=medNotesAttach0]").type(`aabb""//\\ `);
 
     //hospital claim section
     cy.get("select")
@@ -110,10 +101,12 @@ describe("Pay Practitioner-Public", () => {
       .trigger("change");
 
     cy.get("select")
-      .find("option[data-cy=hospitalClaimSubmissionCode0]")
+      .find("option[data-cy=hospitalClaimSubmissionCode00]")
       .then(($el) => $el.get(0).setAttribute("selected", "selected"))
       .parent()
       .trigger("change");
+
+    cy.get("[data-cy=hospitalNotesAttach0]").type(`aabb""//\\ `);
 
     cy.get("[data-cy=practitionerLastName]").type(backendLastName);
     cy.get("[data-cy=practitionerFirstName]").type(backendFirstName);
@@ -124,19 +117,31 @@ describe("Pay Practitioner-Public", () => {
 
     //Review page
     cy.location().should((loc) => {
-      expect(loc.pathname).to.eq("/pppp/pay-practitioner/review");
+      expect(loc.pathname).to.eq("/pppp/pay-practitioner-csr/review");
     });
+
+    if (envData.enableIntercepts) {
+      console.log("intercepted submission call for happyPathPractitioner-CSR");
+
+      cy.intercept("POST", "/pppp/api/payformsIntegration/practitioner/*", {
+        statusCode: 200,
+        body: {
+          returnCode: "0",
+          testfield: "This is a stubbed test response from Cypress",
+        },
+      });
+    }
 
     cy.get("[data-cy=continueBar]").click();
 
-    cy.location().should((loc) => {
-      expect(loc.pathname).to.eq("/pppp/pay-practitioner/submission");
+    cy.location({ timeout: 40000 }).should((loc) => {
+      expect(loc.pathname).to.eq("/pppp/pay-practitioner-csr/submission");
     });
-    
+
     cy.get("[data-cy=newForm]").click();
 
     cy.location().should((loc) => {
-      expect(loc.pathname).to.eq("/pppp/pay-practitioner");
+      expect(loc.pathname).to.eq("/pppp/pay-practitioner-csr");
     });
   });
 });

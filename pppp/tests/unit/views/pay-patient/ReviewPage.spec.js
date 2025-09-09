@@ -1,20 +1,16 @@
-import { shallowMount, createLocalVue } from "@vue/test-utils";
-import Vuex from "vuex";
+import { mount } from "@vue/test-utils";
 import { cloneDeep } from "lodash";
+import { createStore } from "vuex";
 import Page from "@/views/pay-patient/ReviewPage.vue";
-import * as module1 from "../../../../src/store/modules/app";
 import * as module2 from "../../../../src/store/modules/pay-patient-form";
-import * as module3 from "../../../../src/store/modules/pay-practitioner-form";
 import * as dummyDataValid from "../../../../src/store/states/pay-patient-form-dummy-data";
-import spaEnvService from "@/services/spa-env-service";
 import logService from "@/services/log-service";
 import apiService from "@/services/api-service";
 import pageStateService from "@/services/page-state-service";
 import { getConvertedPath } from "@/helpers/url";
 import { payPatientRoutes, payPatientRouteStepOrder } from "@/router/routes";
-
-const localVue = createLocalVue();
-localVue.use(Vuex);
+import * as scrollHelper from "@/helpers/scroll";
+import { defaultStoreTemplate, mockRouter, mockRouterCSR, router } from "../../test-helper.js";
 
 const mockResponse = {
   data: {
@@ -26,76 +22,6 @@ const mockResponse = {
   },
   status: 200,
   statusText: "OK",
-  headers: {
-    accept: "application/json, text/plain, */*",
-    "accept-encoding": "gzip, deflate, br",
-    "accept-language": "en-US,en;q=0.9",
-    "access-control-allow-credentials": "true",
-    "access-control-allow-headers":
-      "Accept,Authorization,Cache-Control,Content-Type,DNT,If-Modified-Since,Keep-Alive,Origin,User-Agent,X-Requested-With",
-    "access-control-allow-methods": "GET, POST, PUT, DELETE, OPTIONS",
-    "access-control-allow-origin": "https://my.gov.bc.ca",
-    "access-control-expose-headers": "Authorization",
-    authorization: "Basic Z2NwZW1zcGRlOndlbGNvbWUx",
-    breadcrumbid: "ID-vs-dapp041-maximusbchealth-local-1632513873115-0-11",
-    "cache-control": "no-store",
-    connection: "close",
-    "content-security-policy":
-      "default-src * data: blob: filesystem: 'unsafe-inline' 'unsafe-eval'",
-    "content-type": "application/json",
-    date: "Mon, 27 Sep 2021 22:15:41 GMT",
-    forwarded:
-      "for=216.232.32.188;host=pppp-web-0752cb-dev.apps.silver.devops.gov.bc.ca;proto=https",
-    origin: "http://localhost:8080",
-    pragma: "no-cache",
-    referer: "http://localhost:8080/pppp/pay-patient/review",
-    "response-type": "application/json",
-    "sec-ch-ua":
-      '"Google Chrome";v="93", " Not;A Brand";v="99", "Chromium";v="93"',
-    "sec-ch-ua-mobile": "?0",
-    "sec-ch-ua-platform": '"Windows"',
-    "sec-fetch-dest": "empty",
-    "sec-fetch-mode": "cors",
-    "sec-fetch-site": "same-origin",
-    server: "nginx",
-    "strict-transport-security": "max-age=86400; includeSubDomains",
-    "transfer-encoding": "chunked",
-    "user-agent":
-      "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.82 Safari/537.36",
-    uuid: "ed8fcf17-fb1f-4b3d-93aa-1ba5fbfb2898",
-    "x-content-type-options": "nosniff",
-    "x-forwarded-for": "127.0.0.1, 216.232.32.188",
-    "x-forwarded-host":
-      "localhost:8080, pppp-web-0752cb-dev.apps.silver.devops.gov.bc.ca",
-    "x-forwarded-port": "8080, 443",
-    "x-forwarded-proto": "http, https",
-    "x-frame-options": "DENY",
-    "x-powered-by": "Servlet/3.1 JSP/2.3",
-    "x-weblogic-request-clusterinfo": "true",
-    "x-xss-protection": "1",
-  },
-  config: {
-    url:
-      "/pppp/api/payformsIntegration/patient/ed8fcf17-fb1f-4b3d-93aa-1ba5fbfb2898",
-    method: "post",
-    data:
-      '{"applicationUuid":"ed8fcf17-fb1f-4b3d-93aa-1ba5fbfb2898","requestUuid":"d88ecb3b-0ce5-4849-a349-e91fd7b11618","submissionDate":"2021-09-27","isCSR":"N","payPatient":{"claimCount":"1","planReferenceNumber":"","phn":"9353166544","dependentNumber":"00","firstName":"a","middleInitial":"","lastName":"a","birthDate":"2021-09-11","addressOwner":"PATIENT","unitNumber":"","streetNumber":"111 Fa","streetName":"Fake Street","city":"Edmonton","postalCode":"V1A1A1","isVehicleAccident":"N","vehicleAccidentClaimNumber":"","planReferenceNumberOfOriginalClaim":"","medicalServiceClaims":[{"serviceDate":"2021-09-18","numberOfServices":"1","serviceClarificationCode":"","feeItem":"00001","amountBilled":"1.00","calledStartTime":"","renderedFinishTime":"","diagnosticCode":"001","locationOfService":"Q","correspondenceAttached":"","submissionCode":"","notes":""}],"practitionerLastName":"a","practitionerFirstName":"a","practitionerPaymentNumber":"23442","practitionerPractitionerNumber":"A2222","practitionerFacilityNumber":"","practitionerSpecialtyCode":"","referredByFirstNameInitial":"","referredByLastName":"","referredByPractitionerNumber":"","referredToFirstNameInitial":"","referredToLastName":"","referredToPractitionerNumber":""}}',
-    headers: {
-      Accept: "application/json, text/plain, */*",
-      "Content-Type": "application/json",
-      "Response-Type": "application/json",
-      "X-Authorization":
-        "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7Im5vbmNlIjoiZWQ4ZmNmMTctZmIxZi00YjNkLTkzYWEtMWJhNWZiZmIyODk4In0sImlhdCI6MTYzMjc4MDgzOCwiZXhwIjoxNjMyNzkxNjM4fQ.cz1Qji529tSFguGjAsZ4cyPv_hetoHWCc02QYyCM-ds",
-    },
-    transformRequest: [null],
-    transformResponse: [null],
-    timeout: 0,
-    xsrfCookieName: "XSRF-TOKEN",
-    xsrfHeaderName: "X-XSRF-TOKEN",
-    maxContentLength: -1,
-    maxBodyLength: -1,
-  },
-  request: {},
 };
 
 const mockResponse3 = {
@@ -131,117 +57,80 @@ const mockResponseDBErrorPrnPresent = {
   },
 };
 
-const next = jest.fn();
+const next = vi.fn();
 const testDate = new Date();
 
-const storeTemplateC = {
-  modules: {
-    app: cloneDeep(module1.default),
-    payPatientForm: cloneDeep(module2.default),
-    payPractitionerForm: cloneDeep(module3.default),
-  },
-};
-
-const storeTemplateN = {
-  modules: {
-    app: cloneDeep(module1.default),
-    payPatientForm: cloneDeep(module2.default),
-    payPractitionerForm: cloneDeep(module3.default),
-  },
-};
-
+//create two variables with passing store data
 const patientStateC = cloneDeep(dummyDataValid.default);
 const patientStateN = cloneDeep(dummyDataValid.default);
+
+//assign the patient states different correspondenceAttached variables
 patientStateC.medicalServiceClaims[0].correspondenceAttached = "C";
 patientStateN.medicalServiceClaims[0].correspondenceAttached = "N";
 
+//create two store template variables from default (currently contains null store data)
+const storeTemplateC = cloneDeep(defaultStoreTemplate);
+const storeTemplateN = cloneDeep(defaultStoreTemplate);
+
+//initialize the two store templates with different patient states/correspondence variables
 storeTemplateC.modules.payPatientForm.state = cloneDeep(patientStateC);
 storeTemplateN.modules.payPatientForm.state = cloneDeep(patientStateN);
 
-//later versions of Jest use a function called "jest.setSystemTime"
-//but since this project is using Jest 24.x
-//I've instead mocked the function below
-jest.spyOn(global, "Date").mockImplementation(() => testDate);
+vi.spyOn(apiService, "submitPayPatientApplication").mockImplementation(() =>
+  Promise.resolve(mockResponse)
+);
 
-jest
-  .spyOn(apiService, "submitPayPatientApplication")
-  .mockImplementation(() => Promise.resolve(mockResponse));
+const spyOnScrollTo = vi
+  .spyOn(scrollHelper, "scrollTo")
+  .mockImplementation(() => Promise.resolve("scrolled"));
+const spyOnScrollToError = vi
+  .spyOn(scrollHelper, "scrollToError")
+  .mockImplementation(() => Promise.resolve("scrolled to error"));
 
-const scrollHelper = require("@/helpers/scroll");
-
-const spyOnScrollTo = jest.spyOn(scrollHelper, "scrollTo");
-const spyOnScrollToError = jest.spyOn(scrollHelper, "scrollToError");
-
-const spyOnGetTopScrollPosition = jest
+const spyOnGetTopScrollPosition = vi
   .spyOn(scrollHelper, "getTopScrollPosition")
   .mockImplementation(() => Promise.resolve("top scroll position returned"));
 
-const spyOnVisitPage = jest.spyOn(pageStateService, "visitPage");
+const spyOnVisitPage = vi.spyOn(pageStateService, "visitPage");
 
-const spyOnSetPageComplete = jest.spyOn(pageStateService, "setPageComplete");
+const spyOnSetPageComplete = vi.spyOn(pageStateService, "setPageComplete");
 
-const spyOnSetPageIncomplete = jest
+const spyOnSetPageIncomplete = vi
   .spyOn(pageStateService, "setPageIncomplete")
   .mockImplementation(() => Promise.resolve("set"));
 
-const spyOnLogService = jest
+const spyOnLogService = vi
   .spyOn(logService, "logNavigation")
   .mockImplementation(() => Promise.resolve("logged"));
 
-const spyOnLogServiceSubmission = jest
+const spyOnLogServiceSubmission = vi
   .spyOn(logService, "logSubmission")
   .mockImplementation(() => Promise.resolve("logged"));
 
-const spyOnLogServiceError = jest
+const spyOnLogServiceError = vi
   .spyOn(logService, "logError")
   .mockImplementation(() => Promise.resolve("logged"));
 
-const spyOnPrint = jest.spyOn(window, "print").mockImplementation(jest.fn);
+const spyOnPrint = vi.spyOn(window, "print").mockImplementation(vi.fn);
 
-jest.spyOn(window, "scrollTo").mockImplementation(jest.fn);
+vi.spyOn(window, "scrollTo").mockImplementation(vi.fn);
 
 describe("ReviewPage.vue pay patient", () => {
   let store;
   let wrapper;
-  let $route;
-  let $router;
 
   beforeEach(() => {
-    store = new Vuex.Store(storeTemplateC);
-    $route = {
-      path: "/potato-csr",
-    };
-    $router = {
-      $route,
-      currentRoute: $route,
-      push: jest.fn(),
-    };
-    wrapper = shallowMount(Page, {
-      localVue,
-      store,
-      mocks: {
-        $route,
-        $router,
+    store = createStore(storeTemplateC);
+    wrapper = mount(Page, {
+      global: {
+        plugins: [store, router],
       },
-    });
-    jest.spyOn(wrapper.vm.$store, "dispatch");
-
-    jest
-      .spyOn(spaEnvService, "loadEnvs")
-      .mockImplementation(() => Promise.resolve("loaded"));
-
-    jest
-      .spyOn(logService, "logNavigation")
-      .mockImplementation(() => Promise.resolve("logged"));
-
-    wrapper.vm.$options.created.forEach((hook) => {
-      hook.call(wrapper.vm);
     });
   });
 
   afterEach(() => {
-    jest.resetModules();
-    jest.clearAllMocks();
+    vi.resetModules();
+    vi.clearAllMocks();
   });
 
   it("renders", () => {
@@ -251,42 +140,19 @@ describe("ReviewPage.vue pay patient", () => {
 
 describe("ReviewPage.vue pay patient created()", () => {
   let store;
-  let wrapper;
-  let $route;
-  let $router;
 
   beforeEach(() => {
-    store = new Vuex.Store(storeTemplateC);
-    $route = {
-      path: "/potato-csr",
-    };
-    $router = {
-      $route,
-      currentRoute: $route,
-      push: jest.fn(),
-    };
-    wrapper = shallowMount(Page, {
-      localVue,
-      store,
-      mocks: {
-        $route,
-        $router,
+    store = createStore(storeTemplateC);
+    mount(Page, {
+      global: {
+        plugins: [store, router],
       },
-    });
-    jest.spyOn(wrapper.vm.$store, "dispatch");
-
-    jest
-      .spyOn(spaEnvService, "loadEnvs")
-      .mockImplementation(() => Promise.resolve("loaded"));
-
-    wrapper.vm.$options.created.forEach((hook) => {
-      hook.call(wrapper.vm);
     });
   });
 
   afterEach(() => {
-    jest.resetModules();
-    jest.clearAllMocks();
+    vi.resetModules();
+    vi.clearAllMocks();
   });
 
   it("calls logService", () => {
@@ -297,101 +163,50 @@ describe("ReviewPage.vue pay patient created()", () => {
 describe("ReviewPage.vue pay patient continueHandler()", () => {
   let store;
   let wrapper;
-  let $route;
-  let $router;
-
-  beforeEach(() => {
-    store = new Vuex.Store(storeTemplateC);
-    $route = {
-      path: "/potato-csr",
-    };
-    $router = {
-      $route,
-      currentRoute: $route,
-      push: jest.fn(),
-    };
-    wrapper = shallowMount(Page, {
-      localVue,
-      store,
-      mocks: {
-        $route,
-        $router,
-      },
-    });
-    jest.spyOn(wrapper.vm.$store, "dispatch");
-
-    jest
-      .spyOn(spaEnvService, "loadEnvs")
-      .mockImplementation(() => Promise.resolve("loaded"));
-  });
 
   afterEach(() => {
-    jest.resetModules();
-    jest.clearAllMocks();
+    vi.resetModules();
+    vi.clearAllMocks();
   });
 
   it("calls submitForm if the store has correspondenceAttached = N", () => {
-    store = new Vuex.Store(storeTemplateN);
-    $route = {
-      path: "/potato",
-    };
-    $router = {
-      $route,
-      currentRoute: $route,
-      push: jest.fn(),
-    };
-    wrapper = shallowMount(Page, {
-      localVue,
-      store,
-      mocks: {
-        $route,
-        $router,
+    store = createStore(storeTemplateN);
+    wrapper = mount(Page, {
+      global: {
+        plugins: [store],
+        mocks: {
+          $router: mockRouter,
+        },
       },
     });
-    const spyOnSubmitForm = jest.spyOn(wrapper.vm, "submitForm");
+    const spyOnSubmitForm = vi.spyOn(wrapper.vm, "submitForm");
     wrapper.vm.continueHandler();
     expect(spyOnSubmitForm).toHaveBeenCalled();
   });
 
   it("calls submit if the store has correspondenceAttached = C and the route ends in -csr", () => {
-    store = new Vuex.Store(storeTemplateC);
-    $route = {
-      path: "/potato-csr",
-    };
-    $router = {
-      $route,
-      currentRoute: $route,
-      push: jest.fn(),
-    };
-    wrapper = shallowMount(Page, {
-      localVue,
-      store,
-      mocks: {
-        $route,
-        $router,
+    store = createStore(storeTemplateC);
+    wrapper = mount(Page, {
+      global: {
+        plugins: [store],
+        mocks: {
+          $router: mockRouterCSR,
+        },
       },
     });
-    const spyOnSubmitForm = jest.spyOn(wrapper.vm, "submitForm");
+    const spyOnSubmitForm = vi.spyOn(wrapper.vm, "submitForm");
     wrapper.vm.continueHandler();
     expect(spyOnSubmitForm).toHaveBeenCalled();
   });
 
   it("calls window.print if the store has correspondenceAttached = C", () => {
-    store = new Vuex.Store(storeTemplateC);
-    $route = {
-      path: "/potato",
-    };
-    $router = {
-      $route,
-      currentRoute: $route,
-      push: jest.fn(),
-    };
-    wrapper = shallowMount(Page, {
-      localVue,
-      store,
-      mocks: {
-        $route,
-        $router,
+    store = createStore(storeTemplateC);
+    wrapper = mount(Page, {
+      global: {
+        plugins: [store],
+        mocks: {
+          $router: mockRouter,
+        },
       },
     });
     wrapper.vm.continueHandler();
@@ -404,61 +219,38 @@ describe("ReviewPage.vue pay patient continueHandler()", () => {
 describe("ReviewPage.vue pay patient submitForm()", () => {
   let store;
   let wrapper;
-  let $route;
-  let $router;
   let spyOnDispatch;
   let spyOnNavigateToSubmissionPage;
   let spyOnNavigateToSubmissionErrorPage;
 
   beforeEach(() => {
-    // jest.useFakeTimers("modern");
-    // jest.setSystemTime(testDate);
-    store = new Vuex.Store(storeTemplateN);
-    $route = {
-      path: "/potato-csr",
-    };
-    $router = {
-      $route,
-      currentRoute: $route,
-      push: jest.fn(),
-    };
-    wrapper = shallowMount(Page, {
-      localVue,
-      store,
-      mocks: {
-        $route,
-        $router,
+    store = createStore(storeTemplateN);
+    wrapper = mount(Page, {
+      global: {
+        plugins: [store, router],
       },
     });
-    spyOnDispatch = jest.spyOn(wrapper.vm.$store, "dispatch");
+    spyOnDispatch = vi.spyOn(wrapper.vm.$store, "dispatch");
 
-    spyOnNavigateToSubmissionPage = jest.spyOn(
-      wrapper.vm,
-      "navigateToSubmissionPage"
-    );
+    spyOnNavigateToSubmissionPage = vi.spyOn(wrapper.vm, "navigateToSubmissionPage");
 
-    spyOnNavigateToSubmissionErrorPage = jest.spyOn(
-      wrapper.vm,
-      "navigateToSubmissionErrorPage"
-    );
-
-    jest
-      .spyOn(spaEnvService, "loadEnvs")
-      .mockImplementation(() => Promise.resolve("loaded"));
+    spyOnNavigateToSubmissionErrorPage = vi.spyOn(wrapper.vm, "navigateToSubmissionErrorPage");
   });
 
   afterEach(() => {
-    jest.resetModules();
-    jest.clearAllMocks();
+    vi.resetModules();
+    vi.clearAllMocks();
   });
 
   it("dispatches the submission date", async () => {
+    vi.setSystemTime(testDate);
     wrapper.vm.submitForm();
     await wrapper.vm.$nextTick;
     expect(spyOnDispatch).toHaveBeenCalledWith(
       `${module2.MODULE_NAME}/${module2.SET_SUBMISSION_DATE}`,
       testDate
     );
+    vi.useRealTimers();
   });
 
   it("dispatches the reference number from the API response", async () => {
@@ -483,27 +275,27 @@ describe("ReviewPage.vue pay patient submitForm()", () => {
   });
 
   it("calls scrollToError on error code 3", async () => {
-    jest
-      .spyOn(apiService, "submitPayPatientApplication")
-      .mockImplementationOnce(() => Promise.resolve(mockResponse3));
+    vi.spyOn(apiService, "submitPayPatientApplication").mockImplementationOnce(() =>
+      Promise.resolve(mockResponse3)
+    );
     wrapper.vm.submitForm();
     await wrapper.vm.$nextTick;
     expect(spyOnScrollToError).toHaveBeenCalled();
   });
 
   it("calls logServiceError on error code 3", async () => {
-    jest
-      .spyOn(apiService, "submitPayPatientApplication")
-      .mockImplementationOnce(() => Promise.resolve(mockResponse3));
+    vi.spyOn(apiService, "submitPayPatientApplication").mockImplementationOnce(() =>
+      Promise.resolve(mockResponse3)
+    );
     wrapper.vm.submitForm();
     await wrapper.vm.$nextTick;
     expect(spyOnLogServiceError).toHaveBeenCalled();
   });
 
   it("calls navigateToSubmissionErrorPage on misc error", async () => {
-    jest
-      .spyOn(apiService, "submitPayPatientApplication")
-      .mockImplementationOnce(() => Promise.resolve(mockResponseMisc));
+    vi.spyOn(apiService, "submitPayPatientApplication").mockImplementationOnce(() =>
+      Promise.resolve(mockResponseMisc)
+    );
     wrapper.vm.submitForm();
     await wrapper.vm.$nextTick;
     expect(spyOnNavigateToSubmissionErrorPage).toHaveBeenCalled();
@@ -511,31 +303,27 @@ describe("ReviewPage.vue pay patient submitForm()", () => {
   });
 
   it("calls logServiceError on misc error", async () => {
-    jest
-      .spyOn(apiService, "submitPayPatientApplication")
-      .mockImplementationOnce(() => Promise.resolve(mockResponseMisc));
+    vi.spyOn(apiService, "submitPayPatientApplication").mockImplementationOnce(() =>
+      Promise.resolve(mockResponseMisc)
+    );
     wrapper.vm.submitForm();
     await wrapper.vm.$nextTick;
     expect(spyOnLogServiceError).toHaveBeenCalled();
   });
 
   it("calls logServiceError on DB Error PRN Present error", async () => {
-    jest
-      .spyOn(apiService, "submitPayPatientApplication")
-      .mockImplementationOnce(() =>
-        Promise.resolve(mockResponseDBErrorPrnPresent)
-      );
+    vi.spyOn(apiService, "submitPayPatientApplication").mockImplementationOnce(() =>
+      Promise.resolve(mockResponseDBErrorPrnPresent)
+    );
     wrapper.vm.submitForm();
     await wrapper.vm.$nextTick;
     expect(spyOnLogServiceError).toHaveBeenCalled();
   });
 
   it("calls spyOnNavigateToSubmissionPage on DB Error PRN Present error", async () => {
-    jest
-      .spyOn(apiService, "submitPayPatientApplication")
-      .mockImplementationOnce(() =>
-        Promise.resolve(mockResponseDBErrorPrnPresent)
-      );
+    vi.spyOn(apiService, "submitPayPatientApplication").mockImplementationOnce(() =>
+      Promise.resolve(mockResponseDBErrorPrnPresent)
+    );
     wrapper.vm.submitForm();
     await wrapper.vm.$nextTick;
     expect(spyOnNavigateToSubmissionPage).toHaveBeenCalled();
@@ -549,41 +337,22 @@ describe("ReviewPage.vue pay patient submitForm()", () => {
 describe("ReviewPage.vue pay patient navigateToSubmissionPage()", () => {
   let store;
   let wrapper;
-  let $route;
-  let $router;
   let spyOnRouter;
   let toPath;
 
   beforeEach(() => {
-    store = new Vuex.Store(storeTemplateC);
-    $route = {
-      path: "/potato-csr",
-    };
-    $router = {
-      $route,
-      currentRoute: $route,
-      push: jest.fn(),
-    };
-    wrapper = shallowMount(Page, {
-      localVue,
-      store,
-      mocks: {
-        $route,
-        $router,
+    store = createStore(storeTemplateC);
+    wrapper = mount(Page, {
+      global: {
+        plugins: [store, router],
       },
     });
-    jest.spyOn(wrapper.vm.$store, "dispatch");
+    vi.spyOn(wrapper.vm.$store, "dispatch");
 
-    jest
-      .spyOn(spaEnvService, "loadEnvs")
-      .mockImplementation(() => Promise.resolve("loaded"));
-
-    spyOnRouter = jest
-      .spyOn($router, "push")
-      .mockImplementation(() => Promise.resolve("pushed"));
+    spyOnRouter = vi.spyOn(router, "push").mockImplementation(() => Promise.resolve("pushed"));
 
     toPath = getConvertedPath(
-      wrapper.vm.$router.currentRoute.path,
+      wrapper.vm.$router.currentRoute.value.path,
       payPatientRoutes.SUBMISSION_PAGE.path
     );
 
@@ -591,8 +360,8 @@ describe("ReviewPage.vue pay patient navigateToSubmissionPage()", () => {
   });
 
   afterEach(() => {
-    jest.resetModules();
-    jest.clearAllMocks();
+    vi.resetModules();
+    vi.clearAllMocks();
   });
 
   it("pushes to the router with correct argument", () => {
@@ -615,41 +384,21 @@ describe("ReviewPage.vue pay patient navigateToSubmissionPage()", () => {
 describe("ReviewPage.vue pay patient navigateToSubmissionErrorPage()", () => {
   let store;
   let wrapper;
-  let $route;
-  let $router;
   let spyOnRouter;
   let toPath;
 
   beforeEach(() => {
-    store = new Vuex.Store(storeTemplateC);
-    $route = {
-      path: "/potato-csr",
-    };
-    $router = {
-      $route,
-      currentRoute: $route,
-      push: jest.fn(),
-    };
-    wrapper = shallowMount(Page, {
-      localVue,
-      store,
-      mocks: {
-        $route,
-        $router,
+    store = createStore(storeTemplateC);
+    wrapper = mount(Page, {
+      global: {
+        plugins: [store, router],
       },
     });
-    jest.spyOn(wrapper.vm.$store, "dispatch");
 
-    jest
-      .spyOn(spaEnvService, "loadEnvs")
-      .mockImplementation(() => Promise.resolve("loaded"));
-
-    spyOnRouter = jest
-      .spyOn($router, "push")
-      .mockImplementation(() => Promise.resolve("pushed"));
+    spyOnRouter = vi.spyOn(router, "push").mockImplementation(() => Promise.resolve("pushed"));
 
     toPath = getConvertedPath(
-      wrapper.vm.$router.currentRoute.path,
+      wrapper.vm.$router.currentRoute.value.path,
       payPatientRoutes.SUBMISSION_ERROR_PAGE.path
     );
 
@@ -657,8 +406,8 @@ describe("ReviewPage.vue pay patient navigateToSubmissionErrorPage()", () => {
   });
 
   afterEach(() => {
-    jest.resetModules();
-    jest.clearAllMocks();
+    vi.resetModules();
+    vi.clearAllMocks();
   });
 
   it("pushes to the router with correct argument", () => {
@@ -681,44 +430,31 @@ describe("ReviewPage.vue pay patient navigateToSubmissionErrorPage()", () => {
 describe("ReviewPage.vue beforeRouteLeave(to, from, next)", () => {
   let store;
   let wrapper;
-  let $route;
-  let $router;
 
   beforeEach(() => {
-    store = new Vuex.Store(storeTemplateN);
-    $route = {
-      path: "/potato-csr",
-    };
-    $router = {
-      $route,
-      currentRoute: $route,
-      push: jest.fn(),
-    };
-    wrapper = shallowMount(Page, {
-      localVue,
-      store,
-      mocks: {
-        $route,
-        $router,
+    store = createStore(storeTemplateN);
+    wrapper = mount(Page, {
+      global: {
+        plugins: [store, router],
       },
     });
   });
 
   afterEach(() => {
-    jest.resetModules();
-    jest.clearAllMocks();
+    vi.resetModules();
+    vi.clearAllMocks();
   });
 
   it("calls scrollTo() and getTopScrollPosition() when given invalid route", async () => {
     //to, from, next
-    jest.useFakeTimers();
+    vi.useFakeTimers();
     Page.beforeRouteLeave.call(
       wrapper.vm,
       payPatientRouteStepOrder[1],
       payPatientRouteStepOrder[0],
       next
     );
-    jest.advanceTimersByTime(5);
+    vi.advanceTimersByTime(5);
     await wrapper.vm.$nextTick;
     expect(spyOnGetTopScrollPosition).toHaveBeenCalled();
     expect(spyOnScrollTo).toHaveBeenCalled();
@@ -726,17 +462,17 @@ describe("ReviewPage.vue beforeRouteLeave(to, from, next)", () => {
 
   it("calls next() with proper arguments when given invalid route", async () => {
     //to, from, next
-    jest.useFakeTimers();
+    vi.useFakeTimers();
     Page.beforeRouteLeave.call(
       wrapper.vm,
       payPatientRouteStepOrder[1],
       payPatientRouteStepOrder[0],
       next
     );
-    jest.advanceTimersByTime(5);
+    vi.advanceTimersByTime(5);
     await wrapper.vm.$nextTick;
     const testPath = getConvertedPath(
-      wrapper.vm.$router.currentRoute.path,
+      wrapper.vm.$router.currentRoute.value.path,
       payPatientRoutes.REVIEW_PAGE.path
     );
     expect(next).toHaveBeenCalledWith({
@@ -747,14 +483,14 @@ describe("ReviewPage.vue beforeRouteLeave(to, from, next)", () => {
 
   it("calls next() with proper arguments when given valid route", async () => {
     //to, from, next
-    jest.useFakeTimers();
+    vi.useFakeTimers();
     Page.beforeRouteLeave.call(
       wrapper.vm,
       payPatientRouteStepOrder[0],
       payPatientRouteStepOrder[1],
       next
     );
-    jest.advanceTimersByTime(5);
+    vi.advanceTimersByTime(5);
     await wrapper.vm.$nextTick;
     expect(next).toHaveBeenCalled();
     expect(spyOnGetTopScrollPosition).not.toHaveBeenCalled();
@@ -763,28 +499,28 @@ describe("ReviewPage.vue beforeRouteLeave(to, from, next)", () => {
 
   it("calls spyOnSetPageIncomplete (valid route)", async () => {
     //to, from, next
-    jest.useFakeTimers();
+    vi.useFakeTimers();
     Page.beforeRouteLeave.call(
       wrapper.vm,
       payPatientRouteStepOrder[0],
       payPatientRouteStepOrder[1],
       next
     );
-    jest.advanceTimersByTime(5);
+    vi.advanceTimersByTime(5);
     await wrapper.vm.$nextTick;
     expect(spyOnSetPageIncomplete).toHaveBeenCalled();
   });
 
   it("calls spyOnSetPageIncomplete (invalid route)", async () => {
     //to, from, next
-    jest.useFakeTimers();
+    vi.useFakeTimers();
     Page.beforeRouteLeave.call(
       wrapper.vm,
       payPatientRouteStepOrder[1],
       payPatientRouteStepOrder[0],
       next
     );
-    jest.advanceTimersByTime(5);
+    vi.advanceTimersByTime(5);
     await wrapper.vm.$nextTick;
     expect(spyOnSetPageIncomplete).toHaveBeenCalled();
   });

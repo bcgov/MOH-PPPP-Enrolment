@@ -1,83 +1,46 @@
-import { shallowMount, createLocalVue } from "@vue/test-utils";
-import Vuex from "vuex";
-import { cloneDeep } from "lodash";
+import { mount } from "@vue/test-utils";
+import { createStore } from "vuex";
 import Page from "@/views/pay-patient/SubmissionErrorPage.vue";
-import * as module1 from "../../../../src/store/modules/app";
-import * as module2 from "../../../../src/store/modules/pay-patient-form";
-import * as module3 from "../../../../src/store/modules/pay-practitioner-form";
-import spaEnvService from "@/services/spa-env-service";
 import logService from "@/services/log-service";
-import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import pageStateService from "@/services/page-state-service";
 import { getConvertedPath } from "@/helpers/url";
 import { payPatientRoutes, payPatientRouteStepOrder } from "@/router/routes";
+import * as scrollHelper from "@/helpers/scroll";
+import { defaultStoreTemplate, router } from "../../test-helper.js";
 
-const localVue = createLocalVue();
-localVue.use(Vuex);
-localVue.component("font-awesome-icon", FontAwesomeIcon);
+const next = vi.fn();
+const storeTemplate = defaultStoreTemplate;
 
-const next = jest.fn();
+const spyOnScrollTo = vi
+  .spyOn(scrollHelper, "scrollTo")
+  .mockImplementation(() => Promise.resolve("scrolled"));
 
-const storeTemplate = {
-  modules: {
-    app: cloneDeep(module1.default),
-    payPatientForm: cloneDeep(module2.default),
-    payPractitionerForm: cloneDeep(module3.default),
-  },
-};
-
-const scrollHelper = require("@/helpers/scroll");
-
-const spyOnScrollTo = jest.spyOn(scrollHelper, "scrollTo");
-
-const spyOnLogNavigation = jest
+const spyOnLogNavigation = vi
   .spyOn(logService, "logNavigation")
   .mockImplementation(() => Promise.resolve("logged"));
 
-const spyOnSetPageIncomplete = jest
+const spyOnSetPageIncomplete = vi
   .spyOn(pageStateService, "setPageIncomplete")
   .mockImplementation(() => Promise.resolve("set"));
 
-jest.spyOn(window, "scrollTo").mockImplementation(jest.fn);
+vi.spyOn(window, "scrollTo").mockImplementation(vi.fn);
 
-describe("SubmissionPage.vue pay patient", () => {
+describe("SubmissionErrorPage pay patient", () => {
   let store;
   let wrapper;
-  let $route;
-  let $router;
 
   beforeEach(() => {
-    store = new Vuex.Store(storeTemplate);
-    $route = {
-      path: "/potato-csr",
-    };
-    $router = {
-      $route,
-      currentRoute: $route,
-      push: jest.fn(),
-    };
-    wrapper = shallowMount(Page, {
-      localVue,
-      store,
-      mocks: {
-        $route,
-        $router,
+    store = createStore(storeTemplate);
+    wrapper = mount(Page, {
+      global: {
+        plugins: [store, router],
       },
-    });
-    jest.spyOn(wrapper.vm.$store, "dispatch");
-
-    jest
-      .spyOn(spaEnvService, "loadEnvs")
-      .mockImplementation(() => Promise.resolve("loaded"));
-
-    wrapper.vm.$options.created.forEach((hook) => {
-      hook.call(wrapper.vm);
     });
   });
 
   afterEach(() => {
-    jest.resetModules();
-    jest.clearAllMocks();
+    vi.resetModules();
+    vi.clearAllMocks();
   });
 
   it("renders", () => {
@@ -85,44 +48,21 @@ describe("SubmissionPage.vue pay patient", () => {
   });
 });
 
-describe("SubmissionPage.vue pay patient created()", () => {
+describe("SubmissionErrorPage pay patient created()", () => {
   let store;
-  let wrapper;
-  let $route;
-  let $router;
 
   beforeEach(() => {
-    store = new Vuex.Store(storeTemplate);
-    $route = {
-      path: "/potato-csr",
-    };
-    $router = {
-      $route,
-      currentRoute: $route,
-      push: jest.fn(),
-    };
-    wrapper = shallowMount(Page, {
-      localVue,
-      store,
-      mocks: {
-        $route,
-        $router,
+    store = createStore(storeTemplate);
+    mount(Page, {
+      global: {
+        plugins: [store, router],
       },
-    });
-    jest.spyOn(wrapper.vm.$store, "dispatch");
-
-    jest
-      .spyOn(spaEnvService, "loadEnvs")
-      .mockImplementation(() => Promise.resolve("loaded"));
-
-    wrapper.vm.$options.created.forEach((hook) => {
-      hook.call(wrapper.vm);
     });
   });
 
   afterEach(() => {
-    jest.resetModules();
-    jest.clearAllMocks();
+    vi.resetModules();
+    vi.clearAllMocks();
   });
 
   it("calls logNavigation", () => {
@@ -130,64 +70,51 @@ describe("SubmissionPage.vue pay patient created()", () => {
   });
 });
 
-describe("SubmissionPage.vue beforeRouteLeave(to, from, next)", () => {
+describe("SubmissionErrorPage.vue beforeRouteLeave(to, from, next)", () => {
   let store;
   let wrapper;
-  let $route;
-  let $router;
 
   beforeEach(() => {
-    store = new Vuex.Store(storeTemplate);
-    $route = {
-      path: "/potato-csr",
-    };
-    $router = {
-      $route,
-      currentRoute: $route,
-      push: jest.fn(),
-    };
-    wrapper = shallowMount(Page, {
-      localVue,
-      store,
-      mocks: {
-        $route,
-        $router,
+    store = createStore(storeTemplate);
+    wrapper = mount(Page, {
+      global: {
+        plugins: [store, router],
       },
     });
   });
 
   afterEach(() => {
-    jest.resetModules();
-    jest.clearAllMocks();
+    vi.resetModules();
+    vi.clearAllMocks();
   });
 
   it("calls scrollTo()", async () => {
     //to, from, next
-    jest.useFakeTimers();
+    vi.useFakeTimers();
     Page.beforeRouteLeave.call(
       wrapper.vm,
       payPatientRouteStepOrder[1],
       payPatientRouteStepOrder[0],
       next
     );
-    jest.advanceTimersByTime(5);
+    vi.advanceTimersByTime(5);
     await wrapper.vm.$nextTick;
     expect(spyOnScrollTo).toHaveBeenCalled();
   });
 
   it("calls next() with proper arguments when passed route other than Home", async () => {
     //to, from, next
-    jest.useFakeTimers();
+    vi.useFakeTimers();
     Page.beforeRouteLeave.call(
       wrapper.vm,
       payPatientRoutes.REVIEW_PAGE,
       payPatientRouteStepOrder[0],
       next
     );
-    jest.advanceTimersByTime(5);
+    vi.advanceTimersByTime(5);
     await wrapper.vm.$nextTick;
     const testPath = getConvertedPath(
-      wrapper.vm.$router.currentRoute.path,
+      wrapper.vm.$router.currentRoute.value.path,
       payPatientRoutes.HOME_PAGE.path
     );
     expect(next).toHaveBeenCalledWith({
@@ -197,42 +124,42 @@ describe("SubmissionPage.vue beforeRouteLeave(to, from, next)", () => {
 
   it("calls next() with proper arguments when given to route of Home", async () => {
     //to, from, next
-    jest.useFakeTimers();
+    vi.useFakeTimers();
     Page.beforeRouteLeave.call(
       wrapper.vm,
       payPatientRoutes.HOME_PAGE,
       payPatientRouteStepOrder[1],
       next
     );
-    jest.advanceTimersByTime(5);
+    vi.advanceTimersByTime(5);
     await wrapper.vm.$nextTick;
     expect(next).toHaveBeenCalled();
   });
 
   it("calls spyOnSetPageIncomplete (valid route)", async () => {
     //to, from, next
-    jest.useFakeTimers();
+    vi.useFakeTimers();
     Page.beforeRouteLeave.call(
       wrapper.vm,
       payPatientRouteStepOrder[0],
       payPatientRouteStepOrder[1],
       next
     );
-    jest.advanceTimersByTime(5);
+    vi.advanceTimersByTime(5);
     await wrapper.vm.$nextTick;
     expect(spyOnSetPageIncomplete).toHaveBeenCalled();
   });
 
   it("calls spyOnSetPageIncomplete (invalid route)", async () => {
     //to, from, next
-    jest.useFakeTimers();
+    vi.useFakeTimers();
     Page.beforeRouteLeave.call(
       wrapper.vm,
       payPatientRouteStepOrder[1],
       payPatientRouteStepOrder[0],
       next
     );
-    jest.advanceTimersByTime(5);
+    vi.advanceTimersByTime(5);
     await wrapper.vm.$nextTick;
     expect(spyOnSetPageIncomplete).toHaveBeenCalled();
   });

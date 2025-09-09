@@ -7,6 +7,7 @@ on:
       - "pppp/src/**/*.js"
       - "pppp/src/**/*.scss"
       - "pppp/src/**/*.vue"
+      - "pppp/tests/unit/**/*.spec.js"
       - "pppp/package*.json"
   workflow_dispatch:
 env:
@@ -27,13 +28,13 @@ jobs:
       - uses: actions/checkout@main
       - uses: actions/setup-node@main
         with:
-          node-version: "12"
+          node-version: "22"
       - name: Install dependencies
         run: npm ci
       - name: Unit tests
         run: npm run test
       - name: E2E tests
-        run: npm run test:e2e-headless
+        run: npm run test:e2e:headless
       - name: LINTing
         run: npm run lint
       # - name: OpenAPI Schema
@@ -46,14 +47,14 @@ jobs:
     needs: [test]
     strategy:
       matrix:
-        node-version: [12.x]
+        node-version: [22.x]
     steps:
       - uses: actions/checkout@v1
       - uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
       - name: Cache node modules
-        uses: actions/cache@v1
+        uses: actions/cache@v4
         with:
           path: node_modules
           key: ${{ runner.OS }}-build-${{ hashFiles('**/package-lock.json') }}

@@ -1,30 +1,38 @@
 <template>
-  <div class="form-group bcgov-table-body p-3"
-      :style="{'background-color': backgroundColor}">
-    <div v-for="element in elements"
-        :key="element.label"
-        class="bcgov-row d-flex">
+  <div
+    class="form-group bcgov-table-body p-3"
+    :style="{ 'background-color': backgroundColor }"
+  >
+    <div
+      v-for="element in elements"
+      :key="element.label"
+      class="bcgov-row d-flex"
+    >
       <div class="bcgov-table-cell label">
-        <div class="table-cell-max">{{element.label}}</div>
+        <div class="table-cell-max">{{ element.label }}</div>
       </div>
-      <div class="bcgov-table-cell value"><b>{{element.value}}</b></div>
+      <div class="bcgov-table-cell value">
+        <b>{{ element.value }}</b>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
-
 export default {
-  name: 'ReviewTable',
+  name: "ReviewTable",
   components: {},
   props: {
-    elements: Array,
+    elements: {
+      type: Array,
+      default: () => [],
+    },
     backgroundColor: {
       type: String,
-      default: 'white',
-    }
-  }
-}
+      default: "white",
+    },
+  },
+};
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
@@ -33,7 +41,7 @@ export default {
   display: flex;
   flex-direction: column;
   /* background-color: #EEE; */
-  border-top: 1px solid rgba(0,0,0,0.3);
+  border-top: 1px solid rgba(0, 0, 0, 0.3);
 }
 
 .bcgov-row {

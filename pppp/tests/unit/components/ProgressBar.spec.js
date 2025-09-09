@@ -1,10 +1,7 @@
-import { shallowMount, createLocalVue } from "@vue/test-utils";
-import Vuex from "vuex";
-import Vue from "vue";
-import VueRouter from "vue-router";
-import Vuelidate from "vuelidate";
+import { shallowMount } from "@vue/test-utils";
+import { createStore } from "vuex";
+import { createRouter, createWebHistory } from "vue-router";
 import Component from "@/components/ProgressBar.vue";
-import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import pageStateService from "@/services/page-state-service";
 import { cloneDeep } from "lodash";
 import { payPatientStepRoutes as stepRoutes } from "@/router/step-routes";
@@ -12,6 +9,8 @@ import { payPatientRouteStepOrder as routeStepOrder } from "@/router/routes";
 import * as module1 from "../../../src/store/modules/app";
 import * as module2 from "../../../src/store/modules/pay-patient-form";
 import * as module3 from "../../../src/store/modules/pay-practitioner-form";
+import { routeCollection } from "@/router/index";
+import * as scrollHelper from "@/helpers/scroll";
 
 const storeTemplate = {
   modules: {
@@ -21,60 +20,49 @@ const storeTemplate = {
   },
 };
 
-const localVue = createLocalVue();
-localVue.use(Vuex);
-localVue.use(VueRouter);
-Vue.use(Vuelidate);
-Vue.component("font-awesome-icon", FontAwesomeIcon);
-const router = new VueRouter();
+vi.spyOn(pageStateService, "setPageComplete").mockImplementation(() => Promise.resolve("set"));
+vi.spyOn(pageStateService, "setPageIncomplete").mockImplementation(() => Promise.resolve("set"));
+vi.spyOn(pageStateService, "visitPage").mockImplementation(() => Promise.resolve("visited"));
 
-const scrollHelper = require("@/helpers/scroll");
-// const addressHelper = require("@/helpers/address");
-// const stringHelper = require("@/helpers/string");
-
-jest
-  .spyOn(pageStateService, "setPageComplete")
-  .mockImplementation(() => Promise.resolve("set"));
-jest
-  .spyOn(pageStateService, "setPageIncomplete")
-  .mockImplementation(() => Promise.resolve("set"));
-jest
-  .spyOn(pageStateService, "visitPage")
-  .mockImplementation(() => Promise.resolve("visited"));
-
-jest.mock("@/helpers/scroll", () => ({
-  scrollTo: jest.fn(),
-  scrollToError: jest.fn(),
+vi.mock("@/helpers/scroll", () => ({
+  scrollTo: vi.fn(),
+  scrollToError: vi.fn(),
 }));
 
-const spyOnRouter = jest
-  .spyOn(router, "push")
-  .mockImplementation(() => Promise.resolve("pushed"));
+const router = createRouter({
+  history: createWebHistory(),
+  routes: routeCollection,
+});
 
-const spyOnScrollTo = jest.spyOn(scrollHelper, "scrollTo");
+const spyOnRouter = vi.spyOn(router, "push").mockImplementation(() => Promise.resolve("pushed"));
 
-// const spyOnScrollToError = jest.spyOn(scrollHelper, "scrollToError");
+const spyOnScrollTo = vi
+  .spyOn(scrollHelper, "scrollTo")
+  .mockImplementation(() => Promise.resolve("scrolled"));
 
 describe("ProgressBar.vue", () => {
   let wrapper;
   let store;
 
   beforeEach(() => {
-    store = new Vuex.Store(storeTemplate);
+    store = createStore(storeTemplate);
     wrapper = shallowMount(Component, {
-      localVue,
-      store,
-      propsData: {
+      global: {
+        plugins: [store, router],
+        stubs: {
+          FontAwesomeIcon: { template: "<div>Stubbed Global Component</div>" },
+        },
+      },
+      props: {
         currentPath: routeStepOrder[1].path,
         routes: stepRoutes,
       },
-      router,
     });
   });
 
   afterEach(() => {
-    jest.resetModules();
-    jest.clearAllMocks();
+    vi.resetModules();
+    vi.clearAllMocks();
   });
 
   it("renders", async () => {
@@ -87,37 +75,36 @@ describe("ProgressBar.vue onClickLink()", () => {
   let store;
 
   beforeEach(() => {
-    store = new Vuex.Store(storeTemplate);
+    store = createStore(storeTemplate);
     wrapper = shallowMount(Component, {
-      localVue,
-      store,
-      propsData: {
+      global: {
+        plugins: [store, router],
+        stubs: {
+          FontAwesomeIcon: { template: "<div>Stubbed Global Component</div>" },
+        },
+      },
+      props: {
         currentPath: routeStepOrder[1].path,
         routes: stepRoutes,
       },
-      router,
     });
   });
 
   afterEach(() => {
-    jest.resetModules();
-    jest.clearAllMocks();
+    vi.resetModules();
+    vi.clearAllMocks();
   });
 
   it("calls pageStateService.setPageComplete when passed valid path", async () => {
     await wrapper.vm.onClickLink(routeStepOrder[0].path);
     await wrapper.vm.$nextTick();
-    expect(pageStateService.setPageComplete).toHaveBeenCalledWith(
-      routeStepOrder[0].path
-    );
+    expect(pageStateService.setPageComplete).toHaveBeenCalledWith(routeStepOrder[0].path);
   });
 
   it("calls pageStateService.setPagesetPageIncomplete when passed valid path", async () => {
     await wrapper.vm.onClickLink(routeStepOrder[0].path);
     await wrapper.vm.$nextTick();
-    expect(pageStateService.setPageIncomplete).toHaveBeenCalledWith(
-      routeStepOrder[1].path
-    );
+    expect(pageStateService.setPageIncomplete).toHaveBeenCalledWith(routeStepOrder[1].path);
   });
 
   it("calls scrollTo when passed valid path", async () => {
@@ -172,36 +159,35 @@ describe("ProgressBar.vue openDropdown() and closeDropdown()", () => {
   let store;
 
   beforeEach(() => {
-    store = new Vuex.Store(storeTemplate);
+    store = createStore(storeTemplate);
     wrapper = shallowMount(Component, {
-      localVue,
-      store,
-      propsData: {
+      global: {
+        plugins: [store, router],
+        stubs: {
+          FontAwesomeIcon: { template: "<div>Stubbed Global Component</div>" },
+        },
+      },
+      props: {
         currentPath: routeStepOrder[1].path,
         routes: stepRoutes,
       },
-      router,
     });
   });
 
   afterEach(() => {
-    jest.resetModules();
-    jest.clearAllMocks();
+    vi.resetModules();
+    vi.clearAllMocks();
   });
 
   it("dispatches with true when openDropdown() is called", async () => {
-    const spyOnDispatch = jest
-      .spyOn(wrapper.vm.$store, "dispatch")
-      .mockImplementation(jest.fn());
+    const spyOnDispatch = vi.spyOn(wrapper.vm.$store, "dispatch").mockImplementation(vi.fn());
     await wrapper.vm.openDropdown();
     await wrapper.vm.$nextTick();
     expect(spyOnDispatch).toHaveBeenCalledWith(stringCall, true);
   });
 
   it("dispatches with false when closeDropdown() is called", async () => {
-    const spyOnDispatch = jest
-      .spyOn(wrapper.vm.$store, "dispatch")
-      .mockImplementation(jest.fn());
+    const spyOnDispatch = vi.spyOn(wrapper.vm.$store, "dispatch").mockImplementation(vi.fn());
     await wrapper.vm.closeDropdown();
     await wrapper.vm.$nextTick();
     expect(spyOnDispatch).toHaveBeenCalledWith(stringCall, false);
@@ -213,21 +199,24 @@ describe("ProgressBar.vue getLinkStyles()", () => {
   let store;
 
   beforeEach(() => {
-    store = new Vuex.Store(storeTemplate);
+    store = createStore(storeTemplate);
     wrapper = shallowMount(Component, {
-      localVue,
-      store,
-      propsData: {
+      global: {
+        plugins: [store, router],
+        stubs: {
+          FontAwesomeIcon: { template: "<div>Stubbed Global Component</div>" },
+        },
+      },
+      props: {
         currentPath: routeStepOrder[1].path,
         routes: stepRoutes,
       },
-      router,
     });
   });
 
   afterEach(() => {
-    jest.resetModules();
-    jest.clearAllMocks();
+    vi.resetModules();
+    vi.clearAllMocks();
   });
 
   it("returns an object", async () => {

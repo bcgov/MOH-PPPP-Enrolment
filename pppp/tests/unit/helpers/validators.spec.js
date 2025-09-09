@@ -1,6 +1,5 @@
 import {
   bcPostalCodeValidator,
-  clinicNameValidator,
   clarificationCodeValidator,
   motorVehicleAccidentClaimNumberMaskValidator,
   diagnosticCodeValidator,
@@ -11,7 +10,7 @@ import { phnNineValidator } from "../../../src/helpers/validators";
 
 describe("validators.js bcPostalCodeValidator()", () => {
   afterEach(() => {
-    jest.resetModules();
+    vi.resetModules();
   });
 
   it("returns false if not given a value", () => {
@@ -35,52 +34,21 @@ describe("validators.js bcPostalCodeValidator()", () => {
   });
 });
 
-describe("validators.js clinicNameValidator()", () => {
-  afterEach(() => {
-    jest.resetModules();
-  });
-
-  it("returns true if given an empty value", () => {
-    const result = clinicNameValidator();
-    expect(result).toBe(true);
-  });
-
-  it("returns true if given a string containing letters and numbers", () => {
-    const result = clinicNameValidator("AAAaaa111");
-    expect(result).toBe(true);
-  });
-
-  it("returns true if given a string containing hyphens, periods, apostrophes, and spaces", () => {
-    const result = clinicNameValidator("-.' -.' -.' ");
-    expect(result).toBe(true);
-  });
-
-  it("returns false if given a string containing special characters", () => {
-    const result = clinicNameValidator("ÁḚȈỐÚ");
-    expect(result).toBe(false);
-  });
-
-  it("returns false if given a string containing other punctuation", () => {
-    const result = clinicNameValidator("()@#$%^&*");
-    expect(result).toBe(false);
-  });
-});
-
 describe("validators.js clarificationCodeValidator()", () => {
   const isCSRFunction = clarificationCodeValidator(true);
   const isNotCSRFunction = clarificationCodeValidator(false);
 
   afterEach(() => {
-    jest.resetModules();
+    vi.resetModules();
   });
 
-  it("returns false if given an empty value (not CSR)", () => { 
-    const result = isNotCSRFunction("")
+  it("returns false if given an empty value (not CSR)", () => {
+    const result = isNotCSRFunction("");
     expect(result).toBe(false);
   });
 
-  it("returns false if given an empty value (CSR)", () => { 
-    const result = isCSRFunction("")
+  it("returns false if given an empty value (CSR)", () => {
+    const result = isCSRFunction("");
     expect(result).toBe(false);
   });
 
@@ -104,20 +72,20 @@ describe("validators.js clarificationCodeValidator()", () => {
     expect(result).toBe(true);
   });
 
-  it("returns false if given a non-alphanumeric value (not CSR)", () => { 
-    const result = isNotCSRFunction("$$")
+  it("returns false if given a non-alphanumeric value (not CSR)", () => {
+    const result = isNotCSRFunction("$$");
     expect(result).toBe(false);
   });
 
-  it("returns false if given a non-alphanumeric value (CSR)", () => { 
-    const result = isCSRFunction("$$")
+  it("returns false if given a non-alphanumeric value (CSR)", () => {
+    const result = isCSRFunction("$$");
     expect(result).toBe(false);
   });
 });
 
 describe("validators.js diagnosticCodeValidator()", () => {
   afterEach(() => {
-    jest.resetModules();
+    vi.resetModules();
   });
 
   it("returns false if given an empty value", () => {
@@ -138,7 +106,7 @@ describe("validators.js diagnosticCodeValidator()", () => {
 
 describe("validators.js birthDateValidator()", () => {
   afterEach(() => {
-    jest.resetModules();
+    vi.resetModules();
   });
 
   it("returns true if given an empty value", () => {
@@ -203,7 +171,6 @@ describe("validators.js birthDateValidator()", () => {
       },
     };
     const result = birthDateValidator("", testDate1);
-    // expect(result).toEqual(false);
     expect(result).toBe(true);
   });
 
@@ -216,14 +183,13 @@ describe("validators.js birthDateValidator()", () => {
       },
     };
     const result = birthDateValidator("", testDate1);
-    // expect(result).toEqual(false);
     expect(result).toBe(false);
   });
 });
 
 describe("validators.js serviceDateValidator()", () => {
   afterEach(() => {
-    jest.resetModules();
+    vi.resetModules();
   });
 
   it("returns true if given an empty value", () => {
@@ -288,7 +254,6 @@ describe("validators.js serviceDateValidator()", () => {
       },
     };
     const result = serviceDateValidator("", testDate1);
-    // expect(result).toEqual(false);
     expect(result).toBe(true);
   });
 
@@ -301,14 +266,13 @@ describe("validators.js serviceDateValidator()", () => {
       },
     };
     const result = serviceDateValidator("", testDate1);
-    // expect(result).toEqual(false);
     expect(result).toBe(false);
   });
 });
 
 describe("validators.js motorVehicleAccidentClaimNumberMaskValidator()", () => {
   afterEach(() => {
-    jest.resetModules();
+    vi.resetModules();
   });
 
   it("returns false if given an empty value", () => {
@@ -369,7 +333,7 @@ describe("validators.js motorVehicleAccidentClaimNumberMaskValidator()", () => {
 
 describe("validators.js phnNineValidator()", () => {
   afterEach(() => {
-    jest.resetModules();
+    vi.resetModules();
   });
 
   it("returns true if given a string that starts with 9", () => {
@@ -390,7 +354,7 @@ describe("validators.js phnNineValidator()", () => {
   it("returns false if given an empty value", () => {
     const result = phnNineValidator();
     expect(result).toBe(false);
-  });  
+  });
 
   it("returns false if given an integer", () => {
     const result = phnNineValidator(9999999998);
@@ -403,7 +367,7 @@ describe("validators.js phnNineValidator()", () => {
   });
 
   it("returns false if given an object", () => {
-    const result = phnNineValidator({"9": "9", "8": "9"});
+    const result = phnNineValidator({ 9: "9", 8: "9" });
     expect(result).toBe(false);
   });
 });
