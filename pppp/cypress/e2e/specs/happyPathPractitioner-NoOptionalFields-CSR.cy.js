@@ -1,7 +1,7 @@
 import envData from "../../fixtures/env-data.js";
 const testUrl = "/pay-practitioner-csr";
 
-describe("Pay Practitioner-CSR", () => {
+describe("Pay Practitioner-CSR (No Optional)", () => {
   it("submits with optional fields not filled", () => {
     cy.visit(testUrl);
     //Claim Count
