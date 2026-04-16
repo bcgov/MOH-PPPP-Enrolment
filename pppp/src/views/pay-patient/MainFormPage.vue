@@ -610,6 +610,7 @@
           <InputComponent
             id="specialty-code"
             v-model="practitionerSpecialtyCode"
+            cypress-id="specialtyCode"
             :label="'Specialty Code' + (isCSR ? '' : ' (optional)') + ':'"
             class="mt-3"
             maxlength="2"
@@ -628,8 +629,7 @@
           </div>
           <div
             v-if="
-              v$.practitionerSpecialtyCode.$dirty &&
-              v$.practitionerSpecialtyCode.minLengthValue.$invalid
+              v$.practitionerSpecialtyCode.$dirty && v$.practitionerSpecialtyCode.minLength.$invalid
             "
             class="text-danger"
             aria-live="assertive"
@@ -639,7 +639,7 @@
           <div
             v-if="
               v$.practitionerSpecialtyCode.$dirty &&
-              !v$.practitionerSpecialtyCode.minLengthValue.$invalid &&
+              !v$.practitionerSpecialtyCode.minLength.$invalid &&
               !v$.practitionerSpecialtyCode.alphanumericValidator.$invalid &&
               v$.practitionerSpecialtyCode.specialtyCodeValidator.$invalid
             "
@@ -1314,8 +1314,7 @@ export default {
       },
       practitionerSpecialtyCode: {
         alphanumericValidator: optionalValidator(alphanumericValidator),
-        minLengthValue:
-          isCSRRoute || !this.practitionerSpecialtyCode ? alwaysValidValidator : minLength(2),
+        minLength: isCSRRoute ? alwaysValidValidator : minLength(2),
         specialtyCodeValidator: optionalValidator(
           isCSRRoute ? alwaysValidValidator : specialtyCodeValidator
         ),

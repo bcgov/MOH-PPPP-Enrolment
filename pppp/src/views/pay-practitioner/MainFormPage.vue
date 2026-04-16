@@ -541,6 +541,7 @@
           <InputComponent
             id="specialty-code"
             v-model="practitionerSpecialtyCode"
+            cypress-id="specialtyCode"
             :label="'Specialty Code' + (isCSR ? '' : ' (optional)') + ':'"
             class="mt-3"
             maxlength="2"
