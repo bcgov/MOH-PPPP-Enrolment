@@ -95,6 +95,7 @@
             id="dependent-number"
             v-model="dependentNumber"
             :label="'Dependant' + (isCSR ? '' : ' (optional)') + ':'"
+            cypress-id="dependent-number"
             class-name="mt-3"
             maxlength="2"
             :input-style="extraSmallStyles"
@@ -159,6 +160,7 @@
             id="middle-initial"
             v-model="middleInitial"
             :label="'Second Name Initial' + (isCSR ? '' : ' (optional)') + ':'"
+            cypress-id="middle-initial"
             class-name="mt-3"
             maxlength="1"
             :input-style="extraSmallStyles"
@@ -270,6 +272,7 @@
             id="vehicle-accident-claim-number"
             v-model="vehicleAccidentClaimNumber"
             :label="'Motor Vehicle Accident Claim Number' + (isCSR ? '' : ' (optional)') + ':'"
+            cypress-id="vehicle-accident-claim-number"
             maxlength="8"
             :is-upper-case-forced="true"
             class="mt-3"
@@ -297,6 +300,7 @@
             id="plan-reference-number-of-original-claim"
             v-model="planReferenceNumberOfOriginalClaim"
             :label="'Plan Reference Number of Original Claim' + (isCSR ? '' : ' (optional)') + ':'"
+            cypress-id="plan-reference-number-of-original-claim"
             maxlength="10"
             :input-style="smallStyles"
             @blur="handleBlurField(v$.planReferenceNumberOfOriginalClaim)"
@@ -583,6 +587,7 @@
             id="facility-number"
             v-model="practitionerFacilityNumber"
             :label="'Facility Number' + (isCSR ? '' : ' (optional)') + ':'"
+            cypress-id="facility-number"
             class="mt-3"
             :input-style="smallStyles"
             @blur="handleBlurField(v$.practitionerFacilityNumber)"
@@ -601,6 +606,7 @@
             id="coverage-pre-authorization-number"
             v-model="coveragePreAuthNumber"
             :label="'Coverage Pre-Authorization Number' + (isCSR ? '' : ' (optional)') + ':'"
+            cypress-id="coverage-pre-authorization-number"
             class="mt-3"
             maxlength="4"
             :input-style="smallStyles"
@@ -643,6 +649,7 @@
               (isReferredByRequired || isCSR ? '' : ' (optional)') +
               ':'
             "
+            cypress-id="referred-by-practitioner-number"
             :input-style="smallStyles"
             @blur="handleBlurField(v$.referredByPractitionerNumber)"
           />
@@ -675,6 +682,7 @@
               (isReferredByRequired || isCSR ? '' : ' (optional)') +
               ':'
             "
+            cypress-id="referred-by-last-name"
             maxlength="18"
             class="mt-3"
             :input-style="mediumStyles"
@@ -707,6 +715,7 @@
               (isReferredByRequired || isCSR ? '' : ' (optional)') +
               ':'
             "
+            cypress-id="referred-by-first-name-initial"
             maxlength="1"
             class="mt-3"
             :input-style="extraSmallStyles"
@@ -746,6 +755,7 @@
               (isReferredToRequired || isCSR ? '' : ' (optional)') +
               ':'
             "
+            cypress-id="referred-to-practitioner-number"
             :input-style="smallStyles"
             @blur="handleBlurField(v$.referredToPractitionerNumber)"
           />
@@ -778,6 +788,7 @@
               (isReferredToRequired || isCSR ? '' : ' (optional)') +
               ':'
             "
+            cypress-id="referred-to-last-name"
             maxlength="18"
             class="mt-3"
             :input-style="mediumStyles"
@@ -810,6 +821,7 @@
               (isReferredToRequired || isCSR ? '' : ' (optional)') +
               ':'
             "
+            cypress-id="referred-to-first-name-initial"
             maxlength="1"
             class="mt-3"
             :input-style="extraSmallStyles"
