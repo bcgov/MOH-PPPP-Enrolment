@@ -150,8 +150,8 @@ describe("Pay Practitioner-Public", () => {
     cy.get("[data-cy=practitionerNumber]").type(backendPractitionerNumber);
 
     cy.get("[data-cy=specialtyCode]").type("11");
-    // cy.get("[data-cy=facility-number]").type("11");
-    // cy.get("[data-cy=coverage-pre-authorization-number]").type("11");
+    cy.get("[data-cy=facility-number]").type("11111");
+    cy.get("[data-cy=coverage-pre-authorization-number]").type("1111");
 
     cy.get("[data-cy=referred-by-practitioner-number]").type("11111");
     cy.get("[data-cy=referred-by-last-name]").type("bbbbb");

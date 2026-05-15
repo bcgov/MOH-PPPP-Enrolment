@@ -1274,7 +1274,7 @@ export default {
         ),
       },
       coveragePreAuthNumber: {
-        minLength: isCSRRoute || !this.coveragePreAuthNumber ? alwaysValidValidator : minLength(4),
+        minLength: isCSRRoute ? alwaysValidValidator : minLength(4),
         intValidator: optionalValidator(intValidator),
         positiveNumberValidator: optionalValidator(positiveNumberValidator),
       },

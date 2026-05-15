@@ -1322,8 +1322,7 @@ export default {
         minLength: minLength(5),
       },
       practitionerFacilityNumber: {
-        minLength:
-          isCSRRoute || !this.practitionerFacilityNumber ? alwaysValidValidator : minLength(5),
+        minLength: isCSRRoute ? alwaysValidValidator : minLength(5),
       },
       practitionerSpecialtyCode: {
         alphanumericValidator: optionalValidator(alphanumericValidator),
