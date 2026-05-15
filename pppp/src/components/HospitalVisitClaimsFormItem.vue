@@ -27,6 +27,7 @@
         <DigitInput
           :id="'hvc-day-to-' + index"
           :label="'Day To' + (isCSR ? '' : ' (optional)') + ':'"
+          :cypress-id="'hvc-day-to-' + index"
           maxlength="2"
           :model-value="dayTo"
           @update:model-value="$emit('update:dayTo', $event)"
@@ -287,6 +288,7 @@
       :id="'hvc-service-clarification-code-' + index"
       :label="'Service Clarification Code' + (isCSR ? '' : ' (optional)') + ':'"
       class="mt-3"
+      :cypress-id="'hvc-service-clarification-code-' + index"
       maxlength="2"
       :model-value="serviceClarificationCode"
       :is-upper-case-forced="true"
@@ -472,6 +474,7 @@
       :id="'hvc-correspondence-attached-' + index"
       :label="'Correspondence Attached' + (isCSR ? '' : ' (optional)') + ':'"
       class="mt-3"
+      :cypress-id="'hvc-correspondence-attached-' + index"
       :model-value="correspondenceAttached"
       :options="correspondenceAttachedOptions"
       default-option-label="None"
