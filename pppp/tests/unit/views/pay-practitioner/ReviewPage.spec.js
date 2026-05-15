@@ -462,7 +462,6 @@ describe("ReviewPage.vue pay practitioner navigateToSubmissionPage()", () => {
 describe("ReviewPage.vue pay practitioner navigateToSubmissionErrorPage()", () => {
   let store;
   let wrapper;
-  let $route;
   let $router;
   let spyOnRouter;
   let toPath;
@@ -470,7 +469,6 @@ describe("ReviewPage.vue pay practitioner navigateToSubmissionErrorPage()", () =
   beforeEach(() => {
     store = createStore(storeTemplateC);
     $router = {
-      $route,
       currentRoute: {
         value: {
           path: "/potato-csr",

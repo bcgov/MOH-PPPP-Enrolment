@@ -340,6 +340,7 @@ describe("APIService filterSpecialChar()", () => {
   });
 
   it("returns undefined value without breaking", () => {
+    // eslint-disable-next-line no-unassigned-vars
     let testText;
     const result = APIService.filterSpecialChar(testText);
     expect(result).toEqual(testText);
