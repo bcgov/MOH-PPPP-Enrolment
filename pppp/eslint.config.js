@@ -1,5 +1,5 @@
 import js from "@eslint/js";
-import pluginCypress from "eslint-plugin-cypress/flat";
+import pluginCypress from "eslint-plugin-cypress";
 import compat from "eslint-plugin-compat";
 import pluginVue from "eslint-plugin-vue";
 import vitest from "@vitest/eslint-plugin";
